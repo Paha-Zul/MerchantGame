@@ -48,6 +48,48 @@ object Util {
         return closest
     }
 
+    fun getClosestStockpileWithItem(position:Vector2, itemName:String, itemAmount:Int = 1) : Entity?{
+        var closestDst = Float.MAX_VALUE
+        var closest: Entity? = null
+
+        Families.buildings.forEach { ent ->
+            val bc = Mappers.building.get(ent)
+            val inv = Mappers.inventory.get(ent)
+            if(bc.buildingType == BuildingComponent.BuildingType.Stockpile && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+                val tm = Mappers.transform.get(ent)
+                val dst = tm.position.dst2(position)
+
+                if (dst <= closestDst) {
+                    closest = ent
+                    closestDst = dst
+                }
+            }
+        }
+
+        return closest
+    }
+
+    fun getClosestWorkshopWithOpenWorkerPosition(position:Vector2) : Entity?{
+        var closestDst = Float.MAX_VALUE
+        var closest: Entity? = null
+
+        Families.buildings.forEach { ent ->
+            val bc = Mappers.building.get(ent)
+            val wc = Mappers.workforce.get(ent)
+            if(bc.buildingType == BuildingComponent.BuildingType.Workshop && wc != null && wc.workersAvailable.size < wc.numWorkerSpots) {
+                val tm = Mappers.transform.get(ent)
+                val dst = tm.position.dst2(position)
+
+                if (dst <= closestDst) {
+                    closest = ent
+                    closestDst = dst
+                }
+            }
+        }
+
+        return closest
+    }
+
     fun getClosestSellingItem(position:Vector2, itemName:String, mustBeBuilding:Boolean = true) : Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null

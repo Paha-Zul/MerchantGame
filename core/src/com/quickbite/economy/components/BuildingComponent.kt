@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Queue
  */
 class BuildingComponent : Component{
     enum class BuildingType{
-        Shop, Workshop, House, Wall
+        Shop, Workshop, Stockpile, House, Wall
     }
 
     lateinit var buildingType:BuildingType

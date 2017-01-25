@@ -1,7 +1,5 @@
 package com.quickbite.economy.behaviour
 
-import com.quickbite.economy.behaviour.BlackBoard
-import com.quickbite.economy.behaviour.Task
 import com.quickbite.economy.behaviour.controller.CompositeController
 
 open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackboard, taskName) {
@@ -29,11 +27,13 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
 
         //If the current task is not running, go to the next task.
         if (!this.controller.currTask!!.controller.running) {
-            //If we are out of tasks, end this task!
-            if (this.controller.currTask!!.controller.failed) {
+            //If the child task failed, call childFailed
+            if (this.controller.currTask!!.controller.failed || !this.controller.currTask!!.check()) {
                 this.ChildFailed()
+            //If the child task succeeded, call childSucceeded
             } else if (this.controller.currTask!!.controller.success) {
                 this.ChildSucceeded()
+            //Otherwise we are starting new, call new!
             } else {
                 this.controller.currTask!!.controller.SafeStart()
             }
@@ -65,7 +65,7 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
             childName = this.controller.currTask.toString()
         }
 
-        val name = this.taskName + "," + childName
+        val name = this.taskName + "/" + childName
         return name
     }
 }

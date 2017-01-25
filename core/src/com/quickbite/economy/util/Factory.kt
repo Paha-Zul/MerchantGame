@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.MyGame
-import com.quickbite.economy.objects.Shop
-import com.quickbite.economy.objects.Wall
-import com.quickbite.economy.objects.WorkerUnit
-import com.quickbite.economy.objects.Workshop
+import com.quickbite.economy.objects.*
 
 /**
  * Created by Paha on 12/13/2016.
@@ -43,6 +40,14 @@ object Factory {
                 sprite.setSize(dimensions.x, dimensions.y)
 
                 thing = Wall(sprite, position, dimensions)
+            }
+
+            "stockpile" -> {
+                dimensions.set(90f, 90f)
+                val sprite = Sprite(MyGame.manager[textureName, Texture::class.java])
+                sprite.setSize(dimensions.x, dimensions.y)
+
+                thing = Stockpile(sprite, position, dimensions)
             }
 
             "worker" -> {

@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.quickbite.economy.InputHandler
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.systems.*
@@ -42,12 +43,14 @@ class GameScreen :Screen{
         val debugSystem = DebugDrawSystem(MyGame.batch)
         val movementSystem = MovementSystem()
         val gridSystem = GridSystem()
+        val workshopSystem = WorkshopSystem(5f)
 
         MyGame.entityEngine.addSystem(behaviourSystem)
         MyGame.entityEngine.addSystem(renderSystem)
         MyGame.entityEngine.addSystem(movementSystem)
         MyGame.entityEngine.addSystem(debugSystem)
         MyGame.entityEngine.addSystem(gridSystem)
+        MyGame.entityEngine.addSystem(workshopSystem)
 
         MyGame.entityEngine.addEntityListener(object:EntityListener{
             override fun entityRemoved(ent: Entity?) {
@@ -61,8 +64,14 @@ class GameScreen :Screen{
                 }
             }
 
-            override fun entityAdded(p0: Entity?) {
-
+            override fun entityAdded(ent: Entity) {
+                val init = Mappers.init.get(ent)
+                val preview = Mappers.preview.get(ent)
+                if(init != null && preview == null){
+                    init.initiated = true
+                    init.initFunc()
+                    ent.remove(InitializationComponent::class.java)
+                }
             }
         })
     }

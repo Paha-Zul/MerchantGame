@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.utils.ImmutableArray
-import com.quickbite.economy.behaviour.BehaviourComponent
+import com.quickbite.economy.components.BehaviourComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.util.Mappers
 
@@ -28,7 +28,7 @@ class BehaviourSystem : EntitySystem() {
         entities.forEach { ent ->
             val bm = Mappers.behaviour.get(ent)
 
-            if (!bm.CurrTaskDone()) {
+            if (!bm.isIdle) {
                 bm.currTask.update(0.016f)
                 bm.currTaskName = bm.currTask.toString().split("[,]".toRegex()).toTypedArray()
 

@@ -1,6 +1,6 @@
 package com.quickbite.economy.behaviour
 
-abstract class Task(blackboard: BlackBoard, var taskName: String = "Task"){
+abstract class Task(blackboard: BlackBoard, var taskName: String = ""){
 
     var bb: BlackBoard = blackboard
         get
@@ -9,10 +9,19 @@ abstract class Task(blackboard: BlackBoard, var taskName: String = "Task"){
     abstract val controller: TaskController
 
     init {
-        this.taskName = Task::class.simpleName!!
         if (taskName != "") {
-            this.taskName += " - " + taskName
+            this.taskName = taskName
+        }else{
+            this.taskName = this.javaClass.simpleName
         }
+    }
+
+    /**
+     * Call to check conditions for running the task.
+     * @return True if the conditions passed and the task should run, false otherwise
+     */
+    open fun check():Boolean{
+        return true
     }
 
     open fun start() {

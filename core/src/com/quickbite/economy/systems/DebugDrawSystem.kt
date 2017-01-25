@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
-import com.quickbite.economy.behaviour.BehaviourComponent
+import com.quickbite.economy.components.BehaviourComponent
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.components.TransformComponent
@@ -44,7 +44,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             val bc = Mappers.building.get(ent)
 
             if((dc.debugDrawPath || DebugDrawComponent.GLOBAL_DEBUG_PATH) && bm != null){
-                val path = bm.getbb().path
+                val path = bm.getBlackBoard().path
                 if(path.isNotEmpty()){
                     for(i in 0..path.size-2){
                         val currPoint = path[i]

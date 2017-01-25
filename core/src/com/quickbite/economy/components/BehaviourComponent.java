@@ -1,15 +1,17 @@
-package com.quickbite.economy.behaviour;
+package com.quickbite.economy.components;
 
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.quickbite.economy.behaviour.BlackBoard;
+import com.quickbite.economy.behaviour.Task;
 
 public class BehaviourComponent implements Component
 {
-	public Task currTask;
+	private Task currTask;
 
 	private BlackBoard bb;
-	public final BlackBoard getbb()
+	public final BlackBoard getBlackBoard()
 	{
 		return bb;
 	}
@@ -19,16 +21,16 @@ public class BehaviourComponent implements Component
 	}
 
     public Callback onCompletionCallback;
-    public final Callback getonCompletionCallback()
+    public final Callback getOnCompletionCallback()
     {
         return onCompletionCallback;
     }
-    public final void setonCompletionCallback(Callback value)
+    public final void setOnCompletionCallback(Callback value)
     {
         onCompletionCallback = value;
     }
 
-	public final boolean getidle()
+	public final boolean isIdle()
 	{
 		return currTask == null || !currTask.getController().getRunning();
 	}
@@ -45,11 +47,11 @@ public class BehaviourComponent implements Component
 	/**
 	 Sets the current task. Handles resetting and starting the task.
 	*/
-	public final Task getcurrTask()
+	public final Task getCurrTask()
 	{
 		return currTask;
 	}
-	public final void setcurrTask(Task value)
+	public final void setCurrTask(Task value)
 	{
 		currTask = value;
 		currTask.getController().reset();
@@ -59,10 +61,5 @@ public class BehaviourComponent implements Component
 	public interface Callback
 	{
 		void invoke();
-	}
-
-	public final boolean CurrTaskDone()
-	{
-		return getcurrTask() == null || !getcurrTask().getController().getRunning();
 	}
 }

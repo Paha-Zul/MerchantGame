@@ -1,7 +1,23 @@
 package com.quickbite.economy.behaviour
 
-class Decorator(bb: BlackBoard, taskName:String = "") : Task(bb, taskName) {
+open class Decorator(bb: BlackBoard, var taskToDecorate:Task, taskName:String = "") : Task(bb, taskName) {
 
-    override val controller: TaskController
-        get() = this.controller
+    final override val controller: TaskController = TaskController(this)
+        get
+
+    override fun start() {
+        taskToDecorate.controller.SafeStart()
+    }
+
+    override fun update(delta: Float) {
+        taskToDecorate.update(delta)
+    }
+
+    override fun end() {
+        taskToDecorate.controller.SafeEnd()
+    }
+
+    override fun reset() {
+        taskToDecorate.controller.reset()
+    }
 }

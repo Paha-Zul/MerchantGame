@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.components.*
 
 /**
- * Created by Paha on 1/17/2017.
+ * Created by Paha on 1/22/2017.
  */
-class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : Entity() {
+class Stockpile(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Entity() {
 
     init{
         val graphicComp = GraphicComponent()
@@ -16,8 +16,7 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
         val inventory = InventoryComponent()
         val building = BuildingComponent()
         val grid = GridComponent()
-        val workforce = WorkForceComponent()
-        val init = InitializationComponent()
+        val initComp = InitializationComponent()
         val debug = DebugDrawComponent()
 
         graphicComp.sprite = sprite
@@ -26,16 +25,13 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
         transform.position.set(initialPosition.x, initialPosition.y)
         transform.dimensions.set(dimensions.x, dimensions.y)
 
-        building.buildingType = BuildingComponent.BuildingType.Workshop
+        building.buildingType = BuildingComponent.BuildingType.Stockpile
         building.entranceSpotOffsets += Vector2(0f, -75f)
 
         grid.blockWhenPlaced = true
 
-        workforce.numWorkerSpots = 3
-        workforce.workerTasks = listOf(listOf("haul, produce, sell"), listOf("produce", "haul, sell"), listOf("produce", "haul", "sell"))
-
-        init.initFunc = {
-            inventory.addItem("Wood Plank", 100)
+        initComp.initFunc = {
+            inventory.addItem("Wood Log", 500)
         }
 
         this.add(graphicComp)
@@ -43,8 +39,7 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
         this.add(inventory)
         this.add(building)
         this.add(grid)
-        this.add(workforce)
-        this.add(init)
+        this.add(initComp)
         this.add(debug)
     }
 }

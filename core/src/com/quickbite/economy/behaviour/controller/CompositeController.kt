@@ -9,7 +9,7 @@ class CompositeController(task: Task) : TaskController(task) {
     var currTask: Task? = null
     var index = 0
 
-    fun AddTask(task: Task): Task {
+    fun addTask(task: Task): Task {
         taskList.add(task)
         return task
     }

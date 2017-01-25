@@ -20,6 +20,7 @@ class Sequence (blackboard: BlackBoard, taskName: String = "") : Composite(black
     override fun ChildFailed() {
         this.controller.FinishWithFailure()
         this.controller.currTask?.controller?.SafeEnd()
+        System.out.println("[Sequence] Failed on ${controller.currTask}")
     }
 
     override fun ChildSucceeded() {
@@ -30,5 +31,9 @@ class Sequence (blackboard: BlackBoard, taskName: String = "") : Composite(black
         } else {
             this.controller.FinishWithSuccess()
         }
+    }
+
+    override fun toString(): String {
+        return "$taskName/${controller.currTask}"
     }
 }

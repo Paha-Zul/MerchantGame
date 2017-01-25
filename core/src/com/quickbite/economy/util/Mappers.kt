@@ -1,7 +1,6 @@
 package com.quickbite.economy.util
 
 import com.badlogic.ashley.core.ComponentMapper
-import com.quickbite.economy.behaviour.BehaviourComponent
 import com.quickbite.economy.components.*
 
 /**
@@ -19,4 +18,7 @@ object Mappers{
     val preview: ComponentMapper<PreviewComponent> = ComponentMapper.getFor(PreviewComponent::class.java)
     val debugDraw: ComponentMapper<DebugDrawComponent> = ComponentMapper.getFor(DebugDrawComponent::class.java)
     val selling: ComponentMapper<SellingItemsComponent> = ComponentMapper.getFor(SellingItemsComponent::class.java)
+    val workforce: ComponentMapper<WorkForceComponent> = ComponentMapper.getFor(WorkForceComponent::class.java)
+    val worker: ComponentMapper<WorkerUnitComponent> = ComponentMapper.getFor(WorkerUnitComponent::class.java)
+    val init: ComponentMapper<InitializationComponent> = ComponentMapper.getFor(InitializationComponent::class.java)
 }
