@@ -1,20 +1,27 @@
 package com.quickbite.economy.components
 
-import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.Queue
+import com.quickbite.economy.interfaces.MyComponent
+import java.util.*
 
 /**
  * Created by Paha on 1/17/2017.
  */
-class BuildingComponent : Component{
+class BuildingComponent : MyComponent {
     enum class BuildingType{
         Shop, Workshop, Stockpile, House, Wall
     }
 
     lateinit var buildingType:BuildingType
     val entranceSpotOffsets = mutableListOf<Vector2>()
-    val unitQueue = Queue<Entity>()
+    val unitQueue = LinkedList<Entity>()
 
+    override fun dispose() {
+
+    }
+
+    override fun initialize() {
+
+    }
 }

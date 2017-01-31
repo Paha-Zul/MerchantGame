@@ -1,12 +1,12 @@
 package com.quickbite.economy.components;
 
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.quickbite.economy.behaviour.BlackBoard;
 import com.quickbite.economy.behaviour.Task;
+import com.quickbite.economy.interfaces.MyComponent;
 
-public class BehaviourComponent implements Component
+public class BehaviourComponent implements MyComponent
 {
 	private Task currTask;
 
@@ -58,8 +58,18 @@ public class BehaviourComponent implements Component
 		currTask.getController().SafeStart();
 	}
 
-	public interface Callback
+    @Override
+    public void initialize() {
+
+    }
+
+    public interface Callback
 	{
 		void invoke();
+	}
+
+	@Override
+	public void dispose() {
+
 	}
 }

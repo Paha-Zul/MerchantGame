@@ -10,7 +10,7 @@ class LeaveBuildingQueue (bb: BlackBoard) : LeafTask(bb) {
 
     override fun start() {
         super.start()
-        bb.targetBuilding!!.unitQueue.removeValue(bb.myself, true)
+        bb.targetBuilding!!.unitQueue.remove(bb.myself)
         controller.FinishWithSuccess()
     }
 }

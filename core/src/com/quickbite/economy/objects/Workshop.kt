@@ -3,7 +3,9 @@ package com.quickbite.economy.objects
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.components.*
+import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 1/17/2017.
@@ -17,7 +19,9 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
         val building = BuildingComponent()
         val grid = GridComponent()
         val workforce = WorkForceComponent()
+        val sellingItems = SellingItemsComponent()
         val init = InitializationComponent()
+        val bodyComp = BodyComponent()
         val debug = DebugDrawComponent()
 
         graphicComp.sprite = sprite
@@ -34,8 +38,12 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
         workforce.numWorkerSpots = 3
         workforce.workerTasks = listOf(listOf("haul, produce, sell"), listOf("produce", "haul, sell"), listOf("produce", "haul", "sell"))
 
+        sellingItems.sellingItems += "Wood Plank"
+
         init.initFunc = {
             inventory.addItem("Wood Plank", 100)
+
+            bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
         }
 
         this.add(graphicComp)
@@ -44,7 +52,9 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
         this.add(building)
         this.add(grid)
         this.add(workforce)
+        this.add(sellingItems)
         this.add(init)
+        this.add(bodyComp)
         this.add(debug)
     }
 }

@@ -21,4 +21,7 @@ object Mappers{
     val workforce: ComponentMapper<WorkForceComponent> = ComponentMapper.getFor(WorkForceComponent::class.java)
     val worker: ComponentMapper<WorkerUnitComponent> = ComponentMapper.getFor(WorkerUnitComponent::class.java)
     val init: ComponentMapper<InitializationComponent> = ComponentMapper.getFor(InitializationComponent::class.java)
+    val buyer: ComponentMapper<BuyerComponent> = ComponentMapper.getFor(BuyerComponent::class.java)
+    val reselling: ComponentMapper<ResellingItemsComponent> = ComponentMapper.getFor(ResellingItemsComponent::class.java)
+    val body: ComponentMapper<BodyComponent> = ComponentMapper.getFor(BodyComponent::class.java)
 }

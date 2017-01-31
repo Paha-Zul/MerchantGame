@@ -5,6 +5,11 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.FixtureDef
+import com.badlogic.gdx.physics.box2d.PolygonShape
+import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.BuildingComponent
 
 
@@ -48,6 +53,28 @@ object Util {
         return closest
     }
 
+    fun getClosestBuildingTypeWithItem(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1):Entity?{
+        var closestDst = Float.MAX_VALUE
+        var closest: Entity? = null
+
+        Families.buildings.forEach { ent ->
+            val bc = Mappers.building.get(ent)
+            val inv = Mappers.inventory.get(ent)
+
+            if(bc.buildingType == buildingType && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+                val tm = Mappers.transform.get(ent)
+                val dst = tm.position.dst2(position)
+
+                if (dst <= closestDst) {
+                    closest = ent
+                    closestDst = dst
+                }
+            }
+        }
+
+        return closest
+    }
+
     fun getClosestStockpileWithItem(position:Vector2, itemName:String, itemAmount:Int = 1) : Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
@@ -69,14 +96,13 @@ object Util {
         return closest
     }
 
-    fun getClosestWorkshopWithOpenWorkerPosition(position:Vector2) : Entity?{
+    fun getClosestBuildingWithWorkerPosition(position:Vector2) : Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
 
         Families.buildings.forEach { ent ->
-            val bc = Mappers.building.get(ent)
             val wc = Mappers.workforce.get(ent)
-            if(bc.buildingType == BuildingComponent.BuildingType.Workshop && wc != null && wc.workersAvailable.size < wc.numWorkerSpots) {
+            if(wc != null && wc.workersAvailable.size < wc.numWorkerSpots) {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 
@@ -97,10 +123,12 @@ object Util {
         Families.sellingItems.forEach { ent ->
             val sc = Mappers.selling.get(ent)
             val bc = Mappers.building.get(ent)
+            val inv = Mappers.inventory.get(ent)
 
             val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
+            val hasItem = inv != null && inv.hasItem(itemName)
 
-            if(buildingCheck && sc.sellingItems.contains(itemName)) {
+            if(buildingCheck && sc.sellingItems.contains(itemName) && hasItem) {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 
@@ -120,5 +148,25 @@ object Util {
 
     fun roundDown(a:Float, increment:Int):Int{
         return (Math.floor(a.toDouble()/increment)*increment).toInt()
+    }
+
+    fun createBody(bodyType: BodyDef.BodyType, dimensions:Vector2, initialPosition:Vector2, fixtureData:Any): Body {
+        val bodyDef = BodyDef()
+        bodyDef.type = bodyType
+        bodyDef.position.set(initialPosition)
+        val body = MyGame.world.createBody(bodyDef)
+
+        val fixtureDef = FixtureDef()
+        val boxShape = PolygonShape()
+        boxShape.setAsBox(dimensions.x*0.5f, dimensions.y*0.5f)
+
+        fixtureDef.shape = boxShape
+
+        val fixture = body.createFixture(fixtureDef)
+        fixture.userData = fixtureData
+
+        boxShape.dispose()
+
+        return body
     }
 }

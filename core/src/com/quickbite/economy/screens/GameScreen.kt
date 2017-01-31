@@ -3,6 +3,7 @@ package com.quickbite.economy.screens
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntityListener
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
@@ -11,9 +12,11 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.quickbite.economy.InputHandler
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
+import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
@@ -26,6 +29,7 @@ import com.quickbite.economy.util.Util
 class GameScreen :Screen{
     val dot = Util.createPixel(Color.RED)
     var shadowObject : Pair<Entity, TransformComponent>? = null
+    lateinit var gameScreenGUI:GameScreenGUIManager
 
     var currentlySelectedType  = ""
         set(value) {
@@ -36,14 +40,16 @@ class GameScreen :Screen{
     var showGrid = false
 
     override fun show() {
-        Gdx.input.inputProcessor = InputHandler(this)
+        gameScreenGUI = GameScreenGUIManager(this)
+
+        Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, InputHandler(this))
 
         val behaviourSystem = BehaviourSystem()
         val renderSystem = RenderSystem(MyGame.batch)
         val debugSystem = DebugDrawSystem(MyGame.batch)
         val movementSystem = MovementSystem()
         val gridSystem = GridSystem()
-        val workshopSystem = WorkshopSystem(5f)
+        val workshopSystem = WorkforceSystem(5f)
 
         MyGame.entityEngine.addSystem(behaviourSystem)
         MyGame.entityEngine.addSystem(renderSystem)
@@ -116,6 +122,11 @@ class GameScreen :Screen{
             debugDrawFilled(renderer)
         }
 
+        //Draw the body of all the things. This is not entity specific so it's outside of the entity loop
+        if(DebugDrawComponent.GLOBAL_DEBUG_BODY){
+            MyGame.box2DDebugRenderer.render(MyGame.world, MyGame.camera.combined)
+        }
+
         Gdx.gl.glDisable(GL20.GL_BLEND)
     }
 
@@ -149,7 +160,7 @@ class GameScreen :Screen{
     fun loadNewPreview(){
         //Remove the last object
         if(shadowObject != null){
-            MyGame.entityEngine.removeEntity(shadowObject!!.first)
+            Factory.destroyEntity(shadowObject!!.first)
             shadowObject = null
         }
 

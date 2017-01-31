@@ -1,6 +1,10 @@
 package com.quickbite.economy.behaviour
 
+import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.leaf.*
+import com.quickbite.economy.components.BuildingComponent
+import com.quickbite.economy.components.BuyerComponent
+import com.quickbite.economy.util.Mappers
 
 /**
  * Created by Paha on 1/16/2017.
@@ -28,8 +32,7 @@ object Tasks {
         val moveTo = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
         val enterBuildingQueue = EnterBuildingQueue(bb)
-        val wait = Wait(bb)
-        val buyItem = BuyItem(bb)
+        val buyItem = WaitTimeOrCondition(bb, MathUtils.random(15f, 25f), {ent -> Mappers.buyer.get(ent).buyerFlag != BuyerComponent.BuyerFlag.None})
         val leaveBuildingQueue = LeaveBuildingQueue(bb)
         val unhide = ChangeHidden(bb, false)
         val getExit = GetMapExit(bb)
@@ -43,7 +46,6 @@ object Tasks {
         seq.controller.addTask(moveTo)
         seq.controller.addTask(hide)
         seq.controller.addTask(enterBuildingQueue)
-        seq.controller.addTask(wait)
         seq.controller.addTask(buyItem)
         seq.controller.addTask(leaveBuildingQueue)
         seq.controller.addTask(unhide)
@@ -55,11 +57,17 @@ object Tasks {
         return seq
     }
 
-    fun haulItemFromStockToBuilding(bb:BlackBoard, itemName:String, itemAmount:Int):Task {
+    fun haulItemFromBuilding(bb:BlackBoard, buildingType: BuildingComponent.BuildingType, itemName:String, itemAmount:Int):Task {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         val unhide = ChangeHidden(bb, false)
-        val getStockpile = GetClosestStockpileWithItem(bb, itemName)
+
+        val getStockpile:Task
+        if(buildingType == BuildingComponent.BuildingType.Shop){
+            getStockpile = GetClosestShopLinkWithItem(bb, itemName)
+        }else
+            getStockpile = GetClosestBuildingWithItem(bb, buildingType, itemName)
+
         val setStockpileTarget = SetTargetEntityAsTargetPosition(bb)
         val getStockpileEntrance = GetEntranceOfBuilding(bb)
         val getPathToStockpile = GetPath(bb)
@@ -102,6 +110,8 @@ object Tasks {
     fun produceItem(bb:BlackBoard) : Task{
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
+        //TODO Check if inside the building already?
+
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
         task.controller.addTask(GetEntranceOfBuilding(bb))
         task.controller.addTask(GetPath(bb))
@@ -109,6 +119,23 @@ object Tasks {
         task.controller.addTask(ChangeHidden(bb, true))
         task.controller.addTask(Wait(bb))
         task.controller.addTask(ProduceItem(bb, "Wood Plank", 10))
+
+        return task
+    }
+
+    fun sellItem(bb:BlackBoard) : Task{
+        val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
+
+        //Check if inside the building already?
+
+        task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
+        task.controller.addTask(CheckBuildingHasQueue(bb))
+        task.controller.addTask(GetEntranceOfBuilding(bb))
+        task.controller.addTask(GetPath(bb))
+        task.controller.addTask(MoveToPath(bb))
+        task.controller.addTask(ChangeHidden(bb, true))
+        task.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
+        task.controller.addTask(SellItemFromBuildingToEnqueued(bb))
 
         return task
     }

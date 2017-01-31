@@ -1,10 +1,16 @@
 package com.quickbite.economy.components
 
-import com.badlogic.ashley.core.Component
+import com.quickbite.economy.interfaces.MyComponent
 
 /**
  * Created by Paha on 1/17/2017.
  */
-class PreviewComponent : Component{
+class PreviewComponent : MyComponent {
+    override fun dispose() {
 
+    }
+
+    override fun initialize() {
+
+    }
 }

@@ -3,14 +3,14 @@ package com.quickbite.economy.objects
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
-import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.MutablePair
 
 /**
- * Created by Paha on 1/16/2017.
+ * Created by Paha on 1/25/2017.
  */
-class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : Entity() {
+class BuyerUnit(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Entity() {
 
     init{
         val graphicComp = GraphicComponent()
@@ -18,7 +18,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         val velocity = VelocityComponent()
         val inventory = InventoryComponent()
         val behaviours = BehaviourComponent(this)
-        val workerComponent = WorkerUnitComponent()
+        val buyerComponent = BuyerComponent()
         val initComponent = InitializationComponent()
         val debug = DebugDrawComponent()
 
@@ -29,9 +29,8 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         transform.dimensions.set(dimensions.x, dimensions.y)
 
         initComponent.initFunc = {
-            val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
-            workerComponent.workerBuilding = closestWorkshop!!
-            Mappers.workforce.get(closestWorkshop).workersAvailable.add(this)
+            buyerComponent.buyList.add(MutablePair("Wood Plank", 10))
+            behaviours.currTask = Tasks.buyItemFromBuilding(behaviours.blackBoard)
         }
 
         this.add(graphicComp)
@@ -39,7 +38,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         this.add(velocity)
         this.add(inventory)
         this.add(behaviours)
-        this.add(workerComponent)
+        this.add(buyerComponent)
         this.add(initComponent)
         this.add(debug)
     }

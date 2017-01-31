@@ -9,10 +9,8 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
-import com.quickbite.economy.components.BehaviourComponent
-import com.quickbite.economy.components.BuildingComponent
-import com.quickbite.economy.components.DebugDrawComponent
-import com.quickbite.economy.components.TransformComponent
+import com.quickbite.economy.MyGame
+import com.quickbite.economy.components.*
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
@@ -31,7 +29,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
         super.addedToEngine(engine)
 
         entities = engine.getEntitiesFor(Family.all(TransformComponent::class.java, DebugDrawComponent::class.java)
-                .one(BehaviourComponent::class.java, BuildingComponent::class.java).get())
+                .one(BehaviourComponent::class.java, BuildingComponent::class.java, ResellingItemsComponent::class.java, BodyComponent::class.java).get())
     }
 
     override fun update(deltaTime: Float) {
@@ -42,9 +40,11 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             val tm = Mappers.transform.get(ent)
             val dc = Mappers.debugDraw.get(ent)
             val bc = Mappers.building.get(ent)
+            val rc = Mappers.reselling.get(ent)
+            val bodyComp = Mappers.body.get(ent)
 
             if((dc.debugDrawPath || DebugDrawComponent.GLOBAL_DEBUG_PATH) && bm != null){
-                val path = bm.getBlackBoard().path
+                val path = bm.blackBoard.path
                 if(path.isNotEmpty()){
                     for(i in 0..path.size-2){
                         val currPoint = path[i]
@@ -58,6 +58,20 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
                 }
             }
 
+            //Draw the shop link if enabled and we have the reselling component
+            if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && rc != null){
+
+                rc.resellingItemsList.forEach { link ->
+                    val currPoint = tm.position
+                    val nextPoint = Mappers.transform.get(link.entity).position
+
+                    val rotation = MathUtils.atan2(nextPoint.y - currPoint.y, nextPoint.x - currPoint.x)* MathUtils.radiansToDegrees
+                    val distance = currPoint.dst(nextPoint)
+                    this.pixel.setRegion(0f, 0f, distance/ size, 1f)
+                    batch.draw(pixel, currPoint.x, currPoint.y, 0f, 0f, distance, size, 1f, 1f, rotation)
+                }
+            }
+
             if(dc.debugDrawCenter || DebugDrawComponent.GLOBAL_DEBUG_CENTER)
                 batch.draw(centerPixel, tm.position.x - 5f, tm.position.y - 5f, 10f, 10f)
 
@@ -66,5 +80,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
                     batch.draw(entrancePixel, tm.position.x + entrance.x - 5f, tm.position.y + entrance.y - 5f, 10f, 10f)
                 }
         }
+
+
     }
 }

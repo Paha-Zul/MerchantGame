@@ -1,11 +1,19 @@
 package com.quickbite.economy.components
 
-import com.badlogic.ashley.core.Component
+import com.quickbite.economy.interfaces.MyComponent
 
 /**
  * Created by Paha on 1/22/2017.
  */
-class InitializationComponent : Component{
+class InitializationComponent : MyComponent {
     var initiated = false
     var initFunc:()->Unit = {}
+
+    override fun dispose() {
+
+    }
+
+    override fun initialize() {
+
+    }
 }

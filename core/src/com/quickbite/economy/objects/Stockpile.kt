@@ -3,7 +3,9 @@ package com.quickbite.economy.objects
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.components.*
+import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 1/22/2017.
@@ -17,6 +19,7 @@ class Stockpile(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) :
         val building = BuildingComponent()
         val grid = GridComponent()
         val initComp = InitializationComponent()
+        val bodyComp = BodyComponent()
         val debug = DebugDrawComponent()
 
         graphicComp.sprite = sprite
@@ -32,6 +35,9 @@ class Stockpile(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) :
 
         initComp.initFunc = {
             inventory.addItem("Wood Log", 500)
+            inventory.addItem("Wood Plank", 10)
+
+            bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
         }
 
         this.add(graphicComp)
@@ -40,6 +46,7 @@ class Stockpile(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) :
         this.add(building)
         this.add(grid)
         this.add(initComp)
+        this.add(bodyComp)
         this.add(debug)
     }
 }
