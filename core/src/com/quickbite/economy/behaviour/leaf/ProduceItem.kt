@@ -3,6 +3,7 @@ package com.quickbite.economy.behaviour.leaf
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Productions
 
 /**
  * Created by Paha on 1/25/2017.
@@ -20,9 +21,24 @@ class ProduceItem(bb:BlackBoard, val itemName:String, val itemAmount:Int) : Leaf
 
     override fun start() {
         val inv = Mappers.inventory.get(bb.targetEntity)
-        inv.addItem(itemName, itemAmount)
-        controller.FinishWithSuccess()
 
-        System.out.println("[ProduceItem] I produced something")
+        val production = Productions.productionMap[itemName]
+        //If our inventory doesn't have enough
+        //Set this to false and break since we don't have a required amount
+        val hasAllItems = production!!.requirements
+                .none { inv.getItemAmount(it.itemName) < it.itemAmount }
+
+        if(hasAllItems) {
+            production.requirements
+                    .forEach { inv.removeItem(it.itemName, it.itemAmount) }
+
+
+            inv.addItem(itemName, itemAmount)
+            controller.FinishWithSuccess()
+            System.out.println("[ProduceItem] I produced something")
+        }else{
+            controller.FinishWithFailure()
+        }
+
     }
 }

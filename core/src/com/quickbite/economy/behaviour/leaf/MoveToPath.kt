@@ -15,7 +15,7 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
     lateinit var position: Vector2
     lateinit var velocity: Vector2
 
-    val speed = 1f
+    val _speed = 75f
     val tmp = Vector2()
 
     override fun start() {
@@ -27,6 +27,8 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
 
     override fun update(delta: Float) {
         super.update(delta)
+
+        val speed = this._speed*delta
 
         //If the path is not empty, move!
         if(bb.path.isNotEmpty()){

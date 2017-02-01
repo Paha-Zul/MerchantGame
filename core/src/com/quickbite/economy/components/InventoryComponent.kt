@@ -60,7 +60,11 @@ class InventoryComponent : MyComponent {
         return 0
     }
 
-    class InventoryItem(val name:String, var amount:Int)
+    class InventoryItem(val name:String, var amount:Int){
+        override fun toString(): String {
+            return "[$name:$amount]"
+        }
+    }
 
     override fun dispose() {
 

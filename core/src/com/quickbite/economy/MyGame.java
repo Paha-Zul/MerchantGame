@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.quickbite.economy.screens.GameScreen;
 import com.quickbite.economy.util.Grid;
+import com.quickbite.economy.util.Productions;
+import com.quickbite.economy.util.TimeUtil;
 import com.quickbite.spaceslingshot.util.Loader;
 
 public class MyGame extends Game {
@@ -52,11 +54,15 @@ public class MyGame extends Game {
 
         manager.finishLoading();
 
+        Productions.INSTANCE.readProductionJson();
+
         this.setScreen(new GameScreen());
 	}
 
 	@Override
 	public void render () {
+        TimeUtil.INSTANCE.setDeltaTime(Gdx.graphics.getDeltaTime());
+
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

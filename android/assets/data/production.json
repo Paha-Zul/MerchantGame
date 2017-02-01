@@ -1,0 +1,23 @@
+{
+  "productions": [
+  {
+    "producedItem": "Wood Plank",
+    "produceAmount": 10,
+    "requirements": [
+      [
+        "Wood Log",
+        1
+      ]
+    ]
+  },
+  {
+    "producedItem": "Wood Table",
+    "produceAmount": 1,
+    "requirements": [
+      [
+        "Wood Plank",
+        10
+      ]
+    ]
+  }
+]}

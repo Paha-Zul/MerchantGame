@@ -20,6 +20,7 @@ import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.TimeUtil
 import com.quickbite.economy.util.Util
 
 
@@ -102,11 +103,11 @@ class GameScreen :Screen{
 
         batch.begin()
 
-        MyGame.entityEngine.update(delta)
-        batch.draw(dot, 0f, 0f, 25f, 25f)
-        batch.draw(dot, 300f, 0f, 25f, 25f)
-        batch.draw(dot, -300f, 0f, 25f, 25f)
-//        shadowBuildingPlacement.draw(batch)
+        MyGame.entityEngine.update(TimeUtil.scaledDeltaTime)
+
+//        batch.draw(dot, 0f, 0f, 25f, 25f)
+//        batch.draw(dot, 300f, 0f, 25f, 25f)
+//        batch.draw(dot, -300f, 0f, 25f, 25f)
 
         batch.end()
 
@@ -126,6 +127,8 @@ class GameScreen :Screen{
         if(DebugDrawComponent.GLOBAL_DEBUG_BODY){
             MyGame.box2DDebugRenderer.render(MyGame.world, MyGame.camera.combined)
         }
+
+        gameScreenGUI.update(delta)
 
         Gdx.gl.glDisable(GL20.GL_BLEND)
     }

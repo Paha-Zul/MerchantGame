@@ -33,8 +33,6 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
         transform.position.set(initialPosition.x, initialPosition.y)
         transform.dimensions.set(dimensions.x, dimensions.y)
 
-        inventory.addItem("Wood Plank", 100)
-
         building.buildingType = BuildingComponent.BuildingType.Shop
         building.entranceSpotOffsets += Vector2(0f, -50f)
 

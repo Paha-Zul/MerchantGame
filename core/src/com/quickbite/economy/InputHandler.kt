@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.Factory
+import com.quickbite.economy.util.TimeUtil
 import com.quickbite.economy.util.Util
 
 /**
@@ -99,6 +100,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.B -> DebugDrawComponent.GLOBAL_DEBUG_BODY = !DebugDrawComponent.GLOBAL_DEBUG_BODY
             Input.Keys.D -> Factory.destroyAllEntities()
             Input.Keys.ESCAPE -> gameScreen.currentlySelectedType = ""
+            Input.Keys.SPACE -> TimeUtil.deltaTimeScale = if(TimeUtil.deltaTimeScale > 0) 0f else 1f
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
         }
 

@@ -150,7 +150,7 @@ object Util {
         return (Math.floor(a.toDouble()/increment)*increment).toInt()
     }
 
-    fun createBody(bodyType: BodyDef.BodyType, dimensions:Vector2, initialPosition:Vector2, fixtureData:Any): Body {
+    fun createBody(bodyType: BodyDef.BodyType, dimensions:Vector2, initialPosition:Vector2, fixtureData:Any, isSensor:Boolean = false): Body {
         val bodyDef = BodyDef()
         bodyDef.type = bodyType
         bodyDef.position.set(initialPosition)
@@ -161,6 +161,7 @@ object Util {
         boxShape.setAsBox(dimensions.x*0.5f, dimensions.y*0.5f)
 
         fixtureDef.shape = boxShape
+        fixtureDef.isSensor = isSensor
 
         val fixture = body.createFixture(fixtureDef)
         fixture.userData = fixtureData

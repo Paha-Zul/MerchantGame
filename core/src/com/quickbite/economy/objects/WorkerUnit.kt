@@ -3,6 +3,7 @@ package com.quickbite.economy.objects
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.components.*
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
@@ -20,6 +21,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         val behaviours = BehaviourComponent(this)
         val workerComponent = WorkerUnitComponent()
         val initComponent = InitializationComponent()
+        val bodyComponent = BodyComponent()
         val debug = DebugDrawComponent()
 
 //        behaviours.currTask = Tasks.buyItemFromBuilding(behaviours.blackBoard)
@@ -32,6 +34,8 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
             val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
             workerComponent.workerBuilding = closestWorkshop!!
             Mappers.workforce.get(closestWorkshop).workersAvailable.add(this)
+
+            bodyComponent.body = Util.createBody(BodyDef.BodyType.DynamicBody, dimensions, initialPosition, this, true)
         }
 
         this.add(graphicComp)
@@ -41,6 +45,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         this.add(behaviours)
         this.add(workerComponent)
         this.add(initComponent)
+        this.add(bodyComponent)
         this.add(debug)
     }
 }
