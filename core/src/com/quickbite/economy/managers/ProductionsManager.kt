@@ -1,19 +1,20 @@
-package com.quickbite.economy.util
+package com.quickbite.economy.managers
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.quickbite.economy.util.ItemAmountLink
 import java.util.*
 
 /**
  * Created by Paha on 1/31/2017.
  */
-object Productions {
+object ProductionsManager {
     val json = Json()
-    val productionMap:HashMap<String, Production> = hashMapOf()
+    val productionMap: HashMap<String, Production> = hashMapOf()
 
     init {
-        json.setSerializer(ItemAmountLink::class.java, object:Json.Serializer<ItemAmountLink> {
+        json.setSerializer(ItemAmountLink::class.java, object: Json.Serializer<ItemAmountLink> {
             override fun read(json: Json, jsonData: JsonValue, type: Class<*>): ItemAmountLink {
                 val data = jsonData.child
                 val itemAmountLink = ItemAmountLink(data.asString(), data.next.asInt()) //Make the item link

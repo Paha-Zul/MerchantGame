@@ -18,18 +18,18 @@ import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.systems.*
-import com.quickbite.economy.util.Factory
-import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.TimeUtil
-import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.*
+import com.quickbite.spaceslingshot.util.EventSystem
 
 
 /**
  * Created by Paha on 12/13/2016.
  */
 class GameScreen :Screen{
+    val gameScreeData = GameScreenData()
     val dot = Util.createPixel(Color.RED)
     var shadowObject : Pair<Entity, TransformComponent>? = null
+    lateinit var inputHandler:InputHandler
     lateinit var gameScreenGUI:GameScreenGUIManager
 
     var currentlySelectedType  = ""
@@ -41,9 +41,15 @@ class GameScreen :Screen{
     var showGrid = false
 
     override fun show() {
+        EventSystem.onEvent("addPlayerMoney", {list ->
+            val money = list[0] as Int
+            gameScreeData.playerMoney+=money
+        })
+
         gameScreenGUI = GameScreenGUIManager(this)
 
-        Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, InputHandler(this))
+        inputHandler = InputHandler(this)
+        Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, inputHandler)
 
         val behaviourSystem = BehaviourSystem()
         val renderSystem = RenderSystem(MyGame.batch)
@@ -76,7 +82,7 @@ class GameScreen :Screen{
                 val preview = Mappers.preview.get(ent)
                 if(init != null && preview == null){
                     init.initiated = true
-                    init.initFunc()
+                    init.initFuncs.forEach { func -> func() }
                     ent.remove(InitializationComponent::class.java)
                 }
             }
@@ -177,7 +183,7 @@ class GameScreen :Screen{
         val pos = Vector2(((worldCoords.x)/MyGame.grid.squareSize).toInt()*MyGame.grid.squareSize.toFloat(),
                 ((worldCoords.y)/MyGame.grid.squareSize).toInt()*MyGame.grid.squareSize.toFloat())
 
-        val newEntity = Factory.createObject(currentlySelectedType, Vector2(pos), Vector2(0f,0f), "Building", listOf(PreviewComponent()))
+        val newEntity = Factory.createObjectFromJson(currentlySelectedType, Vector2(pos), listOf(PreviewComponent()))
         shadowObject = Pair(newEntity!!, Mappers.transform.get(newEntity))
     }
 

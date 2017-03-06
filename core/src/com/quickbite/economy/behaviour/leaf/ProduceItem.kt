@@ -3,7 +3,7 @@ package com.quickbite.economy.behaviour.leaf
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Productions
+import com.quickbite.economy.managers.ProductionsManager
 
 /**
  * Created by Paha on 1/25/2017.
@@ -22,7 +22,7 @@ class ProduceItem(bb:BlackBoard, val itemName:String, val itemAmount:Int) : Leaf
     override fun start() {
         val inv = Mappers.inventory.get(bb.targetEntity)
 
-        val production = Productions.productionMap[itemName]
+        val production = ProductionsManager.productionMap[itemName]
         //If our inventory doesn't have enough
         //Set this to false and break since we don't have a required amount
         val hasAllItems = production!!.requirements

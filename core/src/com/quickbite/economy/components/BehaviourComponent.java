@@ -37,9 +37,9 @@ public class BehaviourComponent implements MyComponent
 
 	public String[] currTaskName = new String[10];
 
-    public BehaviourComponent(Entity myEntity){
+    public BehaviourComponent(Entity entity){
     	BlackBoard bb = new BlackBoard();
-    	bb.myself = myEntity;
+    	bb.myself = entity;
 
 		this.setbb(bb);
 	}

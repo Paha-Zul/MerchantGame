@@ -127,8 +127,10 @@ object Util {
 
             val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
             val hasItem = inv != null && inv.hasItem(itemName)
+            var contains = false
+            sc.sellingItems.forEach contains@{ if(it.itemName == itemName){contains = true; return@contains}}
 
-            if(buildingCheck && sc.sellingItems.contains(itemName) && hasItem) {
+            if(buildingCheck && contains && hasItem) {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 
@@ -169,5 +171,37 @@ object Util {
         boxShape.dispose()
 
         return body
+    }
+
+    fun createBody(bodyType: String, dimensions:Vector2, initialPosition:Vector2, fixtureData:Any, isSensor:Boolean = false): Body {
+        val _bodyType:BodyDef.BodyType
+        when(bodyType){
+            "dynamic" -> _bodyType = BodyDef.BodyType.DynamicBody
+            else -> _bodyType = BodyDef.BodyType.StaticBody
+        }
+
+        return createBody(_bodyType, dimensions, initialPosition, fixtureData, isSensor)
+    }
+
+    fun getBuildingType(type:String):BuildingComponent.BuildingType{
+        when(type.toLowerCase()){
+            "wall" -> return BuildingComponent.BuildingType.Wall
+            "shop" -> return BuildingComponent.BuildingType.Shop
+            "workshop" -> return BuildingComponent.BuildingType.Workshop
+            "stockpile" -> return BuildingComponent.BuildingType.Stockpile
+            "house" -> return BuildingComponent.BuildingType.House
+            else -> return BuildingComponent.BuildingType.None
+        }
+    }
+
+    fun <T> toObject(clazz: Class<*>, value: String): T {
+        if (Boolean::class.java == clazz) return java.lang.Boolean.parseBoolean(value) as T
+        if (Byte::class.java == clazz) return java.lang.Byte.parseByte(value) as T
+        if (Short::class.java == clazz) return java.lang.Short.parseShort(value) as T
+        if (Int::class.java == clazz) return Integer.parseInt(value) as T
+        if (Long::class.java == clazz) return java.lang.Long.parseLong(value) as T
+        if (Float::class.java == clazz) return java.lang.Float.parseFloat(value) as T
+        if (Double::class.java == clazz) return java.lang.Double.parseDouble(value) as T
+        return value as T
     }
 }

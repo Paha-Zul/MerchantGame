@@ -10,7 +10,7 @@ import java.util.*
  */
 class BuildingComponent : MyComponent {
     enum class BuildingType{
-        Shop, Workshop, Stockpile, House, Wall
+        None, Shop, Workshop, Stockpile, House, Wall
     }
 
     lateinit var buildingType:BuildingType

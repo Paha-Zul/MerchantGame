@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
-import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.*
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
@@ -61,7 +60,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             //Draw the shop link if enabled and we have the reselling component
             if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && rc != null){
 
-                rc.resellingItemsList.forEach { link ->
+                rc.resellingEntityItemLinks.forEach { link ->
                     val currPoint = tm.position
                     val nextPoint = Mappers.transform.get(link.entity).position
 

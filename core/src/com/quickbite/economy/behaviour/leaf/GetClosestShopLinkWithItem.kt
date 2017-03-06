@@ -19,7 +19,7 @@ class GetClosestShopLinkWithItem(bb:BlackBoard, val itemName:String, val itemAmo
         var shop:ResellingItemsComponent? = null
         if(bb.targetEntity != null){
             shop = Mappers.reselling.get(bb.targetEntity)
-            links = shop.resellingItemsList
+            links = shop.resellingEntityItemLinks
             linkInv = Mappers.inventory.get(bb.targetEntity)
         }
 

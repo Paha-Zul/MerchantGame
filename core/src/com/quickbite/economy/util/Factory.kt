@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.components.*
 import com.quickbite.economy.interfaces.MyComponent
+import com.quickbite.economy.managers.BuildingDefManager
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.*
 
 /**
@@ -15,12 +18,13 @@ import com.quickbite.economy.objects.*
  */
 object Factory {
 
-    fun createObject(type:String, position:Vector2, dimensions:Vector2, textureName:String, compsToAdd:List<Component> = listOf()):Entity? {
+    fun createObject(type:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
         var thing:Entity? = null
+        val dimensions:Vector2 = Vector2()
 
         //TODO Figure out how to use dimensions better. Right now they are hardcoded for prototyping
         when(type){
-            "workshop" -> {
+            "lumberyard" -> {
                 dimensions.set(125f, 125f)
                 val sprite = Sprite(MyGame.manager["workshop", Texture::class.java])
                 sprite.setSize(dimensions.x, dimensions.y)
@@ -37,8 +41,8 @@ object Factory {
             }
 
             "wall" -> {
-                dimensions.set(25f, 25f)
-                val sprite = Sprite(MyGame.manager["wall", Texture::class.java])
+                dimensions.set(50f, 50f)
+                val sprite = Sprite(MyGame.manager["palisade_wall_horizontal", Texture::class.java])
                 sprite.setSize(dimensions.x, dimensions.y)
 
                 thing = Wall(sprite, position, dimensions)
@@ -76,6 +80,160 @@ object Factory {
         }
 
         return thing
+    }
+
+    fun createBuilding(name:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
+        val thing:Entity? = Building(BuildingDefManager.buildingDefsMap[name.toLowerCase()]!!, position)
+
+        if(thing != null) {
+            compsToAdd.forEach { thing.add(it) }
+            thing.components.forEach { comp -> (comp as MyComponent).initialize() }
+            MyGame.entityEngine.addEntity(thing)
+        }
+
+        return thing
+    }
+
+    fun createObjectFromJson(name:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
+        val entity:Entity = Entity()
+        val definition = DefinitionManager.definitionMap[name]!!
+
+        //These are the basic needed components of every building
+        val identityComp = IdentityComponent()
+        val graphicComp = GraphicComponent()
+        val transform = TransformComponent()
+        val grid = GridComponent()
+        val init = InitializationComponent()
+        val debug = DebugDrawComponent()
+
+        identityComp.name = definition.name
+
+        graphicComp.sprite = Sprite(MyGame.manager[definition.graphicDef.graphicName, Texture::class.java])
+        graphicComp.sprite.setSize(definition.graphicDef.graphicSize[0], definition.graphicDef.graphicSize[1])
+        graphicComp.anchor.set(definition.graphicDef.graphicAnchor[0], definition.graphicDef.graphicAnchor[1])
+
+        transform.dimensions.set(definition.physicalDimensions[0], definition.physicalDimensions[1])
+        transform.position.set(position)
+
+        grid.blockWhenPlaced = definition.gridBlockWhenPlaced
+
+        init.initFuncs.add({
+
+        })
+
+        entity.add(identityComp)
+        entity.add(graphicComp)
+        entity.add(transform)
+        entity.add(grid)
+        entity.add(init)
+        entity.add(debug)
+
+        //Check for building definition
+        val buildingType = Util.getBuildingType(definition.buildingDef.buildingType)
+
+        if(buildingType != BuildingComponent.BuildingType.None){
+            val building = BuildingComponent()
+            building.buildingType = buildingType
+            definition.buildingDef.entranceSpots.forEach { spot ->
+                building.entranceSpotOffsets += spot
+            }
+            entity.add(building)
+        }
+
+        //These are the optional components that a building can have
+        if(definition.inventoryDef.hasInventory){
+            val inv = InventoryComponent()
+            definition.inventoryDef.debugItemList.forEach { item ->
+                inv.addItem(item.itemName, item.itemAmount)
+            }
+            entity.add(inv)
+        }
+
+        //Check for selling items definition
+        if(definition.sellingItems.isNotEmpty()){
+            val selling = SellingItemsComponent()
+            selling.sellingItems = definition.sellingItems.toMutableList()
+            entity.add(selling)
+        }
+
+        //Check for worksforce definition
+        if(definition.workforceMax > 0){
+            val workforce = WorkForceComponent()
+            workforce.numWorkerSpots = definition.workforceMax
+            workforce.workerTasks = definition.workerTasks
+            entity.add(workforce)
+        }
+
+        //Check for reselling definition
+        if(definition.reselling){
+            val reselling = ResellingItemsComponent()
+            entity.add(reselling)
+        }
+
+        //Check for behaviour definition
+        if(definition.hasBehaviours){
+            val behaviour = BehaviourComponent(entity)
+            entity.add(behaviour)
+        }
+
+        //Check for velocity component
+        if(definition.velocityDef.hasVelocity){
+            val velocity = VelocityComponent()
+            velocity.baseSpeed = definition.velocityDef.baseSpeed
+            entity.add(velocity)
+        }
+
+        if(definition.physicsDef.hasPhysicsBody){
+            val bodyComp = BodyComponent()
+            init.initFuncs.add { bodyComp.body = Util.createBody(definition.physicsDef.bodyType,
+                    Vector2(transform.dimensions.x*Constants.BOX2D_SCALE, transform.dimensions.y*Constants.BOX2D_SCALE),
+                    Vector2(transform.position.x*Constants.BOX2D_SCALE, transform.position.y*Constants.BOX2D_SCALE), entity, true) }
+
+            entity.add(bodyComp)
+        }
+
+        if(definition.isWorker){
+            val workerUnit = WorkerUnitComponent()
+            entity.add(workerUnit)
+
+            init.initFuncs.add({
+                val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
+
+                //TODO Figure out what to do if this workshop is null?
+                if(closestWorkshop != null) {
+                    workerUnit.workerBuilding = closestWorkshop
+                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(entity)
+                }
+            })
+        }
+
+        if(definition.isBuyer){
+            val buyerUnit = BuyerComponent()
+            entity.add(buyerUnit)
+        }
+
+        definition.compsToAdd.forEach { compDef ->
+            val comp = Class.forName(compDef.compName).newInstance()
+
+            System.out.println("[Factory] Class type: ${comp.javaClass.name}")
+
+            compDef.fields.forEach { fieldData ->
+                val field = comp.javaClass.getDeclaredField(fieldData[0])
+                val fieldType = field.type
+                val value = fieldData[1]
+                field.isAccessible = true
+                field.set(comp, Util.toObject(fieldType, value))
+            }
+
+            entity.add(comp as Component)
+        }
+
+        compsToAdd.forEach { entity.add(it) }
+
+        entity.components.forEach { comp -> (comp as MyComponent).initialize() }
+        MyGame.entityEngine.addEntity(entity)
+
+        return entity
     }
 
     fun destroyEntity(entity:Entity){

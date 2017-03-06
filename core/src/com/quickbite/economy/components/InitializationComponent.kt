@@ -7,7 +7,7 @@ import com.quickbite.economy.interfaces.MyComponent
  */
 class InitializationComponent : MyComponent {
     var initiated = false
-    var initFunc:()->Unit = {}
+    var initFuncs:MutableList<()->Unit> = mutableListOf()
 
     override fun dispose() {
 

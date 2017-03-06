@@ -4,8 +4,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.components.*
-import com.quickbite.economy.util.EntityListLink
 import com.quickbite.economy.util.ItemPriceLink
 import com.quickbite.economy.util.Util
 
@@ -15,6 +15,7 @@ import com.quickbite.economy.util.Util
 class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Entity() {
 
     init{
+        val identityComp = IdentityComponent()
         val graphicComp = GraphicComponent()
         val transform = TransformComponent()
         val inventory = InventoryComponent()
@@ -39,20 +40,16 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
         grid.blockWhenPlaced = true
 
         workforce.numWorkerSpots = 5
-        workforce.workerTasks = listOf(listOf("haul", "sell"), listOf("sell"))
+//        workforce.workerTasks = listOf(listOf("haul", "sell"), listOf("sell"))
+        workforce.workerTasks = Array.with(Array.with("haul", "sell"), Array.with("sell"))
 
-        sellingItems.sellingItems += "Wood Plank"
+        sellingItems.sellingItems.add(ItemPriceLink("Wood Plank", 10))
 
-        init.initFunc = {
-            val closestWorkshop = Util.getClosestWorkshop(transform.position)
-            if(closestWorkshop != null){
-                //TODO Fix this hardcoding. Maybe sync with the workshops selling list, inventory, or production type?
-                resell.resellingItemsList.add(EntityListLink(closestWorkshop, listOf(ItemPriceLink("Wood Plank", 15))))
-            }
-
+        init.initFuncs.add({
             bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
-        }
+        })
 
+        this.add(identityComp)
         this.add(graphicComp)
         this.add(transform)
         this.add(inventory)

@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
 import com.quickbite.economy.util.MutablePair
+import com.quickbite.economy.util.Names
 import com.quickbite.economy.util.Util
 
 /**
@@ -15,6 +16,7 @@ import com.quickbite.economy.util.Util
 class BuyerUnit(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Entity() {
 
     init{
+        val identityComp = IdentityComponent()
         val graphicComp = GraphicComponent()
         val transform = TransformComponent()
         val velocity = VelocityComponent()
@@ -25,19 +27,21 @@ class BuyerUnit(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) :
         val bodyComponent = BodyComponent()
         val debug = DebugDrawComponent()
 
-//        behaviours.currTask = Tasks.buyItemFromBuilding(behaviours.blackBoard)
+        identityComp.name = Names.randomName
 
         graphicComp.sprite = sprite
         transform.position.set(initialPosition.x, initialPosition.y)
         transform.dimensions.set(dimensions.x, dimensions.y)
 
-        initComponent.initFunc = {
+        initComponent.initFuncs.add({
             buyerComponent.buyList.add(MutablePair("Wood Plank", 10))
+            behaviours.blackBoard.myself = this
             behaviours.currTask = Tasks.buyItemFromBuilding(behaviours.blackBoard)
 
             bodyComponent.body = Util.createBody(BodyDef.BodyType.DynamicBody, dimensions, initialPosition, this, true)
-        }
+        })
 
+        this.add(identityComp)
         this.add(graphicComp)
         this.add(transform)
         this.add(velocity)

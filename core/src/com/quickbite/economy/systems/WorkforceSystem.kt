@@ -24,10 +24,11 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         wc.workersAvailable.forEachIndexed { index, worker ->
             val bc = Mappers.behaviour.get(worker)
             if(bc.isIdle){
-                val numWorkersIndex = Math.min(wc.workerTasks.size-1, wc.workersAvailable.size-1)
-                val workerIndex = Math.min(wc.workerTasks[numWorkersIndex].size-1, index)
+                var numWorkersIndex = Math.min(wc.workerTasks.size-1, wc.workersAvailable.size-1)
+                numWorkersIndex = Math.min(index, numWorkersIndex)
+                val workerIndex = Math.min(wc.workerTasks[numWorkersIndex].count()-1, index)
 
-                val tasks = wc.workerTasks[numWorkersIndex][workerIndex].split(",")
+                val tasks = wc.workerTasks[workerIndex][numWorkersIndex].split(",")
                 val task = assignTasks(building.buildingType, tasks, bc)
                 bc.currTask = task
             }

@@ -9,13 +9,13 @@ import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.components.VelocityComponent
+import com.quickbite.economy.util.Constants
 import com.quickbite.economy.util.Mappers
 
 /**
  * Created by Paha on 1/16/2017.
  */
 class MovementSystem :EntitySystem(){
-
     lateinit var entities: ImmutableArray<Entity>
 
     override fun addedToEngine(engine: Engine) {
@@ -31,15 +31,17 @@ class MovementSystem :EntitySystem(){
             return
 
         entities.forEach { ent ->
-            val tm = Mappers.transform.get(ent)
-            val vm = Mappers.velocity.get(ent)
+            val tc = Mappers.transform.get(ent)
+            val vc = Mappers.velocity.get(ent)
             val bc = Mappers.body.get(ent)
 
             if(bc == null)
-                tm.position.set(tm.position.x + vm.velocity.x, tm.position.y + vm.velocity.y)
+                tc.position.set(tc.position.x + vc.velocity.x, tc.position.y + vc.velocity.y)
             else{
-                bc.body!!.setLinearVelocity(vm.velocity.x*50, vm.velocity.y*50)
-                tm.position.set(bc.body!!.position.x, bc.body!!.position.y)
+                //TODO What's the *50 here?
+//                bc.body!!.setLinearVelocity(vm.velocity.x*50, vm.velocity.y*50)
+                bc.body!!.setLinearVelocity(vc.velocity.x, vc.velocity.y)
+                tc.position.set(bc.body!!.position.x* Constants.BOX2D_SCALE_INVERSE, bc.body!!.position.y*Constants.BOX2D_SCALE_INVERSE)
             }
         }
 

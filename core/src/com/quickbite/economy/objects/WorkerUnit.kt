@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.components.*
 import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Names
 import com.quickbite.economy.util.Util
 
 /**
@@ -14,6 +15,7 @@ import com.quickbite.economy.util.Util
 class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : Entity() {
 
     init{
+        val identityComp = IdentityComponent()
         val graphicComp = GraphicComponent()
         val transform = TransformComponent()
         val velocity = VelocityComponent()
@@ -24,21 +26,26 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         val bodyComponent = BodyComponent()
         val debug = DebugDrawComponent()
 
-//        behaviours.currTask = Tasks.buyItemFromBuilding(behaviours.blackBoard)
+        identityComp.name = Names.randomName
 
         graphicComp.sprite = sprite
         transform.position.set(initialPosition.x, initialPosition.y)
         transform.dimensions.set(dimensions.x, dimensions.y)
 
-        initComponent.initFunc = {
+        initComponent.initFuncs.add({
             val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
-            workerComponent.workerBuilding = closestWorkshop!!
-            Mappers.workforce.get(closestWorkshop).workersAvailable.add(this)
 
+            //TODO Figure out what to do if this workshop is null?
+            if(closestWorkshop != null) {
+                workerComponent.workerBuilding = closestWorkshop
+                Mappers.workforce.get(closestWorkshop).workersAvailable.add(this)
+            }
+
+            behaviours.blackBoard.myself = this
             bodyComponent.body = Util.createBody(BodyDef.BodyType.DynamicBody, dimensions, initialPosition, this, true)
-        }
+        })
 
-        this.add(graphicComp)
+        this.add(identityComp)
         this.add(transform)
         this.add(velocity)
         this.add(inventory)
@@ -46,6 +53,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         this.add(workerComponent)
         this.add(initComponent)
         this.add(bodyComponent)
+        this.add(graphicComp)
         this.add(debug)
     }
 }

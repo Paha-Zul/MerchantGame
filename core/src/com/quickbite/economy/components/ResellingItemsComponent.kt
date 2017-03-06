@@ -11,7 +11,8 @@ class ResellingItemsComponent : MyComponent {
     /**
      * A list of contracts basically
      */
-    val resellingItemsList:Array<EntityListLink> = Array(5)
+    val resellingItemsList:kotlin.Array<String> = arrayOf()
+    val resellingEntityItemLinks:Array<EntityListLink> = Array(5)
 
     override fun dispose() {
 

@@ -1,0 +1,100 @@
+{
+  "buildingDefs": [
+    {
+      "name": "Wall",
+      "graphicDef": {
+        "graphicName": "palisade_wall_horizontal",
+        "graphicAnchor": [0.5, 0],
+        "graphicSize": [50, 50],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "Wall"
+      },
+      "physicalDimensions": [50, 50],
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      }
+    },
+    {
+      "name": "Shop",
+      "graphicDef": {
+        "graphicName": "market",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [75, 75],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "Shop",
+        "entranceSpots":[[0, -45]]
+      },
+      "physicalDimensions": [75, 75],
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "sellingItems": [["Wood Plank", 10]],
+      "workforceMax": 5,
+      "workerTasks": [["haul", "sell"], ["sell"]],
+      "reselling": true,
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      }
+    },
+    {
+      "name": "Stockpile",
+      "graphicDef": {
+        "graphicName": "stockpile",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [90, 90],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "stockpile",
+        "entranceSpots":[[0, -55]]
+      },
+      "physicalDimensions": [90, 90],
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "inventoryDef": {
+        "hasInventory": true,
+        "debugItemList": [["Wood Log", 100]]
+      },
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      }
+    },
+    {
+      "name": "Lumberyard",
+      "graphicDef": {
+        "graphicName": "workshop",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [125, 125],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "Workshop",
+        "entranceSpots":[[0, -75]]
+      },
+      "physicalDimensions": [125, 125],
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "sellingItems": [["Wood Plank", 10]],
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      },
+      "workforceMax": 3,
+      "workerTasks": [["haul, produce, sell"], ["produce", "haul, sell"], ["produce", "haul", "sell"]]
+    }
+  ]
+}

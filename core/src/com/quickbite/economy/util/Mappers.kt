@@ -24,4 +24,5 @@ object Mappers{
     val buyer: ComponentMapper<BuyerComponent> = ComponentMapper.getFor(BuyerComponent::class.java)
     val reselling: ComponentMapper<ResellingItemsComponent> = ComponentMapper.getFor(ResellingItemsComponent::class.java)
     val body: ComponentMapper<BodyComponent> = ComponentMapper.getFor(BodyComponent::class.java)
+    val identity: ComponentMapper<IdentityComponent> = ComponentMapper.getFor(IdentityComponent::class.java)
 }

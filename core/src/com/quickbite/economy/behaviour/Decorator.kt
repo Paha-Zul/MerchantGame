@@ -20,4 +20,8 @@ open class Decorator(bb: BlackBoard, var taskToDecorate:Task, taskName:String = 
     override fun reset() {
         taskToDecorate.controller.reset()
     }
+
+    override fun toString(): String {
+        return "$taskName/${taskToDecorate.taskName}"
+    }
 }

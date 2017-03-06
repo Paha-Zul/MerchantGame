@@ -13,9 +13,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.quickbite.economy.managers.DefinitionManager;
 import com.quickbite.economy.screens.GameScreen;
 import com.quickbite.economy.util.Grid;
-import com.quickbite.economy.util.Productions;
+import com.quickbite.economy.managers.ProductionsManager;
 import com.quickbite.economy.util.TimeUtil;
 import com.quickbite.spaceslingshot.util.Loader;
 
@@ -54,7 +55,8 @@ public class MyGame extends Game {
 
         manager.finishLoading();
 
-        Productions.INSTANCE.readProductionJson();
+        ProductionsManager.INSTANCE.readProductionJson();
+        DefinitionManager.INSTANCE.readDefinitionsJson();
 
         this.setScreen(new GameScreen());
 	}

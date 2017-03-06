@@ -10,7 +10,7 @@ import com.quickbite.economy.interfaces.MyComponent
 class WorkForceComponent : MyComponent {
     var numWorkerSpots:Int = 0
     var workersAvailable:Array<Entity> = Array(10)
-    var workerTasks:List<List<String>> = listOf()
+    var workerTasks:Array<Array<String>> = Array()
 
     override fun dispose() {
 

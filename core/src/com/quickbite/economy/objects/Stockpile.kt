@@ -13,6 +13,7 @@ import com.quickbite.economy.util.Util
 class Stockpile(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Entity() {
 
     init{
+        val identityComp = IdentityComponent()
         val graphicComp = GraphicComponent()
         val transform = TransformComponent()
         val inventory = InventoryComponent()
@@ -33,13 +34,14 @@ class Stockpile(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) :
 
         grid.blockWhenPlaced = true
 
-        initComp.initFunc = {
+        initComp.initFuncs.add({
             inventory.addItem("Wood Log", 500)
             inventory.addItem("Wood Plank", 10)
 
             bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
-        }
+        })
 
+        this.add(identityComp)
         this.add(graphicComp)
         this.add(transform)
         this.add(inventory)

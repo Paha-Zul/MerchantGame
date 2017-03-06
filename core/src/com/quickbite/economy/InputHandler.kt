@@ -18,12 +18,16 @@ import com.quickbite.economy.util.Util
 class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     var buttonDown = -1
     var down = false
+
+    var entityClickedOn:Entity? = null
     var selectedEntity: Entity? = null
+
+    var linkingAnotherEntity = false
+    var linkingEntityCallback:(Entity) -> Unit = {}
 
     private val queryCallback = {fixture:Fixture ->
         val entity = fixture.userData as Entity
-        selectedEntity = entity
-        gameScreen.gameScreenGUI.openEntityTable(selectedEntity!!)
+        entityClickedOn = entity
         false
     }
 
@@ -42,17 +46,33 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
                     //If the grid node isn't already blocked, create the object there
                     if(!MyGame.grid.getNodeAtPosition(pos.x, pos.y)!!.blocked){
-                        Factory.createObject(gameScreen.currentlySelectedType, Vector2(pos), Vector2(80f, 80f), "Workshop")!!
+                        Factory.createObjectFromJson(gameScreen.currentlySelectedType, Vector2(pos))!!
                     }
 
                 //If the selected type is empty, the we need to see if we are clicking on something
                 }else{
-                    selectedEntity = null //Clear first
+                    //Only clear the selected Entity if we are not linking another Entity
+                    if(!linkingAnotherEntity)
+                        selectedEntity = null //Clear first
+
                     //Query
                     MyGame.world.QueryAABB(queryCallback, worldCoords.x, worldCoords.y, worldCoords.x, worldCoords.y)
+
                     //Handle the outcome
-                    if(selectedEntity == null)
+                    if(entityClickedOn == null) { //If null, close the entity table (if it happens to be open)
                         gameScreen.gameScreenGUI.closeEntityTable()
+
+                    //If not null, open the table for the Entity
+                    }else{
+                        linkingEntityCallback(entityClickedOn!!)
+                        selectedEntity = entityClickedOn
+
+                        if(!linkingAnotherEntity)
+                            gameScreen.gameScreenGUI.openEntityTable(selectedEntity!!)
+                    }
+
+                    entityClickedOn = null //Reset this immediately
+                    linkingAnotherEntity = false
                 }
             }
             //if we are right clicking, clear out selection and UI
@@ -87,7 +107,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
     override fun keyUp(keycode: Int): Boolean {
         when(keycode){
-            Input.Keys.NUM_1 -> gameScreen.currentlySelectedType = "workshop"
+            Input.Keys.NUM_1 -> gameScreen.currentlySelectedType = "lumberyard"
             Input.Keys.NUM_2 -> gameScreen.currentlySelectedType = "shop"
             Input.Keys.NUM_3 -> gameScreen.currentlySelectedType = "stockpile"
             Input.Keys.NUM_4 -> gameScreen.currentlySelectedType = "wall"
@@ -116,7 +136,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
                     Util.roundDown(worldCoords.y + MyGame.grid.squareSize * 0.5f, MyGame.grid.squareSize).toFloat())
 
             if (!MyGame.grid.getNodeAtPosition(pos.x, pos.y)!!.blocked) {
-                Factory.createObject(gameScreen.currentlySelectedType, Vector2(pos), Vector2(80f, 80f), "Workshop")!!
+                Factory.createObjectFromJson(gameScreen.currentlySelectedType, Vector2(pos))!!
             }
         }
 

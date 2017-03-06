@@ -1,0 +1,48 @@
+{
+  "buildingDefs": [
+    {
+      "name": "Buyer",
+      "graphicDef": {
+        "graphicName": "buyer",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [20, 20]
+      },
+      "physicalDimensions": [20, 20],
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "dynamic"
+      },
+      "hasBehaviours": true,
+      "isBuyer": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "velocityDef": {
+        "hasVelocity": true,
+        "baseSpeed": 50
+      }
+    },
+    {
+      "name": "Worker",
+      "graphicDef": {
+        "graphicName": "seller",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [25, 25]
+      },
+      "physicalDimensions": [25, 25],
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "dynamic"
+      },
+      "isWorker": true,
+      "hasBehaviours": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "velocityDef": {
+        "hasVelocity": true,
+        "baseSpeed": 50
+      }
+    }
+  ]
+}

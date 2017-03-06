@@ -6,7 +6,8 @@ import com.quickbite.economy.interfaces.MyComponent
 /**
  * Created by Paha on 1/16/2017.
  */
-class VelocityComponent : MyComponent {
+open class VelocityComponent : MyComponent {
+    var baseSpeed = 0f
     val velocity = Vector2()
 
     override fun dispose() {

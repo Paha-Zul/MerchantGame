@@ -12,6 +12,7 @@ import com.quickbite.economy.util.Util
  */
 class Wall(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : Entity(){
     init {
+        val identityComp = IdentityComponent()
         val graphicComp = GraphicComponent()
         val transform = TransformComponent()
         val building = BuildingComponent()
@@ -21,6 +22,7 @@ class Wall(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : Entity
 
         graphicComp.sprite = sprite
         graphicComp.initialAnimation = true
+        graphicComp.anchor.set(0.5f, 0.0f)
 
         transform.position.set(initialPosition.x, initialPosition.y)
         transform.dimensions.set(dimensions.x, dimensions.y)
@@ -29,10 +31,11 @@ class Wall(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : Entity
 
         grid.blockWhenPlaced = true
 
-        init.initFunc = {
+        init.initFuncs.add({
             bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
-        }
+        })
 
+        this.add(identityComp)
         this.add(graphicComp)
         this.add(transform)
         this.add(building)
