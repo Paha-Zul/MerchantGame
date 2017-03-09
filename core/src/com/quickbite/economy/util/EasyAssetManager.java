@@ -9,9 +9,9 @@ import java.util.HashMap;
  * Created by Paha on 2/19/2015.
  */
 public class EasyAssetManager extends AssetManager {
-    HashMap<String, DataReference> dataMap = new HashMap<String, DataReference>(20);
+    private HashMap<String, DataReference> dataMap = new HashMap<String, DataReference>(20);
 
-    static final String defaultImg = "images/default.png";
+    private static final String defaultImg = "images/default.png";
 
     public synchronized <T> T get(String commonName, Class<T> type) {
         //Get the reference from the data map.

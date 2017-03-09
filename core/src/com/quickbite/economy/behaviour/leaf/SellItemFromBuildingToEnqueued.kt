@@ -31,14 +31,14 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
         for(i in (buyer.buyList.size - 1).downTo(0)){
             val pair = buyer.buyList[i]
-            val list = sellComp.sellingItems.filter { it.itemName == pair.first } //Find if the building is selling the item
+            val list = sellComp.sellingItems.filter { it.itemName == pair.itemName } //Find if the building is selling the item
             val itemBeingSold:ItemPriceLink? = if(list.isEmpty()) null else list[0] //Get either the first index or assign null
 
             //If we are selling the item and out inventory contains it, let's sell!
-            if(itemBeingSold != null && sellInv.hasItem(pair.first)){
-                val itemAmtRemoved = sellInv.removeItem(pair.first, pair.second) //Remove the amount from seller's inventory
-                buyerInv.addItem(pair.first, itemAmtRemoved) //Add the amount removed to the buyer's inventory
-                pair.second -= itemAmtRemoved //Remove the amount we bought from the buyer's demands
+            if(itemBeingSold != null && sellInv.hasItem(pair.itemName)){
+                val itemAmtRemoved = sellInv.removeItem(pair.itemName, pair.itemAmount) //Remove the amount from seller's inventory
+                buyerInv.addItem(pair.itemName, itemAmtRemoved) //Add the amount removed to the buyer's inventory
+                pair.itemAmount -= itemAmtRemoved //Remove the amount we bought from the buyer's demands
 
                 val moneyRemoved = buyerInv.removeItem("Gold", itemBeingSold.itemPrice*itemAmtRemoved)
                 val tax = Math.max(1, (moneyRemoved*0.07f).toInt()) //We need at least 1 gold tax
@@ -47,20 +47,20 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
 
                 //If the buyer's demand for the item is 0 or less, remove it from the demands
-                if(pair.second <= 0){
+                if(pair.itemAmount <= 0){
                     buyer.buyList.removeValue(pair, true)
                 }
 
                 System.out.println("[SellItemFromBuildingToEnqueued] Something was sold!")
 
                 val ic = Mappers.identity.get(unitInQueue)
-                sellComp.sellHistory.add(ItemSold(pair.first, itemAmtRemoved, 10, 1.toFloat(), ic.name))
+                sellComp.sellHistory.add(ItemSold(pair.itemName, itemAmtRemoved, 10, 1.toFloat(), ic.name))
 
                 EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
                 EventSystem.callEvent("addPlayerMoney", listOf(tax)) //Call the event to add money to the player
 
                 buyer.buyerFlag = BuyerComponent.BuyerFlag.Bought //Set the buyer's flag as something was bought
-                controller.FinishWithSuccess() //Success!
+                controller.finishWithSuccess() //Success!
                 return
             }
         }
@@ -69,7 +69,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
         sellComp.sellHistory.add(ItemSold("nothing", 0, 10, 1.toFloat(), ic.name))
         EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
 
-        controller.FinishWithFailure()
+        controller.finishWithFailure()
 
 //        buyer.buyList.forEach { pair ->
 //            val selling = sellComp.sellingItems.contains(pair.first)

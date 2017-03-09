@@ -11,6 +11,6 @@ class EnterBuildingQueue(bb:BlackBoard) : LeafTask(bb) {
     override fun start() {
         super.start()
         bb.targetBuilding?.unitQueue?.addFirst(bb.myself)
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

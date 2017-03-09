@@ -13,6 +13,6 @@ class AlwaysTrue(bb:BlackBoard, taskToDecorate:Task) : Decorator(bb, taskToDecor
         super.update(delta)
 
         if(!taskToDecorate.controller.running)
-            controller.FinishWithSuccess()
+            controller.finishWithSuccess()
     }
 }

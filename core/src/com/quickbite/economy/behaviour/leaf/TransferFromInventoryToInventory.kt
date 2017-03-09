@@ -23,6 +23,6 @@ class TransferFromInventoryToInventory(bb:BlackBoard, val toTargetInventory:Bool
         val amt = fromInv.removeItem(itemName, itemAmount)
         toInv.addItem(itemName, amt)
 
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

@@ -24,6 +24,6 @@ class GetEntranceOfBuilding(bb:BlackBoard) : LeafTask(bb) {
         val pos = Mappers.transform.get(bb.targetEntity).position
 
         bb.targetPosition = Vector2(pos.x + offset.x, pos.y + offset.y)
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

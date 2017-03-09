@@ -11,9 +11,9 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
         super.start()
 
         if (controller.taskList.isEmpty()) {
-            this.controller.FinishWithFailure()
+            this.controller.finishWithFailure()
         } else {
-            this.controller.currTask = this.controller.taskList[0]
+            this.controller.currTask = this.controller.taskList[this.controller.index]
         }
     }
 
@@ -21,7 +21,7 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
         super.update(delta)
 
         if (this.controller.currTask == null || !this.controller.running) {
-            this.controller.FinishWithFailure()
+            this.controller.finishWithFailure()
             return
         }
 
@@ -35,7 +35,7 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
                 this.ChildSucceeded()
             //Otherwise we are starting new, call new!
             } else {
-                this.controller.currTask!!.controller.SafeStart()
+                this.controller.currTask!!.controller.safeStart()
             }
         }
 

@@ -14,8 +14,9 @@ import com.quickbite.economy.util.EasyAssetManager
 object Loader {
     fun loadAllImgs(manager: EasyAssetManager, dir: FileHandle, recursive:Boolean = false){
         val params = TextureLoader.TextureParameter()
-        params.minFilter = Texture.TextureFilter.Linear
-        params.magFilter = Texture.TextureFilter.Linear
+        params.genMipMaps = true
+        params.minFilter = Texture.TextureFilter.MipMapLinearLinear
+        params.magFilter = Texture.TextureFilter.MipMapLinearLinear
 
         for(file in dir.list()){
             if(file.isDirectory && recursive)

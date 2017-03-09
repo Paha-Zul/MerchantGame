@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.BuildingDefManager
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.managers.ProductionsManager
 import com.quickbite.economy.objects.*
 
 /**
@@ -156,11 +158,11 @@ object Factory {
             entity.add(selling)
         }
 
-        //Check for worksforce definition
-        if(definition.workforceMax > 0){
+        //Check for workforce definition
+        if(definition.workforceDef.workforceMax > 0){
             val workforce = WorkForceComponent()
-            workforce.numWorkerSpots = definition.workforceMax
-            workforce.workerTasks = definition.workerTasks
+            workforce.numWorkerSpots = definition.workforceDef.workforceMax
+            workforce.workerTasks = definition.workforceDef.workerTasks
             entity.add(workforce)
         }
 
@@ -192,6 +194,15 @@ object Factory {
             entity.add(bodyComp)
         }
 
+        if(definition.productionDef.produces.size > 0){
+            val producesItems = ProduceItemComponent()
+            definition.productionDef.produces.forEach { itemName ->
+                producesItems.productionList.add(ProductionsManager.productionMap[itemName])
+            }
+
+            entity.add(producesItems)
+        }
+
         if(definition.isWorker){
             val workerUnit = WorkerUnitComponent()
             entity.add(workerUnit)
@@ -208,8 +219,16 @@ object Factory {
         }
 
         if(definition.isBuyer){
-            val buyerUnit = BuyerComponent()
-            entity.add(buyerUnit)
+            val buyerComponent = BuyerComponent()
+
+            init.initFuncs.add({
+                buyerComponent.buyList.add(ItemAmountLink("Wood Plank", 10))
+
+                val bc = Mappers.behaviour[entity] //We assume that the buyer has this since it needs behaviours
+                bc.currTask = Tasks.buyItemFromBuilding(bc.blackBoard)
+            })
+
+            entity.add(buyerComponent)
         }
 
         definition.compsToAdd.forEach { compDef ->

@@ -84,13 +84,22 @@ object DefinitionManager {
         var isBuyer = false
         var isWorker = false
         var inventoryDef = InventoryDef()
+        var productionDef = ProductionDef()
         var onGrid = false
         var gridBlockWhenPlaced = false
         var sellingItems:Array<ItemPriceLink> = arrayOf()
-        var workforceMax = 0
-        var workerTasks:com.badlogic.gdx.utils.Array<com.badlogic.gdx.utils.Array<String>> = com.badlogic.gdx.utils.Array()
+        var workforceDef:WorkforceDef = WorkforceDef()
         var reselling = false
         var compsToAdd:List<ComponentDef> = listOf()
+    }
+
+    class ProductionDef{
+        var produces:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
+    }
+
+    class WorkforceDef{
+        var workforceMax = 0
+        var workerTasks:com.badlogic.gdx.utils.Array<com.badlogic.gdx.utils.Array<String>> = com.badlogic.gdx.utils.Array()
     }
 
     class BuildingDef{

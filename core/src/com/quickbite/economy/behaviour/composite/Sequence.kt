@@ -18,8 +18,8 @@ class Sequence (blackboard: BlackBoard, taskName: String = "") : Composite(black
     }
 
     override fun ChildFailed() {
-        this.controller.FinishWithFailure()
-        this.controller.currTask?.controller?.SafeEnd()
+        this.controller.finishWithFailure()
+        this.controller.currTask?.controller?.safeEnd()
         System.out.println("[Sequence] Failed on ${controller.currTask}")
     }
 
@@ -29,11 +29,16 @@ class Sequence (blackboard: BlackBoard, taskName: String = "") : Composite(black
         if (this.controller.index < this.controller.taskList.size) {
             this.controller.currTask = this.controller.taskList[this.controller.index]
         } else {
-            this.controller.FinishWithSuccess()
+            this.controller.finishWithSuccess()
         }
     }
 
     override fun toString(): String {
         return "$taskName/${controller.currTask}"
+    }
+
+    override fun reset() {
+        this.controller.taskList.forEach { it.controller.safeReset() } //Reset each task
+        this.controller.index = 0 //Reset the index
     }
 }

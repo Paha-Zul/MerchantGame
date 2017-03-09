@@ -5,6 +5,7 @@ import com.quickbite.economy.behaviour.LeafTask
 
 /**
  * Created by Paha on 1/17/2017.
+ * A behaviour to wait some amount of time (2 seconds by default)
  */
 class Wait(bb:BlackBoard, val waitTime:Float = 2f) : LeafTask(bb) {
     var counter = 0f
@@ -14,6 +15,10 @@ class Wait(bb:BlackBoard, val waitTime:Float = 2f) : LeafTask(bb) {
 
         counter += delta
         if(counter >= waitTime)
-            this.controller.FinishWithSuccess()
+            this.controller.finishWithSuccess()
+    }
+
+    override fun reset() {
+        counter = 0f
     }
 }

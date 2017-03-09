@@ -13,6 +13,6 @@ class SetTargetEntityAsTargetPosition(bb:BlackBoard) : LeafTask(bb){
         super.start()
 
         bb.targetPosition = Vector2(Mappers.transform.get(bb.targetEntity).position)
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

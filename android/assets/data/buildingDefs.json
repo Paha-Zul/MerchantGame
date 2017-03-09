@@ -5,13 +5,13 @@
       "graphicDef": {
         "graphicName": "palisade_wall_horizontal",
         "graphicAnchor": [0.5, 0],
-        "graphicSize": [50, 50],
+        "graphicSize": [75, 75],
         "initialAnimation": true
       },
       "buildingDef":{
         "buildingType": "Wall"
       },
-      "physicalDimensions": [50, 50],
+      "physicalDimensions": [75, 20],
       "onGrid": true,
       "gridBlockWhenPlaced": true,
       "physicsDef":{
@@ -38,8 +38,18 @@
         "hasInventory": true
       },
       "sellingItems": [["Wood Plank", 10]],
-      "workforceMax": 5,
-      "workerTasks": [["haul", "sell"], ["sell"]],
+      "workforceDef": {
+        "workforceMax": 5,
+        "workerTasks": [
+          [
+            "haul",
+            "sell"
+          ],
+          [
+            "sell"
+          ]
+        ]
+      },
       "reselling": true,
       "physicsDef":{
         "hasPhysicsBody": true,
@@ -73,7 +83,7 @@
     {
       "name": "Lumberyard",
       "graphicDef": {
-        "graphicName": "workshop",
+        "graphicName": "lumberyard",
         "graphicAnchor": [0.5, 0.5],
         "graphicSize": [125, 125],
         "initialAnimation": true
@@ -93,8 +103,26 @@
         "hasPhysicsBody": true,
         "bodyType": "static"
       },
-      "workforceMax": 3,
-      "workerTasks": [["haul, produce, sell"], ["produce", "haul, sell"], ["produce", "haul", "sell"]]
+      "productionDef":{
+        "produces": ["Wood Plank"]
+      },
+      "workforceDef": {
+        "workforceMax": 3,
+        "workerTasks": [
+          [
+            "haul, produce, sell"
+          ],
+          [
+            "produce",
+            "haul, sell"
+          ],
+          [
+            "produce",
+            "haul",
+            "sell"
+          ]
+        ]
+      }
     }
   ]
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.screens.GameScreen
+import com.quickbite.economy.util.Constants
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.TimeUtil
 import com.quickbite.economy.util.Util
@@ -34,6 +35,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         //Get the world coords
         val worldCoords = MyGame.camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
+        val box2DCoords = Vector2(worldCoords.x* Constants.BOX2D_SCALE, worldCoords.y*Constants.BOX2D_SCALE)
 
         when(button){
             //If we are left clicking, we either want to place something or deselect
@@ -55,12 +57,12 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
                     if(!linkingAnotherEntity)
                         selectedEntity = null //Clear first
 
-                    //Query
-                    MyGame.world.QueryAABB(queryCallback, worldCoords.x, worldCoords.y, worldCoords.x, worldCoords.y)
+                    //Query. Make sure to use the box2DCoords for this!
+                    MyGame.world.QueryAABB(queryCallback, box2DCoords.x, box2DCoords.y, box2DCoords.x, box2DCoords.y)
 
                     //Handle the outcome
                     if(entityClickedOn == null) { //If null, close the entity table (if it happens to be open)
-                        gameScreen.gameScreenGUI.closeEntityTable()
+//                        gameScreen.gameScreenGUI.closeEntityTable()
 
                     //If not null, open the table for the Entity
                     }else{
@@ -68,7 +70,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
                         selectedEntity = entityClickedOn
 
                         if(!linkingAnotherEntity)
-                            gameScreen.gameScreenGUI.openEntityTable(selectedEntity!!)
+                            gameScreen.gameScreenGUI.openEntityWindow(selectedEntity!!)
                     }
 
                     entityClickedOn = null //Reset this immediately
@@ -78,7 +80,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             //if we are right clicking, clear out selection and UI
             Input.Buttons.RIGHT -> {
                 gameScreen.currentlySelectedType = ""
-                gameScreen.gameScreenGUI.closeEntityTable()
+//                gameScreen.gameScreenGUI.closeEntityTable()
             }
         }
 

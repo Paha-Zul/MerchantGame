@@ -11,6 +11,6 @@ class SetMyWorkBuildingAsTarget(bb:BlackBoard) : LeafTask(bb){
     override fun start() {
 
         bb.targetEntity = Mappers.worker.get(bb.myself).workerBuilding
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

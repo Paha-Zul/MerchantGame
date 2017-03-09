@@ -17,8 +17,8 @@ class GetClosestBuilding(bb:BlackBoard) :LeafTask(bb){
             bb.targetEntity = building
             bb.targetBuilding = Mappers.building.get(building)
 
-            controller.FinishWithSuccess()
+            controller.finishWithSuccess()
         }else
-            controller.FinishWithFailure()
+            controller.finishWithFailure()
     }
 }

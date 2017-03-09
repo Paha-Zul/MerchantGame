@@ -11,7 +11,7 @@ class BuyItem(bb:BlackBoard) : LeafTask(bb) {
 
         val targetInv = Mappers.inventory.get(bb.targetEntity)
         if(targetInv == null){
-            controller.FinishWithFailure()
+            controller.finishWithFailure()
             return
         }
 
@@ -22,6 +22,6 @@ class BuyItem(bb:BlackBoard) : LeafTask(bb) {
 
         System.out.println("[BuyItem] Target inventory has ${targetInv.getItemAmount("Wood Plank")} planks, my inv has ${myInv.getItemAmount("Wood Plank")}")
 
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

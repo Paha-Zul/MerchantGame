@@ -33,12 +33,12 @@ class GetClosestShopLinkWithItem(bb:BlackBoard, val itemName:String, val itemAmo
             entityLink.list.forEach { itemLink ->
                 //If the item we wanted matches a link AND the shop inventory contains it, success!
                 if(itemLink.itemName == this.itemName && linkInv.hasItem(itemName)){
-                    controller.FinishWithSuccess()
+                    controller.finishWithSuccess()
                     return
                 }
             }
         }
 
-        controller.FinishWithFailure()
+        controller.finishWithFailure()
     }
 }

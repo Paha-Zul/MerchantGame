@@ -44,12 +44,17 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
                     bb.path = listOf() //Clear the list so we don't follow anything
             }
         }else
-            this.controller.FinishWithSuccess() //If the path is empty we are finished
+            this.controller.finishWithSuccess() //If the path is empty we are finished
     }
 
     override fun end() {
         super.end()
 
         velocity.velocity.set(0f, 0f)
+    }
+
+    override fun reset() {
+        super.reset()
+        index = 0
     }
 }

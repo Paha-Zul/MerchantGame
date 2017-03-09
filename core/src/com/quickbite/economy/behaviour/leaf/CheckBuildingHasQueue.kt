@@ -15,6 +15,6 @@ class CheckBuildingHasQueue(bb:BlackBoard) : LeafTask(bb){
     }
 
     override fun start() {
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

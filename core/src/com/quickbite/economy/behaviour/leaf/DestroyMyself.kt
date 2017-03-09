@@ -13,6 +13,6 @@ class DestroyMyself(bb:BlackBoard) : LeafTask(bb){
         super.start()
 
         MyGame.entityEngine.removeEntity(bb.myself)
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

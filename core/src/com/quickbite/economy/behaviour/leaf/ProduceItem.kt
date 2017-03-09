@@ -2,8 +2,8 @@ package com.quickbite.economy.behaviour.leaf
 
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
-import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.managers.ProductionsManager
+import com.quickbite.economy.util.Mappers
 
 /**
  * Created by Paha on 1/25/2017.
@@ -13,7 +13,7 @@ import com.quickbite.economy.managers.ProductionsManager
  * @param itemName The name of the item
  * @param itemAmount The amount of the item
  */
-class ProduceItem(bb:BlackBoard, val itemName:String, val itemAmount:Int) : LeafTask(bb){
+class ProduceItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 0) : LeafTask(bb){
 
     override fun check(): Boolean {
         return bb.targetEntity != null
@@ -21,8 +21,20 @@ class ProduceItem(bb:BlackBoard, val itemName:String, val itemAmount:Int) : Leaf
 
     override fun start() {
         val inv = Mappers.inventory.get(bb.targetEntity)
+        val production:ProductionsManager.Production
 
-        val production = ProductionsManager.productionMap[itemName]
+        //The the item name is empty, try to pull a production from the target entity ( ie: the building we're producing at)
+        if(itemName == ""){
+            val producesItem = Mappers.produces.get(bb.targetEntity)
+            production = producesItem.productionList[producesItem.currProductionCounter]
+            producesItem.currProductionCounter = (producesItem.currProductionCounter+1)%producesItem.productionList.size
+
+            itemAmount = production.produceAmount
+        //Otherwise, use the name that came in
+        }else{
+            production = ProductionsManager.productionMap[itemName]!!
+        }
+
         //If our inventory doesn't have enough
         //Set this to false and break since we don't have a required amount
         val hasAllItems = production!!.requirements
@@ -33,11 +45,11 @@ class ProduceItem(bb:BlackBoard, val itemName:String, val itemAmount:Int) : Leaf
                     .forEach { inv.removeItem(it.itemName, it.itemAmount) }
 
 
-            inv.addItem(itemName, itemAmount)
-            controller.FinishWithSuccess()
+            inv.addItem(production.producedItem, itemAmount)
+            controller.finishWithSuccess()
             System.out.println("[ProduceItem] I produced something")
         }else{
-            controller.FinishWithFailure()
+            controller.finishWithFailure()
         }
 
     }

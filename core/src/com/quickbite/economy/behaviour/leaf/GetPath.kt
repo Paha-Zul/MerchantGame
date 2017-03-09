@@ -17,6 +17,6 @@ class GetPath(bb:BlackBoard) : LeafTask(bb) {
 
         bb.path = Pathfinder.findPath(MyGame.grid, Vector2(transform.position), Vector2(bb.targetPosition))
 
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

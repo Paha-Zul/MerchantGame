@@ -13,7 +13,7 @@ class WaitTimeOrCondition(bb:BlackBoard, val timeToWait:Float, val func:(Entity)
     override fun update(delta: Float) {
         counter += delta
         if(func(bb.myself) || counter >= timeToWait){
-            controller.FinishWithSuccess()
+            controller.finishWithSuccess()
         }
     }
 }

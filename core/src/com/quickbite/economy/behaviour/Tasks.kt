@@ -1,6 +1,7 @@
 package com.quickbite.economy.behaviour
 
 import com.badlogic.gdx.math.MathUtils
+import com.quickbite.economy.behaviour.decorator.RepeatUntilFail
 import com.quickbite.economy.behaviour.leaf.*
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.BuyerComponent
@@ -110,6 +111,8 @@ object Tasks {
     fun produceItem(bb:BlackBoard) : Task{
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
+        val repeatUntilFail = RepeatUntilFail(bb, task)
+
         //TODO Check if inside the building already?
 
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
@@ -118,9 +121,9 @@ object Tasks {
         task.controller.addTask(MoveToPath(bb))
         task.controller.addTask(ChangeHidden(bb, true))
         task.controller.addTask(Wait(bb))
-        task.controller.addTask(ProduceItem(bb, "Wood Plank", 10))
+        task.controller.addTask(ProduceItem(bb))
 
-        return task
+        return repeatUntilFail
     }
 
     fun sellItem(bb:BlackBoard) : Task{

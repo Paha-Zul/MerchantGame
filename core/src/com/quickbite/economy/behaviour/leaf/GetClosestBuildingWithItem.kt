@@ -13,8 +13,8 @@ class GetClosestBuildingWithItem(bb:BlackBoard, val buildingType:BuildingCompone
     override fun start() {
         bb.targetEntity = Util.getClosestBuildingTypeWithItem(Mappers.transform.get(bb.myself).position, buildingType, itemName, itemAmount)
         if(bb.targetEntity == null)
-            controller.FinishWithFailure()
+            controller.finishWithFailure()
         else
-            controller.FinishWithSuccess()
+            controller.finishWithSuccess()
     }
 }

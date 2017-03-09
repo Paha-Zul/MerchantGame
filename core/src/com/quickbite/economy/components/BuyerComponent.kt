@@ -2,7 +2,7 @@ package com.quickbite.economy.components
 
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.util.MutablePair
+import com.quickbite.economy.util.ItemAmountLink
 
 /**
  * Created by Paha on 1/25/2017.
@@ -15,7 +15,7 @@ class BuyerComponent : MyComponent{
     }
 
     /** A list of pairs containing (item name, item amount) */
-    val buyList:Array<MutablePair<String, Int>> = Array(5)
+    val buyList:Array<ItemAmountLink> = Array(5)
     var moneyAvailable = 0
     var buyerFlag = BuyerFlag.None
 

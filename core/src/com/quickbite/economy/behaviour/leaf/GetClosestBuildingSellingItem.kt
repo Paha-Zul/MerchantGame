@@ -20,8 +20,8 @@ class GetClosestBuildingSellingItem(bb:BlackBoard, val itemName:String = "") : L
             bb.targetEntity = building
             bb.targetBuilding = Mappers.building.get(building)
 
-            controller.FinishWithSuccess()
+            controller.finishWithSuccess()
         }else
-            controller.FinishWithFailure()
+            controller.finishWithFailure()
     }
 }

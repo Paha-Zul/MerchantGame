@@ -6,7 +6,7 @@ open class Decorator(bb: BlackBoard, var taskToDecorate:Task, taskName:String = 
         get
 
     override fun start() {
-        taskToDecorate.controller.SafeStart()
+        taskToDecorate.controller.safeStart()
     }
 
     override fun update(delta: Float) {
@@ -14,11 +14,11 @@ open class Decorator(bb: BlackBoard, var taskToDecorate:Task, taskName:String = 
     }
 
     override fun end() {
-        taskToDecorate.controller.SafeEnd()
+        taskToDecorate.controller.safeEnd()
     }
 
     override fun reset() {
-        taskToDecorate.controller.reset()
+        taskToDecorate.controller.safeReset()
     }
 
     override fun toString(): String {

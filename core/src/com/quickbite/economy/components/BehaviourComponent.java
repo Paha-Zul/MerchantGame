@@ -54,8 +54,8 @@ public class BehaviourComponent implements MyComponent
 	public final void setCurrTask(Task value)
 	{
 		currTask = value;
-		currTask.getController().reset();
-		currTask.getController().SafeStart();
+		currTask.getController().safeReset();
+		currTask.getController().safeStart();
 	}
 
     @Override

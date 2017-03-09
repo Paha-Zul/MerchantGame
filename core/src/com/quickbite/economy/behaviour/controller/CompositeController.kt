@@ -14,8 +14,8 @@ class CompositeController(task: Task) : TaskController(task) {
         return task
     }
 
-    override fun reset() {
-        super.reset()
+    override fun safeReset() {
+        super.safeReset()
         this.currTask = null
         this.index = 0
     }

@@ -6,7 +6,7 @@ import com.quickbite.economy.behaviour.Composite
 class Selector (blackboard: BlackBoard, taskName: String = "") : Composite(blackboard, taskName) {
 
     override fun ChildSucceeded() {
-        this.controller.FinishWithSuccess()
+        this.controller.finishWithSuccess()
     }
 
     override fun ChildFailed() {
@@ -15,7 +15,7 @@ class Selector (blackboard: BlackBoard, taskName: String = "") : Composite(black
         if (this.controller.index < this.controller.taskList.size) {
             this.controller.currTask = this.controller.taskList[this.controller.index]
         } else {
-            this.controller.FinishWithFailure()
+            this.controller.finishWithFailure()
         }
     }
 }

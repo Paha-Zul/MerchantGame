@@ -9,6 +9,6 @@ import com.quickbite.economy.behaviour.LeafTask
 class TestLeaf(bb: BlackBoard, val test:String = "Test") : LeafTask(bb) {
     override fun start() {
         System.out.println(test)
-        controller.FinishWithSuccess()
+        controller.finishWithSuccess()
     }
 }

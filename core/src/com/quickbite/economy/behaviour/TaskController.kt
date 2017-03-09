@@ -26,7 +26,7 @@ open class TaskController(task: Task) {
     /**
      * Safely starts the TaskController and its task. Sets the task as running.
      */
-    fun SafeStart() {
+    fun safeStart() {
         this.running = true
         this.task.start()
     }
@@ -34,7 +34,7 @@ open class TaskController(task: Task) {
     /**
      * Safely ends the TaskController and its task. Sets the task as not running.
      */
-    fun SafeEnd() {
+    fun safeEnd() {
         this.running = false
         this.task.end()
     }
@@ -42,23 +42,23 @@ open class TaskController(task: Task) {
     /**
      * Sets failed as true. Ends this Task.
      */
-    fun FinishWithFailure() {
+    fun finishWithFailure() {
         this.failed = true
-        this.SafeEnd()
+        this.safeEnd()
     }
 
     /**
      * Sets success as true. Ends this Task.
      */
-    fun FinishWithSuccess() {
+    fun finishWithSuccess() {
         this.success = true
-        this.SafeEnd()
+        this.safeEnd()
     }
 
     /**
      * Resets the TaskController and its task
      */
-    open fun reset() {
+    open fun safeReset() {
         this.running = false
         this.failed = false
         this.success = false
