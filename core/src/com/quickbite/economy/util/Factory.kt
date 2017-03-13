@@ -222,10 +222,8 @@ object Factory {
             val buyerComponent = BuyerComponent()
 
             init.initFuncs.add({
-                buyerComponent.buyList.add(ItemAmountLink("Wood Plank", 10))
-
                 val bc = Mappers.behaviour[entity] //We assume that the buyer has this since it needs behaviours
-                bc.currTask = Tasks.buyItemFromBuilding(bc.blackBoard)
+                bc.currTask = Tasks.buyItemDemandAndLeaveMap(bc.blackBoard)
             })
 
             entity.add(buyerComponent)

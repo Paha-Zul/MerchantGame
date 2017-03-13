@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -62,6 +63,28 @@ object Util {
             val inv = Mappers.inventory.get(ent)
 
             if(bc.buildingType == buildingType && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+                val tm = Mappers.transform.get(ent)
+                val dst = tm.position.dst2(position)
+
+                if (dst <= closestDst) {
+                    closest = ent
+                    closestDst = dst
+                }
+            }
+        }
+
+        return closest
+    }
+
+    fun getClosestBuildingWithItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1):Entity?{
+        var closestDst = Float.MAX_VALUE
+        var closest: Entity? = null
+
+        Families.buildings.forEach { ent ->
+            val bc = Mappers.building.get(ent)
+            val inv = Mappers.inventory.get(ent)
+
+            if(inv != null && inv.getItemAmount(itemName) >= itemAmount) {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 
@@ -142,6 +165,11 @@ object Util {
         }
 
         return closest
+    }
+
+    fun getRandomBuildingSellingItems():Entity?{
+        val buildingsThatAreSellingItems = Families.buildingsSellingItems
+        return buildingsThatAreSellingItems[MathUtils.random(buildingsThatAreSellingItems.size() - 1)]
     }
 
     fun roundUp(a:Float, increment:Int):Int{

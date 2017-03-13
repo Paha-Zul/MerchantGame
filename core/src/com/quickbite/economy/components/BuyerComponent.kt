@@ -14,6 +14,8 @@ class BuyerComponent : MyComponent{
         None, Bought, Failed
     }
 
+    var buyingIndex = 0
+
     /** A list of pairs containing (item name, item amount) */
     val buyList:Array<ItemAmountLink> = Array(5)
     var moneyAvailable = 0

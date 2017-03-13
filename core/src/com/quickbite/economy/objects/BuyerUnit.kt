@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
 import com.quickbite.economy.util.ItemAmountLink
-import com.quickbite.economy.util.MutablePair
 import com.quickbite.economy.util.Names
 import com.quickbite.economy.util.Util
 
@@ -37,7 +36,7 @@ class BuyerUnit(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) :
         initComponent.initFuncs.add({
             buyerComponent.buyList.add(ItemAmountLink("Wood Plank", 10))
             behaviours.blackBoard.myself = this
-            behaviours.currTask = Tasks.buyItemFromBuilding(behaviours.blackBoard)
+            behaviours.currTask = Tasks.buyItemDemandAndLeaveMap(behaviours.blackBoard)
 
             bodyComponent.body = Util.createBody(BodyDef.BodyType.DynamicBody, dimensions, initialPosition, this, true)
         })

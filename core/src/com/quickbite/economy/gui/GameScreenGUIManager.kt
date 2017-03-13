@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.interfaces.GuiWindow
 import com.quickbite.economy.screens.GameScreen
@@ -24,9 +25,17 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
     init{
         val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", defaultLabelStyle)
-        topTable.add(moneyLabel)
+        moneyLabel.setFontScale(0.2f)
+        moneyLabel.setAlignment(Align.center)
+
+
+        topTable.add(moneyLabel).width(200f)
+        topTable.setPosition(MyGame.camera.viewportWidth/2f, MyGame.camera.viewportHeight - 25f)
 
         EventSystem.onEvent("addPlayerMoney", {moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")})
+
+
+        MyGame.stage.addActor(topTable)
     }
 
     fun openEntityWindow(entity:Entity){

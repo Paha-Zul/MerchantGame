@@ -40,8 +40,11 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 buyerInv.addItem(pair.itemName, itemAmtRemoved) //Add the amount removed to the buyer's inventory
                 pair.itemAmount -= itemAmtRemoved //Remove the amount we bought from the buyer's demands
 
+                //Remove the money from the buyer's inventory
                 val moneyRemoved = buyerInv.removeItem("Gold", itemBeingSold.itemPrice*itemAmtRemoved)
-                val tax = Math.max(1, (moneyRemoved*0.07f).toInt()) //We need at least 1 gold tax
+
+                //TODO Make sure this tax is okay for low value items. We don't want to be getting 1 gold tax on a 2 gold item
+                val tax = if(moneyRemoved >=1) Math.max(1, (moneyRemoved*0.07f).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
                 val taxedAmount = moneyRemoved - tax
                 sellInv.addItem("Gold", taxedAmount)
 
@@ -51,8 +54,6 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                     buyer.buyList.removeValue(pair, true)
                 }
 
-                System.out.println("[SellItemFromBuildingToEnqueued] Something was sold!")
-
                 val ic = Mappers.identity.get(unitInQueue)
                 sellComp.sellHistory.add(ItemSold(pair.itemName, itemAmtRemoved, 10, 1.toFloat(), ic.name))
 
@@ -61,6 +62,10 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
                 buyer.buyerFlag = BuyerComponent.BuyerFlag.Bought //Set the buyer's flag as something was bought
                 controller.finishWithSuccess() //Success!
+
+                if(buyer.buyList.size > 0)
+                    buyer.buyingIndex  = (buyer.buyingIndex + 1) % buyer.buyList.size //Increment the index for next time
+
                 return
             }
         }

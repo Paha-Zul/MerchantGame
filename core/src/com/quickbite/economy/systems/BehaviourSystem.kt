@@ -30,7 +30,7 @@ class BehaviourSystem : EntitySystem() {
 
             if (!bm.isIdle) {
                 bm.currTask.update(0.016f)
-                bm.currTaskName = bm.currTask.toString().split("[,]".toRegex()).toTypedArray()
+                bm.currTaskName = bm.currTask.toString().split("[/]").toTypedArray()
 
                 if (!bm.currTask.controller.running) {
                     bm.onCompletionCallback?.invoke()

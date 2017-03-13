@@ -3,7 +3,6 @@ package com.quickbite.economy.behaviour.leaf
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
-import com.quickbite.economy.components.InventoryComponent
 import com.quickbite.economy.components.ResellingItemsComponent
 import com.quickbite.economy.util.EntityListLink
 import com.quickbite.economy.util.Mappers
@@ -13,26 +12,29 @@ import com.quickbite.economy.util.Mappers
  */
 class GetClosestShopLinkWithItem(bb:BlackBoard, val itemName:String, val itemAmount:Int = 1) : LeafTask(bb) {
     lateinit var links:Array<EntityListLink>
-    lateinit var linkInv:InventoryComponent
 
     override fun check(): Boolean {
         var shop:ResellingItemsComponent? = null
+
+        //If the target entity is not null, get the links and the inventory of the target entity
         if(bb.targetEntity != null){
             shop = Mappers.reselling.get(bb.targetEntity)
             links = shop.resellingEntityItemLinks
-            linkInv = Mappers.inventory.get(bb.targetEntity)
         }
 
         return bb.targetEntity != null && shop != null
     }
 
     override fun start() {
-        //For each entity -> item link
+        //For each entity, check it's list of items
         links.forEach { entityLink ->
-            //For each item -> price link
+            val inventory = Mappers.inventory[entityLink.entity]
+            //For each item, check if the item matches what we want and the
             entityLink.list.forEach { itemLink ->
-                //If the item we wanted matches a link AND the shop inventory contains it, success!
-                if(itemLink.itemName == this.itemName && linkInv.hasItem(itemName)){
+                //TODO I changed something weird here? make sure it's okay
+                //If the item we wanted matches a link AND the building has the item, success!
+                if(itemLink.itemName == this.itemName && inventory.hasItem(itemName)){
+                    bb.targetEntity = entityLink.entity
                     controller.finishWithSuccess()
                     return
                 }

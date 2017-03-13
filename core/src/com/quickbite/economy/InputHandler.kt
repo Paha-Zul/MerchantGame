@@ -112,9 +112,10 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.NUM_1 -> gameScreen.currentlySelectedType = "lumberyard"
             Input.Keys.NUM_2 -> gameScreen.currentlySelectedType = "shop"
             Input.Keys.NUM_3 -> gameScreen.currentlySelectedType = "stockpile"
-            Input.Keys.NUM_4 -> gameScreen.currentlySelectedType = "wall"
-            Input.Keys.NUM_5 -> gameScreen.currentlySelectedType = "worker"
-            Input.Keys.NUM_6 -> gameScreen.currentlySelectedType = "buyer"
+            Input.Keys.NUM_4 -> gameScreen.currentlySelectedType = "table shop"
+            Input.Keys.NUM_5 -> gameScreen.currentlySelectedType = "wall"
+            Input.Keys.NUM_6 -> gameScreen.currentlySelectedType = "worker"
+            Input.Keys.NUM_7 -> gameScreen.currentlySelectedType = "buyer"
             Input.Keys.C -> DebugDrawComponent.GLOBAL_DEBUG_CENTER = !DebugDrawComponent.GLOBAL_DEBUG_CENTER
             Input.Keys.P -> DebugDrawComponent.GLOBAL_DEBUG_PATH = !DebugDrawComponent.GLOBAL_DEBUG_PATH
             Input.Keys.E -> DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE = !DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE

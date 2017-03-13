@@ -26,8 +26,8 @@ class ProduceItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 
         //The the item name is empty, try to pull a production from the target entity ( ie: the building we're producing at)
         if(itemName == ""){
             val producesItem = Mappers.produces.get(bb.targetEntity)
-            production = producesItem.productionList[producesItem.currProductionCounter]
-            producesItem.currProductionCounter = (producesItem.currProductionCounter+1)%producesItem.productionList.size
+            production = producesItem.productionList[producesItem.currProductionIndex]
+            producesItem.currProductionIndex = (producesItem.currProductionIndex +1)%producesItem.productionList.size
 
             itemAmount = production.produceAmount
         //Otherwise, use the name that came in
@@ -47,7 +47,6 @@ class ProduceItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 
 
             inv.addItem(production.producedItem, itemAmount)
             controller.finishWithSuccess()
-            System.out.println("[ProduceItem] I produced something")
         }else{
             controller.finishWithFailure()
         }

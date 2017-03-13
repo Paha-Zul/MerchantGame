@@ -60,12 +60,6 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
     }
 
     override fun toString(): String {
-        var childName = ""
-        if (this.controller.currTask != null) {
-            childName = this.controller.currTask.toString()
-        }
-
-        val name = this.taskName + "/" + childName
-        return name
+        return "$taskName / ${controller.currTask}"
     }
 }

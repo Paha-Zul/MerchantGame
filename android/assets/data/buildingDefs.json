@@ -123,6 +123,50 @@
           ]
         ]
       }
+    },
+    {
+      "name": "Table Shop",
+      "graphicDef": {
+        "graphicName": "table_shop",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [125, 125],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "Workshop",
+        "entranceSpots":[[0, -75]]
+      },
+      "physicalDimensions": [125, 125],
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "sellingItems": [["Wood Table", 10]],
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      },
+      "productionDef":{
+        "produces": ["Wood Table"]
+      },
+      "workforceDef": {
+        "workforceMax": 3,
+        "workerTasks": [
+          [
+            "haul, produce, sell"
+          ],
+          [
+            "produce",
+            "haul, sell"
+          ],
+          [
+            "produce",
+            "haul",
+            "sell"
+          ]
+        ]
+      }
     }
   ]
 }

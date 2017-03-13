@@ -13,9 +13,14 @@ import com.quickbite.economy.util.Mappers
  * @param itemName The name of the item to transfer. If empty (""), uses bb.targetItem instead
  * @param itemAmount The amount of the item to transfer. Not used if itemName is empty ("")
  */
-class TransferFromInventoryToInventory(bb:BlackBoard, val toTargetInventory:Boolean, val itemName:String = "", val itemAmount:Int = 1) : LeafTask(bb){
+class TransferFromInventoryToInventory(bb:BlackBoard, val toTargetInventory:Boolean, var itemName:String = "", var itemAmount:Int = 1) : LeafTask(bb){
     override fun start() {
         super.start()
+
+        if(itemName == ""){
+            itemName = bb.targetItem.itemName
+            itemAmount = bb.targetItem.itemAmount
+        }
 
         val fromInv = if(toTargetInventory) Mappers.inventory.get(bb.myself) else Mappers.inventory.get(bb.targetEntity)
         val toInv = if(toTargetInventory) Mappers.inventory.get(bb.targetEntity) else Mappers.inventory.get(bb.myself)

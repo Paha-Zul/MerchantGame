@@ -1,7 +1,6 @@
 package com.quickbite.economy.util
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntityListener
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.utils.ImmutableArray
 import com.quickbite.economy.MyGame
@@ -15,6 +14,10 @@ object Families {
             .exclude(PreviewComponent::class.java).get())
 
     val sellingItems: ImmutableArray<Entity> = MyGame.entityEngine.getEntitiesFor(Family.all(TransformComponent::class.java, SellingItemsComponent::class.java)
+            .exclude(PreviewComponent::class.java).get())
+
+    val buildingsSellingItems: ImmutableArray<Entity> = MyGame.entityEngine.getEntitiesFor(Family.all(TransformComponent::class.java,
+            SellingItemsComponent::class.java, BuildingComponent::class.java)
             .exclude(PreviewComponent::class.java).get())
 
     val initFamily: Family = Family.all(InitializationComponent::class.java).get()

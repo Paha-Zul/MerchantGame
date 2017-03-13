@@ -259,15 +259,11 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     private fun setupBehaviourTable(table: Table, comp: BehaviourComponent){
         val taskLabel = Label("CurrTask: ${comp.currTask}", defaultLabelStyle)
         taskLabel.setFontScale(0.2f)
-        val nameLabel = Label("CurrTaskName: ${comp.currTaskName}", defaultLabelStyle)
-        nameLabel.setFontScale(0.2f)
+        taskLabel.setWrap(true)
 
         table.add(taskLabel).expandX().fillX()
-        table.row()
-        table.add(nameLabel).expandX().fillX()
 
         updateList.add({taskLabel.setText("CurrTask: ${comp.currTask}")})
-        updateList.add({nameLabel.setText("CurrTaskName: ${comp.currTaskName}")})
     }
 
     private fun setupInventoryTable(table: Table, comp: InventoryComponent){

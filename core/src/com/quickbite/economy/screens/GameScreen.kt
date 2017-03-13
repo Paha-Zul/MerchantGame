@@ -135,6 +135,7 @@ class GameScreen :Screen{
         }
 
         gameScreenGUI.update(delta)
+        Spawner.update(delta)
 
         Gdx.gl.glDisable(GL20.GL_BLEND)
     }

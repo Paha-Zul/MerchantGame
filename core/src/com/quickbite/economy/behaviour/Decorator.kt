@@ -22,6 +22,6 @@ open class Decorator(bb: BlackBoard, var taskToDecorate:Task, taskName:String = 
     }
 
     override fun toString(): String {
-        return "$taskName/${taskToDecorate.taskName}"
+        return "$taskName / $taskToDecorate"
     }
 }

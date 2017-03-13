@@ -7,18 +7,14 @@ import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
 /**
- * Created by Paha on 1/19/2017.
+ * Created by Paha on 3/12/2017.
  */
-class GetClosestBuildingSellingItem(bb:BlackBoard, var itemName:String = "") : LeafTask(bb){
+class GetRandomBuildingThatSellsItems(bb: BlackBoard) : LeafTask(bb){
 
     override fun start() {
         super.start()
 
-        if(itemName == ""){
-            itemName = bb.targetItem.itemName
-        }
-
-        val building = Util.getClosestSellingItem(Mappers.transform.get(bb.myself).position, itemName)
+        val building = Util.getRandomBuildingSellingItems()
         if(building!= null){
             bb.targetPosition = Vector2(Mappers.transform.get(building).position)
             bb.targetEntity = building

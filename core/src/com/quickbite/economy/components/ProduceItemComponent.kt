@@ -9,6 +9,9 @@ import com.quickbite.economy.managers.ProductionsManager
  * Gives an Entity the capability of producing items
  */
 class ProduceItemComponent : MyComponent{
+    var currProductionIndex = 0
+    val productionList: Array<ProductionsManager.Production> = Array()
+
     override fun initialize() {
 
     }
@@ -17,6 +20,5 @@ class ProduceItemComponent : MyComponent{
 
     }
 
-    var currProductionCounter = 0
-    val productionList:Array<ProductionsManager.Production> = Array()
+
 }
