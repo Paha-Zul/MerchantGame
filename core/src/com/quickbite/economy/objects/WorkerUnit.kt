@@ -4,7 +4,9 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.components.*
+import com.quickbite.economy.util.EntityTasksLink
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Names
 import com.quickbite.economy.util.Util
@@ -38,7 +40,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
             //TODO Figure out what to do if this workshop is null?
             if(closestWorkshop != null) {
                 workerComponent.workerBuilding = closestWorkshop
-                Mappers.workforce.get(closestWorkshop).workersAvailable.add(this)
+                Mappers.workforce.get(closestWorkshop).workersAvailable.add(EntityTasksLink(this, Array()))
             }
 
             behaviours.blackBoard.myself = this

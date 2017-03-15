@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.badlogic.gdx.scenes.scene2d.ui.Window
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -231,44 +228,91 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){
 
-//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
-//        scrollPaneStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-//        scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-//        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
-//        scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-//        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
-//
-//        //Our scroll pane
-//        val workerList = VerticalGroup() //Our worker list
-//        val leftScrollPane = ScrollPane(workerList, scrollPaneStyle)
-//
-//        //The main table area.
-//        val mainTableArea = Table()
-//        val workerTaskList = HorizontalGroup()
-//        val bottomScrollPane = ScrollPane(workerTaskList, scrollPaneStyle)
-//
-//        comp.workersAvailable.forEach { worker ->
-//            val workerTable = Table()
-//            val nameLabel =
-//        }
+        val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
+        scrollPaneStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+        scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
 
-        val spotsLabel = Label("Spots: ${comp.numWorkerSpots}", defaultLabelStyle)
-        spotsLabel.setFontScale(0.2f)
-        val available = Label("Available: ${comp.workersAvailable.size}", defaultLabelStyle)
-        available.setFontScale(0.2f)
-        val tasksLabel = Label("Tasks: ${comp.workerTasks}", defaultLabelStyle)
-        tasksLabel.setFontScale(0.2f)
-        tasksLabel.setWrap(true)
+        //Our scroll pane
+        val workerList = VerticalGroup() //Our worker list
+        val leftScrollPane = ScrollPane(workerList, scrollPaneStyle)
 
-        table.add(spotsLabel).expandX().fillX()
-        table.row()
-        table.add(available).expandX().fillX()
-        table.row()
-        table.add(tasksLabel).expandX().fillX()
+        //The main table area.
+        val mainTableArea = Table()
+        val workerTaskList = HorizontalGroup()
+        val bottomScrollPane = ScrollPane(workerTaskList, scrollPaneStyle)
 
-        updateList.add {spotsLabel.setText("Spots: ${comp.numWorkerSpots}")}
-        updateList.add {available.setText("Available: ${comp.workersAvailable.size}")}
-        updateList.add {tasksLabel.setText("Tasks: ${comp.workerTasks}")}
+        mainTableArea.add()
+        mainTableArea.row()
+        mainTableArea.add(bottomScrollPane)
+
+        //Populate the left scrolling table
+        comp.workersAvailable.forEach { workerTaskLink ->
+            val identity = Mappers.identity[workerTaskLink.entity]
+
+            val workerTable = Table()
+
+            val nameLabel = Label(identity.name, defaultLabelStyle)
+            nameLabel.setFontScale(0.25f)
+            val tasksLabel = Label(workerTaskLink.taskLink.joinToString(), defaultLabelStyle)
+            tasksLabel.setFontScale(0.18f)
+
+            workerTable.add(nameLabel)
+            workerTable.row()
+            workerTable.add(tasksLabel)
+
+            workerTable.setSize(200f, 100f)
+
+            workerList.addActor(workerTable)
+
+            workerTable.addListener(object:ClickListener(){
+                override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                    super.clicked(event, x, y)
+
+                    mainTableArea.clear()
+
+                    val mainNameLabel = Label(identity.name, defaultLabelStyle)
+                    mainNameLabel.setFontScale(0.4f)
+                    val mainTasksLabel = Label(workerTaskLink.taskLink.joinToString(), defaultLabelStyle)
+                    mainTasksLabel.setFontScale(0.25f)
+
+                    mainTableArea.add(mainNameLabel)
+                    mainTableArea.row()
+                    mainTableArea.add(mainTasksLabel)
+                }
+            })
+        }
+
+        comp.workerTasks.forEach { list ->
+            list.forEach { taskName ->
+
+            }
+        }
+
+        table.add(leftScrollPane)
+        table.add(mainTableArea).expand().fill()
+
+        table.debugAll()
+
+//        val spotsLabel = Label("Spots: ${comp.numWorkerSpots}", defaultLabelStyle)
+//        spotsLabel.setFontScale(0.2f)
+//        val available = Label("Available: ${comp.workersAvailable.size}", defaultLabelStyle)
+//        available.setFontScale(0.2f)
+//        val tasksLabel = Label("Tasks: ${comp.workerTasks}", defaultLabelStyle)
+//        tasksLabel.setFontScale(0.2f)
+//        tasksLabel.setWrap(true)
+//
+//        table.add(spotsLabel).expandX().fillX()
+//        table.row()
+//        table.add(available).expandX().fillX()
+//        table.row()
+//        table.add(tasksLabel).expandX().fillX()
+//
+//        updateList.add {spotsLabel.setText("Spots: ${comp.numWorkerSpots}")}
+//        updateList.add {available.setText("Available: ${comp.workersAvailable.size}")}
+//        updateList.add {tasksLabel.setText("Tasks: ${comp.workerTasks}")}
 
         currentlyDisplayingComponent = comp
     }

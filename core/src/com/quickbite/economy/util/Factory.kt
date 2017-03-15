@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
@@ -210,7 +211,7 @@ object Factory {
                 //TODO Figure out what to do if this workshop is null?
                 if(closestWorkshop != null) {
                     workerUnit.workerBuilding = closestWorkshop
-                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(entity)
+                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(EntityTasksLink(entity, Array()))
                 }
             })
         }

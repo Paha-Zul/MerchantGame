@@ -21,8 +21,8 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         val wc = Mappers.workforce.get(ent)
         val building = Mappers.building.get(ent)
 
-        wc.workersAvailable.forEachIndexed { index, worker ->
-            val bc = Mappers.behaviour.get(worker)
+        wc.workersAvailable.forEachIndexed { index, workerTaskLink ->
+            val bc = Mappers.behaviour.get(workerTaskLink.entity)
             if(bc.isIdle){
                 var numWorkersIndex = Math.min(wc.workerTasks.size-1, wc.workersAvailable.size-1)
                 numWorkersIndex = Math.min(index, numWorkersIndex)
