@@ -28,7 +28,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
         super.addedToEngine(engine)
 
         entities = engine.getEntitiesFor(Family.all(TransformComponent::class.java, DebugDrawComponent::class.java)
-                .one(BehaviourComponent::class.java, BuildingComponent::class.java, ResellingItemsComponent::class.java, BodyComponent::class.java).get())
+                .one(BehaviourComponent::class.java, BuildingComponent::class.java, SellingItemsComponent::class.java, BodyComponent::class.java).get())
     }
 
     override fun update(deltaTime: Float) {
@@ -39,7 +39,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             val tm = Mappers.transform.get(ent)
             val dc = Mappers.debugDraw.get(ent)
             val bc = Mappers.building.get(ent)
-            val rc = Mappers.reselling.get(ent)
+            val sc = Mappers.selling.get(ent)
             val bodyComp = Mappers.body.get(ent)
 
             if((dc.debugDrawPath || DebugDrawComponent.GLOBAL_DEBUG_PATH) && bm != null){
@@ -58,9 +58,9 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             }
 
             //Draw the shop link if enabled and we have the reselling component
-            if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && rc != null){
+            if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && sc != null){
 
-                rc.resellingEntityItemLinks.forEach { link ->
+                sc.resellingEntityItemLinks.forEach { link ->
                     val currPoint = tm.position
                     val nextPoint = Mappers.transform.get(link.entity).position
 

@@ -41,7 +41,7 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
             if(this.position.dst(bb.path[index]) <= speed){
                 index++
                 if(index >= bb.path.size)
-                    bb.path = listOf() //Clear the list so we don't follow anything
+                    bb.path = listOf() //Clear the itemPriceLinkList so we don't follow anything
             }
         }else
             this.controller.finishWithSuccess() //If the path is empty we are finished

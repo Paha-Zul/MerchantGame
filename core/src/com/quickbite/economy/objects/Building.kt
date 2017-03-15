@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.*
 import com.quickbite.economy.managers.BuildingDefManager
@@ -56,7 +57,7 @@ class Building(buildingDef: BuildingDefManager.BuildingDefinition, position:Vect
 
         if(buildingDef.sellingItems.isNotEmpty()){
             val selling = SellingItemsComponent()
-            selling.sellingItems = buildingDef.sellingItems.toMutableList()
+            selling.currSellingItems = Array(buildingDef.sellingItems)
             this.add(selling)
         }
 
@@ -65,11 +66,6 @@ class Building(buildingDef: BuildingDefManager.BuildingDefinition, position:Vect
             workforce.numWorkerSpots = buildingDef.workforceMax
             workforce.workerTasks = buildingDef.workerTasks
             this.add(workforce)
-        }
-
-        if(buildingDef.reselling){
-            val reselling = ResellingItemsComponent()
-            this.add(reselling)
         }
 
     }

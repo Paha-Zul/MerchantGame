@@ -1,0 +1,14 @@
+[
+  {
+    "itemName": "Wood Log",
+    "baseMarketPrice": 5
+  },
+  {
+    "itemName": "Wood Plank",
+    "baseMarketPrice": 10
+  },
+  {
+    "itemName": "Wood Table",
+    "baseMarketPrice": 150
+  }
+]

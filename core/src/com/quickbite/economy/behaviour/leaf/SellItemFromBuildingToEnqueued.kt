@@ -31,7 +31,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
         for(i in (buyer.buyList.size - 1).downTo(0)){
             val pair = buyer.buyList[i]
-            val list = sellComp.sellingItems.filter { it.itemName == pair.itemName } //Find if the building is selling the item
+            val list = sellComp.currSellingItems.filter { it.itemName == pair.itemName } //Find if the building is selling the item
             val itemBeingSold:ItemPriceLink? = if(list.isEmpty()) null else list[0] //Get either the first index or assign null
 
             //If we are selling the item and out inventory contains it, let's sell!
@@ -44,7 +44,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 val moneyRemoved = buyerInv.removeItem("Gold", itemBeingSold.itemPrice*itemAmtRemoved)
 
                 //TODO Make sure this tax is okay for low value items. We don't want to be getting 1 gold tax on a 2 gold item
-                val tax = if(moneyRemoved >=1) Math.max(1, (moneyRemoved*0.07f).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
+                val tax = if(moneyRemoved >=1) Math.max(1, (moneyRemoved*sellComp.taxRate).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
                 val taxedAmount = moneyRemoved - tax
                 sellInv.addItem("Gold", taxedAmount)
 
@@ -54,9 +54,11 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                     buyer.buyList.removeValue(pair, true)
                 }
 
+                //Add the sell history
                 val ic = Mappers.identity.get(unitInQueue)
-                sellComp.sellHistory.add(ItemSold(pair.itemName, itemAmtRemoved, 10, 1.toFloat(), ic.name))
+                sellComp.sellHistory.add(ItemSold(pair.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
 
+                //Call some events
                 EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
                 EventSystem.callEvent("addPlayerMoney", listOf(tax)) //Call the event to add money to the player
 
@@ -71,13 +73,13 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
         }
 
         val ic = Mappers.identity.get(unitInQueue)
-        sellComp.sellHistory.add(ItemSold("nothing", 0, 10, 1.toFloat(), ic.name))
+        sellComp.sellHistory.add(ItemSold("nothing", 0, 10, 1f, ic.name))
         EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
 
         controller.finishWithFailure()
 
 //        buyer.buyList.forEach { pair ->
-//            val selling = sellComp.sellingItems.contains(pair.first)
+//            val selling = sellComp.currSellingItems.contains(pair.first)
 //            if(selling && sellInv.hasItem(pair.first)){
 //                val amt = sellInv.removeItem(pair.first, pair.second)
 //                buyerInv.addItem(pair.first, amt)

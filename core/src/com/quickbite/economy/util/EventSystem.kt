@@ -24,17 +24,17 @@ object EventSystem {
 
     /**
      * @param name The name of the event
-     * @param args The list of arguments to send to the event.
+     * @param args The itemPriceLinkList of arguments to send to the event.
      * @param uniqueID Optional ID parameter. Leaving blank will result in -1 and is used to called events globally. Set
      * this ID to use for specific actors/objects
      */
     fun callEvent(name:String, args:List<Any>, uniqueID:Long = -1, delayed:Boolean = false){
-        //Get the event list. If null (?:), return
+        //Get the event itemPriceLinkList. If null (?:), return
         val evtList:(Array<Pair<Long, (List<Any>) -> Unit>>)? = eventMap[name] ?: return
 
-        //For each pair in the list, check the unique ID match and call the event if matching.
+        //For each pair in the itemPriceLinkList, check the unique ID match and call the event if matching.
         evtList!!.forEach {evt ->
-            if(evt.first === uniqueID)
+            if(evt.first == uniqueID)
                 if(!delayed) {
                     evt.second(args)
                 }else{
@@ -45,9 +45,10 @@ object EventSystem {
 
     fun removeEvent(name:String, uniqueID:Long = -1){
         val evtList = eventMap.getOrPut(name, {Array<Pair<Long, (List<Any>) -> Unit>>()})
-        (0..evtList.size-1)
-                .filter { evtList[it].first == uniqueID }
-                .forEach { evtList.removeIndex(it) }
+        for(i in (evtList.size - 1).downTo(0)){
+            if(evtList[i].first == uniqueID)
+                evtList.removeIndex(i)
+        }
     }
 
     fun executeEventQueue(){

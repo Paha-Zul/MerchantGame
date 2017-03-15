@@ -87,9 +87,8 @@ object DefinitionManager {
         var productionDef = ProductionDef()
         var onGrid = false
         var gridBlockWhenPlaced = false
-        var sellingItems:Array<ItemPriceLink> = arrayOf()
+        var sellingItems:SellingDef = SellingDef()
         var workforceDef:WorkforceDef = WorkforceDef()
-        var reselling = false
         var compsToAdd:List<ComponentDef> = listOf()
     }
 
@@ -133,5 +132,12 @@ object DefinitionManager {
         var graphicAnchor:Array<Float> = arrayOf()
         var graphicSize:Array<Float> = arrayOf()
         var initialAnimation = false
+    }
+
+    class SellingDef{
+        var isSelling = false
+        var sellingList:com.badlogic.gdx.utils.Array<ItemPriceLink> = com.badlogic.gdx.utils.Array()
+        var isReselling = false
+        var taxRate = 0f
     }
 }

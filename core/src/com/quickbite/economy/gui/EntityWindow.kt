@@ -2,6 +2,8 @@ package com.quickbite.economy.gui
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -13,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
@@ -43,7 +46,13 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.BLACK)
     val mainTable = Table()
 
+    val defaultButtonStyle = TextButton.TextButtonStyle()
+
     init {
+        defaultButtonStyle.up = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.CYAN))) as Drawable?
+        defaultButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
+        defaultButtonStyle.fontColor = Color.WHITE
+
         currentlySelectedEntity = entity
 
         mainTable.clear()
@@ -62,7 +71,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         val bc = Mappers.building.get(entity)
         val behComp = Mappers.behaviour.get(entity)
         val ic = Mappers.inventory.get(entity)
-        val rc = Mappers.reselling.get(entity)
         val buying = Mappers.buyer.get(entity)
 
         val buildingLabel = Label("Building", labelStyle)
@@ -80,9 +88,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         val inventoryLabel = Label("Inv", labelStyle)
         inventoryLabel.setFontScale(0.2f)
 
-        val resellLabel = Label("Resell", labelStyle)
-        resellLabel.setFontScale(0.2f)
-
         val buyingLabel = Label("Buying", labelStyle)
         buyingLabel.setFontScale(0.2f)
 
@@ -99,8 +104,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             tabTable.add(behaviourLabel).spaceRight(10f)
         if(ic != null)
             tabTable.add(inventoryLabel).spaceRight(10f)
-        if(rc != null)
-            tabTable.add(resellLabel).spaceRight(10f)
         if(buying != null)
             tabTable.add(buyingLabel).spaceRight(10f)
 
@@ -138,13 +141,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         inventoryLabel.addListener(object: ClickListener(){
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 loadTable(bottomTable, ic)
-                return true
-            }
-        })
-
-        resellLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(bottomTable, rc)
                 return true
             }
         })
@@ -213,7 +209,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             WorkForceComponent::class.java -> setupWorkforceTable(table, component as WorkForceComponent)
             BehaviourComponent::class.java -> setupBehaviourTable(table, component as BehaviourComponent)
             InventoryComponent::class.java -> setupInventoryTable(table, component as InventoryComponent)
-            ResellingItemsComponent::class.java -> setupResellingTable(table, component as ResellingItemsComponent)
             BuyerComponent::class.java -> buyingItemTable(table, component as BuyerComponent)
         }
 
@@ -235,6 +230,28 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     }
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){
+
+//        val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
+//        scrollPaneStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+//        scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+//        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+//        scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+//        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+//
+//        //Our scroll pane
+//        val workerList = VerticalGroup() //Our worker list
+//        val leftScrollPane = ScrollPane(workerList, scrollPaneStyle)
+//
+//        //The main table area.
+//        val mainTableArea = Table()
+//        val workerTaskList = HorizontalGroup()
+//        val bottomScrollPane = ScrollPane(workerTaskList, scrollPaneStyle)
+//
+//        comp.workersAvailable.forEach { worker ->
+//            val workerTable = Table()
+//            val nameLabel =
+//        }
+
         val spotsLabel = Label("Spots: ${comp.numWorkerSpots}", defaultLabelStyle)
         spotsLabel.setFontScale(0.2f)
         val available = Label("Available: ${comp.workersAvailable.size}", defaultLabelStyle)
@@ -281,35 +298,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         updateList.add({listLabel.setText("Item List: ${comp.itemMap.values}")})
     }
 
-    private fun setupResellingTable(table: Table, comp: ResellingItemsComponent){
-        val buttonStyle = TextButton.TextButtonStyle()
-        buttonStyle.up = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.CYAN)))
-        buttonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
-        buttonStyle.fontColor = Color.WHITE
-
-        val linkButton = TextButton("Link", buttonStyle)
-        linkButton.label.setFontScale(0.2f)
-
-        table.add(linkButton)
-
-        linkButton.addListener(object: ChangeListener(){
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                //TODO Probably want to clean this up
-                guiManager.gameScreen.inputHandler.linkingAnotherEntity = true
-                guiManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
-                    if(ent != currentlySelectedEntity){
-                        val building = Mappers.building[ent]
-                        val selling = Mappers.selling[ent]
-
-                        //TODO this needs to be more sophisticated
-                        if(building.buildingType == BuildingComponent.BuildingType.Workshop)
-                            comp.resellingEntityItemLinks.add(EntityListLink(ent, listOf(ItemPriceLink(selling.sellingItems[0].itemName, (selling.sellingItems[0].itemPrice * 1.5f).toInt()))))
-                    }
-                }
-            }
-        })
-    }
-
     private fun buyingItemTable(table: Table, comp: BuyerComponent){
         val buyingTable = Table()
 
@@ -348,14 +336,39 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
 
     private fun setupSellingTable(table: Table, comp: SellingItemsComponent){
         val sellHistoryTable = Table()
+        val taxRateTable = Table()
 
-        val sellLabel = Label("Selling: ${comp.sellingItems}", defaultLabelStyle)
+        val sellLabel = Label("Selling: ${comp.currSellingItems}", defaultLabelStyle)
         sellLabel.setFontScale(0.2f)
+        sellLabel.setWrap(true)
 
-        table.add(sellLabel).expandX().fillX()
+        val taxRateLabel = Label("${comp.taxRate}", defaultLabelStyle)
+        taxRateLabel.setFontScale(0.2f)
+        taxRateLabel.setAlignment(Align.center)
+
+        val lessTaxButton = TextButton("<", defaultButtonStyle)
+        lessTaxButton.label.setFontScale(0.2f)
+
+        val moreTaxButton = TextButton(">", defaultButtonStyle)
+        moreTaxButton.label.setFontScale(0.2f)
+
+        taxRateTable.add(lessTaxButton)
+        taxRateTable.add(taxRateLabel).width(50f)
+        taxRateTable.add(moreTaxButton)
+
+        taxRateTable.debugAll()
+
+        //If we are also reselling, add this stuff
+        if(comp.isReselling)
+            setupResellingStuff(table, comp)
+
+        table.add(taxRateTable).expandX().fillX() //What we are selling
         table.row().expandX().fillX()
-        table.add(sellHistoryTable).expandX().fillX()
+        table.add(sellLabel).expandX().fillX() //What we are selling
+        table.row().expandX().fillX()
+        table.add(sellHistoryTable).expandX().fillX() //The history table
 
+        //The titles for all the columns
         val title = Label("History:", defaultLabelStyle)
         title.setFontScale(0.25f)
         title.setAlignment(Align.center)
@@ -375,9 +388,11 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         buyerNameLabel.setFontScale(0.2f)
         buyerNameLabel.setAlignment(Align.center)
 
+        //The history table function. This will populate the table
         val historyTableFunc = {
             sellHistoryTable.clear()
 
+            //Add all the titles
             sellHistoryTable.add(title).colspan(5).fillX().expandX()
             sellHistoryTable.row()
             sellHistoryTable.add(itemNameLabel).fillX().expandX()
@@ -387,27 +402,35 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             sellHistoryTable.add(buyerNameLabel).fillX().expandX()
             sellHistoryTable.row()
 
+            //TODO Don't use magic number to limit this size?
+            //The limit of the history
             val limit = Math.max(0, comp.sellHistory.size - 5)
 
+            //For each history, set up the labels
             for (i in (comp.sellHistory.size-1).downTo(limit)){
                 val sell = comp.sellHistory[i]
 
                 val _item = Label(sell.itemName, defaultLabelStyle)
                 _item.setFontScale(0.2f)
                 _item.setAlignment(Align.center)
+
                 val _amount = Label(sell.itemAmount.toString(), defaultLabelStyle)
                 _amount.setFontScale(0.2f)
                 _amount.setAlignment(Align.center)
+
                 val _ppu = Label(sell.pricePerItem.toString(), defaultLabelStyle)
                 _ppu.setFontScale(0.2f)
                 _ppu.setAlignment(Align.center)
+
                 val _time = Label(sell.timeStamp.toString(), defaultLabelStyle)
                 _time.setFontScale(0.2f)
                 _time.setAlignment(Align.center)
+
                 val _buyer = Label(sell.buyerName, defaultLabelStyle)
                 _buyer.setFontScale(0.2f)
                 _buyer.setAlignment(Align.center)
 
+                //Add them all to the table and add a new row
                 sellHistoryTable.add(_item).fillX().expandX()
                 sellHistoryTable.add(_amount).fillX().expandX()
                 sellHistoryTable.add(_ppu).fillX().expandX()
@@ -417,12 +440,102 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             }
         }
 
+        lessTaxButton.addListener(object:ChangeListener(){
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                //The 0.5 amd 4.5 are because of rounding for bad floats
+                var adj = 0.5
+                if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+                    adj = 4.5
+
+                var rate = (comp.taxRate*100 - adj).toInt()
+                if(rate < 0)
+                    rate = 0
+
+                comp.taxRate = rate/100f
+
+                taxRateLabel.setText("${comp.taxRate}")
+            }
+        })
+
+        moreTaxButton.addListener(object:ChangeListener(){
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                //The 1.5 amd 5.5 are because of rounding for bad floats
+                var adj = 1.5
+                if(Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT))
+                    adj = 5.5
+
+                var rate = (comp.taxRate*100 + adj).toInt()
+                if(rate > 100)
+                    rate = 100
+
+                comp.taxRate = rate/100f
+
+                taxRateLabel.setText("${comp.taxRate}")
+            }
+        })
+
+        //Call the history table function to populate the history
         historyTableFunc()
+
+        //Put the history function into our update map
         updateMap.put("sellHistory", historyTableFunc)
+
+        //Put in the event system
         EventSystem.onEvent("guiUpdateSellHistory", {historyTableFunc()})
 
-        updateList.add({sellLabel.setText("Selling: ${comp.sellingItems}")})
+        //Add the selling label to the update list
+        updateList.add({sellLabel.setText("Selling: ${comp.currSellingItems}")})
 
         changedTabsFunc = { EventSystem.removeEvent("guiUpdateSellHistory")}
+    }
+
+    private fun setupResellingStuff(table: Table, comp: SellingItemsComponent){
+        //Button style
+        val buttonStyle = TextButton.TextButtonStyle()
+        buttonStyle.up = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.CYAN))) as Drawable?
+        buttonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
+        buttonStyle.fontColor = Color.WHITE
+
+        //The link button for linking together this shop and a store
+        val linkButton = TextButton("Link", buttonStyle)
+        linkButton.label.setFontScale(0.2f)
+
+        table.add(linkButton) //The link button
+        table.row().expandX().fillX()
+
+        //The listener for the link button
+        linkButton.addListener(object: ChangeListener(){
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                val selling = Mappers.selling[entity]
+
+                //TODO Probably want to clean this up
+                guiManager.gameScreen.inputHandler.linkingAnotherEntity = true
+                guiManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
+                    if(ent != currentlySelectedEntity){
+                        val otherBuilding = Mappers.building[ent]
+                        val otherSelling = Mappers.selling[ent]
+
+                        //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
+                        if(otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop){
+                            //Make sure we actually have stuff to add
+                            if(otherSelling.currSellingItems.size > 0) {
+
+                                val list = Array<ItemPriceLink>()
+                                otherSelling.currSellingItems.forEach { item ->
+                                    list.add(ItemPriceLink(item.itemName, (item.itemPrice * 1.5).toInt()))
+                                }
+
+                                //Add the list of items to the reselling component
+                                comp.resellingEntityItemLinks.add(EntityListLink(ent, list))
+
+                                //Add the list of items to our selling list to let pawns know we are selling stuff
+                                selling.currSellingItems.addAll(list)
+                                otherSelling.currSellingItems.clear()
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 }

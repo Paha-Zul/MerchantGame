@@ -24,7 +24,6 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
         val sellingItems = SellingItemsComponent()
         val workforce = WorkForceComponent()
         val init = InitializationComponent()
-        val resell = ResellingItemsComponent()
         val bodyComp = BodyComponent()
         val debug = DebugDrawComponent()
 
@@ -43,7 +42,7 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
 //        workforce.workerTasks = listOf(listOf("haul", "sell"), listOf("sell"))
         workforce.workerTasks = Array.with(Array.with("haul", "sell"), Array.with("sell"))
 
-        sellingItems.sellingItems.add(ItemPriceLink("Wood Plank", 10))
+        sellingItems.currSellingItems.add(ItemPriceLink("Wood Plank", 10))
 
         init.initFuncs.add({
             bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
@@ -58,7 +57,6 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
         this.add(workforce)
         this.add(sellingItems)
         this.add(init)
-        this.add(resell)
         this.add(bodyComp)
         this.add(debug)
     }

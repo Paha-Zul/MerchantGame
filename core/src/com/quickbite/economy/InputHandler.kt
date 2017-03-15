@@ -66,21 +66,27 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
                     //If not null, open the table for the Entity
                     }else{
+                        //Call this callback (probably empty most of the time
                         linkingEntityCallback(entityClickedOn!!)
+
+                        //Save the selected entity
                         selectedEntity = entityClickedOn
 
+                        //If we aren't linking another entity, open another entity window
                         if(!linkingAnotherEntity)
                             gameScreen.gameScreenGUI.openEntityWindow(selectedEntity!!)
+
                     }
 
                     entityClickedOn = null //Reset this immediately
                     linkingAnotherEntity = false
                 }
             }
+
             //if we are right clicking, clear out selection and UI
             Input.Buttons.RIGHT -> {
                 gameScreen.currentlySelectedType = ""
-//                gameScreen.gameScreenGUI.closeEntityTable()
+                linkingEntityCallback = {} //Clear the entity callback
             }
         }
 

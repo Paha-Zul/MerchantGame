@@ -27,7 +27,7 @@ object Spawner {
                 val inventory = Mappers.inventory[entity]
 
                 buying.buyList.add(itemToBuy)
-                inventory.addItem("Gold", MathUtils.random(100))
+                inventory.addItem("Gold", 1000)
             }
 
             counter -= nextSpawnTime

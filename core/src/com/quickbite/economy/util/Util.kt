@@ -151,7 +151,7 @@ object Util {
             val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
             val hasItem = inv != null && inv.hasItem(itemName)
             var contains = false
-            sc.sellingItems.forEach contains@{ if(it.itemName == itemName){contains = true; return@contains}}
+            sc.currSellingItems.forEach contains@{ if(it.itemName == itemName){contains = true; return@contains}}
 
             if(buildingCheck && contains && hasItem) {
                 val tm = Mappers.transform.get(ent)

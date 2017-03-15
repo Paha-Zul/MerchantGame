@@ -37,7 +37,11 @@
       "inventoryDef": {
         "hasInventory": true
       },
-      "sellingItems": [["Wood Plank", 10]],
+      "sellingItems": {
+        "isSelling": true,
+        "isReselling": true,
+        "taxRate": 0.1
+      },
       "workforceDef": {
         "workforceMax": 5,
         "workerTasks": [
@@ -50,7 +54,6 @@
           ]
         ]
       },
-      "reselling": true,
       "physicsDef":{
         "hasPhysicsBody": true,
         "bodyType": "static"
@@ -96,9 +99,14 @@
       "onGrid": true,
       "gridBlockWhenPlaced": true,
       "inventoryDef": {
-        "hasInventory": true
+        "hasInventory": true,
+        "debugItemList": [["Wood Plank", 1000]]
       },
-      "sellingItems": [["Wood Plank", 10]],
+      "sellingItems": {
+        "isSelling": true,
+        "sellingList": [["Wood Plank", 10]],
+        "taxRate": 0.1
+      },
       "physicsDef":{
         "hasPhysicsBody": true,
         "bodyType": "static"
@@ -142,7 +150,11 @@
       "inventoryDef": {
         "hasInventory": true
       },
-      "sellingItems": [["Wood Table", 10]],
+      "sellingItems": {
+        "isSelling": true,
+        "sellingList": [["Wood Table", 10]],
+        "taxRate": 0.1
+      },
       "physicsDef":{
         "hasPhysicsBody": true,
         "bodyType": "static"

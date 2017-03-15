@@ -15,6 +15,9 @@ class InventoryComponent : MyComponent {
      * @return The amount added.
      */
     fun addItem(name:String, amount:Int = 1):Int{
+        if(amount < 1)
+            return 0
+
         val item = itemMap.getOrPut(name, { InventoryItem(name, 0) })
         item.amount += amount
         return amount

@@ -152,9 +152,12 @@ object Factory {
         }
 
         //Check for selling items definition
-        if(definition.sellingItems.isNotEmpty()){
+        if(definition.sellingItems.isSelling){
             val selling = SellingItemsComponent()
-            selling.sellingItems = definition.sellingItems.toMutableList()
+            selling.baseSellingItems = definition.sellingItems.sellingList
+            selling.currSellingItems = definition.sellingItems.sellingList
+            selling.isReselling = definition.sellingItems.isReselling
+            selling.taxRate = definition.sellingItems.taxRate
             entity.add(selling)
         }
 
@@ -164,12 +167,6 @@ object Factory {
             workforce.numWorkerSpots = definition.workforceDef.workforceMax
             workforce.workerTasks = definition.workforceDef.workerTasks
             entity.add(workforce)
-        }
-
-        //Check for reselling definition
-        if(definition.reselling){
-            val reselling = ResellingItemsComponent()
-            entity.add(reselling)
         }
 
         //Check for behaviour definition

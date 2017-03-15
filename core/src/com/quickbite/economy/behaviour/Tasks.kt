@@ -140,8 +140,8 @@ object Tasks {
         val getStockpile:Task
 
         if(buildingType == BuildingComponent.BuildingType.Shop){
-            setTargetItem = SetTargetItem(bb, itemName)
-            getStockpile = GetClosestShopLinkWithItem(bb, itemName)
+            setTargetItem = SetTargetItemFromReselling(bb)
+            getStockpile = GetClosestShopLinkWithItem(bb)
         }else {
             setTargetItem = SetTargetItemFromMyWorkshop(bb)
             getStockpile = GetClosestBuildingWithItem(bb, buildingType)

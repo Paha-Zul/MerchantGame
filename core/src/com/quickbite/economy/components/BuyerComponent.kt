@@ -16,7 +16,7 @@ class BuyerComponent : MyComponent{
 
     var buyingIndex = 0
 
-    /** A list of pairs containing (item name, item amount) */
+    /** A itemPriceLinkList of pairs containing (item name, item amount) */
     val buyList:Array<ItemAmountLink> = Array(5)
     var moneyAvailable = 0
     var buyerFlag = BuyerFlag.None

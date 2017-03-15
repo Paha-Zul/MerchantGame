@@ -56,7 +56,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
 
             BuildingComponent.BuildingType.Shop ->
                 when (task) {
-                    "haul" -> return AlwaysTrue(bb, Tasks.haulItemFromBuilding(bb, BuildingComponent.BuildingType.Workshop, "Wood Plank", 10))
+                    "haul" -> return AlwaysTrue(bb, Tasks.haulItemFromBuilding(bb, BuildingComponent.BuildingType.Shop, "Wood Plank", 10))
                     "sell" -> return AlwaysTrue(bb, Tasks.sellItem(bb))
                 }
         }
