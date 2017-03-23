@@ -43,6 +43,27 @@
         "hasVelocity": true,
         "baseSpeed": 50
       }
+    },
+    {
+      "name": "Hauler",
+      "graphicDef": {
+        "graphicName": "hauler",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [25, 25]
+      },
+      "physicalDimensions": [25, 25],
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "dynamic"
+      },
+      "hasBehaviours": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "velocityDef": {
+        "hasVelocity": true,
+        "baseSpeed": 50
+      }
     }
   ]
 }

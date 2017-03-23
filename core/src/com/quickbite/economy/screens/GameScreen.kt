@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.EntityListener
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
@@ -17,6 +16,7 @@ import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
+import com.quickbite.economy.objects.Town
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
 import com.quickbite.spaceslingshot.util.EventSystem
@@ -27,10 +27,11 @@ import com.quickbite.spaceslingshot.util.EventSystem
  */
 class GameScreen :Screen{
     val gameScreeData = GameScreenData()
-    val dot = Util.createPixel(Color.RED)
     var shadowObject : Pair<Entity, TransformComponent>? = null
     lateinit var inputHandler:InputHandler
     lateinit var gameScreenGUI:GameScreenGUIManager
+
+    lateinit var town:Town
 
     var currentlySelectedType  = ""
         set(value) {
@@ -87,6 +88,16 @@ class GameScreen :Screen{
                 }
             }
         })
+
+        testSetup()
+
+        Spawner.town = town
+    }
+
+    private fun testSetup(){
+        town = Town()
+        town.itemIncomeMap.put("Wheat", TownItemIncome("Wheat", 150))
+        town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 150))
     }
 
     override fun pause() {
@@ -102,6 +113,8 @@ class GameScreen :Screen{
     }
 
     override fun render(delta: Float) {
+        val delta = TimeUtil.scaledDeltaTime
+
         positionBuildingShadow()
 
         val batch =  MyGame.batch
@@ -138,6 +151,13 @@ class GameScreen :Screen{
         Spawner.update(delta)
 
         Gdx.gl.glDisable(GL20.GL_BLEND)
+
+        TimeOfDay.update(delta)
+        updateTown(delta)
+    }
+
+    private fun updateTown(delta:Float){
+        town.update(delta)
     }
 
     fun debugDrawLine(renderer:ShapeRenderer){

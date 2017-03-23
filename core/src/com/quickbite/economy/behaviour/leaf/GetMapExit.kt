@@ -11,7 +11,7 @@ class GetMapExit(bb:BlackBoard) : LeafTask(bb) {
     override fun start() {
         super.start()
 
-        bb.targetPosition = Vector2(-1500f, 0f)
+        bb.targetPosition = Vector2(-750f, 0f)
         controller.finishWithSuccess()
     }
 }

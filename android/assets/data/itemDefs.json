@@ -1,14 +1,37 @@
 [
   {
     "itemName": "Wood Log",
-    "baseMarketPrice": 5
+    "baseMarketPrice": 5,
+    "category": "Food"
   },
   {
     "itemName": "Wood Plank",
-    "baseMarketPrice": 10
+    "baseMarketPrice": 10,
+    "category": "Ingredient"
   },
   {
     "itemName": "Wood Table",
-    "baseMarketPrice": 150
+    "baseMarketPrice": 150,
+    "category": "Furnishing"
+  },
+  {
+    "itemName": "Wheat",
+    "baseMarketPrice": 1,
+    "category": "Ingredient"
+  },
+  {
+    "itemName": "Flour",
+    "baseMarketPrice": 10,
+    "category": "Ingredient"
+  },
+  {
+    "itemName": "Bread",
+    "baseMarketPrice": 50,
+    "category": "Food"
+  },
+  {
+    "itemName": "Milk",
+    "baseMarketPrice": 5,
+    "category": "Food"
   }
 ]

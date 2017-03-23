@@ -79,6 +79,24 @@ object Tasks {
         return seq
     }
 
+    fun leaveMapAndHide(bb:BlackBoard):Task{
+        val seq = Sequence(bb, "Leaving Map")
+
+        val unhide = ChangeHidden(bb, false)
+        val getExit = GetMapExit(bb)
+        val getPathToExit = GetPath(bb)
+        val moveToExit = MoveToPath(bb)
+        val hide = ChangeHidden(bb, true)
+
+        seq.controller.addTask(unhide)
+        seq.controller.addTask(getExit)
+        seq.controller.addTask(getPathToExit)
+        seq.controller.addTask(moveToExit)
+        seq.controller.addTask(hide)
+
+        return seq
+    }
+
     /**
      * A task for a pawn to buy an item from somewhere and then leave the map
      */
@@ -136,16 +154,17 @@ object Tasks {
 
         val unhide = ChangeHidden(bb, false)
 
-        val setTargetItem:Task
-        val getStockpile:Task
+        val setTargetItem:Task = SetTargetItemToHaul(bb)
+        val getStockpile:Task = GetBuildingToHaulFrom(bb)
 
-        if(buildingType == BuildingComponent.BuildingType.Shop){
-            setTargetItem = SetTargetItemFromReselling(bb)
-            getStockpile = GetClosestShopLinkWithItem(bb)
-        }else {
-            setTargetItem = SetTargetItemFromMyWorkshop(bb)
-            getStockpile = GetClosestBuildingWithItem(bb, buildingType)
-        }
+        //TODO Need a universal way to get a target item and building for all worker types. Shops are broken!
+//        if(buildingType == BuildingComponent.BuildingType.Shop){
+////            setTargetItem = SetTargetItemFromReselling(bb)
+//            getStockpile = GetClosestShopLinkWithItem(bb)
+//        }else {
+////            setTargetItem = SetTargetItemFromMyWorkshop(bb)
+//            getStockpile = GetClosestBuildingWithItem(bb, buildingType)
+//        }
 
         val setStockpileTarget = SetTargetEntityAsTargetPosition(bb)
         val getStockpileEntrance = GetEntranceOfBuilding(bb)
@@ -195,6 +214,7 @@ object Tasks {
 
         //TODO Check if inside the building already?
 
+        task.controller.addTask(ChangeHidden(bb, false))
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
         task.controller.addTask(GetEntranceOfBuilding(bb))
         task.controller.addTask(GetPath(bb))
@@ -211,6 +231,7 @@ object Tasks {
 
         //Check if inside the building already?
 
+        task.controller.addTask(ChangeHidden(bb, false))
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
         task.controller.addTask(CheckBuildingHasQueue(bb))
         task.controller.addTask(GetEntranceOfBuilding(bb))
@@ -219,6 +240,23 @@ object Tasks {
         task.controller.addTask(ChangeHidden(bb, true))
         task.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
         task.controller.addTask(SellItemFromBuildingToEnqueued(bb))
+
+        return task
+    }
+
+    fun haulInventoryToStockpile(bb:BlackBoard):Task{
+        val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling to Stockpile")
+
+        //Check if inside the building already?
+
+        task.controller.addTask(GetClosestBuildingOfType(bb, BuildingComponent.BuildingType.Stockpile))
+        task.controller.addTask(GetEntranceOfBuilding(bb))
+        task.controller.addTask(GetPath(bb))
+        task.controller.addTask(MoveToPath(bb))
+        task.controller.addTask(ChangeHidden(bb, true))
+        task.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
+        task.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
+        task.controller.addTask(leaveMap(bb)) //Leave the map
 
         return task
     }

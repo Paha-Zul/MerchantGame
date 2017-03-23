@@ -5,8 +5,9 @@ package com.quickbite.economy.util
  */
 object TimeUtil {
     var deltaTime:Float = 0f
-    var deltaTimeScale:Float = 1f
+    var deltaTimeScale = 1
+    var pausedBonus = 1
 
     val scaledDeltaTime:Float
-        get() = deltaTime* deltaTimeScale
+        get() = deltaTime * deltaTimeScale * pausedBonus
 }

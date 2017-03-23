@@ -6,10 +6,10 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.components.*
-import com.quickbite.economy.util.EntityTasksLink
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Names
 import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.WorkerTaskData
 
 /**
  * Created by Paha on 1/16/2017.
@@ -40,7 +40,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
             //TODO Figure out what to do if this workshop is null?
             if(closestWorkshop != null) {
                 workerComponent.workerBuilding = closestWorkshop
-                Mappers.workforce.get(closestWorkshop).workersAvailable.add(EntityTasksLink(this, Array()))
+                Mappers.workforce.get(closestWorkshop).workersAvailable.add(WorkerTaskData(this, Array(), Pair(7, 20), Array()))
             }
 
             behaviours.blackBoard.myself = this

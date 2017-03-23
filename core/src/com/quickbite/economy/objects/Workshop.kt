@@ -40,7 +40,7 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
 
         workforce.numWorkerSpots = 3
 //        workforce.workerTasks = listOf(listOf("haul, produce, sell"), listOf("produce", "haul, sell"), listOf("produce", "haul", "sell"))
-        workforce.workerTasks = Array.with(Array.with("haul, produce, sell"), Array.with("produce", "haul, sell"), Array.with("produce", "haul", "sell"))
+        workforce.workerTasks = Array.with("produce", "haul", "sell")
 
         sellingItems.currSellingItems.add(ItemPriceLink("Wood Plank", 10))
 

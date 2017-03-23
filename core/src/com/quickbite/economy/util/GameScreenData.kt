@@ -5,4 +5,5 @@ package com.quickbite.economy.util
  */
 class GameScreenData {
     var playerMoney = 0
+
 }

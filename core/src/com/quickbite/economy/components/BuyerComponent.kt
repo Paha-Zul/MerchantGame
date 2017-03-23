@@ -21,6 +21,8 @@ class BuyerComponent : MyComponent{
     var moneyAvailable = 0
     var buyerFlag = BuyerFlag.None
 
+    var satisfactionRating = 0
+
     override fun dispose() {
 
     }

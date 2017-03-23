@@ -3,6 +3,7 @@ package com.quickbite.economy
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
@@ -116,9 +117,9 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     override fun keyUp(keycode: Int): Boolean {
         when(keycode){
             Input.Keys.NUM_1 -> gameScreen.currentlySelectedType = "lumberyard"
-            Input.Keys.NUM_2 -> gameScreen.currentlySelectedType = "shop"
-            Input.Keys.NUM_3 -> gameScreen.currentlySelectedType = "stockpile"
-            Input.Keys.NUM_4 -> gameScreen.currentlySelectedType = "table shop"
+            Input.Keys.NUM_2 -> gameScreen.currentlySelectedType = "table shop"
+            Input.Keys.NUM_3 -> gameScreen.currentlySelectedType = "shop"
+            Input.Keys.NUM_4 -> gameScreen.currentlySelectedType = "stockpile"
             Input.Keys.NUM_5 -> gameScreen.currentlySelectedType = "wall"
             Input.Keys.NUM_6 -> gameScreen.currentlySelectedType = "worker"
             Input.Keys.NUM_7 -> gameScreen.currentlySelectedType = "buyer"
@@ -129,8 +130,11 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.B -> DebugDrawComponent.GLOBAL_DEBUG_BODY = !DebugDrawComponent.GLOBAL_DEBUG_BODY
             Input.Keys.D -> Factory.destroyAllEntities()
             Input.Keys.ESCAPE -> gameScreen.currentlySelectedType = ""
-            Input.Keys.SPACE -> TimeUtil.deltaTimeScale = if(TimeUtil.deltaTimeScale > 0) 0f else 1f
+            Input.Keys.SPACE -> TimeUtil.pausedBonus = if(TimeUtil.pausedBonus > 0) 0 else 1
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
+
+            Input.Keys.PLUS -> TimeUtil.deltaTimeScale = MathUtils.clamp(TimeUtil.deltaTimeScale + 1, 0, 4)
+            Input.Keys.MINUS -> TimeUtil.deltaTimeScale = MathUtils.clamp(TimeUtil.deltaTimeScale - 1, 0, 4)
         }
 
         return false
@@ -141,12 +145,13 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
         if(gameScreen.currentlySelectedType.isNotEmpty() && buttonDown == Input.Buttons.LEFT) {
 
-            val pos = Vector2(Util.roundDown(worldCoords.x + MyGame.grid.squareSize * 0.5f, MyGame.grid.squareSize).toFloat(),
-                    Util.roundDown(worldCoords.y + MyGame.grid.squareSize * 0.5f, MyGame.grid.squareSize).toFloat())
-
-            if (!MyGame.grid.getNodeAtPosition(pos.x, pos.y)!!.blocked) {
-                Factory.createObjectFromJson(gameScreen.currentlySelectedType, Vector2(pos))!!
-            }
+            //TODO Need to figure out how to do this better so we don't spam more units than we want. Use physics query?
+//            val pos = Vector2(Util.roundDown(worldCoords.x + MyGame.grid.squareSize * 0.5f, MyGame.grid.squareSize).toFloat(),
+//                    Util.roundDown(worldCoords.y + MyGame.grid.squareSize * 0.5f, MyGame.grid.squareSize).toFloat())
+//
+//            if (!MyGame.grid.getNodeAtPosition(pos.x, pos.y)!!.blocked) {
+//                Factory.createObjectFromJson(gameScreen.currentlySelectedType, Vector2(pos))!!
+//            }
         }
 
         return false

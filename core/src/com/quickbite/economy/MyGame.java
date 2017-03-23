@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.quickbite.economy.managers.DefinitionManager;
+import com.quickbite.economy.managers.ItemDefManager;
 import com.quickbite.economy.screens.GameScreen;
 import com.quickbite.economy.util.Grid;
 import com.quickbite.economy.managers.ProductionsManager;
@@ -57,6 +58,7 @@ public class MyGame extends Game {
 
         ProductionsManager.INSTANCE.readProductionJson();
         DefinitionManager.INSTANCE.readDefinitionsJson();
+        ItemDefManager.INSTANCE.readDefinitionJson();
 
         this.setScreen(new GameScreen());
 	}

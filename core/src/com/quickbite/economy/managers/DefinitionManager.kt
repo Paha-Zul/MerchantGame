@@ -14,9 +14,11 @@ import java.util.*
 object DefinitionManager {
     val json = Json()
     val definitionMap: HashMap<String, Definition> = hashMapOf()
+    lateinit var names:Names
 
     private val buildingDefName = "data/buildingDefs.json"
     private val unitDefName = "data/unitDefs.json"
+    private val namesDefName = "data/names.json"
 
     init {
         json.setSerializer(ItemPriceLink::class.java, object: Json.Serializer<ItemPriceLink> {
@@ -67,6 +69,13 @@ object DefinitionManager {
         //Load the unit defs
         list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
         list.buildingDefs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+
+        this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
+    }
+
+    class Names{
+        lateinit var firstNames:com.badlogic.gdx.utils.Array<String>
+        lateinit var lastNames:com.badlogic.gdx.utils.Array<String>
     }
 
     private class DefList {
@@ -75,6 +84,7 @@ object DefinitionManager {
 
     class Definition {
         var name = ""
+        var identityDef = IdentityDef()
         var graphicDef = GraphicDef()
         var buildingDef = BuildingDef()
         var physicalDimensions:Array<Float> = arrayOf()
@@ -92,13 +102,17 @@ object DefinitionManager {
         var compsToAdd:List<ComponentDef> = listOf()
     }
 
+    class IdentityDef{
+        var useRandomName:Boolean = false
+    }
+
     class ProductionDef{
         var produces:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
     }
 
     class WorkforceDef{
         var workforceMax = 0
-        var workerTasks:com.badlogic.gdx.utils.Array<com.badlogic.gdx.utils.Array<String>> = com.badlogic.gdx.utils.Array()
+        var workerTasks:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
     }
 
     class BuildingDef{

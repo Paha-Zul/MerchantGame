@@ -1,23 +1,33 @@
 {
   "productions": [
-  {
-    "producedItem": "Wood Plank",
-    "produceAmount": 10,
-    "requirements": [
-      [
-        "Wood Log",
-        1
+    {
+      "producedItem": "Wood Plank",
+      "produceAmount": 10,
+      "requirements": [
+        ["Wood Log", 1]
       ]
-    ]
-  },
-  {
-    "producedItem": "Wood Table",
-    "produceAmount": 1,
-    "requirements": [
-      [
-        "Wood Plank",
-        10
+    },
+    {
+      "producedItem": "Wood Table",
+      "produceAmount": 1,
+      "requirements": [
+        ["Wood Plank", 10]
       ]
-    ]
-  }
-]}
+    },
+    {
+      "producedItem": "Flour",
+      "produceAmount": 5,
+      "requirements": [
+        ["Wheat", 1]
+      ]
+    },
+    {
+      "producedItem": "Bread",
+      "produceAmount": 1,
+      "requirements": [
+        ["Flour", 1],
+        ["Milk", 1]
+      ]
+    }
+  ]
+}

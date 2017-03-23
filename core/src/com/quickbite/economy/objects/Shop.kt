@@ -40,7 +40,7 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
 
         workforce.numWorkerSpots = 5
 //        workforce.workerTasks = listOf(listOf("haul", "sell"), listOf("sell"))
-        workforce.workerTasks = Array.with(Array.with("haul", "sell"), Array.with("sell"))
+        workforce.workerTasks = Array.with("haul", "sell")
 
         sellingItems.currSellingItems.add(ItemPriceLink("Wood Plank", 10))
 

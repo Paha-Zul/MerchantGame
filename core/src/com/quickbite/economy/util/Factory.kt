@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
@@ -98,6 +99,7 @@ object Factory {
     }
 
     fun createObjectFromJson(name:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
+        val name = name.toLowerCase()
         val entity:Entity = Entity()
         val definition = DefinitionManager.definitionMap[name]!!
 
@@ -203,6 +205,7 @@ object Factory {
 
         if(definition.isWorker){
             val workerUnit = WorkerUnitComponent()
+            workerUnit.dailyWage = MathUtils.random(500, 1000)
             entity.add(workerUnit)
 
             init.initFuncs.add({
@@ -211,7 +214,7 @@ object Factory {
                 //TODO Figure out what to do if this workshop is null?
                 if(closestWorkshop != null) {
                     workerUnit.workerBuilding = closestWorkshop
-                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(EntityTasksLink(entity, Array()))
+                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(WorkerTaskData(entity, Array(), Pair(7, 20), Array()))
                 }
             })
         }

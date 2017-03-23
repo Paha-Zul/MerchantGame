@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.BuildingComponent
+import java.util.*
 
 
 /**
@@ -54,15 +55,14 @@ object Util {
         return closest
     }
 
-    fun getClosestBuildingTypeWithItem(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1):Entity?{
+    fun getClosestBuildingType(position:Vector2, buildingType:BuildingComponent.BuildingType):Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
 
         Families.buildings.forEach { ent ->
             val bc = Mappers.building.get(ent)
-            val inv = Mappers.inventory.get(ent)
 
-            if(bc.buildingType == buildingType && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+            if (bc.buildingType == buildingType) {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 
@@ -76,21 +76,49 @@ object Util {
         return closest
     }
 
-    fun getClosestBuildingWithItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1):Entity?{
+    fun getClosestBuildingTypeWithItem(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity> = hashSetOf()):Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
 
         Families.buildings.forEach { ent ->
-            val bc = Mappers.building.get(ent)
-            val inv = Mappers.inventory.get(ent)
+            if(!buildingsToExclude.contains(ent)) {
 
-            if(inv != null && inv.getItemAmount(itemName) >= itemAmount) {
-                val tm = Mappers.transform.get(ent)
-                val dst = tm.position.dst2(position)
+                val bc = Mappers.building.get(ent)
+                val inv = Mappers.inventory.get(ent)
 
-                if (dst <= closestDst) {
-                    closest = ent
-                    closestDst = dst
+                if (bc.buildingType == buildingType && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+                    val tm = Mappers.transform.get(ent)
+                    val dst = tm.position.dst2(position)
+
+                    if (dst <= closestDst) {
+                        closest = ent
+                        closestDst = dst
+                    }
+                }
+            }
+        }
+
+        return closest
+    }
+
+    fun getClosestBuildingWithItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity>):Entity?{
+        var closestDst = Float.MAX_VALUE
+        var closest: Entity? = null
+
+        Families.buildings.forEach { ent ->
+            if(!buildingsToExclude.contains(ent)) {
+
+                val bc = Mappers.building.get(ent)
+                val inv = Mappers.inventory.get(ent)
+
+                if (inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+                    val tm = Mappers.transform.get(ent)
+                    val dst = tm.position.dst2(position)
+
+                    if (dst <= closestDst) {
+                        closest = ent
+                        closestDst = dst
+                    }
                 }
             }
         }

@@ -19,10 +19,7 @@ import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.*
 import com.quickbite.economy.interfaces.GuiWindow
-import com.quickbite.economy.util.EntityListLink
-import com.quickbite.economy.util.ItemPriceLink
-import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.*
 import com.quickbite.spaceslingshot.util.EventSystem
 import java.util.*
 
@@ -227,7 +224,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     }
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){
-
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
         scrollPaneStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
         scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
@@ -235,84 +231,124 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
         scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
 
+        val buttonStyle = Button.ButtonStyle()
+
         //Our scroll pane
-        val workerList = VerticalGroup() //Our worker list
+        val workerList = Table() //Our worker list
+
         val leftScrollPane = ScrollPane(workerList, scrollPaneStyle)
 
         //The main table area.
         val mainTableArea = Table()
-        val workerTaskList = HorizontalGroup()
+        val workerTaskList = Table()
         val bottomScrollPane = ScrollPane(workerTaskList, scrollPaneStyle)
 
-        mainTableArea.add()
+        val mainTableWorkerInfo = Table()
+
+        mainTableArea.add(mainTableWorkerInfo).fill().expand()
         mainTableArea.row()
         mainTableArea.add(bottomScrollPane)
 
-        //Populate the left scrolling table
-        comp.workersAvailable.forEach { workerTaskLink ->
+        var selectedWorkerTaskLink: WorkerTaskData? = null
+
+        //The function to populate the main table where the worker and info are displayed
+        val populateMainTableFunc = { workerTaskLink: WorkerTaskData ->
+            mainTableWorkerInfo.clear()
+
             val identity = Mappers.identity[workerTaskLink.entity]
 
-            val workerTable = Table()
+            val mainNameLabel = Label(identity.name, defaultLabelStyle)
+            mainNameLabel.setFontScale(0.4f)
 
-            val nameLabel = Label(identity.name, defaultLabelStyle)
-            nameLabel.setFontScale(0.25f)
-            val tasksLabel = Label(workerTaskLink.taskLink.joinToString(), defaultLabelStyle)
-            tasksLabel.setFontScale(0.18f)
+            val mainTasksLabel = Label(workerTaskLink.taskList.joinToString(), defaultLabelStyle)
+            mainTasksLabel.setFontScale(0.25f)
 
-            workerTable.add(nameLabel)
-            workerTable.row()
-            workerTable.add(tasksLabel)
+            mainTableWorkerInfo.add(mainNameLabel)
+            mainTableWorkerInfo.row()
+            mainTableWorkerInfo.add(mainTasksLabel)
 
-            workerTable.setSize(200f, 100f)
+            selectedWorkerTaskLink = workerTaskLink
+        }
 
-            workerList.addActor(workerTable)
+        //The function to populate the left side scrolling table where the list of workers are displayed
+        val populateScrollingTable = {
+            workerList.clear() //Clear the worker list from any leftover junk
 
-            workerTable.addListener(object:ClickListener(){
+            //Populate the left scrolling table
+            comp.workersAvailable.forEach { workerTaskLink ->
+                val identity = Mappers.identity[workerTaskLink.entity]
+
+                val workerButton = Button(buttonStyle)
+
+                val nameLabel = Label(identity.name, defaultLabelStyle)
+                nameLabel.setFontScale(0.25f)
+
+                var tasks = ""
+                workerTaskLink.taskList.forEach { task -> tasks += "${task[0].toUpperCase()}, " }
+
+                val tasksLabel = Label(tasks, defaultLabelStyle)
+                tasksLabel.setFontScale(0.18f)
+
+                //Add the name and tasks to our worker table button
+                workerButton.add(nameLabel)
+                workerButton.row()
+                workerButton.add(tasksLabel)
+
+                workerButton.setSize(100f, 100f)
+
+                workerButton.debugAll()
+
+                //Add the worker table and a row (we want it to be a vertical list)
+                workerList.add(workerButton)
+                workerList.row()
+
+                //When we click a worker, let's populate the main area with info
+                workerButton.addListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        super.clicked(event, x, y)
+
+                        populateMainTableFunc(workerTaskLink)
+                    }
+                })
+            }
+        }
+
+        //For the tasks available, list them
+        comp.workerTasks.forEach { taskName ->
+            val taskNameLabel = Label(taskName, defaultLabelStyle)
+            taskNameLabel.setFontScale(0.2f)
+
+            workerTaskList.add(taskNameLabel).space(0f, 5f, 0f, 5f)
+
+            //When we click the task name label: if it's not owned by the worker, remove it. Otherwise, add it
+            taskNameLabel.addListener(object:ClickListener(){
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
 
-                    mainTableArea.clear()
+                    //If the link is not null, lets do stuff
+                    if(selectedWorkerTaskLink != null){
+                        val taskNameText = taskNameLabel.text.toString()
 
-                    val mainNameLabel = Label(identity.name, defaultLabelStyle)
-                    mainNameLabel.setFontScale(0.4f)
-                    val mainTasksLabel = Label(workerTaskLink.taskLink.joinToString(), defaultLabelStyle)
-                    mainTasksLabel.setFontScale(0.25f)
+                        //If it doesn't contain it, add it. Otherwise, remove it
+                        if(!selectedWorkerTaskLink!!.taskList.contains(taskNameText))
+                            selectedWorkerTaskLink!!.taskList.add(taskNameText)
+                        else
+                            selectedWorkerTaskLink!!.taskList.removeValue(taskNameText, false)
 
-                    mainTableArea.add(mainNameLabel)
-                    mainTableArea.row()
-                    mainTableArea.add(mainTasksLabel)
+                        //We need to update the main table and worker list
+                        populateScrollingTable()
+                        populateMainTableFunc(selectedWorkerTaskLink!!)
+                    }
                 }
             })
         }
 
-        comp.workerTasks.forEach { list ->
-            list.forEach { taskName ->
+        populateScrollingTable()
 
-            }
-        }
-
-        table.add(leftScrollPane)
+        table.add(leftScrollPane).maxWidth(100f)
         table.add(mainTableArea).expand().fill()
 
         table.debugAll()
-
-//        val spotsLabel = Label("Spots: ${comp.numWorkerSpots}", defaultLabelStyle)
-//        spotsLabel.setFontScale(0.2f)
-//        val available = Label("Available: ${comp.workersAvailable.size}", defaultLabelStyle)
-//        available.setFontScale(0.2f)
-//        val tasksLabel = Label("Tasks: ${comp.workerTasks}", defaultLabelStyle)
-//        tasksLabel.setFontScale(0.2f)
-//        tasksLabel.setWrap(true)
-//
-//        table.add(spotsLabel).expandX().fillX()
-//        table.row()
-//        table.add(available).expandX().fillX()
-//        table.row()
-//        table.add(tasksLabel).expandX().fillX()
-//
-//        updateList.add {spotsLabel.setText("Spots: ${comp.numWorkerSpots}")}
-//        updateList.add {available.setText("Available: ${comp.workersAvailable.size}")}
-//        updateList.add {tasksLabel.setText("Tasks: ${comp.workerTasks}")}
 
         currentlyDisplayingComponent = comp
     }
@@ -559,22 +595,26 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
                         val otherBuilding = Mappers.building[ent]
                         val otherSelling = Mappers.selling[ent]
 
-                        //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
-                        if(otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop){
-                            //Make sure we actually have stuff to add
-                            if(otherSelling.currSellingItems.size > 0) {
+                        //If we aren't linking to a building, then don't do this...
+                        if(otherBuilding != null) {
 
-                                val list = Array<ItemPriceLink>()
-                                otherSelling.currSellingItems.forEach { item ->
-                                    list.add(ItemPriceLink(item.itemName, (item.itemPrice * 1.5).toInt()))
+                            //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
+                            if (otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop) {
+                                //Make sure we actually have stuff to add
+                                if (otherSelling.currSellingItems.size > 0) {
+
+                                    val list = Array<ItemPriceLink>()
+                                    otherSelling.currSellingItems.forEach { item ->
+                                        list.add(ItemPriceLink(item.itemName, (item.itemPrice * 1.5).toInt()))
+                                    }
+
+                                    //Add the list of items to the reselling component
+                                    comp.resellingEntityItemLinks.add(EntityListLink(ent, list))
+
+                                    //Add the list of items to our selling list to let pawns know we are selling stuff
+                                    selling.currSellingItems.addAll(list)
+                                    otherSelling.currSellingItems.clear()
                                 }
-
-                                //Add the list of items to the reselling component
-                                comp.resellingEntityItemLinks.add(EntityListLink(ent, list))
-
-                                //Add the list of items to our selling list to let pawns know we are selling stuff
-                                selling.currSellingItems.addAll(list)
-                                otherSelling.currSellingItems.clear()
                             }
                         }
                     }

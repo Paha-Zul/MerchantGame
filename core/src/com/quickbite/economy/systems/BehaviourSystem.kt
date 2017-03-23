@@ -29,7 +29,7 @@ class BehaviourSystem : EntitySystem() {
             val bm = Mappers.behaviour.get(ent)
 
             if (!bm.isIdle) {
-                bm.currTask.update(0.016f)
+                bm.currTask.update(deltaTime)
                 bm.currTaskName = bm.currTask.toString().split("[/]").toTypedArray()
 
                 if (!bm.currTask.controller.running) {

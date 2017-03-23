@@ -50,7 +50,7 @@ object BuildingDefManager {
         var hasInventory = false
         var sellingItems:Array<ItemPriceLink> = arrayOf()
         var workforceMax = 0
-        var workerTasks:com.badlogic.gdx.utils.Array<com.badlogic.gdx.utils.Array<String>> = com.badlogic.gdx.utils.Array()
+        var workerTasks:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
         var reselling = false
     }
 }

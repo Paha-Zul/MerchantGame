@@ -1,5 +1,6 @@
 package com.quickbite.economy.behaviour.leaf
 
+import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.ProduceItemComponent
@@ -28,9 +29,10 @@ class SetTargetItemFromMyWorkshop(bb:BlackBoard) : LeafTask(bb){
         val producedItem = producesItems!!.productionList[producesItems!!.currProductionIndex]
 
         //Set the target item
-        //TODO We need to deal with the whole array of requirements. How do?
-        bb.targetItem.itemName = producedItem.requirements[0].itemName
-        bb.targetItem.itemAmount = producedItem.requirements[0].itemAmount
+        //TODO We need to deal with the whole array of requirements. How do? For now we random!
+        val random = MathUtils.random(producedItem.requirements.size-1)
+        bb.targetItem.itemName = producedItem.requirements[random].itemName
+        bb.targetItem.itemAmount = producedItem.requirements[random].itemAmount
 
         //Increment the index
         producesItems!!.currProductionIndex = (producesItems!!.currProductionIndex + 1) % producesItems!!.productionList.size

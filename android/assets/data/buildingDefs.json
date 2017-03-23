@@ -44,15 +44,7 @@
       },
       "workforceDef": {
         "workforceMax": 5,
-        "workerTasks": [
-          [
-            "haul",
-            "sell"
-          ],
-          [
-            "sell"
-          ]
-        ]
+        "workerTasks": ["haul", "sell"]
       },
       "physicsDef":{
         "hasPhysicsBody": true,
@@ -115,27 +107,49 @@
         "produces": ["Wood Plank"]
       },
       "workforceDef": {
-        "workforceMax": 3,
-        "workerTasks": [
-          [
-            "haul, produce, sell"
-          ],
-          [
-            "produce",
-            "haul, sell"
-          ],
-          [
-            "produce",
-            "haul",
-            "sell"
-          ]
-        ]
+        "workforceMax": 5,
+        "workerTasks": ["haul", "produce", "sell"]
       }
     },
     {
       "name": "Table Shop",
       "graphicDef": {
         "graphicName": "table_shop",
+        "graphicAnchor": [0.5, 0.5],
+      "graphicSize": [125, 125],
+      "initialAnimation": true
+    },
+    "buildingDef":{
+      "buildingType": "Workshop",
+      "entranceSpots":[[0, -75]]
+    },
+    "physicalDimensions": [125, 125],
+    "onGrid": true,
+    "gridBlockWhenPlaced": true,
+    "inventoryDef": {
+      "hasInventory": true
+    },
+    "sellingItems": {
+      "isSelling": true,
+      "sellingList": [["Wood Table", 10]],
+      "taxRate": 0.1
+    },
+    "physicsDef":{
+      "hasPhysicsBody": true,
+      "bodyType": "static"
+    },
+    "productionDef":{
+      "produces": ["Wood Table"]
+    },
+      "workforceDef": {
+        "workforceMax": 5,
+        "workerTasks": ["haul", "produce", "sell"]
+      }
+    },
+    {
+      "name": "Flour Mill",
+      "graphicDef": {
+        "graphicName": "flour_shop",
         "graphicAnchor": [0.5, 0.5],
         "graphicSize": [125, 125],
         "initialAnimation": true
@@ -152,7 +166,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Wood Table", 10]],
+        "sellingList": [["Flour", 10]],
         "taxRate": 0.1
       },
       "physicsDef":{
@@ -160,24 +174,46 @@
         "bodyType": "static"
       },
       "productionDef":{
-        "produces": ["Wood Table"]
+        "produces": ["Flour"]
       },
       "workforceDef": {
-        "workforceMax": 3,
-        "workerTasks": [
-          [
-            "haul, produce, sell"
-          ],
-          [
-            "produce",
-            "haul, sell"
-          ],
-          [
-            "produce",
-            "haul",
-            "sell"
-          ]
-        ]
+        "workforceMax": 5,
+        "workerTasks": ["haul", "produce", "sell"]
+      }
+    },
+    {
+      "name": "Bakery",
+      "graphicDef": {
+        "graphicName": "bread_shop",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [125, 125],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "Workshop",
+        "entranceSpots":[[0, -75]]
+      },
+      "physicalDimensions": [125, 125],
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "inventoryDef": {
+        "hasInventory": true
+      },
+      "sellingItems": {
+        "isSelling": true,
+        "sellingList": [["Bread", 10]],
+        "taxRate": 0.1
+      },
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      },
+      "productionDef":{
+        "produces": ["Bread"]
+      },
+      "workforceDef": {
+        "workforceMax": 5,
+        "workerTasks": ["haul", "produce", "sell"]
       }
     }
   ]
