@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.util.EntityListLink
@@ -31,8 +32,7 @@ class SellingItemsComponent : MyComponent {
 
     }
 
-    override fun dispose() {
-
+    override fun dispose(entity: Entity) {
     }
 
     override fun initialize() {

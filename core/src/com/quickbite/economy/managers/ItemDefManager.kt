@@ -11,7 +11,9 @@ import java.util.*
  */
 object ItemDefManager {
     val json = Json()
+
     val itemDefMap: HashMap<String, ItemDef> = hashMapOf()
+    val itemCategoryMap:HashMap<String, com.badlogic.gdx.utils.Array<ItemDef>> = hashMapOf()
 
     init {
         json.setSerializer(ItemAmountLink::class.java, object: Json.Serializer<ItemAmountLink> {
@@ -29,11 +31,16 @@ object ItemDefManager {
 
     fun readDefinitionJson(){
         val list = json.fromJson(Array<ItemDef>::class.java, Gdx.files.internal("data/itemDefs.json"))
-        list.forEach { itemDef -> itemDefMap.put(itemDef.itemName, itemDef)}
+        list.forEach { itemDef ->
+            itemDefMap.put(itemDef.itemName, itemDef)
+            val itemDefList = itemCategoryMap.getOrPut(itemDef.category, {com.badlogic.gdx.utils.Array()})
+            itemDefList.add(itemDef)
+        }
     }
 
     class ItemDef{
         lateinit var itemName:String
         var baseMarketPrice:Int = 0
+        var category:String = ""
     }
 }

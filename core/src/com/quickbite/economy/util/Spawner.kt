@@ -5,14 +5,14 @@ import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.managers.ItemDefManager
+import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 
 /**
  * Created by Paha on 1/22/2017.
  */
 object Spawner {
-    lateinit var town: Town
-
+    val town:Town by lazy { TownManager.getTown("Town") }
     var buyerCounter = 0f
     var haulerCounter = 0f
 
@@ -48,6 +48,14 @@ object Spawner {
 
                 buying.buyList.add(itemToBuy)
                 inventory.addItem("Gold", 1000)
+
+                //Scan each item that we are buying and calculate necessity and luxury ratings
+                buying.buyList.forEach { item ->
+                    val itemDef = ItemDefManager.itemDefMap[item.itemName]!!
+                    if(itemDef.category == "Food")
+                        buying.needsSatisfactionRating -= item.itemAmount
+                }
+
             }
 
             buyerCounter -= nextBuyerSpawnTime

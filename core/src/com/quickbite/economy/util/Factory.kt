@@ -157,8 +157,9 @@ object Factory {
         //Check for selling items definition
         if(definition.sellingItems.isSelling){
             val selling = SellingItemsComponent()
-            selling.baseSellingItems = definition.sellingItems.sellingList
-            selling.currSellingItems = definition.sellingItems.sellingList
+            //Things like this have to be copied or else they are linked and can be modified!!!
+            selling.baseSellingItems = Array(definition.sellingItems.sellingList)
+            selling.currSellingItems = Array(definition.sellingItems.sellingList)
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
             entity.add(selling)
@@ -256,7 +257,7 @@ object Factory {
 
     fun destroyEntity(entity:Entity){
         val comps = entity.components
-        comps.forEach { comp -> (comp as MyComponent).dispose()}
+        comps.forEach { comp -> (comp as MyComponent).dispose(entity)}
         MyGame.entityEngine.removeEntity(entity)
     }
 

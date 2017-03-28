@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
 
 /**
@@ -7,11 +8,11 @@ import com.quickbite.economy.interfaces.MyComponent
  */
 
 class PawnStateComponent : MyComponent{
+    override fun dispose(entity: Entity) {
+    }
+
     override fun initialize() {
 
     }
 
-    override fun dispose() {
-
-    }
 }

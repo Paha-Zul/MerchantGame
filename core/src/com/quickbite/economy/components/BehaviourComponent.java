@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.quickbite.economy.behaviour.BlackBoard;
 import com.quickbite.economy.behaviour.Task;
 import com.quickbite.economy.interfaces.MyComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class BehaviourComponent implements MyComponent
 {
@@ -63,13 +64,13 @@ public class BehaviourComponent implements MyComponent
 
     }
 
+    @Override
+    public void dispose(@NotNull Entity entity) {
+
+    }
+
     public interface Callback
 	{
 		void invoke();
-	}
-
-	@Override
-	public void dispose() {
-
 	}
 }

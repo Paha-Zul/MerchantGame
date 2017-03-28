@@ -1,12 +1,13 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
 
 /**
  * Created by Paha on 12/14/2016.
  */
 class InventoryComponent : MyComponent {
-    val itemMap = hashMapOf<String, InventoryItem>()
+        val itemMap = hashMapOf<String, InventoryItem>()
 
     /**
      *
@@ -69,7 +70,7 @@ class InventoryComponent : MyComponent {
         }
     }
 
-    override fun dispose() {
+    override fun dispose(entity: Entity) {
 
     }
 

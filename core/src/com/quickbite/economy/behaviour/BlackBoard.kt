@@ -14,5 +14,8 @@ class BlackBoard{
     var targetEntity:Entity? = null
     var targetBuilding:BuildingComponent? = null
 
+    /** Can be used for things like checking if we are already inside a building*/
+    var insideEntity:Entity? = null
+
     val targetItem = ItemAmountLink("", 0)
 }

@@ -85,6 +85,9 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         val buyingLabel = Label("Buying", labelStyle)
         buyingLabel.setFontScale(0.2f)
 
+        val deleteLabel = Label("Delete", labelStyle)
+        deleteLabel.setFontScale(0.2f)
+
         val exitLabel = Label("X", labelStyle)
         exitLabel.setFontScale(0.2f)
 
@@ -100,6 +103,8 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             tabTable.add(inventoryLabel).spaceRight(10f)
         if(buying != null)
             tabTable.add(buyingLabel).spaceRight(10f)
+
+        tabTable.add(deleteLabel).spaceRight(10f)
 
         tabTable.add().expandX().fillX()
         tabTable.add(exitLabel).right()
@@ -153,6 +158,14 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             }
         })
 
+        deleteLabel.addListener(object:ClickListener(){
+            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                close()
+                Factory.destroyEntity(entity)
+                return true
+            }
+        })
+
         //When we select a new building, try to display whatever section we were displaying on the last one
         if(currentlyDisplayingComponent != null)
             loadTable(bottomTable, currentlyDisplayingComponent!!)
@@ -184,6 +197,10 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     }
 
     override fun close() {
+        val debug = Mappers.debugDraw[currentlySelectedEntity]
+        debug.debugDrawWorkers = false
+        debug.debugDrawWorkplace = false
+
         mainTable.remove()
         currentlySelectedEntity = null
         window.remove()
@@ -195,15 +212,22 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         table.clear()
         updateList.clear()
 
+        val debug = Mappers.debugDraw[currentlySelectedEntity]
+        debug.debugDrawWorkers = false
+        debug.debugDrawWorkplace = false
+
         changedTabsFunc.invoke()
 
         when(component.javaClass){
             BuildingComponent::class.java -> setupBuildingTable(table, component as BuildingComponent)
             SellingItemsComponent::class.java -> setupSellingTable(table, component as SellingItemsComponent)
-            WorkForceComponent::class.java -> setupWorkforceTable(table, component as WorkForceComponent)
+            WorkForceComponent::class.java -> {
+                debug.debugDrawWorkers = true
+                setupWorkforceTable(table, component as WorkForceComponent)
+            }
             BehaviourComponent::class.java -> setupBehaviourTable(table, component as BehaviourComponent)
             InventoryComponent::class.java -> setupInventoryTable(table, component as InventoryComponent)
-            BuyerComponent::class.java -> buyingItemTable(table, component as BuyerComponent)
+            BuyerComponent::class.java -> setupBuyingTable(table, component as BuyerComponent)
         }
 
         currentlyDisplayingComponent = component
@@ -378,7 +402,7 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         updateList.add({listLabel.setText("Item List: ${comp.itemMap.values}")})
     }
 
-    private fun buyingItemTable(table: Table, comp: BuyerComponent){
+    private fun setupBuyingTable(table: Table, comp: BuyerComponent){
         val buyingTable = Table()
 
         val itemNameTitle = Label("Item", defaultLabelStyle)
@@ -387,9 +411,21 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         val itemAmountTitle = Label("Amount", defaultLabelStyle)
         itemAmountTitle.setFontScale(0.25f)
 
+        val necessityRatingLabel = Label("Needs: ${comp.needsSatisfactionRating}", defaultLabelStyle)
+        necessityRatingLabel.setFontScale(0.25f)
+
+        val luxuryRatingLabel = Label("Luxury: ${comp.luxurySatisfactionRating}", defaultLabelStyle)
+        luxuryRatingLabel.setFontScale(0.25f)
+
         val populateTableFunc = {
             buyingTable.clear()
 
+            luxuryRatingLabel.setText("Luxury: ${comp.luxurySatisfactionRating}")
+            necessityRatingLabel.setText("Needs: ${comp.needsSatisfactionRating}")
+
+            buyingTable.add(necessityRatingLabel)
+            buyingTable.add(luxuryRatingLabel)
+            buyingTable.row()
             buyingTable.add(itemNameTitle)
             buyingTable.add(itemAmountTitle)
 
@@ -604,15 +640,20 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
                                 if (otherSelling.currSellingItems.size > 0) {
 
                                     val list = Array<ItemPriceLink>()
-                                    otherSelling.currSellingItems.forEach { item ->
-                                        list.add(ItemPriceLink(item.itemName, (item.itemPrice * 1.5).toInt()))
+                                    otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
+                                        list.add(ItemPriceLink(itemName, (itemPrice * 1.5).toInt()))
                                     }
 
-                                    //Add the list of items to the reselling component
+                                    //Add a EntityListLink to the reselling entity item links list
                                     comp.resellingEntityItemLinks.add(EntityListLink(ent, list))
 
                                     //Add the list of items to our selling list to let pawns know we are selling stuff
-                                    selling.currSellingItems.addAll(list)
+                                    list.forEach { itemLink ->
+                                        //We need to make sure that the selling items doesn't already contain the item
+                                        if(!selling.currSellingItems.any{it.itemName == itemLink.itemName})
+                                            selling.currSellingItems.add(itemLink)
+                                    }
+
                                     otherSelling.currSellingItems.clear()
                                 }
                             }

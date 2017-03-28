@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.ProductionsManager
@@ -16,8 +17,7 @@ class ProduceItemComponent : MyComponent{
 
     }
 
-    override fun dispose() {
-
+    override fun dispose(entity: Entity) {
     }
 
 

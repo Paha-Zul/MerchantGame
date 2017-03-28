@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.interfaces.MyComponent
 
@@ -14,6 +15,7 @@ class IdentityComponent : MyComponent{
 
     }
 
-    override fun dispose() {
+    override fun dispose(entity: Entity) {
+
     }
 }

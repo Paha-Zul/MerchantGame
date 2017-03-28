@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
@@ -24,7 +25,7 @@ class GraphicComponent : MyComponent {
 
     val moodIcons = Array<MutablePair<Sprite, Float>>(4)
 
-    override fun dispose() {
+    override fun dispose(entity: Entity) {
 
     }
 }

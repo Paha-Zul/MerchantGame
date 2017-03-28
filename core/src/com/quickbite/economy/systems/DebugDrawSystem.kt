@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.components.*
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
@@ -40,6 +41,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             val dc = Mappers.debugDraw.get(ent)
             val bc = Mappers.building.get(ent)
             val sc = Mappers.selling.get(ent)
+            val wc = Mappers.workforce.get(ent)
             val bodyComp = Mappers.body.get(ent)
 
             if((dc.debugDrawPath || DebugDrawComponent.GLOBAL_DEBUG_PATH) && bm != null){
@@ -64,10 +66,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
                     val currPoint = tm.position
                     val nextPoint = Mappers.transform.get(link.entity).position
 
-                    val rotation = MathUtils.atan2(nextPoint.y - currPoint.y, nextPoint.x - currPoint.x)* MathUtils.radiansToDegrees
-                    val distance = currPoint.dst(nextPoint)
-                    this.pixel.setRegion(0f, 0f, distance/ size, 1f)
-                    batch.draw(pixel, currPoint.x, currPoint.y, 0f, 0f, distance, size, 1f, 1f, rotation)
+                    drawLineTo(currPoint, nextPoint)
                 }
             }
 
@@ -78,8 +77,20 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
                 bc.entranceSpotOffsets.forEach { entrance ->
                     batch.draw(entrancePixel, tm.position.x + entrance.x - 5f, tm.position.y + entrance.y - 5f, 10f, 10f)
                 }
+
+            if(wc != null && dc.debugDrawWorkers){
+                wc.workersAvailable.forEach { (entity) ->
+                    val workerPosition = Mappers.transform[entity].position
+                    drawLineTo(workerPosition, tm.position)
+                }
+            }
         }
+    }
 
-
+    private fun drawLineTo(start: Vector2, end:Vector2){
+        val rotation = MathUtils.atan2(end.y - start.y, end.x - start.x)* MathUtils.radiansToDegrees
+        val distance = start.dst(end)
+        this.pixel.setRegion(0f, 0f, distance/ size, 1f)
+        batch.draw(pixel, start.x, start.y, 0f, 0f, distance, size, 1f, 1f, rotation)
     }
 }

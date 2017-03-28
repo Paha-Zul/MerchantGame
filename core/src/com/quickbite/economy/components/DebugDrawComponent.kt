@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
 
 /**
@@ -12,14 +13,18 @@ class DebugDrawComponent : MyComponent {
         var GLOBAL_DEBUG_ENTRANCE = false
         var GLOBAL_DEBUG_SHOPLINK = false
         var GLOBAL_DEBUG_BODY = false
+        var GLOBAL_DEBUG_WORKERS = false
+        var GLOBAL_DEBUG_WORKPLACE = false
     }
 
     var debugDrawPath = false
     var debugDrawCenter = false
     var debugDrawEntrace = false
     var debugDrawShopLink = false
+    var debugDrawWorkplace = false
+    var debugDrawWorkers = false
 
-    override fun dispose() {
+    override fun dispose(entity: Entity) {
 
     }
 

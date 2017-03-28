@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
 
 /**
@@ -9,7 +10,7 @@ class InitializationComponent : MyComponent {
     var initiated = false
     var initFuncs:MutableList<()->Unit> = mutableListOf()
 
-    override fun dispose() {
+    override fun dispose(entity: Entity) {
 
     }
 

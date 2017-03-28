@@ -28,7 +28,6 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             BuildingComponent.BuildingType.None -> TODO()
         }
 
-        this.controller.finishWithSuccess()
     }
 
     private fun workshop(){
@@ -45,6 +44,8 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
 
         //Increment the index
         producesItems.currProductionIndex = (producesItems.currProductionIndex + 1) % producesItems.productionList.size
+
+        this.controller.finishWithSuccess()
     }
 
     private fun shop(){
@@ -62,12 +63,18 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
 
             validateSubIndex(entityListLink, sellingComp)
 
-            //Set the target item.
-            bb.targetItem.itemName = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemName
-            bb.targetItem.itemAmount = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemPrice
+            if(entityListLink.itemPriceLinkList.size > 0) {
+                //Set the target item.
+                bb.targetItem.itemName = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemName
+                bb.targetItem.itemAmount = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemPrice
+
+                this.controller.finishWithSuccess()
+            }else
+                controller.finishWithFailure()
 
             incrementCounters(sellingComp)
-        }
+        }else
+            controller.finishWithFailure()
     }
 
     private fun validateIndex(sellingComp:SellingItemsComponent){
@@ -85,7 +92,9 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
 
     private fun incrementCounters(sellingComp:SellingItemsComponent){
         //TODO Dividing by zero problems
+
         sellingComp.index = (sellingComp.index + 1) % sellingComp.resellingEntityItemLinks.size
-        sellingComp.indexSubCounter = (sellingComp.indexSubCounter + 1) % sellingComp.resellingEntityItemLinks[sellingComp.index].itemPriceLinkList.size
+        if(sellingComp.resellingEntityItemLinks[sellingComp.index].itemPriceLinkList.size > 0)
+            sellingComp.indexSubCounter = (sellingComp.indexSubCounter + 1) % sellingComp.resellingEntityItemLinks[sellingComp.index].itemPriceLinkList.size
     }
 }

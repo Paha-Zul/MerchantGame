@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.util.ItemAmountLink
@@ -21,9 +22,12 @@ class BuyerComponent : MyComponent{
     var moneyAvailable = 0
     var buyerFlag = BuyerFlag.None
 
-    var satisfactionRating = 0
+    var needsSatisfactionRating = 0
+    var luxurySatisfactionRating = 0
 
-    override fun dispose() {
+    val buyHistory:Array<ItemAmountLink> = Array()
+
+    override fun dispose(entity: Entity) {
 
     }
 

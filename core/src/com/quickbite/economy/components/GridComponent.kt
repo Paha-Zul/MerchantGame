@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
 
 /**
@@ -10,7 +11,7 @@ class GridComponent : MyComponent {
     var initiated = false
     var blockWhenPlaced = false
 
-    override fun dispose() {
+    override fun dispose(entity: Entity) {
 
     }
 

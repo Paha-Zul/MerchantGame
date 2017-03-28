@@ -1,5 +1,6 @@
 package com.quickbite.economy.objects
 
+import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.util.TimeOfDay
 import com.quickbite.economy.util.TownItemIncome
 
@@ -13,6 +14,16 @@ class Town {
 
     var population:Int = 0
     val itemIncomeMap = hashMapOf<String, TownItemIncome>()
+
+    var needsRating:Int = 500
+        set(value){
+            field = MathUtils.clamp(value, 0, 1000)
+        }
+
+    var luxuryRating:Int = 500
+        set(value){
+            field = MathUtils.clamp(value, 0, 1000)
+        }
 
     fun update(delta:Float){
         updateCounter += delta

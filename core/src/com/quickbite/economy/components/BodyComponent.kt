@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.physics.box2d.Body
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.interfaces.MyComponent
@@ -15,8 +16,7 @@ class BodyComponent : MyComponent {
 
     }
 
-
-    override fun dispose() {
+    override fun dispose(entity:Entity) {
         if(body != null)
             MyGame.world.destroyBody(body)
     }

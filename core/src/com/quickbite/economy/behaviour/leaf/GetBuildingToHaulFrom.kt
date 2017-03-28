@@ -1,5 +1,6 @@
 package com.quickbite.economy.behaviour.leaf
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
@@ -19,7 +20,7 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         when(workerBuilding.buildingType){
             BuildingComponent.BuildingType.Stockpile -> TODO()
             BuildingComponent.BuildingType.Shop -> shop()
-            BuildingComponent.BuildingType.Workshop -> workshop()
+            BuildingComponent.BuildingType.Workshop -> workshop(worker.workerBuilding!!)
             BuildingComponent.BuildingType.House -> TODO()
             BuildingComponent.BuildingType.Wall -> TODO()
             BuildingComponent.BuildingType.None -> TODO()
@@ -36,30 +37,29 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
 
         //TODO Should this actually be going through each entity link? What about our target item and target entity in the blackboard?
         //For each entity, check it's itemPriceLinkList of items
-        links.forEach { entityLink ->
-            val inventory = Mappers.inventory[entityLink.entity]
+        links.forEach { (entity, itemPriceLinkList) ->
+            val inventory = Mappers.inventory[entity]
 
             //For each item, check if the item matches what we want and the
-            entityLink.itemPriceLinkList.forEach { itemLink ->
+            itemPriceLinkList.forEach { (linkedItemName) ->
                 //If the item we wanted matches a link AND the building has the item, success!
-                if(itemLink.itemName == itemName && inventory.hasItem(itemName)){
-                    bb.targetEntity = entityLink.entity
+                if(linkedItemName == itemName && inventory.hasItem(itemName)){
+                    bb.targetEntity = entity
                     controller.finishWithSuccess()
                     return
                 }
             }
         }
-
         controller.finishWithFailure()
     }
 
-    private fun workshop(){
+    private fun workshop(myBuilding: Entity){
         val transform = Mappers.transform[bb.myself]
         val itemName = bb.targetItem.itemName
         val itemAmount = bb.targetItem.itemAmount
 
         //Could result in a null building
-        val building = Util.getClosestBuildingTypeWithItem(transform.position, BuildingComponent.BuildingType.Stockpile, itemName)
+        val building = Util.getClosestBuildingWithItemInInventory(transform.position, itemName, 1, hashSetOf(myBuilding))
 
         bb.targetEntity = building
 

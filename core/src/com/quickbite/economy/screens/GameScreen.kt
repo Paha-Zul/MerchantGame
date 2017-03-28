@@ -16,9 +16,11 @@ import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
+import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
+import com.quickbite.economy.util.Spawner.town
 import com.quickbite.spaceslingshot.util.EventSystem
 
 
@@ -30,8 +32,6 @@ class GameScreen :Screen{
     var shadowObject : Pair<Entity, TransformComponent>? = null
     lateinit var inputHandler:InputHandler
     lateinit var gameScreenGUI:GameScreenGUIManager
-
-    lateinit var town:Town
 
     var currentlySelectedType  = ""
         set(value) {
@@ -90,14 +90,13 @@ class GameScreen :Screen{
         })
 
         testSetup()
-
-        Spawner.town = town
     }
 
     private fun testSetup(){
-        town = Town()
+        val town = Town()
         town.itemIncomeMap.put("Wheat", TownItemIncome("Wheat", 150))
         town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 150))
+        TownManager.addTown("Town", town)
     }
 
     override fun pause() {

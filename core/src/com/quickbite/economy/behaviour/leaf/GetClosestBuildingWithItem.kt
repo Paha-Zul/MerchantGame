@@ -28,7 +28,7 @@ class GetClosestBuildingWithItem(bb:BlackBoard, val buildingType:BuildingCompone
         val myWorkerBuiding = Mappers.worker[bb.myself].workerBuilding
 
         //Get the closest building with the item
-        bb.targetEntity = Util.getClosestBuildingWithItemInInventory(Mappers.transform.get(bb.myself).position, itemName, itemAmount, hashSetOf(myWorkerBuiding))
+        bb.targetEntity = Util.getClosestBuildingWithItemInInventory(Mappers.transform.get(bb.myself).position, itemName, itemAmount, hashSetOf(myWorkerBuiding!!))
         if(bb.targetEntity == null)
             controller.finishWithFailure()
         else

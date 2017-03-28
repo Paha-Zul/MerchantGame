@@ -2,7 +2,9 @@ package com.quickbite.economy.behaviour
 
 import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.composite.Sequence
+import com.quickbite.economy.behaviour.decorator.AlwaysTrue
 import com.quickbite.economy.behaviour.decorator.RepeatUntilFail
+import com.quickbite.economy.behaviour.decorator.SucceedOpposite
 import com.quickbite.economy.behaviour.leaf.*
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.BuyerComponent
@@ -39,10 +41,13 @@ object Tasks {
         val getPath = GetPath(bb)
         val moveTo = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
+        val setInside = SetTargetEntityAsInside(bb)
         val enterBuildingQueue = EnterBuildingQueue(bb)
         val buyItem = WaitTimeOrCondition(bb, MathUtils.random(15f, 25f), {ent -> Mappers.buyer.get(ent).buyerFlag != BuyerComponent.BuyerFlag.None})
+        val handleBought = HandleBuyStatus(bb)
         val leaveBuildingQueue = LeaveBuildingQueue(bb)
         val unhide = ChangeHidden(bb, false)
+        val setOutside = SetTargetEntityAsInside(bb, true)
 
         seq.controller.addTask(getItemDemand)
         seq.controller.addTask(getBuilding)
@@ -50,10 +55,13 @@ object Tasks {
         seq.controller.addTask(getPath)
         seq.controller.addTask(moveTo)
         seq.controller.addTask(hide)
+        seq.controller.addTask(setInside)
         seq.controller.addTask(enterBuildingQueue)
         seq.controller.addTask(buyItem)
+        seq.controller.addTask(handleBought)
         seq.controller.addTask(leaveBuildingQueue)
         seq.controller.addTask(unhide)
+        seq.controller.addTask(setOutside)
 
         return seq
     }
@@ -68,12 +76,14 @@ object Tasks {
         val getExit = GetMapExit(bb)
         val getPathToExit = GetPath(bb)
         val moveToExit = MoveToPath(bb)
+        val applyRatingsToTown = ApplyRatingsToTown(bb)
         val destroyMyself = DestroyMyself(bb)
 
         seq.controller.addTask(unhide)
         seq.controller.addTask(getExit)
         seq.controller.addTask(getPathToExit)
         seq.controller.addTask(moveToExit)
+        seq.controller.addTask(applyRatingsToTown)
         seq.controller.addTask(destroyMyself)
 
         return seq
@@ -153,19 +163,9 @@ object Tasks {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         val unhide = ChangeHidden(bb, false)
-
+        val clearInsideBuilding = SetTargetEntityAsInside(bb, true)
         val setTargetItem:Task = SetTargetItemToHaul(bb)
         val getStockpile:Task = GetBuildingToHaulFrom(bb)
-
-        //TODO Need a universal way to get a target item and building for all worker types. Shops are broken!
-//        if(buildingType == BuildingComponent.BuildingType.Shop){
-////            setTargetItem = SetTargetItemFromReselling(bb)
-//            getStockpile = GetClosestShopLinkWithItem(bb)
-//        }else {
-////            setTargetItem = SetTargetItemFromMyWorkshop(bb)
-//            getStockpile = GetClosestBuildingWithItem(bb, buildingType)
-//        }
-
         val setStockpileTarget = SetTargetEntityAsTargetPosition(bb)
         val getStockpileEntrance = GetEntranceOfBuilding(bb)
         val getPathToStockpile = GetPath(bb)
@@ -185,6 +185,7 @@ object Tasks {
         val unhideAgainAgain = ChangeHidden(bb, true)
 
         task.controller.addTask(unhide)
+        task.controller.addTask(clearInsideBuilding)
         task.controller.addTask(setTargetItem)
         task.controller.addTask(getStockpile)
         task.controller.addTask(setStockpileTarget)
@@ -211,14 +212,22 @@ object Tasks {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         val repeatUntilFail = RepeatUntilFail(bb, task)
+        val optionalBranchSequence = Sequence(bb)
+        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
 
         //TODO Check if inside the building already?
 
-        task.controller.addTask(ChangeHidden(bb, false))
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
-        task.controller.addTask(GetEntranceOfBuilding(bb))
-        task.controller.addTask(GetPath(bb))
-        task.controller.addTask(MoveToPath(bb))
+        task.controller.addTask(optionalBranch)
+
+        //Optional branch. If we are not inside our target building already, move to it
+        optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb))) //If this fails, it means we are outside
+        optionalBranchSequence.controller.addTask(SetTargetEntityAsInside(bb))
+        optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
+        optionalBranchSequence.controller.addTask(ChangeHidden(bb, false))
+        optionalBranchSequence.controller.addTask(GetPath(bb))
+        optionalBranchSequence.controller.addTask(MoveToPath(bb))
+
         task.controller.addTask(ChangeHidden(bb, true))
         task.controller.addTask(Wait(bb))
         task.controller.addTask(ProduceItem(bb))
@@ -230,13 +239,20 @@ object Tasks {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         //Check if inside the building already?
+        val optionalBranchSequence = Sequence(bb)
+        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
 
-        task.controller.addTask(ChangeHidden(bb, false))
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
-        task.controller.addTask(CheckBuildingHasQueue(bb))
-        task.controller.addTask(GetEntranceOfBuilding(bb))
-        task.controller.addTask(GetPath(bb))
-        task.controller.addTask(MoveToPath(bb))
+        task.controller.addTask(optionalBranch)
+
+        //Optional branch. If we are not inside our target building, then move to it!
+        optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb)))
+        optionalBranchSequence.controller.addTask(ChangeHidden(bb, false))
+        optionalBranchSequence.controller.addTask(CheckBuildingHasQueue(bb))
+        optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
+        optionalBranchSequence.controller.addTask(GetPath(bb))
+        optionalBranchSequence.controller.addTask(MoveToPath(bb))
+
         task.controller.addTask(ChangeHidden(bb, true))
         task.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
         task.controller.addTask(SellItemFromBuildingToEnqueued(bb))
@@ -248,6 +264,8 @@ object Tasks {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling to Stockpile")
 
         //Check if inside the building already?
+//        val optionalBranchSequence = Sequence(bb)
+//        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
 
         task.controller.addTask(GetClosestBuildingOfType(bb, BuildingComponent.BuildingType.Stockpile))
         task.controller.addTask(GetEntranceOfBuilding(bb))

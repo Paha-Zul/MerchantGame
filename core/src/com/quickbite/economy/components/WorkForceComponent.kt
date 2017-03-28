@@ -1,5 +1,6 @@
 package com.quickbite.economy.components
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.util.WorkerTaskData
@@ -12,8 +13,7 @@ class WorkForceComponent : MyComponent {
     var workersAvailable:Array<WorkerTaskData> = Array(10)
     var workerTasks:Array<String> = Array()
 
-    override fun dispose() {
-
+    override fun dispose(entity: Entity) {
     }
 
     override fun initialize() {
