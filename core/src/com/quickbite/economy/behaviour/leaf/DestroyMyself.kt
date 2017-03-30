@@ -1,6 +1,5 @@
 package com.quickbite.economy.behaviour.leaf
 
-import com.quickbite.economy.MyGame
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.util.Factory

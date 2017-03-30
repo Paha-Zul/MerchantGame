@@ -9,8 +9,10 @@ import com.quickbite.economy.interfaces.MyComponent
 class InventoryComponent : MyComponent {
         val itemMap = hashMapOf<String, InventoryItem>()
 
+    val outputItems = hashSetOf("All")
+    val inputItems = hashSetOf<String>()
+
     /**
-     *
      * @param name The name of the item to add.
      * @param amount The amount to add.
      * @return The amount added.

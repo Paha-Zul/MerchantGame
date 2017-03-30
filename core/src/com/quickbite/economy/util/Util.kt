@@ -76,6 +76,15 @@ object Util {
         return closest
     }
 
+    /**
+     * Attempts to find the closest building of a type with an item in its inventory
+     * @param position The position to search from
+     * @param buildingType The type of building to do the search on
+     * @param itemName The name of the item to find
+     * @param itemAmount The amount of the item
+     * @param buildingsToExclude A HashSet of buildings to exclude from the search
+     * @return The closest building that was found, null if no building was found.
+     */
     fun getClosestBuildingTypeWithItem(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity> = hashSetOf()):Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
@@ -101,6 +110,14 @@ object Util {
         return closest
     }
 
+    /**
+     * Attempts to find the nearest building with an item in its inventory
+     * @param position The position to search from
+     * @param itemName The name of the item to get
+     * @param itemAmount The amount of the item
+     * @param buildingsToExclude A HashSet of buildings to exclude from the search
+     * @return The closest building that was found, null if no building was found.
+     */
     fun getClosestBuildingWithItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity>):Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
@@ -112,6 +129,40 @@ object Util {
                 val inv = Mappers.inventory.get(ent)
 
                 if (inv != null && inv.getItemAmount(itemName) >= itemAmount) {
+                    val tm = Mappers.transform.get(ent)
+                    val dst = tm.position.dst2(position)
+
+                    if (dst <= closestDst) {
+                        closest = ent
+                        closestDst = dst
+                    }
+                }
+            }
+        }
+
+        return closest
+    }
+
+    /**
+     * Attempts to find the nearest building that has an item in it's output and inventory
+     * @param position The position to search from
+     * @param itemName The name of the item to get
+     * @param itemAmount The amount of the item
+     * @param buildingsToExclude A HashSet of buildings to exclude from the search
+     * @return The closest building that was found, null if no building was found.
+     */
+    fun getClosestBuildingWithOutputItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity>):Entity?{
+        var closestDst = Float.MAX_VALUE
+        var closest: Entity? = null
+
+        Families.buildings.forEach { ent ->
+            if(!buildingsToExclude.contains(ent)) {
+
+                val bc = Mappers.building.get(ent)
+                val inv = Mappers.inventory.get(ent)
+                val hasOutput = inv.outputItems.contains("All") || inv.outputItems.contains(itemName)
+
+                if (inv != null && hasOutput && inv.getItemAmount(itemName) >= itemAmount) {
                     val tm = Mappers.transform.get(ent)
                     val dst = tm.position.dst2(position)
 

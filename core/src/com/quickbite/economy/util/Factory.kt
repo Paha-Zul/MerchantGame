@@ -163,6 +163,8 @@ object Factory {
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
             entity.add(selling)
+
+
         }
 
         //Check for workforce definition
@@ -202,6 +204,26 @@ object Factory {
             }
 
             entity.add(producesItems)
+
+            //We need to add the input and output items for the inventory from the productions
+            init.initFuncs.add {
+                val inventory = Mappers.inventory[entity]
+
+                //make sure we have an inventory
+                if(inventory != null){
+                    //Clear both of these since they are initially set to "All" at class creation.
+                    inventory.inputItems.clear()
+                    inventory.outputItems.clear()
+
+                    //for each production, add the produced item to the output and all the requirements to the input
+                    producesItems.productionList.forEach { production ->
+                        inventory.outputItems += production.producedItem
+                        production.requirements.forEach { (itemName) ->
+                            inventory.inputItems += itemName
+                        }
+                    }
+                }
+            }
         }
 
         if(definition.isWorker){

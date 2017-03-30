@@ -1,6 +1,7 @@
 package com.quickbite.economy.behaviour.leaf
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
@@ -36,21 +37,30 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         val itemAmount = bb.targetItem.itemAmount
 
         //TODO Should this actually be going through each entity link? What about our target item and target entity in the blackboard?
-        //For each entity, check it's itemPriceLinkList of items
-        links.forEach { (entity, itemPriceLinkList) ->
-            val inventory = Mappers.inventory[entity]
 
-            //For each item, check if the item matches what we want and the
-            itemPriceLinkList.forEach { (linkedItemName) ->
-                //If the item we wanted matches a link AND the building has the item, success!
-                if(linkedItemName == itemName && inventory.hasItem(itemName)){
-                    bb.targetEntity = entity
-                    controller.finishWithSuccess()
-                    return
-                }
-            }
-        }
-        controller.finishWithFailure()
+        //First, Find all links that are reselling the item to use AND have the item in their inventory
+        val list = links.filter { it.itemPriceLinkList.any { it.itemName == itemName } && Mappers.inventory[it.entity].hasItem(itemName) }
+        if(list.isNotEmpty()) {
+            bb.targetEntity = list[MathUtils.random(list.size - 1)].entity
+            controller.finishWithSuccess()
+        }else
+            controller.finishWithFailure()
+
+//        //For each entity, check it's itemPriceLinkList of items
+//        links.forEach { (entity, itemPriceLinkList) ->
+//            val inventory = Mappers.inventory[entity]
+//
+//            //For each item, check if the item matches what we want and the
+//            itemPriceLinkList.forEach { (linkedItemName) ->
+//                //If the item we wanted matches a link AND the building has the item, success!
+//                if(linkedItemName == itemName && inventory.hasItem(itemName)){
+//                    bb.targetEntity = entity
+//                    controller.finishWithSuccess()
+//                    return
+//                }
+//            }
+//        }
+//        controller.finishWithFailure()
     }
 
     private fun workshop(myBuilding: Entity){
@@ -59,7 +69,7 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         val itemAmount = bb.targetItem.itemAmount
 
         //Could result in a null building
-        val building = Util.getClosestBuildingWithItemInInventory(transform.position, itemName, 1, hashSetOf(myBuilding))
+        val building = Util.getClosestBuildingWithOutputItemInInventory(transform.position, itemName, 1, hashSetOf(myBuilding))
 
         bb.targetEntity = building
 
