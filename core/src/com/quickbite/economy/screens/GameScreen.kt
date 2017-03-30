@@ -96,6 +96,7 @@ class GameScreen :Screen{
         val town = Town()
         town.itemIncomeMap.put("Wheat", TownItemIncome("Wheat", 150))
         town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 150))
+        town.population = 100
         TownManager.addTown("Town", town)
     }
 
@@ -122,10 +123,6 @@ class GameScreen :Screen{
         batch.begin()
 
         MyGame.entityEngine.update(TimeUtil.scaledDeltaTime)
-
-//        batch.draw(dot, 0f, 0f, 25f, 25f)
-//        batch.draw(dot, 300f, 0f, 25f, 25f)
-//        batch.draw(dot, -300f, 0f, 25f, 25f)
 
         batch.end()
 

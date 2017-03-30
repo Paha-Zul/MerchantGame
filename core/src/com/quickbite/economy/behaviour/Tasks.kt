@@ -171,7 +171,7 @@ object Tasks {
         val getPathToStockpile = GetPath(bb)
         val moveToStockpile = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
-        val wait = Wait(bb, 0.5f)
+        val wait = Wait(bb, 0.5f, 1.5f)
         val transferItemsToMe = TransferFromInventoryToInventory(bb, false) //Transfer items from target to me
         val unhideAgain = ChangeHidden(bb, false)
         val setMyBuildingAsTarget = SetMyWorkBuildingAsTarget(bb)
@@ -179,8 +179,8 @@ object Tasks {
         val getPathToBuilding = GetPath(bb)
         val moveToBuilding = MoveToPath(bb)
         val hideAgain = ChangeHidden(bb, true)
-        val waitBeforeTransfer = Wait(bb)
-        //TODO Set the target item here
+        val waitBeforeTransfer = Wait(bb, 1f, 2f)
+        //TODO Set the target item here... for what again?
         val transferItemsToWorkshop = TransferFromInventoryToInventory(bb, true) //Transfer items from me to target
         val unhideAgainAgain = ChangeHidden(bb, true)
 

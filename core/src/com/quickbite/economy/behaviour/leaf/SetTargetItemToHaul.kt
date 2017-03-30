@@ -1,11 +1,11 @@
 package com.quickbite.economy.behaviour.leaf
 
-import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.util.EntityListLink
+import com.quickbite.economy.util.ItemAmountLink
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -33,14 +33,28 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
     private fun workshop(){
         val worker = Mappers.worker[bb.myself]
         val producesItems = Mappers.produces[worker.workerBuilding]
+        val buildingInv = Mappers.inventory[worker.workerBuilding]
 
         val producedItem = producesItems!!.productionList[producesItems.currProductionIndex]
 
-        //Set the target item
-        //TODO We need to deal with the whole array of requirements. How do? For now we random!
-        val random = MathUtils.random(producedItem.requirements.size-1)
-        bb.targetItem.itemName = producedItem.requirements[random].itemName
-        bb.targetItem.itemAmount = producedItem.requirements[random].itemAmount
+        //Find the item with the least amount in the inventory. This will try to keep stuff even
+        val least = ItemAmountLink("", Int.MAX_VALUE)
+        producedItem.requirements.forEach {
+            val amt = buildingInv.getItemAmount(it.itemName)
+            if(amt < least.itemAmount) {
+                least.itemName = it.itemName
+                least.itemAmount = it.itemAmount
+            }
+        }
+
+        bb.targetItem.itemName = least.itemName
+        bb.targetItem.itemAmount = least.itemAmount
+
+//        //Set the target item
+//        //TODO We need to deal with the whole array of requirements. How do? For now we random!
+//        val random = MathUtils.random(producedItem.requirements.size-1)
+//        bb.targetItem.itemName = producedItem.requirements[random].itemName
+//        bb.targetItem.itemAmount = producedItem.requirements[random].itemAmount
 
         //Increment the index
         producesItems.currProductionIndex = (producesItems.currProductionIndex + 1) % producesItems.productionList.size

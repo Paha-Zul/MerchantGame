@@ -13,28 +13,25 @@ import com.quickbite.economy.objects.Town
  */
 object Spawner {
     val town:Town by lazy { TownManager.getTown("Town") }
-    var buyerCounter = 0f
-    var haulerCounter = 0f
 
     val spawnPosition = Vector2(-500f, 0f)
 
     val spawnBuyerTimeRange = Vector2(1f, 10f)
     val spawnHaulerTimeRange = Vector2(5f, 20f)
 
-    var nextBuyerSpawnTime = MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y)
-    var nextHaulerSpawnTime = MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y)
+    const val populationMultiplierForBuyerThreshold = 200 //For every x amount of population, increase the multiplier by 1
+    val populationMultiplierForBuyer:Float
+        get() = Math.max(1f, town.population.toFloat() / populationMultiplierForBuyerThreshold.toFloat()) //We want this to be at least 1
 
-    fun update(delta:Float){
-        buyerCounter += delta
-        haulerCounter += delta
+    const val populationMultiplierForHaulerThreshold = 400 //For every x amount of population, increase the multiplier by 1
+    val populationMultiplierForHauler:Float
+        get() = Math.max(1f, town.population.toFloat() / populationMultiplierForHaulerThreshold.toFloat()) //We want this to be at least 1
 
-        spawnBuyer()
-        spawnHauler()
-    }
+    lateinit var spawnBuyerTimer:CustomTimer
+    lateinit var spawnHaulerTimer:CustomTimer
 
-    private fun spawnBuyer(){
-
-        if(buyerCounter >= nextBuyerSpawnTime){
+    init{
+        spawnBuyerTimer = CustomTimer(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
             val list = ItemDefManager.itemDefMap.values.toList() //Get the list of items
             val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
             val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 20)) //Get an item to buy
@@ -54,17 +51,15 @@ object Spawner {
                     val itemDef = ItemDefManager.itemDefMap[item.itemName]!!
                     if(itemDef.category == "Food")
                         buying.needsSatisfactionRating -= item.itemAmount
+                    //TODO Calculate luxury rating
                 }
 
             }
 
-            buyerCounter -= nextBuyerSpawnTime
-            nextBuyerSpawnTime = MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y)
-        }
-    }
+            spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
+        })
 
-    private fun spawnHauler(){
-        if(haulerCounter >= nextHaulerSpawnTime){
+        spawnHaulerTimer = CustomTimer(MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
             val list = town.itemIncomeMap.values.toList()
             val randomItem = list[MathUtils.random(list.size - 1)]
             val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, randomItem.accumulatedItemCounter.toInt()))
@@ -79,11 +74,14 @@ object Spawner {
                 inventory.addItem(itemToBuy.itemName, itemToBuy.itemAmount)
 
                 beh.currTask = Tasks.haulInventoryToStockpile(beh.blackBoard)
-
             }
 
-            haulerCounter -= nextHaulerSpawnTime
-            nextHaulerSpawnTime = MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y)
-        }
+            spawnHaulerTimer.restart(MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y))
+        })
+    }
+
+    fun update(delta:Float){
+        spawnBuyerTimer.update(delta)
+        spawnHaulerTimer.update(delta)
     }
 }
