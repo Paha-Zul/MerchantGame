@@ -17,6 +17,7 @@ object TimeOfDay{
     val currTimeScale:Int
         get() = scale*TimeUtil.deltaTimeScale
 
+    var day = 0
     var hour = 0
     var minute = 0
     var second = 0
@@ -31,8 +32,11 @@ object TimeOfDay{
         lastMinute = this.minute
         lastSecond = this.second
 
+        //TODO Maybe make day a separate counter not tied to the ever growing counter?
+
         //Record the new
-        this.hour = (((counter/60) + 1)%25).toInt()
+        this.day = (counter/1440).toInt()
+        this.hour = (((counter/60))%24).toInt()
         this.minute = (counter%60).toInt()
         this.second = ((counter*60)%60).toInt()
 
@@ -41,7 +45,10 @@ object TimeOfDay{
     }
 
     fun update(delta:Float){
-        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.scale * TimeUtil.deltaTimeScale) % 1440
+        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.scale * TimeUtil.deltaTimeScale)
+
+        //The %1440 keeps it from going forever up
+//        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.scale * TimeUtil.deltaTimeScale)%1440
     }
 
     override fun toString(): String {

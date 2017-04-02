@@ -19,8 +19,6 @@ import java.util.*
  * Created by Paha on 1/16/2017.
  */
 object Util {
-    val whitePixel = createPixel(Color.WHITE)
-
     fun createPixel(color: Color): Texture {
         return createPixel(color, 1, 1)
     }

@@ -96,6 +96,6 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     fun update(delta:Float){
         guiStack.forEach { it.update(delta) }
 
-        timeOfDayLabel.setText(TimeOfDay.toString())
+        timeOfDayLabel.setText("D: ${TimeOfDay.day}, T: $TimeOfDay")
     }
 }

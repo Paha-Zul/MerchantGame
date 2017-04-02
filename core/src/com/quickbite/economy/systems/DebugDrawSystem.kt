@@ -79,7 +79,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
                 }
 
             if(wc != null && dc.debugDrawWorkers){
-                wc.workersAvailable.forEach { (entity) ->
+                wc.workersAvailable.forEach { entity ->
                     val workerPosition = Mappers.transform[entity].position
                     drawLineTo(workerPosition, tm.position)
                 }

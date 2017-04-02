@@ -14,6 +14,7 @@ import com.quickbite.economy.components.*
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.BuildingDefManager
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.managers.ItemDefManager
 import com.quickbite.economy.managers.ProductionsManager
 import com.quickbite.economy.objects.*
 
@@ -157,14 +158,18 @@ object Factory {
         //Check for selling items definition
         if(definition.sellingItems.isSelling){
             val selling = SellingItemsComponent()
+
             //Things like this have to be copied or else they are linked and can be modified!!!
-            selling.baseSellingItems = Array(definition.sellingItems.sellingList)
-            selling.currSellingItems = Array(definition.sellingItems.sellingList)
+            val sellingList = Array<ItemPriceLink>()
+            definition.sellingItems.sellingList.forEach { (itemName) ->
+                sellingList.add(ItemPriceLink(itemName, ItemDefManager.itemDefMap[itemName]!!.baseMarketPrice))
+            }
+
+            selling.baseSellingItems = sellingList //Use the base array here
+            selling.currSellingItems = Array(sellingList) //Copy it for this one
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
             entity.add(selling)
-
-
         }
 
         //Check for workforce definition
@@ -237,7 +242,7 @@ object Factory {
                 //TODO Figure out what to do if this workshop is null?
                 if(closestWorkshop != null) {
                     workerUnit.workerBuilding = closestWorkshop
-                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(WorkerTaskData(entity, Array(), Pair(7, 20), Array()))
+                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(entity)
                 }
             })
         }

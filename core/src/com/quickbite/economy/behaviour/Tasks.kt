@@ -29,7 +29,7 @@ object Tasks {
 
     /**
      * Constructs a task to buy an item (from the buyer demands) from a building. Once the item is bought the pawn will
-     * unhide and do nothing. This task is mostly for helping to build other tasks.
+     * unhide and do nothing. This task is mostly for helping to build other taskList.
      */
     fun buyItemDemandFromBuilding(bb:BlackBoard):Task{
         val seq = com.quickbite.economy.behaviour.composite.Sequence(bb)

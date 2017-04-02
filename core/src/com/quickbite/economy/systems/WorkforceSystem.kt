@@ -23,13 +23,14 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         val wc = Mappers.workforce.get(ent)
         val building = Mappers.building.get(ent)
 
-        wc.workersAvailable.forEachIndexed { index, workerTaskLink ->
-            val bc = Mappers.behaviour.get(workerTaskLink.entity)
+        wc.workersAvailable.forEachIndexed { index, workerEntity ->
+            val bc = Mappers.behaviour.get(workerEntity)
+            val worker = Mappers.worker[workerEntity]
 
             if(bc.isIdle){
                 //TODO this is under construction
 
-                val tasks = workerTaskLink.taskList.toList()
+                val tasks = worker.taskList.toList()
                 val task = assignTasks(tasks, bc)
                 bc.currTask = task
 
@@ -37,8 +38,8 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
 
 //                //If we are withing the working hour range
 //                if(workerTaskLink.timeRange.first <= TimeOfDay.hour && workerTaskLink.timeRange.second >= TimeOfDay.hour) {
-//                    val tasks = workerTaskLink.taskList.toList()
-//                    val task = assignTasks(tasks, bc)
+//                    val taskList = workerTaskLink.taskList.toList()
+//                    val task = assignTasks(taskList, bc)
 //                    bc.currTask = task
 //
 //                //Otherwise
@@ -50,8 +51,8 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         }
 
         if(TimeOfDay.hour <= 1 && !paidWorkers){
-            wc.workersAvailable.forEach { link ->
-                val worker = Mappers.worker[link.entity]
+            wc.workersAvailable.forEach { entity ->
+                val worker = Mappers.worker[entity]
                 val workerBuildingInv = Mappers.inventory[worker.workerBuilding]
 
                 val moneyPaid = workerBuildingInv.removeItem("Gold", worker.dailyWage)

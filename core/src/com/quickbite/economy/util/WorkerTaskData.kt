@@ -7,4 +7,4 @@ import com.badlogic.gdx.utils.Array
 /**
  * Created by Paha on 3/15/2017.
  */
-data class WorkerTaskData(var entity: Entity, var taskList: Array<String>, val timeRange:Pair<Int, Int>, val days:Array<Int>)
+data class WorkerTaskData(var entity: Entity, var taskList: Array<String>, val timeRange:Pair<Int, Int>, val workDays:Array<Int>)

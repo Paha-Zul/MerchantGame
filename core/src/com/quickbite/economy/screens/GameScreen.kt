@@ -17,7 +17,6 @@ import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.TownManager
-import com.quickbite.economy.objects.Town
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.Spawner.town
@@ -57,7 +56,7 @@ class GameScreen :Screen{
         val debugSystem = DebugDrawSystem(MyGame.batch)
         val movementSystem = MovementSystem()
         val gridSystem = GridSystem()
-        val workshopSystem = WorkforceSystem(5f)
+        val workshopSystem = WorkforceSystem(2f)
 
         MyGame.entityEngine.addSystem(behaviourSystem)
         MyGame.entityEngine.addSystem(renderSystem)
@@ -89,15 +88,7 @@ class GameScreen :Screen{
             }
         })
 
-        testSetup()
-    }
-
-    private fun testSetup(){
-        val town = Town()
-        town.itemIncomeMap.put("Wheat", TownItemIncome("Wheat", 150))
-        town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 150))
-        town.population = 100
-        TownManager.addTown("Town", town)
+        TownManager.init()
     }
 
     override fun pause() {

@@ -34,7 +34,7 @@ object Spawner {
         spawnBuyerTimer = CustomTimer(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
             val list = ItemDefManager.itemDefMap.values.toList() //Get the list of items
             val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
-            val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 20)) //Get an item to buy
+            val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 10)) //Get an item to buy
 
             //If we found a building that is selling it, spawn a buyer
             if(Util.getClosestSellingItem(spawnPosition, itemToBuy.itemName) != null){
@@ -44,13 +44,13 @@ object Spawner {
                 val inventory = Mappers.inventory[entity]
 
                 buying.buyList.add(itemToBuy)
-                inventory.addItem("Gold", 1000)
+                inventory.addItem("Gold", MathUtils.random(500, 1000))
 
                 //Scan each item that we are buying and calculate necessity and luxury ratings
-                buying.buyList.forEach { item ->
-                    val itemDef = ItemDefManager.itemDefMap[item.itemName]!!
+                buying.buyList.forEach { (itemName, itemAmount) ->
+                    val itemDef = ItemDefManager.itemDefMap[itemName]!!
                     if(itemDef.category == "Food")
-                        buying.needsSatisfactionRating -= item.itemAmount
+                        buying.needsSatisfactionRating -= itemAmount
                     //TODO Calculate luxury rating
                 }
 
