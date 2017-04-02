@@ -7,7 +7,7 @@
   {
     "itemName": "Wood Log",
     "baseMarketPrice": 5,
-    "category": "Food"
+    "category": "Ingredient"
   },
   {
     "itemName": "Wood Plank",
@@ -37,6 +37,6 @@
   {
     "itemName": "Milk",
     "baseMarketPrice": 5,
-    "category": "Food"
+    "category": "Ingredient"
   }
 ]

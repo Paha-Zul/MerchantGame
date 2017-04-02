@@ -45,7 +45,6 @@ class Town {
             val diff = needsRating - 500 //This will either be negative or positive
             val change = diff/populationIncreaseFromRatingThreshold
             population += change
-            System.out.println("[Town] Population: $population")
         })
     }
 

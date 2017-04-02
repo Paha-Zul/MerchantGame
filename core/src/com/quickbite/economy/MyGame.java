@@ -33,13 +33,14 @@ public class MyGame extends Game {
     public static Box2DDebugRenderer box2DDebugRenderer;
     public static Stage stage;
 
-    private static int width = 1080, height = 720;
-
-	@Override
+    @Override
 	public void create () {
 		manager = new com.quickbite.economy.util.EasyAssetManager();
 
-		camera = new OrthographicCamera(width, height);
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+
+        camera = new OrthographicCamera(width, height);
         viewport = new StretchViewport(width, height, camera);
         UIViewport = new StretchViewport(width, height);
 

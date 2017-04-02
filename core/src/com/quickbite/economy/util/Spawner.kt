@@ -54,6 +54,13 @@ object Spawner {
                     //TODO Calculate luxury rating
                 }
 
+            //Otherwise, if nothing is selling this item...
+            }else{
+                //If it's a food (need) item, subtract from the town
+                val category = ItemDefManager.itemDefMap[itemToBuy.itemName]!!.category
+                if(category == "Food"){
+                    town.needsRating -= itemToBuy.itemAmount
+                }
             }
 
             spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)

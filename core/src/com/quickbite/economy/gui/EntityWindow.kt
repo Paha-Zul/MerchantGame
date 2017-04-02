@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.*
@@ -48,14 +49,21 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         defaultButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
         defaultButtonStyle.fontColor = Color.WHITE
 
-        currentlySelectedEntity = entity
+        //Scroll pane for the main content window under the buttons.
+        val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
+        scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+        scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
 
-//        mainTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE, 400, 600)))
+        currentlySelectedEntity = entity
 
         val tabTable = Table()
         tabTable.background = darkBackgroundDrawable
 
         val contentTable = Table()
+
+        val contentTableScrollPane = ScrollPane(contentTable, scrollPaneStyle)
 
         val sc = Mappers.selling.get(entity)
         val wc = Mappers.workforce.get(entity)
@@ -170,7 +178,7 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         //Add the stuff to the main table
         this.mainTable.add(tabTable).expandX().fillX()
         this.mainTable.row()
-        this.mainTable.add(contentTable).expand().fill()
+        this.mainTable.add(contentTableScrollPane).expand().fill()
 
         //Make the window
 //        val background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE, 400, 600)))
@@ -181,7 +189,7 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         window = Window("", windowSkin)
         window.isMovable = true
         window.setSize(500f, 400f)
-        window.setPosition(100f, 100f)
+        window.setPosition(MathUtils.random(90f, 110f), MathUtils.random(90f, 110f))
         window.pad(20f, 10f, 10f, 10f)
 
         window.add(this.mainTable).expand().fill()

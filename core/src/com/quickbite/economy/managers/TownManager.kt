@@ -14,6 +14,7 @@ object TownManager {
         town.itemIncomeMap.put("Wheat", TownItemIncome("Wheat", 75))
         town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 75))
         town.population = 100
+
         TownManager.addTown("Town", town)
     }
 

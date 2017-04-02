@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.interfaces.GuiWindow
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.managers.TownManager
+import com.quickbite.economy.objects.Town
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.TimeOfDay
 import com.quickbite.spaceslingshot.util.EventSystem
@@ -32,8 +34,11 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     val topTable = Table()
 
     var timeOfDayLabel:Label
+    var populationLabel:Label
+    var ratingLabel:Label
 
-    class ImageEntityLink(val imageName:String, val entityName:String)
+    //Gotta be lazy cause Town won't be available right away
+    val myTown: Town by lazy {TownManager.getTown("Town")}
 
     init{
         val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", defaultLabelStyle)
@@ -44,9 +49,22 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         timeOfDayLabel.setFontScale(0.2f)
         timeOfDayLabel.setAlignment(Align.center)
 
+        populationLabel = Label("", defaultLabelStyle)
+        populationLabel.setFontScale(0.2f)
+        populationLabel.setAlignment(Align.center)
+
+        ratingLabel = Label("", defaultLabelStyle)
+        ratingLabel.setFontScale(0.2f)
+        ratingLabel.setAlignment(Align.center)
+
         topTable.add(moneyLabel).width(200f)
         topTable.row()
         topTable.add(timeOfDayLabel).width(200f)
+        topTable.row()
+        topTable.add(populationLabel).width(200f)
+        topTable.row()
+        topTable.add(ratingLabel).width(200f)
+
         topTable.setPosition(MyGame.camera.viewportWidth/2f, MyGame.camera.viewportHeight - 25f)
 
         EventSystem.onEvent("addPlayerMoney", {moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")})
@@ -86,7 +104,9 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     }
 
     fun openEntityWindow(entity:Entity){
-        guiStack.add(EntityWindow(this, entity))
+        //If a window isn't already open for this entity, open it
+        if(!guiStack.any { (it as EntityWindow).entity === entity })
+            guiStack.add(EntityWindow(this, entity))
     }
 
     fun closeWindow(window:GuiWindow){
@@ -97,5 +117,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         guiStack.forEach { it.update(delta) }
 
         timeOfDayLabel.setText("D: ${TimeOfDay.day}, T: $TimeOfDay")
+        populationLabel.setText("Pop: ${myTown.population}")
+        ratingLabel.setText("N: ${myTown.needsRating}, L: ${myTown.luxuryRating}")
     }
 }

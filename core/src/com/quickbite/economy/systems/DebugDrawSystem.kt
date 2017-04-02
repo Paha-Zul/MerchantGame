@@ -62,9 +62,9 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             //Draw the shop link if enabled and we have the reselling component
             if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && sc != null){
 
-                sc.resellingEntityItemLinks.forEach { link ->
+                sc.resellingEntityItemLinks.forEach { (entity) ->
                     val currPoint = tm.position
-                    val nextPoint = Mappers.transform.get(link.entity).position
+                    val nextPoint = Mappers.transform.get(entity).position
 
                     drawLineTo(currPoint, nextPoint)
                 }

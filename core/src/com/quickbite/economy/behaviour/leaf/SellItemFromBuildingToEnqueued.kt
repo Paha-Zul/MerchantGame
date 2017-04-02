@@ -42,12 +42,13 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 itemToBuy.itemAmount -= itemAmtRemoved //Remove the amount we bought from the buyer's demands
 
                 //Remove the money from the buyer's inventory
-                val moneyRemoved = buyerInv.removeItem("Gold", itemBeingSold.itemPrice*itemAmtRemoved)
+                val moneyRemovedFromBuyerInv = buyerInv.removeItem("Gold", itemBeingSold.itemPrice*itemAmtRemoved)
 
                 //TODO Make sure this tax is okay for low value items. We don't want to be getting 1 gold tax on a 2 gold item
-                val tax = if(moneyRemoved >=1) Math.max(1, (moneyRemoved*sellComp.taxRate).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
-                val taxedAmount = moneyRemoved - tax
-                sellInv.addItem("Gold", taxedAmount)
+                val tax = if(moneyRemovedFromBuyerInv >=1) Math.max(1, (moneyRemovedFromBuyerInv*sellComp.taxRate).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
+                var remainingMoney = moneyRemovedFromBuyerInv - tax
+
+                sellInv.addItem("Gold", remainingMoney)
 
                 //If the buyer's demand for the item is 0 or less, remove it from the demands
                 if(itemToBuy.itemAmount <= 0){
