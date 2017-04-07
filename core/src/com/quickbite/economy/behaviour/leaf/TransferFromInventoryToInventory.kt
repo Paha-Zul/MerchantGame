@@ -43,8 +43,8 @@ class TransferFromInventoryToInventory(bb:BlackBoard, val toTargetInventory:Bool
             val toInv = if (toTargetInventory) Mappers.inventory.get(bb.targetEntity) else Mappers.inventory.get(bb.myself)
 
             for(item in fromInv.itemMap.values.toList()){
-                val amt = fromInv.removeItem(item.name, item.amount)
-                toInv.addItem(item.name, amt)
+                val amt = fromInv.removeItem(item.itemName, item.itemAmount)
+                toInv.addItem(item.itemName, amt)
             }
         }
 

@@ -65,7 +65,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         topTable.row()
         topTable.add(ratingLabel).width(200f)
 
-        topTable.setPosition(MyGame.camera.viewportWidth/2f, MyGame.camera.viewportHeight - 25f)
+        topTable.setPosition(MyGame.camera.viewportWidth/2f, MyGame.camera.viewportHeight - 50f)
 
         EventSystem.onEvent("addPlayerMoney", {moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")})
 

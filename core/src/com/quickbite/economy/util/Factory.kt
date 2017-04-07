@@ -233,7 +233,7 @@ object Factory {
 
         if(definition.isWorker){
             val workerUnit = WorkerUnitComponent()
-            workerUnit.dailyWage = MathUtils.random(500, 1000)
+            workerUnit.dailyWage = MathUtils.random(50, 300)
             entity.add(workerUnit)
 
             init.initFuncs.add({

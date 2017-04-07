@@ -2,12 +2,13 @@ package com.quickbite.economy.components
 
 import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
+import com.quickbite.economy.util.ItemAmountLink
 
 /**
  * Created by Paha on 12/14/2016.
  */
 class InventoryComponent : MyComponent {
-        val itemMap = hashMapOf<String, InventoryItem>()
+        val itemMap = hashMapOf<String, ItemAmountLink>()
 
     val outputItems = hashSetOf("All")
     val inputItems = hashSetOf<String>()
@@ -21,23 +22,58 @@ class InventoryComponent : MyComponent {
         if(amount < 1)
             return 0
 
-        val item = itemMap.getOrPut(name, { InventoryItem(name, 0) })
-        item.amount += amount
+        val item = itemMap.getOrPut(name, { ItemAmountLink(name, 0) })
+        item.itemAmount += amount
         return amount
     }
 
+//    /**
+//     * Adds an item to this inventory
+//     * @param itemName The itemName of the item to add.
+//     * @param itemAmount The itemAmount to add.
+//     * @return The itemAmount added.
+//     */
+//    fun addItem(itemName:String, itemAmount:Int = 1, producedAt:Entity? = null):Int{
+//        if(itemAmount < 1)
+//            return 0
+//
+//        val list = itemMap.getOrPut(itemName, { Array()})
+//        var item = list.firstOrNull { it.itemName == itemName && it.producedAt === producedAt }
+//        if(item == null){
+//            item = Item(itemName, itemAmount, producedAt)
+//            list.add(item)
+//        }else{
+//            item.itemAmount += itemAmount
+//        }
+//
+//        return itemAmount
+//    }
+//
+//    /**
+//     * Adds an item to this inventory
+//     * @param item The Item to add
+//     * @return The item amount that was added.
+//     */
+//    fun addItem(item:Item):Int{
+//        return addItem(item.itemName, item.itemAmount, item.producedAt)
+//    }
+
     /**
      * @param name The name of the item to remove
-     * @param amount The amount to remove
+     * @param amount The amount to remove. -1 indicates all of the item.
      * @return The amount that was removed
      */
     fun removeItem(name:String, amount:Int = 1):Int{
+        var amount = amount
+        if(amount < 0)
+            amount = getItemAmount(name)
+
         val item = itemMap[name]
         if(item != null){
-            val amountTaken = if(item.amount - amount < 0) item.amount else amount
+            val amountTaken = if(item.itemAmount - amount < 0) item.itemAmount else amount
 
-            item.amount -= amount
-            if(item.amount <= 0)
+            item.itemAmount -= amount
+            if(item.itemAmount <= 0)
                 itemMap.remove(name)
 
             return amountTaken
@@ -61,15 +97,9 @@ class InventoryComponent : MyComponent {
      */
     fun getItemAmount(name:String):Int{
         if(hasItem(name))
-            return itemMap[name]!!.amount
+            return itemMap[name]!!.itemAmount
 
         return 0
-    }
-
-    class InventoryItem(val name:String, var amount:Int){
-        override fun toString(): String {
-            return "[$name:$amount]"
-        }
     }
 
     override fun dispose(entity: Entity) {

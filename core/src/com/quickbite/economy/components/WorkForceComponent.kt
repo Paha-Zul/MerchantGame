@@ -11,6 +11,7 @@ class WorkForceComponent : MyComponent {
     var numWorkerSpots:Int = 0
     var workersAvailable:Array<Entity> = Array(10)
     var workerTasks:Array<String> = Array()
+    var workersPaidFlag = false
 
     override fun dispose(entity: Entity) {
     }

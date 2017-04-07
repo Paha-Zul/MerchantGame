@@ -256,9 +256,9 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
         scrollPaneStyle.background = darkBackgroundDrawable
         scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
         scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
 
         val buttonStyle = Button.ButtonStyle()
         buttonStyle.up = buttonBackgroundDrawable
@@ -438,12 +438,12 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
             contentsTable.add(listLabel).colspan(2)
             contentsTable.row()
 
-            comp.itemMap.values.forEach { item ->
-                val itemLabel = Label(item.name, defaultLabelStyle)
+            comp.itemMap.values.forEach { (itemName, itemAmount) ->
+                val itemLabel = Label(itemName, defaultLabelStyle)
                 itemLabel.setFontScale(0.2f)
                 itemLabel.setAlignment(Align.center)
 
-                val itemAmountLabel = Label("${item.amount}", defaultLabelStyle)
+                val itemAmountLabel = Label("$itemAmount", defaultLabelStyle)
                 itemAmountLabel.setFontScale(0.2f)
                 itemAmountLabel.setAlignment(Align.center)
 

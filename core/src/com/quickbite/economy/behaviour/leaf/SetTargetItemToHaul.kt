@@ -74,13 +74,14 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
 
             //First, get the entity list link that connects and Entity to a list of items that it's selling
             val entityListLink = sellingComp!!.resellingEntityItemLinks[sellingComp.index]
+            val entityInventory = Mappers.inventory[entityListLink.entity]
 
             validateSubIndex(entityListLink, sellingComp)
 
             if(entityListLink.itemPriceLinkList.size > 0) {
                 //Set the target item.
                 bb.targetItem.itemName = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemName
-                bb.targetItem.itemAmount = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemPrice
+                bb.targetItem.itemAmount = entityInventory.getItemAmount(bb.targetItem.itemName)
 
                 this.controller.finishWithSuccess()
             }else

@@ -17,8 +17,6 @@ import com.quickbite.economy.util.TimeOfDay
  * Created by Paha on 1/22/2017.
  */
 class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkForceComponent::class.java).get(), interval){
-    var paidWorkers = true
-
     override fun processEntity(ent: Entity) {
         val wc = Mappers.workforce.get(ent)
         val building = Mappers.building.get(ent)
@@ -50,18 +48,19 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
             }
         }
 
-        if(TimeOfDay.hour <= 1 && !paidWorkers){
+        //This pays the worker...
+        if(TimeOfDay.hour <= 2 && !wc.workersPaidFlag){
+            val workerBuildingInv = Mappers.inventory[ent]
             wc.workersAvailable.forEach { entity ->
                 val worker = Mappers.worker[entity]
-                val workerBuildingInv = Mappers.inventory[worker.workerBuilding]
 
                 val moneyPaid = workerBuildingInv.removeItem("Gold", worker.dailyWage)
                 worker.paid = moneyPaid == worker.dailyWage
             }
 
-            paidWorkers = true
-        }else if(TimeOfDay.hour > 1){
-            paidWorkers = false
+            wc.workersPaidFlag = true
+        }else if(TimeOfDay.hour > 2){
+            wc.workersPaidFlag = false
         }
     }
 

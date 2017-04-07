@@ -35,7 +35,8 @@
       "onGrid": true,
       "gridBlockWhenPlaced": true,
       "inventoryDef": {
-        "hasInventory": true
+        "hasInventory": true,
+        "debugItemList": [["Gold", 1000]]
       },
       "sellingItems": {
         "isSelling": true,
@@ -92,7 +93,7 @@
       "gridBlockWhenPlaced": true,
       "inventoryDef": {
         "hasInventory": true,
-        "debugItemList": [["Wood Plank", 1000]]
+        "debugItemList": [["Gold", 1000]]
       },
       "sellingItems": {
         "isSelling": true,
@@ -127,7 +128,8 @@
     "onGrid": true,
     "gridBlockWhenPlaced": true,
     "inventoryDef": {
-      "hasInventory": true
+      "hasInventory": true,
+      "debugItemList": [["Gold", 1000]]
     },
     "sellingItems": {
       "isSelling": true,
@@ -197,7 +199,8 @@
       "onGrid": true,
       "gridBlockWhenPlaced": true,
       "inventoryDef": {
-        "hasInventory": true
+        "hasInventory": true,
+        "debugItemList": [["Gold", 1000]]
       },
       "sellingItems": {
         "isSelling": true,

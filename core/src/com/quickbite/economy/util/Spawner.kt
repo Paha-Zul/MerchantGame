@@ -16,7 +16,7 @@ object Spawner {
 
     val spawnPosition = Vector2(-500f, 0f)
 
-    val spawnBuyerTimeRange = Vector2(1f, 10f)
+    val spawnBuyerTimeRange = Vector2(1f, 5f)
     val spawnHaulerTimeRange = Vector2(5f, 20f)
 
     const val populationMultiplierForBuyerThreshold = 200 //For every x amount of population, increase the multiplier by 1
@@ -34,7 +34,7 @@ object Spawner {
         spawnBuyerTimer = CustomTimer(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
             val list = ItemDefManager.itemDefMap.values.toList() //Get the list of items
             val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
-            val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 10)) //Get an item to buy
+            val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 4)) //Get an item to buy
 
             //If we found a building that is selling it, spawn a buyer
             if(Util.getClosestSellingItem(spawnPosition, itemToBuy.itemName) != null){

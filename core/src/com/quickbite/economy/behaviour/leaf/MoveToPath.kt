@@ -38,7 +38,7 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
             velocity.velocity.set(tmp.moveTowards(bb.path[index], speed))
 
             //If our unit's position is within the destination, move to the next path.
-            if(this.position.dst(bb.path[index]) <= speed){
+            if(this.position.dst(bb.path[index]) <= (speed*2f)){
                 index++
                 if(index >= bb.path.size)
                     bb.path = listOf() //Clear the itemPriceLinkList so we don't follow anything

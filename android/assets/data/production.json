@@ -16,17 +16,17 @@
     },
     {
       "producedItem": "Flour",
-      "produceAmount": 5,
+      "produceAmount": 10,
       "requirements": [
-        ["Wheat", 1]
+        ["Wheat", 2]
       ]
     },
     {
       "producedItem": "Bread",
-      "produceAmount": 1,
+      "produceAmount": 2,
       "requirements": [
-        ["Flour", 1],
-        ["Milk", 1]
+        ["Flour", 5],
+        ["Milk", 2]
       ]
     }
   ]
