@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.util.CustomTimer
 import com.quickbite.economy.util.TimeOfDay
 import com.quickbite.economy.util.TownItemIncome
+import com.quickbite.spaceslingshot.util.EventSystem
 
 /**
  * Created by Paha on 3/18/2017.
@@ -12,8 +13,8 @@ class Town {
     private var _c = 0 //Temp counter to check if we're updating correctly
 
     var population:Int = 0
+    val populationHistory = mutableListOf<Int>()
     val itemIncomeMap = hashMapOf<String, TownItemIncome>()
-
     val populationIncreaseFromRatingThreshold = 20
 
     var needsRating:Int = 500
@@ -45,6 +46,8 @@ class Town {
             val diff = needsRating - 500 //This will either be negative or positive
             val change = diff/populationIncreaseFromRatingThreshold
             population += change
+            populationHistory += population
+            EventSystem.callEvent("pop_change", listOf(this))
         })
     }
 

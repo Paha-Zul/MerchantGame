@@ -2,7 +2,7 @@ package com.quickbite.economy.behaviour.leaf
 
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
-import com.quickbite.economy.managers.ProductionsManager
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -21,7 +21,7 @@ class ProduceItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 
 
     override fun start() {
         val inv = Mappers.inventory.get(bb.targetEntity)
-        val production:ProductionsManager.Production
+        val production:DefinitionManager.Production
 
         //The the item name is empty, try to pull a production from the target entity ( ie: the building we're producing at)
         if(itemName == ""){
@@ -32,7 +32,7 @@ class ProduceItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 
             itemAmount = production.produceAmount
         //Otherwise, use the name that came in
         }else{
-            production = ProductionsManager.productionMap[itemName]!!
+            production = DefinitionManager.productionMap[itemName]!!
         }
 
         //If our inventory doesn't have enough

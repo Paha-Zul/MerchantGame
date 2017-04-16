@@ -12,8 +12,12 @@ import java.util.*
  * Created by Paha on 2/16/2017.
  */
 object DefinitionManager {
-    val json = Json()
+    private val json = Json()
     val definitionMap: HashMap<String, Definition> = hashMapOf()
+    val itemDefMap: HashMap<String, ItemDef> = hashMapOf()
+    val itemCategoryMap:HashMap<String, com.badlogic.gdx.utils.Array<ItemDef>> = hashMapOf()
+    val productionMap: HashMap<String, Production> = hashMapOf()
+
     lateinit var names:Names
 
     private val buildingDefName = "data/buildingDefs.json"
@@ -59,6 +63,19 @@ object DefinitionManager {
             }
 
         })
+
+        //Add a serializer for ItemAmountLink
+        json.setSerializer(ItemAmountLink::class.java, object: Json.Serializer<ItemAmountLink> {
+            override fun read(json: Json, jsonData: JsonValue, type: Class<*>): ItemAmountLink {
+                val data = jsonData.child
+                val itemAmountLink = ItemAmountLink(data.asString(), data.next.asInt()) //Make the item link
+                return itemAmountLink //Return in
+            }
+
+            override fun write(json: Json, `object`: ItemAmountLink, knownType: Class<*>?) {
+                json.writeValue(arrayOf(`object`.itemName, `object`.itemAmount)) //Write as an array
+            }
+        })
     }
 
     fun readDefinitionsJson(){
@@ -71,6 +88,23 @@ object DefinitionManager {
         list.buildingDefs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
+
+        readItemDefs()
+        readProductionJson()
+    }
+
+    private fun readItemDefs(){
+        val list = json.fromJson(Array<ItemDef>::class.java, Gdx.files.internal("data/itemDefs.json"))
+        list.forEach { itemDef ->
+            itemDefMap.put(itemDef.itemName, itemDef)
+            val itemDefList = itemCategoryMap.getOrPut(itemDef.category, {com.badlogic.gdx.utils.Array()})
+            itemDefList.add(itemDef)
+        }
+    }
+
+    private fun readProductionJson(){
+        val list = json.fromJson(ProductionList::class.java, Gdx.files.internal("data/production.json"))
+        list.productions.forEach { prod -> productionMap.put(prod.producedItem, prod)}
     }
 
     class Names{
@@ -145,7 +179,7 @@ object DefinitionManager {
         var graphicName = ""
         var graphicAnchor:Array<Float> = arrayOf()
         var graphicSize:Array<Float> = arrayOf()
-        var initialAnimation = false
+        var initialAnimation = true
     }
 
     class SellingDef{
@@ -153,5 +187,21 @@ object DefinitionManager {
         var sellingList:com.badlogic.gdx.utils.Array<ItemPriceLink> = com.badlogic.gdx.utils.Array()
         var isReselling = false
         var taxRate = 0f
+    }
+
+    class ItemDef{
+        lateinit var itemName:String
+        var baseMarketPrice:Int = 0
+        var category:String = ""
+    }
+
+    private class ProductionList{
+        lateinit var productions:Array<Production>
+    }
+
+    class Production{
+        lateinit var producedItem:String
+        var produceAmount:Int = 0
+        lateinit var requirements:Array<ItemAmountLink>
     }
 }

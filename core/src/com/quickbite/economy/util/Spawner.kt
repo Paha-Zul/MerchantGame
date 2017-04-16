@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.BuildingComponent
-import com.quickbite.economy.managers.ItemDefManager
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 
@@ -32,7 +32,7 @@ object Spawner {
 
     init{
         spawnBuyerTimer = CustomTimer(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
-            val list = ItemDefManager.itemDefMap.values.toList() //Get the list of items
+            val list = DefinitionManager.itemDefMap.values.toList() //Get the list of items
             val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
             val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 4)) //Get an item to buy
 
@@ -48,7 +48,7 @@ object Spawner {
 
                 //Scan each item that we are buying and calculate necessity and luxury ratings
                 buying.buyList.forEach { (itemName, itemAmount) ->
-                    val itemDef = ItemDefManager.itemDefMap[itemName]!!
+                    val itemDef = DefinitionManager.itemDefMap[itemName]!!
                     if(itemDef.category == "Food")
                         buying.needsSatisfactionRating -= itemAmount
                     //TODO Calculate luxury rating
@@ -57,7 +57,7 @@ object Spawner {
             //Otherwise, if nothing is selling this item...
             }else{
                 //If it's a food (need) item, subtract from the town
-                val category = ItemDefManager.itemDefMap[itemToBuy.itemName]!!.category
+                val category = DefinitionManager.itemDefMap[itemToBuy.itemName]!!.category
                 if(category == "Food"){
                     town.needsRating -= itemToBuy.itemAmount
                 }
@@ -69,6 +69,7 @@ object Spawner {
         spawnHaulerTimer = CustomTimer(MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
             val list = town.itemIncomeMap.values.toList()
             val randomItem = list[MathUtils.random(list.size - 1)]
+            //TODO crashes when no stockpile
             val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, randomItem.accumulatedItemCounter.toInt()))
             randomItem.accumulatedItemCounter -= itemToBuy.itemAmount
 

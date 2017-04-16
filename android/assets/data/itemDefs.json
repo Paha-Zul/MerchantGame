@@ -26,17 +26,17 @@
   },
   {
     "itemName": "Flour",
-    "baseMarketPrice": 10,
+    "baseMarketPrice": 5,
     "category": "Ingredient"
   },
   {
     "itemName": "Bread",
-    "baseMarketPrice": 50,
+    "baseMarketPrice": 25,
     "category": "Food"
   },
   {
     "itemName": "Milk",
-    "baseMarketPrice": 5,
+    "baseMarketPrice": 2,
     "category": "Ingredient"
   }
 ]

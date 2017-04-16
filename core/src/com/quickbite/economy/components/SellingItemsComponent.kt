@@ -16,7 +16,7 @@ class SellingItemsComponent : MyComponent {
     var baseSellingItems = Array<ItemPriceLink>()
     var currSellingItems = Array<ItemPriceLink>()
     val sellHistory = Array<ItemSold>()
-
+    val goldHistory = Array<Int>()
 
     var isReselling = false
     /**

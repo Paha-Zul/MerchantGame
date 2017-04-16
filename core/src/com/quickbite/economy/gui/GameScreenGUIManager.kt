@@ -103,9 +103,18 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         })
     }
 
+    fun openTownWindow(){
+        if(!guiStack.any{ it is TownWindow})
+            guiStack += TownWindow(this)
+    }
+
+    fun removeTownWindow(){
+        guiStack.removeIf {it is TownWindow}
+    }
+
     fun openEntityWindow(entity:Entity){
         //If a window isn't already open for this entity, open it
-        if(!guiStack.any { (it as EntityWindow).entity === entity })
+        if(!guiStack.any { (it as? EntityWindow)?.entity === entity })
             guiStack.add(EntityWindow(this, entity))
     }
 

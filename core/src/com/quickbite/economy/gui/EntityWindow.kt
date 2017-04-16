@@ -5,65 +5,37 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.*
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.*
+import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GuiWindow
 import com.quickbite.economy.util.*
 import com.quickbite.spaceslingshot.util.EventSystem
-import java.util.*
 
 /**
  * Created by Paha on 3/9/2017.
  */
-class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : GuiWindow{
-    private val window:Window
-
-    private val updateList: Array<() -> Unit> = Array(5)
-    private val updateMap: HashMap<String, () -> Unit> = hashMapOf()
-    private var changedTabsFunc:()->Unit = {}
-
+class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWindow(guiManager){
     private var currentlyDisplayingComponent: Component? = null
-
     private var currentlySelectedEntity: Entity? = null
 
-    val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE)
-    val mainTable = Table()
-
-    val defaultButtonStyle = TextButton.TextButtonStyle()
-    val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
-    val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
-
     init {
-        defaultButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
-        defaultButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
-        defaultButtonStyle.fontColor = Color.WHITE
+        initEntityStuff()
+    }
 
-        //Scroll pane for the main content window under the buttons.
-        val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
-        scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
-        scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
-
+    private fun initEntityStuff(){
         currentlySelectedEntity = entity
-
-        val tabTable = Table()
-        tabTable.background = darkBackgroundDrawable
-
-        val contentTable = Table()
-
-        val contentTableScrollPane = ScrollPane(contentTable, scrollPaneStyle)
 
         val sc = Mappers.selling.get(entity)
         val wc = Mappers.workforce.get(entity)
@@ -174,27 +146,6 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         //When we select a new building, try to display whatever section we were displaying on the last one
         if(currentlyDisplayingComponent != null)
             loadTable(contentTable, currentlyDisplayingComponent!!)
-
-        //Add the stuff to the main table
-        this.mainTable.add(tabTable).expandX().fillX()
-        this.mainTable.row()
-        this.mainTable.add(contentTableScrollPane).expand().fill()
-
-        //Make the window
-//        val background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE, 400, 600)))
-        val windowBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box", Texture::class.java], 50, 50, 50, 50))
-        val windowSkin = Window.WindowStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE, windowBackground)
-
-        //Window
-        window = Window("", windowSkin)
-        window.isMovable = true
-        window.setSize(500f, 400f)
-        window.setPosition(MathUtils.random(90f, 110f), MathUtils.random(90f, 110f))
-        window.pad(20f, 10f, 10f, 10f)
-
-        window.add(this.mainTable).expand().fill()
-
-        MyGame.stage.addActor(window)
     }
 
     override fun update(delta:Float){
@@ -202,15 +153,16 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     }
 
     override fun close() {
-        val debug = Mappers.debugDraw[currentlySelectedEntity]
-        debug.debugDrawWorkers = false
-        debug.debugDrawWorkplace = false
+        super.close()
 
-        mainTable.remove()
+        //Prevent this crash....
+        if(currentlySelectedEntity != null) {
+            val debug = Mappers.debugDraw[currentlySelectedEntity]
+            debug.debugDrawWorkers = false
+            debug.debugDrawWorkplace = false
+        }
+
         currentlySelectedEntity = null
-        window.remove()
-
-        guiManager.closeWindow(this)
     }
 
     private fun loadTable(table: Table, component: Component){
@@ -510,6 +462,9 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
     }
 
     private fun setupSellingTable(table: Table, comp: SellingItemsComponent){
+        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK)
+        graphStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY)))
+
         val taxRateTable = Table()
         taxRateTable.background = darkBackgroundDrawable
 
@@ -591,6 +546,8 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         val buyerNameLabel = Label("Buyer", defaultLabelStyle)
         buyerNameLabel.setFontScale(0.2f)
         buyerNameLabel.setAlignment(Align.center)
+
+        val goldHistoryGraph = Graph(mutableListOf(), 50, graphStyle)
 
         //The history table function. This will populate the table
         val historyTableFunc = {
@@ -685,6 +642,7 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         updateMap.put("sellHistory", historyTableFunc)
 
         updateList.add { populateItemsTable() }
+        updateList.add { goldHistoryGraph.points = comp.goldHistory.toList() }
 
         //Put in the event system
         EventSystem.onEvent("guiUpdateSellHistory", {historyTableFunc()})
@@ -699,7 +657,8 @@ class EntityWindow(val guiManager: GameScreenGUIManager, val entity:Entity) : Gu
         table.add(sellingItemsTable).expandX().fillX() //What we are selling
         table.row().expandX().fillX().spaceTop(20f)
         table.add(sellHistoryTable).expandX().fillX() //The history table
-        table.row().expand().fill() //Push everything up!
+        table.row().expand().fill().spaceTop(20f) //Push everything up!
+        table.add(goldHistoryGraph).size(350f, 250f)
     }
 
     private fun setupResellingStuff(table: Table, comp: SellingItemsComponent){

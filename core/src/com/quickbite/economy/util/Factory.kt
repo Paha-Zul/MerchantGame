@@ -14,8 +14,6 @@ import com.quickbite.economy.components.*
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.BuildingDefManager
 import com.quickbite.economy.managers.DefinitionManager
-import com.quickbite.economy.managers.ItemDefManager
-import com.quickbite.economy.managers.ProductionsManager
 import com.quickbite.economy.objects.*
 
 /**
@@ -117,15 +115,16 @@ object Factory {
         graphicComp.sprite = Sprite(MyGame.manager[definition.graphicDef.graphicName, Texture::class.java])
         graphicComp.sprite.setSize(definition.graphicDef.graphicSize[0], definition.graphicDef.graphicSize[1])
         graphicComp.anchor.set(definition.graphicDef.graphicAnchor[0], definition.graphicDef.graphicAnchor[1])
+        graphicComp.initialAnimation = definition.graphicDef.initialAnimation
 
         transform.dimensions.set(definition.physicalDimensions[0], definition.physicalDimensions[1])
         transform.position.set(position)
 
         grid.blockWhenPlaced = definition.gridBlockWhenPlaced
 
-        init.initFuncs.add({
+        init.initFuncs.add {
 
-        })
+        }
 
         entity.add(identityComp)
         entity.add(graphicComp)
@@ -162,7 +161,7 @@ object Factory {
             //Things like this have to be copied or else they are linked and can be modified!!!
             val sellingList = Array<ItemPriceLink>()
             definition.sellingItems.sellingList.forEach { (itemName) ->
-                sellingList.add(ItemPriceLink(itemName, ItemDefManager.itemDefMap[itemName]!!.baseMarketPrice))
+                sellingList.add(ItemPriceLink(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice))
             }
 
             selling.baseSellingItems = sellingList //Use the base array here
@@ -205,7 +204,7 @@ object Factory {
         if(definition.productionDef.produces.size > 0){
             val producesItems = ProduceItemComponent()
             definition.productionDef.produces.forEach { itemName ->
-                producesItems.productionList.add(ProductionsManager.productionMap[itemName])
+                producesItems.productionList.add(DefinitionManager.productionMap[itemName])
             }
 
             entity.add(producesItems)
@@ -233,7 +232,7 @@ object Factory {
 
         if(definition.isWorker){
             val workerUnit = WorkerUnitComponent()
-            workerUnit.dailyWage = MathUtils.random(50, 300)
+            workerUnit.dailyWage = MathUtils.random(25, 150)
             entity.add(workerUnit)
 
             init.initFuncs.add({

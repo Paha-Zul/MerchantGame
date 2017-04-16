@@ -46,7 +46,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
                 //TODO Make sure this tax is okay for low value items. We don't want to be getting 1 gold tax on a 2 gold item
                 val tax = if(moneyRemovedFromBuyerInv >=1) Math.max(1, (moneyRemovedFromBuyerInv*sellComp.taxRate).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
-                var remainingMoney = moneyRemovedFromBuyerInv - tax
+                val remainingMoney = moneyRemovedFromBuyerInv - tax
 
                 sellInv.addItem("Gold", remainingMoney)
 
@@ -58,6 +58,9 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 //Add the sell history
                 val ic = Mappers.identity.get(unitInQueue)
                 sellComp.sellHistory.add(ItemSold(itemToBuy.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
+
+                //Add to the gold history
+                sellComp.goldHistory.add(sellInv.getItemAmount("Gold"))
 
                 //Call some events
                 EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed

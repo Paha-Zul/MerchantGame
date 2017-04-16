@@ -3,7 +3,7 @@ package com.quickbite.economy.components
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.managers.ProductionsManager
+import com.quickbite.economy.managers.DefinitionManager
 
 /**
  * Created by Paha on 3/8/2017.
@@ -11,7 +11,7 @@ import com.quickbite.economy.managers.ProductionsManager
  */
 class ProduceItemComponent : MyComponent{
     var currProductionIndex = 0
-    val productionList: Array<ProductionsManager.Production> = Array()
+    val productionList: Array<DefinitionManager.Production> = Array()
 
     override fun initialize() {
 

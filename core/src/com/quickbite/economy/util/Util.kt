@@ -4,12 +4,15 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.BuildingComponent
 import java.util.*
@@ -297,6 +300,19 @@ object Util {
             "house" -> return BuildingComponent.BuildingType.House
             else -> return BuildingComponent.BuildingType.None
         }
+    }
+
+    fun drawLineTo(start: Vector2, end:Vector2, pixel:TextureRegion, size:Float, batch: Batch){
+        val rotation = MathUtils.atan2(end.y - start.y, end.x - start.x)* MathUtils.radiansToDegrees
+        val distance = start.dst(end)
+        pixel.setRegion(0f, 0f, distance/ size, 1f)
+        batch.draw(pixel, start.x, start.y, 0f, 0f, distance, size, 1f, 1f, rotation)
+    }
+
+    fun drawLineTo(start: Vector2, end:Vector2, pixel: TextureRegionDrawable, size:Float, batch: Batch){
+        val rotation = MathUtils.atan2(end.y - start.y, end.x - start.x)* MathUtils.radiansToDegrees
+        val distance = start.dst(end)
+        pixel.draw(batch, start.x, start.y, 0f, 0f, distance, size, 1f, 1f, rotation)
     }
 
     fun <T> toObject(clazz: Class<*>, value: String): T {
