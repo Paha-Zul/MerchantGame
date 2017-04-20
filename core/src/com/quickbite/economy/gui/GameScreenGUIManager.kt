@@ -113,8 +113,18 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     }
 
     fun openEntityWindow(entity:Entity){
-        //If a window isn't already open for this entity, open it
-        if(!guiStack.any { (it as? EntityWindow)?.entity === entity })
+
+        var exists = false
+        guiStack.forEach{
+            val window = it as? EntityWindow
+            if(window?.entity == entity){
+                window.toFront()
+                exists = true
+                return@forEach
+            }
+        }
+
+        if(!exists)
             guiStack.add(EntityWindow(this, entity))
     }
 
