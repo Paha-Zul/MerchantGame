@@ -6,16 +6,18 @@ import com.badlogic.gdx.math.MathUtils
  * Created by Paha on 2/7/2016.
  * Creates the timer as one time.
  * @param oneShot If the timer is a one shot timer (doesn't fire more than once)
- * @param _callback The callback to be
+ * @param callback The callback to be fired when the timer expires
  */
-class CustomTimer(private var seconds: Float, var oneShot:Boolean = false, private var callback: (() -> Unit)? = null){
+class CustomTimer(private var secondsDelay:Float, private var seconds: Float, var oneShot:Boolean = false, private var callback: (() -> Unit)? = null){
 
     /** Data to hold*/
     var userData:Any? = null
 
+    var initialDelay = secondsDelay
+
     /** If the timer is done. */
     val done:Boolean
-        get() = currTime >= seconds
+        get() = if(initialDelay < 0) currTime >= seconds else currTime >= initialDelay
 
 
     var stopped:Boolean = false
@@ -62,17 +64,19 @@ class CustomTimer(private var seconds: Float, var oneShot:Boolean = false, priva
      * Starts the timer (if it hasn't expired)
      */
     fun start(){
-        if(!done)
-            stopped = false
+        stopped = false
     }
 
     /**
      * Restarts the timer with the optional settings.
-     * @param seconds
+     * @param secondsDelay The initial delay of the timer. This defaults to 0 as to not be triggered again. If set above
+     * 0, the intial delay will be used again.
+     * @param seconds The time in seconds to run this timer
      */
-    fun restart(seconds: Float = this.seconds){
+    fun restart(secondsDelay: Float = 0f, seconds: Float = this.seconds){
         currTime = 0f
         this.seconds = seconds
+        this.initialDelay = secondsDelay
         start()
     }
 }

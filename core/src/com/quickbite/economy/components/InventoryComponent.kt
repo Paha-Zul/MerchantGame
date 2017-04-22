@@ -1,17 +1,22 @@
 package com.quickbite.economy.components
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
+import com.quickbite.economy.util.InventoryChangeListener
 import com.quickbite.economy.util.ItemAmountLink
 
 /**
  * Created by Paha on 12/14/2016.
  */
 class InventoryComponent : MyComponent {
-        val itemMap = hashMapOf<String, ItemAmountLink>()
+    val itemMap = hashMapOf<String, ItemAmountLink>()
 
     val outputItems = hashSetOf("All")
     val inputItems = hashSetOf<String>()
+
+    /** A list of listeners for inventory changes.*/
+    val inventoryChangeListeners:Array<(InventoryChangeListener)->Unit> = Array()
 
     /**
      * @param name The name of the item to add.
@@ -24,39 +29,11 @@ class InventoryComponent : MyComponent {
 
         val item = itemMap.getOrPut(name, { ItemAmountLink(name, 0) })
         item.itemAmount += amount
+
+        inventoryChangeListeners.forEach { it.invoke(InventoryChangeListener(name, amount, item.itemAmount)) }
+
         return amount
     }
-
-//    /**
-//     * Adds an item to this inventory
-//     * @param itemName The itemName of the item to add.
-//     * @param itemAmount The itemAmount to add.
-//     * @return The itemAmount added.
-//     */
-//    fun addItem(itemName:String, itemAmount:Int = 1, producedAt:Entity? = null):Int{
-//        if(itemAmount < 1)
-//            return 0
-//
-//        val list = itemMap.getOrPut(itemName, { Array()})
-//        var item = list.firstOrNull { it.itemName == itemName && it.producedAt === producedAt }
-//        if(item == null){
-//            item = Item(itemName, itemAmount, producedAt)
-//            list.add(item)
-//        }else{
-//            item.itemAmount += itemAmount
-//        }
-//
-//        return itemAmount
-//    }
-//
-//    /**
-//     * Adds an item to this inventory
-//     * @param item The Item to add
-//     * @return The item amount that was added.
-//     */
-//    fun addItem(item:Item):Int{
-//        return addItem(item.itemName, item.itemAmount, item.producedAt)
-//    }
 
     /**
      * @param name The name of the item to remove
@@ -64,7 +41,7 @@ class InventoryComponent : MyComponent {
      * @return The amount that was removed
      */
     fun removeItem(name:String, amount:Int = 1):Int{
-        var amount = amount
+        var amount = amount //This makes is mutable
         if(amount < 0)
             amount = getItemAmount(name)
 
@@ -73,8 +50,12 @@ class InventoryComponent : MyComponent {
             val amountTaken = if(item.itemAmount - amount < 0) item.itemAmount else amount
 
             item.itemAmount -= amount
-            if(item.itemAmount <= 0)
+            if(item.itemAmount <= 0) {
+                item.itemAmount = 0
                 itemMap.remove(name)
+            }
+
+            inventoryChangeListeners.forEach { it.invoke(InventoryChangeListener(name, amountTaken, item.itemAmount)) }
 
             return amountTaken
         }

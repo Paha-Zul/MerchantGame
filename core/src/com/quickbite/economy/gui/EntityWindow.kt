@@ -368,6 +368,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
     }
 
     private fun setupInventoryTable(table: Table, comp: InventoryComponent){
+
         val contentsTable = Table()
         contentsTable.background = darkBackgroundDrawable
 
@@ -464,6 +465,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
     private fun setupSellingTable(table: Table, comp: SellingItemsComponent){
         val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK)
         graphStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY)))
+        graphStyle.graphBackground = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.ORANGE)))
 
         val taxRateTable = Table()
         taxRateTable.background = darkBackgroundDrawable
@@ -638,6 +640,17 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
         //Call the history table function to populate the history
         historyTableFunc()
 
+        table.top()
+
+        //Add all the stuff to the table
+        table.add(taxRateTable).expandX().fillX().padTop(20f) //The tax rate
+        table.row().expandX().fillX().spaceTop(20f)
+        table.add(sellingItemsTable).expandX().fillX() //What we are selling
+        table.row().expandX().fillX().spaceTop(20f)
+        table.add(sellHistoryTable).expandX().fillX() //The history table
+        table.row().expand().fill().spaceTop(20f) //Push everything up!
+        table.add(goldHistoryGraph).size(350f, 250f)
+
         //Put the history function into our update map
         updateMap.put("sellHistory", historyTableFunc)
 
@@ -649,16 +662,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
 
         changedTabsFunc = { EventSystem.removeEvent("guiUpdateSellHistory")}
 
-        table.top()
-
-        //Add all the stuff to the table
-        table.add(taxRateTable).expandX().fillX().padTop(20f) //The tax rate
-        table.row().expandX().fillX().spaceTop(20f)
-        table.add(sellingItemsTable).expandX().fillX() //What we are selling
-        table.row().expandX().fillX().spaceTop(20f)
-        table.add(sellHistoryTable).expandX().fillX() //The history table
-        table.row().expand().fill().spaceTop(20f) //Push everything up!
-        table.add(goldHistoryGraph).size(350f, 250f)
+//        goldHistoryGraph.debug = true
     }
 
     private fun setupResellingStuff(table: Table, comp: SellingItemsComponent){

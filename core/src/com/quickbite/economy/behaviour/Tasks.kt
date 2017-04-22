@@ -66,6 +66,13 @@ object Tasks {
         return seq
     }
 
+    fun tryToBuyAllItemDemands(bb:BlackBoard):Task{
+        val task = RepeatUntilFail(bb, buyItemDemandFromBuilding(bb))
+
+
+        return task
+    }
+
     /**
      * Finds the exit and leaves the map
      */
@@ -113,7 +120,7 @@ object Tasks {
     fun buyItemDemandAndLeaveMap(bb:BlackBoard, itemName:String = "Wood Log"):Task{
         val seq = Sequence(bb, "Buying Item and Leaving")
 
-        val buyItem = buyItemDemandFromBuilding(bb)
+        val buyItem = AlwaysTrue(bb,RepeatUntilFail(bb, buyItemDemandFromBuilding(bb)))
         val leaveMap = leaveMap(bb)
 
         seq.controller.addTask(buyItem)

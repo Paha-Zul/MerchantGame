@@ -112,8 +112,11 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         guiStack.removeIf {it is TownWindow}
     }
 
+    /**
+     * Opens an Entity window. If one already exists, brings it to the front
+     * @param entity The Entity to display
+     */
     fun openEntityWindow(entity:Entity){
-
         var exists = false
         guiStack.forEach{
             val window = it as? EntityWindow

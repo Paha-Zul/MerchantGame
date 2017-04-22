@@ -31,42 +31,36 @@ object Spawner {
     lateinit var spawnHaulerTimer:CustomTimer
 
     init{
-        spawnBuyerTimer = CustomTimer(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
+        spawnBuyerTimer = CustomTimer(20f, MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
+            val numItemTypesToBuy = MathUtils.random(1, 2)
             val list = DefinitionManager.itemDefMap.values.toList() //Get the list of items
-            val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
-            val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, 4)) //Get an item to buy
-
-            //If we found a building that is selling it, spawn a buyer
-            if(Util.getClosestSellingItem(spawnPosition, itemToBuy.itemName) != null){
-                //Randomly assign an item and amount wanted
-                val entity = Factory.createObjectFromJson("buyer", spawnPosition)
-                val buying = Mappers.buyer[entity]
-                val inventory = Mappers.inventory[entity]
-
-                buying.buyList.add(itemToBuy)
-                inventory.addItem("Gold", MathUtils.random(500, 1000))
-
-                //Scan each item that we are buying and calculate necessity and luxury ratings
-                buying.buyList.forEach { (itemName, itemAmount) ->
-                    val itemDef = DefinitionManager.itemDefMap[itemName]!!
-                    if(itemDef.category == "Food")
-                        buying.needsSatisfactionRating -= itemAmount
-                    //TODO Calculate luxury rating
-                }
-
-            //Otherwise, if nothing is selling this item...
-            }else{
-                //If it's a food (need) item, subtract from the town
-                val category = DefinitionManager.itemDefMap[itemToBuy.itemName]!!.category
-                if(category == "Food"){
-                    town.needsRating -= itemToBuy.itemAmount
-                }
+            val itemsToBuy = mutableListOf<ItemAmountLink>()
+            for(i in 0..numItemTypesToBuy){
+                val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
+                itemsToBuy += ItemAmountLink(randomItem.itemName, MathUtils.random(1, 4)) //Get an item to buy
             }
 
-            spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
+            //Randomly assign an item and amount wanted
+            val entity = Factory.createObjectFromJson("buyer", spawnPosition)
+            val buying = Mappers.buyer[entity]
+            val inventory = Mappers.inventory[entity]
+
+            buying.buyList.addAll(com.badlogic.gdx.utils.Array(itemsToBuy.toTypedArray()))
+            inventory.addItem("Gold", MathUtils.random(500, 1000))
+
+            //Scan each item that we are buying and calculate necessity and luxury ratings
+            buying.buyList.forEach { (itemName, itemAmount) ->
+                val itemDef = DefinitionManager.itemDefMap[itemName]!!
+                if(itemDef.category == "Food")
+                    buying.needsSatisfactionRating -= itemAmount
+                //TODO Calculate luxury rating
+            }
+
+//            spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
+            spawnBuyerTimer.stop()
         })
 
-        spawnHaulerTimer = CustomTimer(MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
+        spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
             val list = town.itemIncomeMap.values.toList()
             val randomItem = list[MathUtils.random(list.size - 1)]
             //TODO crashes when no stockpile

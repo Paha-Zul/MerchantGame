@@ -168,6 +168,18 @@ object Factory {
             selling.currSellingItems = Array(sellingList) //Copy it for this one
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
+
+            val listener: (InventoryChangeListener)->Unit = { (itemName, change, finalAmount) ->
+                if(itemName == "Gold"){
+                    selling.goldHistory.add(finalAmount)
+                }
+            }
+
+            init.initFuncs.add {
+                val inv = Mappers.inventory[entity]
+                inv.inventoryChangeListeners.add(listener)
+            }
+
             entity.add(selling)
         }
 
@@ -192,6 +204,7 @@ object Factory {
             entity.add(velocity)
         }
 
+        //Physics component
         if(definition.physicsDef.hasPhysicsBody){
             val bodyComp = BodyComponent()
             init.initFuncs.add { bodyComp.body = Util.createBody(definition.physicsDef.bodyType,

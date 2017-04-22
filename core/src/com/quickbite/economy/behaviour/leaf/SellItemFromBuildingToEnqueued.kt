@@ -59,9 +59,6 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 val ic = Mappers.identity.get(unitInQueue)
                 sellComp.sellHistory.add(ItemSold(itemToBuy.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
 
-                //Add to the gold history
-                sellComp.goldHistory.add(sellInv.getItemAmount("Gold"))
-
                 //Call some events
                 EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
                 EventSystem.callEvent("addPlayerMoney", listOf(tax)) //Call the event to add money to the player

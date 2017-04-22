@@ -73,6 +73,9 @@ open class GuiWindow(val guiManager: GameScreenGUIManager) {
 
     open fun update(delta:Float){}
 
+    fun toFront(){
+        window.toFront()
+    }
 
     open fun close(){
         mainTable.remove()

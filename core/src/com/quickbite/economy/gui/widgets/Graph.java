@@ -2,12 +2,15 @@ package com.quickbite.economy.gui.widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.quickbite.economy.MyGame;
 import com.quickbite.economy.util.Util;
 
 import java.util.List;
@@ -26,10 +29,28 @@ public class Graph extends Actor {
     private Vector2 tmp1 = new Vector2();
     private Vector2 tmp2 = new Vector2();
 
+    float padLeft = 50, padBot = 50, padTop = 50, padRight = 50;
+
+    private Label maxLabel, minLabel;
+
     public Graph(List<Integer> points, int maxPointsHoriz, GraphStyle style){
         this.points = points;
         this.maxPointsHoriz = maxPointsHoriz;
         this.style = style;
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle(MyGame.manager.get("defaultFont", BitmapFont.class), Color.BLACK);
+
+        //TODO Figure out how to deal with the font scale from outside
+        maxLabel = new Label("max", labelStyle);
+        maxLabel.setFontScale(0.2f);
+        maxLabel.setSize(50f, 20f);
+        maxLabel.setAlignment(Align.right);
+
+        minLabel = new Label("min", labelStyle);
+        minLabel.setFontScale(0.2f);
+        minLabel.setSize(50f, 20f);
+        minLabel.setAlignment(Align.right);
+
         setPoints(points);
     }
 
@@ -37,15 +58,25 @@ public class Graph extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
+        float _x = this.getX() + padLeft;
+        float _y = this.getY() + padBot;
+        float _width = this.getWidth() - padLeft;
+        float _height = this.getHeight() - padBot;
+
         if(style.background != null)
             style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 
-        float heightScale = getHeight()/Math.max((highestPoint - lowestPoint), 1);
+        if(style.graphBackground != null)
+            style.graphBackground.draw(batch, _x, _y, _width, _height);
+
+        float heightScale = _height/Math.max((highestPoint - lowestPoint), 1);
         int size = points.size() - 1; //We are going to be doing i and i+1, so stay one back
         int count = Math.min(size, maxPointsHoriz); //Only loop to the smallest
         int offset = size - maxPointsHoriz;
         if(offset < 0)
             offset = 0;
+
+        drawLabels( _x, _y, _y + _height, batch);
 
         if(size < 1)
             return;
@@ -60,12 +91,12 @@ public class Graph extends Actor {
             float point = points.get(i1);
             float nextPoint = points.get(i2);
 
-            float yPosition = (point - lowestPoint)*heightScale;
-            float nextYPosition = (nextPoint - lowestPoint)*heightScale;
+            float yPosition = (point - lowestPoint)*heightScale + _y;
+            float nextYPosition = (nextPoint - lowestPoint)*heightScale + _y;
 
             //Use the regular i index here for calculations
-            tmp1.set(i*distanceBetweenHorizPoints + this.getX(), yPosition + this.getY());
-            tmp2.set((i+1)*distanceBetweenHorizPoints + this.getX(), nextYPosition + this.getY());
+            tmp1.set(i*distanceBetweenHorizPoints + _x, yPosition);
+            tmp2.set((i+1)*distanceBetweenHorizPoints + _x, nextYPosition );
 
             //Draw the line
             if(style.lineDrawable != null)
@@ -80,11 +111,28 @@ public class Graph extends Actor {
         }
     }
 
+    private void drawLabels(float xpos, float yMin, float yMax, Batch batch){
+        minLabel.setPosition(xpos - minLabel.getWidth(), yMin);
+        minLabel.draw(batch, 1f);
+
+        maxLabel.setPosition(xpos - maxLabel.getWidth(), yMax - maxLabel.getHeight());
+        maxLabel.draw(batch, 1f);
+
+        minLabel.debug();
+        maxLabel.debug();
+    }
+
     @Override
     public void drawDebug(ShapeRenderer shapes) {
         super.drawDebug(shapes);
 
-        float heightScale = getHeight()/Math.max((highestPoint - lowestPoint), 1);
+        drawDebugLabels(shapes);
+
+        float _x = this.getX() + padLeft;
+        float _y = this.getY() + padBot;
+        float _height = this.getHeight() - padBot;
+
+        float heightScale = _height/Math.max((highestPoint - lowestPoint), 1);
         int size = points.size() - 1; //We are going to be doing i and i+1, so stay one back
         int count = Math.min(size, maxPointsHoriz); //Only loop to the smallest
         int offset = size - maxPointsHoriz;
@@ -103,8 +151,8 @@ public class Graph extends Actor {
             float nextPoint = points.get(i2);
 
             //Use the regular i index here for calculations
-            tmp1.set(i*distanceBetweenHorizPoints + this.getX(), (point - lowestPoint)*heightScale + this.getY());
-            tmp2.set((i+1)*distanceBetweenHorizPoints + this.getX(), (nextPoint - lowestPoint)*heightScale + this.getY());
+            tmp1.set(i*distanceBetweenHorizPoints + _x, (point - lowestPoint)*heightScale + _y);
+            tmp2.set((i+1)*distanceBetweenHorizPoints +  _x, (nextPoint - lowestPoint)*heightScale + _y);
 
             //Draw the line
             shapes.line(tmp1, tmp2);
@@ -118,8 +166,21 @@ public class Graph extends Actor {
         }
     }
 
-    public void setPoints(List<Integer> points) {
-        this.points = points;
+    private void drawDebugLabels(ShapeRenderer shapes){
+        shapes.set(ShapeRenderer.ShapeType.Line);
+        shapes.setColor(Color.BLACK);
+
+        shapes.rect(minLabel.getX(), minLabel.getY(), minLabel.getOriginX(), minLabel.getOriginY(), minLabel.getWidth(), minLabel.getHeight(),
+                minLabel.getScaleX(), minLabel.getScaleY(), minLabel.getRotation());
+
+        shapes.rect(maxLabel.getX(), maxLabel.getY(), maxLabel.getOriginX(), maxLabel.getOriginY(), maxLabel.getWidth(), maxLabel.getHeight(),
+                maxLabel.getScaleX(), maxLabel.getScaleY(), maxLabel.getRotation());
+    }
+
+    public void setPoints(List<Integer> incomingPoints) {
+        int start = Math.max(incomingPoints.size() - maxPointsHoriz, 0); //Don't let this be negative
+
+        this.points = incomingPoints.subList(start, incomingPoints.size());
 
         float max = 0f;
         float min = Float.MAX_VALUE;
@@ -127,6 +188,12 @@ public class Graph extends Actor {
             max = Math.max(max, p);
             min = Math.min(min, p);
         }
+
+        if(min == Float.MAX_VALUE)
+            min = 0;
+
+        maxLabel.setText(""+(int)max);
+        minLabel.setText(""+(int)min);
 
         highestPoint = max;
         lowestPoint = min;
@@ -140,7 +207,7 @@ public class Graph extends Actor {
     protected void sizeChanged() {
         super.sizeChanged();
 
-        distanceBetweenHorizPoints = getWidth()/maxPointsHoriz;
+        distanceBetweenHorizPoints = (getWidth() - padLeft)/maxPointsHoriz;
     }
 
     /** The style for a label, see {@link Label}.
@@ -148,6 +215,9 @@ public class Graph extends Actor {
     static public class GraphStyle {
         /** Optional. */
         public Drawable background;
+
+        /** Optional. */
+        public Drawable graphBackground;
 
         /** Optional. */
         public Drawable lineDrawable;

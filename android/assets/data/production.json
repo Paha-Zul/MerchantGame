@@ -23,9 +23,9 @@
     },
     {
       "producedItem": "Bread",
-      "produceAmount": 2,
+      "produceAmount": 5,
       "requirements": [
-        ["Flour", 5],
+        ["Flour", 2],
         ["Milk", 2]
       ]
     }

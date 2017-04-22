@@ -32,7 +32,7 @@ class Town {
 
     init{
         //TODO Make sure this timer works
-        accumulateItemsTimer = CustomTimer(1f, false, {
+        accumulateItemsTimer = CustomTimer(0f, 1f, false, {
             _c++
 
             //For each item in the income map, increase it!
@@ -42,7 +42,7 @@ class Town {
             }
         })
 
-        changePopulationTimer = CustomTimer(10f, false, {
+        changePopulationTimer = CustomTimer(0f, 10f, false, {
             val diff = needsRating - 500 //This will either be negative or positive
             val change = diff/populationIncreaseFromRatingThreshold
             population += change

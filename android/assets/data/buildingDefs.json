@@ -200,7 +200,7 @@
       "gridBlockWhenPlaced": true,
       "inventoryDef": {
         "hasInventory": true,
-        "debugItemList": [["Gold", 2000]]
+        "debugItemList": [["Gold", 2000], ["Bread", 10]]
       },
       "sellingItems": {
         "isSelling": true,
