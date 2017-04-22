@@ -4,12 +4,13 @@ import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuyerComponent
 import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 3/12/2017.
  *
- * Attempts to set the bb.targetItem from the entity's (bb.myself) buyer component. Will check if the entity has a buyer
- * component and if the buyer has demands.
+ * Attempts to set the bb.targetItem and the bb.targetEntity by finding a building that is selling one of the
+ * item demands from bb.myself (buyer component)
  */
 class SetTargetItemFromDemand(bb:BlackBoard) : LeafTask(bb){
     var buyer:BuyerComponent? = null
@@ -20,11 +21,21 @@ class SetTargetItemFromDemand(bb:BlackBoard) : LeafTask(bb){
     }
 
     override fun start() {
-        val itemLink = buyer!!.buyList[buyer!!.buyingIndex]
+        val position = Mappers.transform[bb.myself].position
 
-        bb.targetItem.itemName = itemLink.itemName
-        bb.targetItem.itemAmount = itemLink.itemAmount
+        //Search through each item to buy and see if there is a building selling it
+        buyer!!.buyList.forEach {
+            val building = Util.getClosestSellingItem(position, it.itemName)
+            if(building != null){
+                bb.targetItem.itemName = it.itemName
+                bb.targetItem.itemAmount = it.itemAmount
+                bb.targetEntity = building
+                controller.finishWithSuccess()
+                return
+            }
+        }
 
-        controller.finishWithSuccess()
+        //If we didn't finish with success in the loop above, then we failed
+        controller.finishWithFailure()
     }
 }
