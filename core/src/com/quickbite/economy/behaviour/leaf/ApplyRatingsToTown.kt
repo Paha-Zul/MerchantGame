@@ -18,8 +18,6 @@ class ApplyRatingsToTown(bb:BlackBoard) : LeafTask(bb) {
         if(buyer != null) {
             town.needsRating += buyer.needsSatisfactionRating
             town.luxuryRating += buyer.luxurySatisfactionRating
-
-            System.out.println("Town n:${town.needsRating}, l: ${town.luxuryRating}")
         }
 
         controller.finishWithSuccess()

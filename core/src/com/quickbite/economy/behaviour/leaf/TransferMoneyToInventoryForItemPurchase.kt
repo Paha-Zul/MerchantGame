@@ -46,12 +46,16 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
         //This means that the other building is capable of selling stuff (not a stockpile) and will have
         //a price for the item. This condition doesn't affect our success.
         if(targetBuildingSelling != null){
-            val itemPrice = targetBuildingSelling.baseSellingItems.first { it.itemName == bb.targetItem.itemName }.itemPrice
-            val moneyInInventory = fromInventory.getItemAmount("Gold")
-            val amountCanBuy = Math.min(moneyInInventory/itemPrice, bb.targetItem.itemAmount)
-            val moneyNeeded = amountCanBuy*itemPrice
+            //Try to get from currSellingItems...
+            var itemFromSelling = targetBuildingSelling.currSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
+            //If the item is null, try to get from baseSellingItems...
+            if(itemFromSelling == null)
+                itemFromSelling = targetBuildingSelling.baseSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
 
-            //TODO Should probably try to do partial orders
+            val moneyInInventory = fromInventory.getItemAmount("Gold")
+            val amountCanBuy = Math.min(moneyInInventory/itemFromSelling!!.itemPrice, bb.targetItem.itemAmount)
+            val moneyNeeded = amountCanBuy*itemFromSelling.itemPrice
+
             //Try to get the money from the 'fromInventory'. If we don't have enough, fail
             if(amountCanBuy < 1){
                 controller.finishWithFailure()

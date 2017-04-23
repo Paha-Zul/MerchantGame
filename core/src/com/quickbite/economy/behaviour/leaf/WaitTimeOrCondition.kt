@@ -14,6 +14,12 @@ class WaitTimeOrCondition(bb:BlackBoard, val timeToWait:Float, val func:(Entity)
         counter += delta
         if(func(bb.myself) || counter >= timeToWait){
             controller.finishWithSuccess()
+            counter = 0f
         }
+    }
+
+    override fun reset() {
+        super.reset()
+        counter = 0f
     }
 }

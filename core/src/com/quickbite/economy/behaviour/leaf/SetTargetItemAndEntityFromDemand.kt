@@ -12,7 +12,7 @@ import com.quickbite.economy.util.Util
  * Attempts to set the bb.targetItem and the bb.targetEntity by finding a building that is selling one of the
  * item demands from bb.myself (buyer component)
  */
-class SetTargetItemFromDemand(bb:BlackBoard) : LeafTask(bb){
+class SetTargetItemAndEntityFromDemand(bb:BlackBoard) : LeafTask(bb){
     var buyer:BuyerComponent? = null
 
     override fun check(): Boolean {
@@ -25,11 +25,12 @@ class SetTargetItemFromDemand(bb:BlackBoard) : LeafTask(bb){
 
         //Search through each item to buy and see if there is a building selling it
         buyer!!.buyList.forEach {
-            val building = Util.getClosestSellingItem(position, it.itemName)
+            val building = Util.getClosestSellingItem(position, it.itemName, true, bb.entitiesToIgnore)
             if(building != null){
                 bb.targetItem.itemName = it.itemName
                 bb.targetItem.itemAmount = it.itemAmount
                 bb.targetEntity = building
+                bb.targetBuilding = Mappers.building[building]
                 controller.finishWithSuccess()
                 return
             }

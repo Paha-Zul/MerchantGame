@@ -14,6 +14,9 @@ class BlackBoard{
     var targetEntity:Entity? = null
     var targetBuilding:BuildingComponent? = null
 
+    /** A hashset of entities to ignore. Multipurpose*/
+    var entitiesToIgnore:HashSet<Entity> = hashSetOf()
+
     /** Can be used for things like checking if we are already inside a building*/
     var insideEntity:Entity? = null
 

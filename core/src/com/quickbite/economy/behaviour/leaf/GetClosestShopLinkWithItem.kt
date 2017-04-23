@@ -28,17 +28,16 @@ class GetClosestShopLinkWithItem(bb:BlackBoard, var itemName:String = "", var it
             itemAmount = bb.targetItem.itemAmount
         }
 
-        //TODO Should this actually be going through each entity link? What about our target item and target entity in the blackboard?
-        //For each entity, check it's itemPriceLinkList of items
-        links.forEach { entityLink ->
-            val inventory = Mappers.inventory[entityLink.entity]
+        //Here we are going to search through each entity link and find if the entity has the item we want...
 
+        //For each entity, check it's itemPriceLinkList of items
+        links.forEach { (entity, itemPriceLinkList) ->
+            val inventory = Mappers.inventory[entity]
             //For each item, check if the item matches what we want and the
-            entityLink.itemPriceLinkList.forEach { itemLink ->
-                //TODO Check against the bb.targetItem and not just for any item?
+            itemPriceLinkList.forEach { itemLink ->
                 //If the item we wanted matches a link AND the building has the item, success!
                 if(itemLink.itemName == this.itemName && inventory.hasItem(itemName)){
-                    bb.targetEntity = entityLink.entity
+                    bb.targetEntity = entity
                     controller.finishWithSuccess()
                     return
                 }

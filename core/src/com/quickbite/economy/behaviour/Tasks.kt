@@ -34,9 +34,7 @@ object Tasks {
     fun buyItemDemandFromBuilding(bb:BlackBoard):Task{
         val seq = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
-        //TODO Need to get the demand from the pawn to get the closest building with item (from demands)
-        val getItemDemand = SetTargetItemFromDemand(bb)
-        val getBuilding = GetClosestBuildingSellingItem(bb)
+        val getItemDemand = SetTargetItemAndEntityFromDemand(bb)
         val getEntrance = GetEntranceOfBuilding(bb)
         val getPath = GetPath(bb)
         val moveTo = MoveToPath(bb)
@@ -50,7 +48,6 @@ object Tasks {
         val setOutside = SetTargetEntityAsInside(bb, true)
 
         seq.controller.addTask(getItemDemand)
-        seq.controller.addTask(getBuilding)
         seq.controller.addTask(getEntrance)
         seq.controller.addTask(getPath)
         seq.controller.addTask(moveTo)
@@ -120,7 +117,7 @@ object Tasks {
     fun buyItemDemandAndLeaveMap(bb:BlackBoard, itemName:String = "Wood Log"):Task{
         val seq = Sequence(bb, "Buying Item and Leaving")
 
-        val buyItem = AlwaysTrue(bb,RepeatUntilFail(bb, buyItemDemandFromBuilding(bb)))
+        val buyItem = AlwaysTrue(bb, RepeatUntilFail(bb, buyItemDemandFromBuilding(bb)))
         val leaveMap = leaveMap(bb)
 
         seq.controller.addTask(buyItem)
@@ -189,7 +186,6 @@ object Tasks {
         val moveToBuilding = MoveToPath(bb)
         val hideAgain = ChangeHidden(bb, true)
         val waitBeforeTransfer = Wait(bb, 1f, 2f)
-        //TODO Set the target item here... for what again?
         val transferItemsToWorkshop = TransferFromInventoryToInventory(bb, true) //Transfer items from me to target
         val giveAllMoneyBackToWorkerBuilding = TransferMoneyToInventoryForItemPurchase(bb, false, true) //Give all the money back
         val unhideAgainAgain = ChangeHidden(bb, true)
@@ -249,6 +245,7 @@ object Tasks {
     }
 
     fun sellItem(bb:BlackBoard) : Task{
+        //TODO make it so the entity selling stays in the building and doesn't pop in and out...
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         //Check if inside the building already?

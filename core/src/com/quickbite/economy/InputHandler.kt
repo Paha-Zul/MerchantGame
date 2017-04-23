@@ -130,7 +130,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.B -> DebugDrawComponent.GLOBAL_DEBUG_BODY = !DebugDrawComponent.GLOBAL_DEBUG_BODY
             Input.Keys.T -> gameScreen.gameScreenGUI.openTownWindow()
             Input.Keys.D -> Factory.destroyAllEntities()
-            Input.Keys.ESCAPE -> gameScreen.currentlySelectedType = ""
+            Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; gameScreen.gameScreenGUI.closeAllWindows()}
             Input.Keys.SPACE -> TimeUtil.pausedBonus = if(TimeUtil.pausedBonus > 0) 0 else 1
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
 

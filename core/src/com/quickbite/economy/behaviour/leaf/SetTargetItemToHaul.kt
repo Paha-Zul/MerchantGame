@@ -50,12 +50,6 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
         bb.targetItem.itemName = least.itemName
         bb.targetItem.itemAmount = least.itemAmount
 
-//        //Set the target item
-//        //TODO We need to deal with the whole array of requirements. How do? For now we random!
-//        val random = MathUtils.random(producedItem.requirements.size-1)
-//        bb.targetItem.itemName = producedItem.requirements[random].itemName
-//        bb.targetItem.itemAmount = producedItem.requirements[random].itemAmount
-
         //Increment the index
         producesItems.currProductionIndex = (producesItems.currProductionIndex + 1) % producesItems.productionList.size
 

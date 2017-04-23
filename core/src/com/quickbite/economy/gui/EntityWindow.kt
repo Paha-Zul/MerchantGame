@@ -485,20 +485,36 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
         val populateItemsTable = {
             sellingItemsTable.clear()
 
-            sellingItemsTable.add(sellLabel).colspan(2)
+            sellingItemsTable.add(sellLabel).colspan(4)
             sellingItemsTable.row()
 
             comp.currSellingItems.forEach { (itemName, itemPrice) ->
                 val itemNameLabel = Label(itemName, defaultLabelStyle)
                 itemNameLabel.setFontScale(0.2f)
                 itemNameLabel.setAlignment(Align.center)
+
                 val itemAmountLabel = Label(itemPrice.toString(), defaultLabelStyle)
                 itemAmountLabel.setFontScale(0.2f)
                 itemAmountLabel.setAlignment(Align.center)
 
+                val xLabel = TextButton("X", defaultButtonStyle)
+                xLabel.label.setFontScale(0.2f)
+                xLabel.label.setAlignment(Align.center)
+
                 sellingItemsTable.add(itemNameLabel).width(100f)
                 sellingItemsTable.add(itemAmountLabel).width(100f)
+                sellingItemsTable.add()
+                if(comp.resellingEntityItemLinks.size > 0) sellingItemsTable.add(xLabel)
                 sellingItemsTable.row()
+
+                xLabel.addListener(object:ClickListener(){
+                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                        if(comp.resellingEntityItemLinks.size <= 0)
+                            return
+                        Util.removeSellingItemFromReseller(comp, itemName, itemPrice)
+                        super.touchUp(event, x, y, pointer, button)
+                    }
+                })
             }
         }
 
@@ -693,7 +709,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
 
                         //If we aren't linking to a building, then don't do this...
                         if(otherBuilding != null) {
-
                             //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
                             if (otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop) {
                                 //Make sure we actually have stuff to add

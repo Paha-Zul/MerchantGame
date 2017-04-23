@@ -135,6 +135,11 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         guiStack.remove(window)
     }
 
+    fun closeAllWindows(){
+        guiStack.toList().forEach { it.close() } //We copy this using toList() so we don't have a concurrent modification...
+        guiStack.clear()
+    }
+
     fun update(delta:Float){
         guiStack.forEach { it.update(delta) }
 

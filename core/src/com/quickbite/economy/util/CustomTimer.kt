@@ -17,7 +17,7 @@ class CustomTimer(private var secondsDelay:Float, private var seconds: Float, va
 
     /** If the timer is done. */
     val done:Boolean
-        get() = if(initialDelay < 0) currTime >= seconds else currTime >= initialDelay
+        get() = if(initialDelay <= 0) currTime >= seconds else currTime >= initialDelay
 
 
     var stopped:Boolean = false

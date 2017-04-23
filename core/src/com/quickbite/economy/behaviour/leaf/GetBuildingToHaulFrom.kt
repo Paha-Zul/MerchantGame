@@ -36,8 +36,6 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         val itemName = bb.targetItem.itemName
         val itemAmount = bb.targetItem.itemAmount
 
-        //TODO Should this actually be going through each entity link? What about our target item and target entity in the blackboard?
-
         //First, Find all links that are reselling the item to use AND have the item in their inventory
         val list = links.filter { it.itemPriceLinkList.any { it.itemName == itemName } && Mappers.inventory[it.entity].hasItem(itemName) }
         if(list.isNotEmpty()) {

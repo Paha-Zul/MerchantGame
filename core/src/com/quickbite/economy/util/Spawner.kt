@@ -56,8 +56,8 @@ object Spawner {
                 //TODO Calculate luxury rating
             }
 
-//            spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
-            spawnBuyerTimer.stop()
+            spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
+//            spawnBuyerTimer.stop()
         })
 
         spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {

@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.BuildingComponent
-import java.util.*
+import com.quickbite.economy.components.SellingItemsComponent
 
 
 /**
@@ -219,27 +219,34 @@ object Util {
         return closest
     }
 
-    fun getClosestSellingItem(position:Vector2, itemName:String, mustBeBuilding:Boolean = true) : Entity?{
+    fun getClosestSellingItem(position:Vector2, itemName:String, mustBeBuilding:Boolean = true, entitiesToIgnore:HashSet<Entity> = hashSetOf()) : Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
 
         Families.sellingItems.forEach { ent ->
-            val sc = Mappers.selling.get(ent)
-            val bc = Mappers.building.get(ent)
-            val inv = Mappers.inventory.get(ent)
+            //If we aren't ignore this entity...
+            if(!entitiesToIgnore.contains(ent)) {
+                val sc = Mappers.selling.get(ent)
+                val bc = Mappers.building.get(ent)
+                val inv = Mappers.inventory.get(ent)
 
-            val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
-            val hasItem = inv != null && inv.hasItem(itemName)
-            var contains = false
-            sc.currSellingItems.forEach contains@{ if(it.itemName == itemName){contains = true; return@contains}}
+                val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
+                val hasItem = inv != null && inv.hasItem(itemName)
+                var contains = false
+                sc.currSellingItems.forEach contains@ {
+                    if (it.itemName == itemName) {
+                        contains = true; return@contains
+                    }
+                }
 
-            if(buildingCheck && contains && hasItem) {
-                val tm = Mappers.transform.get(ent)
-                val dst = tm.position.dst2(position)
+                if (buildingCheck && contains && hasItem) {
+                    val tm = Mappers.transform.get(ent)
+                    val dst = tm.position.dst2(position)
 
-                if (dst <= closestDst) {
-                    closest = ent
-                    closestDst = dst
+                    if (dst <= closestDst) {
+                        closest = ent
+                        closestDst = dst
+                    }
                 }
             }
         }
@@ -324,5 +331,24 @@ object Util {
         if (Float::class.java == clazz) return java.lang.Float.parseFloat(value) as T
         if (Double::class.java == clazz) return java.lang.Double.parseDouble(value) as T
         return value as T
+    }
+
+    /**
+     * Removes an item from the reselling list of the selling component. If there was an item to remove, the linked entity that
+     * was selling the item is given back the selling capabilities
+     * @param sellingComp The SellingItemsComponent to modify
+     * @param itemName The name of the item
+     * @param itemPrice The price of the item (for further matching)
+     */
+    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemPrice:Int){
+        sellingComp.currSellingItems.removeAll { it.itemName == itemName } //Remove all currently selling items with this name
+
+        sellingComp.resellingEntityItemLinks.forEach { (entityLink, itemPriceLinkList) -> //For each entity link...
+            itemPriceLinkList.removeAll { it.itemName == itemName } //Remove all items in the linked item list
+            val otherSelling = Mappers.selling[entityLink] //Get the selling component of the linked Entity
+            val baseSellingItem = otherSelling.baseSellingItems.first {it.itemName == itemName} //Get the base selling item
+            if(!otherSelling.currSellingItems.any { it.itemName == itemName }) //If ther linked Entity is not already currently selling it
+                otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
+        }
     }
 }
