@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
-import com.quickbite.economy.interfaces.GuiWindow
+import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
@@ -26,7 +26,7 @@ import java.util.*
  * Created by Paha on 1/30/2017.
  */
 class GameScreenGUIManager(val gameScreen: GameScreen) {
-    val guiStack:Stack<GuiWindow> = Stack()
+    val guiStack:Stack<GUIWindow> = Stack()
 
     val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.BLACK)
     val bottomTable = Table()
@@ -103,6 +103,11 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         })
     }
 
+    fun openHireWindow(workforceEntity:Entity){
+        if(!guiStack.any { it is HireWorkerWindow })
+            guiStack += HireWorkerWindow(this, workforceEntity)
+    }
+
     fun openTownWindow(){
         if(!guiStack.any{ it is TownWindow})
             guiStack += TownWindow(this)
@@ -131,7 +136,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
             guiStack.add(EntityWindow(this, entity))
     }
 
-    fun closeWindow(window:GuiWindow){
+    fun closeWindow(window: GUIWindow){
         guiStack.remove(window)
     }
 

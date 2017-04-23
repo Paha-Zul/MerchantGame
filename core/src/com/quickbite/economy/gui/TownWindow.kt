@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.gui.widgets.Graph
-import com.quickbite.economy.interfaces.GuiWindow
+import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 import com.quickbite.economy.util.Util
@@ -16,7 +16,7 @@ import com.quickbite.spaceslingshot.util.EventSystem
 /**
  * Created by Paha on 4/9/2017.
  */
-class TownWindow(guiManager: GameScreenGUIManager) : GuiWindow(guiManager) {
+class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
 
     init{
         val style = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK)

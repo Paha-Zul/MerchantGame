@@ -351,4 +351,11 @@ object Util {
                 otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
         }
     }
+
+    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity){
+        val worker = Mappers.worker[entityWorker]
+        val workForce = Mappers.workforce[entityWorkForce]
+        workForce.workersAvailable.add(entityWorker)
+        worker.workerBuilding = entityWorkForce
+    }
 }

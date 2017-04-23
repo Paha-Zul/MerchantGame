@@ -19,14 +19,14 @@ import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.*
 import com.quickbite.economy.gui.widgets.Graph
-import com.quickbite.economy.interfaces.GuiWindow
+import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.util.*
 import com.quickbite.spaceslingshot.util.EventSystem
 
 /**
  * Created by Paha on 3/9/2017.
  */
-class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWindow(guiManager){
+class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
 
@@ -233,13 +233,20 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
         val numWorkersLabel = Label("Workers: ${comp.workersAvailable.size}/${comp.numWorkerSpots}", defaultLabelStyle)
         numWorkersLabel.setFontScale(0.2f)
 
+        val hireButton = TextButton("Hire", defaultButtonStyle)
+        hireButton.label.setFontScale(0.2f)
+
+        val tasksAndHireTable = Table()
+        tasksAndHireTable.add(bottomScrollPane)
+        tasksAndHireTable.add(hireButton)
+
         topInfoTable.add(numWorkersLabel)
 
         mainTableArea.add(topInfoTable)
         mainTableArea.row()
         mainTableArea.add(mainTableWorkerInfo).fill().expand().pad(5f, 5f, 5f, 0f)
         mainTableArea.row()
-        mainTableArea.add(bottomScrollPane)
+        mainTableArea.add(tasksAndHireTable)
 
         var selectedWorkerEntity: Entity? = null
 
@@ -348,6 +355,12 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GuiWin
                 }
             })
         }
+
+        hireButton.addListener(object:ChangeListener(){
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                guiManager.openHireWindow(this@EntityWindow.entity)
+            }
+        })
 
         populateScrollingTable()
 

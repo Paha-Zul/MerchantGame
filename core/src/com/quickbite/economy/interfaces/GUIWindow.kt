@@ -18,21 +18,21 @@ import java.util.*
 /**
  * Created by Paha on 3/9/2017.
  */
-open class GuiWindow(val guiManager: GameScreenGUIManager) {
-    private val window: Window
-    private val mainTable = Table()
-    val tabTable = Table()
-    val contentTable = Table()
+open class GUIWindow(val guiManager: GameScreenGUIManager) {
+    protected val window: Window
+    protected val mainTable = Table()
+    protected val tabTable = Table()
+    protected val contentTable = Table()
 
-    val updateList: Array<() -> Unit> = Array(5)
-    val updateMap: HashMap<String, () -> Unit> = hashMapOf()
-    var changedTabsFunc:()->Unit = {}
+    protected val updateList: Array<() -> Unit> = Array(5)
+    protected val updateMap: HashMap<String, () -> Unit> = hashMapOf()
+    protected var changedTabsFunc:()->Unit = {}
 
-    val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE)
+    protected val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE)
 
-    val defaultButtonStyle = TextButton.TextButtonStyle()
-    val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
-    val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
+    protected val defaultButtonStyle = TextButton.TextButtonStyle()
+    protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
+    protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
     init {
         defaultButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))

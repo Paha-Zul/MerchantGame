@@ -122,10 +122,6 @@ object Factory {
 
         grid.blockWhenPlaced = definition.gridBlockWhenPlaced
 
-        init.initFuncs.add {
-
-        }
-
         entity.add(identityComp)
         entity.add(graphicComp)
         entity.add(transform)
@@ -249,13 +245,13 @@ object Factory {
             entity.add(workerUnit)
 
             init.initFuncs.add({
-                val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
-
-                //TODO Figure out what to do if this workshop is null?
-                if(closestWorkshop != null) {
-                    workerUnit.workerBuilding = closestWorkshop
-                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(entity)
-                }
+//                val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
+//
+//                //TODO Figure out what to do if this workshop is null?
+//                if(closestWorkshop != null) {
+//                    workerUnit.workerBuilding = closestWorkshop
+//                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(entity)
+//                }
             })
         }
 
