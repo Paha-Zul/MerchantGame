@@ -8,7 +8,6 @@ import com.quickbite.economy.behaviour.Task
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.behaviour.decorator.AlwaysTrue
 import com.quickbite.economy.components.BehaviourComponent
-import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.WorkForceComponent
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.TimeOfDay
@@ -76,7 +75,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
 
     private fun getTask(task:String, bb:BlackBoard):Task{
         when (task) {
-            "haul" -> return AlwaysTrue(bb, Tasks.haulItemFromBuilding(bb, BuildingComponent.BuildingType.Stockpile, "Wood Log", 10))
+            "haul" -> return AlwaysTrue(bb, Tasks.haulItemFromBuilding(bb))
             "produce" -> return AlwaysTrue(bb, Tasks.produceItem(bb))
             "sell" -> return AlwaysTrue(bb, Tasks.sellItem(bb))
         }

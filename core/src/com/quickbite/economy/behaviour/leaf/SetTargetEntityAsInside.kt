@@ -6,14 +6,14 @@ import com.quickbite.economy.behaviour.LeafTask
 /**
  * Created by Paha on 3/27/2017.
  */
-class SetTargetEntityAsInside(bb: BlackBoard, val setAsOutside:Boolean = false) : LeafTask(bb){
+class SetTargetEntityAsInside(bb: BlackBoard, val setAsInside:Boolean = true) : LeafTask(bb){
     override fun start() {
         super.start()
 
-        if(!setAsOutside)
-            bb.insideEntity = bb.targetEntity
-        else
-            bb.insideEntity = null
+        when(setAsInside){
+            true -> bb.insideEntity = bb.targetEntity
+            else -> bb.insideEntity = null
+        }
 
         controller.finishWithSuccess()
     }

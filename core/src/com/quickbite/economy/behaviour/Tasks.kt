@@ -45,7 +45,7 @@ object Tasks {
         val handleBought = HandleBuyStatus(bb)
         val leaveBuildingQueue = LeaveBuildingQueue(bb)
         val unhide = ChangeHidden(bb, false)
-        val setOutside = SetTargetEntityAsInside(bb, true)
+        val setOutside = SetTargetEntityAsInside(bb, false)
 
         seq.controller.addTask(getItemDemand)
         seq.controller.addTask(getEntrance)
@@ -163,11 +163,11 @@ object Tasks {
         return seq
     }
 
-    fun haulItemFromBuilding(bb:BlackBoard, buildingType: BuildingComponent.BuildingType, itemName:String, itemAmount:Int):Task {
+    fun haulItemFromBuilding(bb: BlackBoard):Task {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         val unhide = ChangeHidden(bb, false)
-        val clearInsideBuilding = SetTargetEntityAsInside(bb, true)
+        val clearInsideBuilding = SetTargetEntityAsInside(bb, false)
         val setTargetItem:Task = SetTargetItemToHaul(bb)
         val getBuildingToHaulFrom:Task = GetBuildingToHaulFrom(bb)
         val setTargetAsBuilding = SetTargetEntityAsTargetPosition(bb)

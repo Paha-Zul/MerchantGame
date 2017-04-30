@@ -69,28 +69,37 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
         EventSystem.onEvent("addPlayerMoney", {moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")})
 
-        setupBottomTable()
+        setupSpawnEntityTable()
 
         MyGame.stage.addActor(topTable)
         MyGame.stage.addActor(bottomTable)
     }
 
-    private fun setupBottomTable(){
+    /**
+     * Takes all of the definitions from Json that are spawnable entities and builds a table of buttons
+     */
+    private fun setupSpawnEntityTable(){
+        val ignoreEntity = hashSetOf("buyer", "worker", "wall", "hauler")
+
         val list = DefinitionManager.definitionMap.values.toList()
         list.forEach { def ->
-            val buttonStyle = ImageButton.ImageButtonStyle()
-            buttonStyle.imageUp = TextureRegionDrawable(TextureRegion(MyGame.manager[def.graphicDef.graphicName, Texture::class.java]))
+            //TODO This is really just for quick disabling of spawning units for now...
+            //If the ignoreEntity hashset contains the def name, don't add it to the buttons
+            if(!ignoreEntity.contains(def.name.toLowerCase())) {
+                val buttonStyle = ImageButton.ImageButtonStyle()
+                buttonStyle.imageUp = TextureRegionDrawable(TextureRegion(MyGame.manager[def.graphicDef.graphicName, Texture::class.java]))
 
-            val button = ImageButton(buttonStyle)
+                val button = ImageButton(buttonStyle)
 
-            button.addListener(object: ClickListener(){
-                override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    gameScreen.currentlySelectedType = def.name
-                    return true
-                }
-            })
+                button.addListener(object : ClickListener() {
+                    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                        gameScreen.currentlySelectedType = def.name
+                        return true
+                    }
+                })
 
-            bottomTable.add(button).size(64f)
+                bottomTable.add(button).size(64f)
+            }
         }
 
         bottomTable.width = MyGame.camera.viewportWidth

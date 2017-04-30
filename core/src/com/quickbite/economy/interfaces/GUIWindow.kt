@@ -24,20 +24,21 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     protected val tabTable = Table()
     protected val contentTable = Table()
 
+    /** A place to put actions to refresh GUI elements while a certain tab is open. Gets cleared on every window change.*/
     protected val updateList: Array<() -> Unit> = Array(5)
     protected val updateMap: HashMap<String, () -> Unit> = hashMapOf()
     protected var changedTabsFunc:()->Unit = {}
 
     protected val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE)
 
-    protected val defaultButtonStyle = TextButton.TextButtonStyle()
+    protected val defaultTextButtonStyle = TextButton.TextButtonStyle()
     protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
     protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
     init {
-        defaultButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
-        defaultButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
-        defaultButtonStyle.fontColor = Color.WHITE
+        defaultTextButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
+        defaultTextButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
+        defaultTextButtonStyle.fontColor = Color.WHITE
 
         //Scroll pane for the main content window under the buttons.
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle()

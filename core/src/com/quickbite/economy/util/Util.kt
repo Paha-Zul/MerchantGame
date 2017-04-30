@@ -352,6 +352,11 @@ object Util {
         }
     }
 
+    /**
+     * Assigns an Entity worker to an Entity with a WorkForce.
+     * @param entityWorker The Entity that has a WorkerComponent that will be added to the workforce
+     * @param entityWorkForce The Entity that has a WorkForceComponent that will be managing the worker Entity.
+     */
     fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity){
         val worker = Mappers.worker[entityWorker]
         val workForce = Mappers.workforce[entityWorkForce]

@@ -1,10 +1,12 @@
 package com.quickbite.economy.objects
 
 import com.badlogic.gdx.math.MathUtils
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.PopulationChangeEvent
+import com.quickbite.economy.util.CircularQueueWrapper
 import com.quickbite.economy.util.CustomTimer
 import com.quickbite.economy.util.TimeOfDay
 import com.quickbite.economy.util.TownItemIncome
-import com.quickbite.spaceslingshot.util.EventSystem
 
 /**
  * Created by Paha on 3/18/2017.
@@ -12,8 +14,9 @@ import com.quickbite.spaceslingshot.util.EventSystem
 class Town {
     private var _c = 0 //Temp counter to check if we're updating correctly
 
-    var population:Int = 0
-    val populationHistory = mutableListOf<Int>()
+    var population:Float = 0f
+
+    val populationHistory = CircularQueueWrapper<Int>(50)
     val itemIncomeMap = hashMapOf<String, TownItemIncome>()
     val populationIncreaseFromRatingThreshold = 20
 
@@ -44,15 +47,20 @@ class Town {
 
         changePopulationTimer = CustomTimer(0f, 10f, false, {
             val diff = needsRating - 500 //This will either be negative or positive
-            val change = diff/populationIncreaseFromRatingThreshold
-            population += change
-            populationHistory += population
-            EventSystem.callEvent("pop_change", listOf(this))
+            val change = diff.toFloat()/populationIncreaseFromRatingThreshold.toFloat() //Negative or positive change
+            population += change //Add the change
+            populationHistory += population.toInt() //Add the most recent population to the history
+//            EventSystem.callEvent("pop_change", listOf(this))
+            GameEventSystem.fire(PopulationChangeEvent(population.toInt(), populationHistory.queue.toList()))
         })
     }
 
     fun update(delta:Float){
         accumulateItemsTimer.update(delta)
         changePopulationTimer.update(delta)
+    }
+
+    fun getPopulation():Int{
+        return population.toInt()
     }
 }

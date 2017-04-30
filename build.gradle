@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.1'
+    ext.kotlin_version = '1.1.2'
     repositories {
         mavenLocal()
         mavenCentral()
@@ -27,6 +27,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
+        fastUtilVersion = '7.2.0'
     }
 
     repositories {
@@ -110,13 +111,13 @@ project(":html") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.3"
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.3"
+        compile "it.unimi.dsi:fastutil:$fastUtilVersion"
         compile fileTree(dir: '../libs', include: '*.jar')
     }
 }

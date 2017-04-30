@@ -30,6 +30,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
 
+    private var lastWorkerListCounter = 0
+
     init {
         initEntityStuff()
     }
@@ -44,28 +46,28 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val ic = Mappers.inventory.get(entity)
         val buying = Mappers.buyer.get(entity)
 
-        val buildingLabel = TextButton("Building", defaultButtonStyle)
+        val buildingLabel = TextButton("Building", defaultTextButtonStyle)
         buildingLabel.label.setFontScale(0.17f)
 
-        val sellLabel = TextButton("Sell", defaultButtonStyle)
+        val sellLabel = TextButton("Sell", defaultTextButtonStyle)
         sellLabel.label.setFontScale(0.17f)
 
-        val workLabel = TextButton("Work", defaultButtonStyle)
+        val workLabel = TextButton("Work", defaultTextButtonStyle)
         workLabel.label.setFontScale(0.17f)
 
-        val behaviourLabel = TextButton("Beh", defaultButtonStyle)
+        val behaviourLabel = TextButton("Beh", defaultTextButtonStyle)
         behaviourLabel.label.setFontScale(0.17f)
 
-        val inventoryLabel = TextButton("Inv", defaultButtonStyle)
+        val inventoryLabel = TextButton("Inv", defaultTextButtonStyle)
         inventoryLabel.label.setFontScale(0.17f)
 
-        val buyingLabel = TextButton("Buying", defaultButtonStyle)
+        val buyingLabel = TextButton("Buying", defaultTextButtonStyle)
         buyingLabel.label.setFontScale(0.17f)
 
-        val deleteLabel = TextButton("Delete", defaultButtonStyle)
+        val deleteLabel = TextButton("Delete", defaultTextButtonStyle)
         deleteLabel.label.setFontScale(0.17f)
 
-        val exitLabel = TextButton("X", defaultButtonStyle)
+        val exitLabel = TextButton("X", defaultTextButtonStyle)
         exitLabel.label.setFontScale(0.17f)
 
         if(bc != null)
@@ -233,7 +235,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val numWorkersLabel = Label("Workers: ${comp.workersAvailable.size}/${comp.numWorkerSpots}", defaultLabelStyle)
         numWorkersLabel.setFontScale(0.2f)
 
-        val hireButton = TextButton("Hire", defaultButtonStyle)
+        val hireButton = TextButton("Hire", defaultTextButtonStyle)
         hireButton.label.setFontScale(0.2f)
 
         val tasksAndHireTable = Table()
@@ -286,7 +288,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         }
 
         //The function to populate the left side scrolling table where the list of workers are displayed
-        val populateScrollingTable = {
+        val populateWorkerListScrollTable = {
             workerList.clear() //Clear the worker list from any leftover junk
 
             //Populate the left scrolling table
@@ -349,7 +351,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                             worker.taskList.removeValue(taskNameText, false)
 
                         //We need to update the main table and worker list
-                        populateScrollingTable()
+                        populateWorkerListScrollTable()
                         populateMainTableFunc(selectedWorkerEntity!!)
                     }
                 }
@@ -362,10 +364,19 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             }
         })
 
-        populateScrollingTable()
+        populateWorkerListScrollTable()
 
         table.add(leftScrollPane).width(100f).expandY().fillY()
         table.add(mainTableArea).expand().fill()
+
+        //Add a check to see if the worker list changed
+        this.updateList.add {
+            val size = comp.workersAvailable.size
+            if(size != lastWorkerListCounter){
+                lastWorkerListCounter = size
+                populateWorkerListScrollTable()
+            }
+        }
 
         currentlyDisplayingComponent = comp
     }
@@ -510,7 +521,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 itemAmountLabel.setFontScale(0.2f)
                 itemAmountLabel.setAlignment(Align.center)
 
-                val xLabel = TextButton("X", defaultButtonStyle)
+                val xLabel = TextButton("X", defaultTextButtonStyle)
                 xLabel.label.setFontScale(0.2f)
                 xLabel.label.setAlignment(Align.center)
 
@@ -539,10 +550,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         taxRateLabel.setFontScale(0.2f)
         taxRateLabel.setAlignment(Align.center)
 
-        val lessTaxButton = TextButton("<", defaultButtonStyle)
+        val lessTaxButton = TextButton("<", defaultTextButtonStyle)
         lessTaxButton.label.setFontScale(0.2f)
 
-        val moreTaxButton = TextButton(">", defaultButtonStyle)
+        val moreTaxButton = TextButton(">", defaultTextButtonStyle)
         moreTaxButton.label.setFontScale(0.2f)
 
         taxRateTable.add(lessTaxButton).size(32f ,32f)

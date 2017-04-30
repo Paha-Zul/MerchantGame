@@ -6,39 +6,39 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.PopulationChangeEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.TownManager
-import com.quickbite.economy.objects.Town
 import com.quickbite.economy.util.Util
-import com.quickbite.spaceslingshot.util.EventSystem
 
 /**
  * Created by Paha on 4/9/2017.
  */
 class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
+    val updatePopGraphEvent:GameEventSystem.GameEventContext.(PopulationChangeEvent)->Unit
 
     init{
         val style = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK)
         style.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.DARK_GRAY)))
         style.lineThickness = 2f
 
-        val graph = Graph(TownManager.getTown("Town").populationHistory.toList(), 100, style)
+        val graph = Graph(TownManager.getTown("Town").populationHistory.queue.toList(), 100, style)
 
         contentTable.add(graph).size(400f, 300f)
 
 //        contentTable.debugAll()
 
-        EventSystem.onEvent("pop_change", {args ->
-            val town = args[0] as Town
-            graph.points = town.populationHistory.toList()
-        })
+        updatePopGraphEvent = GameEventSystem.subscribe<PopulationChangeEvent> {
+            graph.points = it.popHistory
+        }
 
         initTabs()
     }
 
     private fun initTabs(){
-        val exitLabel = TextButton("X", defaultButtonStyle)
+        val exitLabel = TextButton("X", defaultTextButtonStyle)
         exitLabel.label.setFontScale(0.17f)
 
         exitLabel.addListener(object: ClickListener(){
@@ -57,6 +57,7 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
     }
 
     override fun close() {
+        GameEventSystem.unsubscribe(updatePopGraphEvent)
         super.close()
     }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Factory
@@ -13,17 +14,24 @@ import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 4/23/2017.
+ * A window that lists available workers to hire
  */
 class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: Entity) : GUIWindow(guiManager) {
     val list = mutableListOf<String>()
 
     init{
-        tabTable.remove() //We don't want the tab table here
         window.setSize(200f, 400f)
+
+        val exitButton = TextButton("X", defaultTextButtonStyle)
+        exitButton.label.setFontScale(0.15f)
+
+        tabTable.add().expandX().fillX()
+        tabTable.add(exitButton).right().width(32f)
 
         val firstNames = DefinitionManager.names.firstNames
         val lastNames = DefinitionManager.names.lastNames
 
+        //TODO We probably want a persistent list somewhere instead of randomly generating each time we open the window
         list.add(firstNames[MathUtils.random(firstNames.size-1)])
         list.add(firstNames[MathUtils.random(firstNames.size-1)])
         list.add(firstNames[MathUtils.random(firstNames.size-1)])
@@ -31,7 +39,7 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
         list.add(firstNames[MathUtils.random(firstNames.size-1)])
 
         list.forEach { name ->
-            val workerButton = TextButton(name, defaultButtonStyle)
+            val workerButton = TextButton(name, defaultTextButtonStyle)
             workerButton.label.setFontScale(0.2f)
 
             contentTable.add(workerButton).width(150f).spaceTop(20f)
@@ -47,6 +55,8 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
                 }
             })
         }
+
+        exitButton.addChangeListener { _, _ ->  close()}
 
         contentTable.background = this.darkBackgroundDrawable
     }
