@@ -87,14 +87,14 @@ public class Graph extends Actor {
             int i1 = offset + i;
             int i2 = offset + i + 1;
 
-            //use the adjusted index here for getting the points
+            //use the adjusted indexCounter here for getting the points
             float point = points.get(i1);
             float nextPoint = points.get(i2);
 
             float yPosition = (point - lowestPoint)*heightScale + _y;
             float nextYPosition = (nextPoint - lowestPoint)*heightScale + _y;
 
-            //Use the regular i index here for calculations
+            //Use the regular i indexCounter here for calculations
             tmp1.set(i*distanceBetweenHorizPoints + _x, yPosition);
             tmp2.set((i+1)*distanceBetweenHorizPoints + _x, nextYPosition );
 
@@ -146,11 +146,11 @@ public class Graph extends Actor {
             int i1 = offset + i;
             int i2 = offset + i + 1;
 
-            //use the adjusted index here for getting the points
+            //use the adjusted indexCounter here for getting the points
             float point = points.get(i1);
             float nextPoint = points.get(i2);
 
-            //Use the regular i index here for calculations
+            //Use the regular i indexCounter here for calculations
             tmp1.set(i*distanceBetweenHorizPoints + _x, (point - lowestPoint)*heightScale + _y);
             tmp2.set((i+1)*distanceBetweenHorizPoints +  _x, (nextPoint - lowestPoint)*heightScale + _y);
 

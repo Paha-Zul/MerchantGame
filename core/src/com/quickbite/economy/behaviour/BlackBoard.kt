@@ -3,7 +3,7 @@ package com.quickbite.economy.behaviour
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.components.BuildingComponent
-import com.quickbite.economy.util.ItemAmountLink
+import com.quickbite.economy.objects.ItemAmountLink
 
 
 class BlackBoard{

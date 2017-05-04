@@ -16,6 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.SellingItemsComponent
+import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.managers.TownManager
+import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.objects.Town
 
 
 /**
@@ -322,6 +326,7 @@ object Util {
         pixel.draw(batch, start.x, start.y, 0f, 0f, distance, size, 1f, 1f, rotation)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> toObject(clazz: Class<*>, value: String): T {
         if (Boolean::class.java == clazz) return java.lang.Boolean.parseBoolean(value) as T
         if (Byte::class.java == clazz) return java.lang.Byte.parseByte(value) as T
@@ -340,16 +345,42 @@ object Util {
      * @param itemName The name of the item
      * @param itemPrice The price of the item (for further matching)
      */
-    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemPrice:Int){
+    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceData:Any? = null){
         sellingComp.currSellingItems.removeAll { it.itemName == itemName } //Remove all currently selling items with this name
 
-        sellingComp.resellingEntityItemLinks.forEach { (entityLink, itemPriceLinkList) -> //For each entity link...
-            itemPriceLinkList.removeAll { it.itemName == itemName } //Remove all items in the linked item list
-            val otherSelling = Mappers.selling[entityLink] //Get the selling component of the linked Entity
-            val baseSellingItem = otherSelling.baseSellingItems.first {it.itemName == itemName} //Get the base selling item
-            if(!otherSelling.currSellingItems.any { it.itemName == itemName }) //If ther linked Entity is not already currently selling it
-                otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
+        //Make a copy using .toList() and loop over it....
+        sellingComp.resellingItemsList.toList().forEach { //For each entity link...
+
+            when(it.itemSourceType){
+                //If it's from a workshop....
+                SellingItemData.ItemSource.Workshop -> {
+                    val otherSelling = Mappers.selling[it.itemSourceData as Entity] //Get the selling component of the linked Entity
+                    val baseSellingItem = otherSelling.baseSellingItems.first { it.itemName == itemName } //Get the base selling item
+                    if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
+                        otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
+
+                    sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData != null}
+                }
+
+                //If it's an import from a town...
+                SellingItemData.ItemSource.Import ->{
+                    //TODO We need to figure out how to get the correct town here. This is just a prototyping quickie here
+                    //Get the first item that matches the name AND the item source data passed in
+                    val item = sellingComp.resellingItemsList.first{it.itemName == itemName && it.itemSourceData == itemSourceData}
+                    //Get the town using the item source data
+                    TownManager.getTown(item.itemSourceData as String).itemIncomeMap[itemName]!!.linkedToEntity = null
+                    //Remove the item from the selling comp
+                    sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
+                }
+                else -> {
+
+                }
+            }
         }
+
+        //Remove all matching items from the reselling list. Make sure the itemSourceData is not null. This is
+        //important because we only want to remove links to other buildings/sellers
+
     }
 
     /**
@@ -362,5 +393,35 @@ object Util {
         val workForce = Mappers.workforce[entityWorkForce]
         workForce.workersAvailable.add(entityWorker)
         worker.workerBuilding = entityWorkForce
+    }
+
+    fun addItemToEntitySelling(entity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
+        val selling = Mappers.selling[entity]
+        selling.resellingItemsList
+
+        val itemDef = DefinitionManager.itemDefMap[itemName]!!
+        val reselling = Mappers.selling[entity]
+        val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice*1.5f).toInt(), -1, sourceData)
+        sellingData.itemSourceType = itemSource
+
+        //If the reselling and currSelling lists don't already contain this...
+        if(!reselling.resellingItemsList.any { it.itemName == itemName && it.itemSourceData == sourceData} &&
+                !reselling.currSellingItems.any { it.itemName == itemName && it.itemSourceData == sourceData}) {
+
+            reselling.resellingItemsList.add(sellingData)
+            reselling.currSellingItems.add(sellingData)
+        }
+    }
+
+    fun removeImportFromReseller(entity:Entity, itemName:String, town:Town){
+        val selling = Mappers.selling[entity]
+        selling.resellingItemsList
+
+//        val itemDef = DefinitionManager.itemDefMap[itemName]!!
+//        val reselling = Mappers.selling[entity]
+
+        removeSellingItemFromReseller(selling, itemName, town.name)
+
+        town.itemIncomeMap.values.first { it.itemName == itemName }.linkedToEntity = null
     }
 }

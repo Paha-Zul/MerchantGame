@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.util.MutablePair
+import com.quickbite.economy.objects.MutablePair
 
 /**
  * Created by Paha on 1/16/2017.

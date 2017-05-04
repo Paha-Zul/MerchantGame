@@ -3,7 +3,8 @@ package com.quickbite.economy.managers
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
-import com.quickbite.economy.util.ItemPriceLink
+import com.quickbite.economy.objects.ItemPriceLink
+import com.quickbite.economy.objects.SellingItemData
 import java.util.*
 
 /**
@@ -48,7 +49,7 @@ object BuildingDefManager {
         var physicalDimensions:Array<Float> = arrayOf()
         var gridBlockWhenPlaced = true
         var hasInventory = false
-        var sellingItems:Array<ItemPriceLink> = arrayOf()
+        var sellingItems:Array<SellingItemData> = arrayOf()
         var workforceMax = 0
         var workerTasks:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
         var reselling = false

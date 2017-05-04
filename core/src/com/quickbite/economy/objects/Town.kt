@@ -11,7 +11,7 @@ import com.quickbite.economy.util.TownItemIncome
 /**
  * Created by Paha on 3/18/2017.
  */
-class Town {
+class Town(val name:String) {
     private var _c = 0 //Temp counter to check if we're updating correctly
 
     var population:Float = 0f

@@ -13,13 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.event.EventSystem
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.TimeOfDay
-import com.quickbite.spaceslingshot.util.EventSystem
 import java.util.*
 
 /**
@@ -37,7 +37,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     var populationLabel:Label
     var ratingLabel:Label
 
-    //Gotta be lazy cause Town won't be available right away
+    //Gotta be lazy cause Import won't be available right away
     val myTown: Town by lazy {TownManager.getTown("Town")}
 
     init{
@@ -120,6 +120,15 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     fun openTownWindow(){
         if(!guiStack.any{ it is TownWindow})
             guiStack += TownWindow(this)
+    }
+
+    fun openImportWindow(entity:Entity){
+        if(!guiStack.any{ it is ImportWindow})
+            guiStack += ImportWindow(this, entity)
+    }
+
+    fun closeImportWindow(entity:Entity){
+        guiStack.removeAll { (it as? ImportWindow)?.entity == entity }
     }
 
     fun removeTownWindow(){

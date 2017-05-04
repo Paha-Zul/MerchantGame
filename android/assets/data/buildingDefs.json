@@ -97,7 +97,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Wood Plank", 10]],
+        "sellingList": [["Wood Plank", 10, -1]],
         "taxRate": 0.1
       },
       "physicsDef":{
@@ -133,7 +133,7 @@
     },
     "sellingItems": {
       "isSelling": true,
-      "sellingList": [["Wood Table", 10]],
+      "sellingList": [["Wood Table", 10, -1]],
       "taxRate": 0.1
     },
     "physicsDef":{
@@ -168,7 +168,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Flour", 10]],
+        "sellingList": [["Flour", 10, -1]],
         "taxRate": 0.1
       },
       "physicsDef":{
@@ -204,7 +204,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Bread", 10]],
+        "sellingList": [["Bread", 10, -1]],
         "taxRate": 0.1
       },
       "physicsDef":{

@@ -35,6 +35,6 @@ class Sequence (blackboard: BlackBoard, taskName: String = "") : Composite(black
 
     override fun reset() {
         this.controller.taskList.forEach { it.controller.safeReset() } //Reset each task
-        this.controller.index = 0 //Reset the index
+        this.controller.index = 0 //Reset the indexCounter
     }
 }

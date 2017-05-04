@@ -155,9 +155,9 @@ object Factory {
             val selling = SellingItemsComponent()
 
             //Things like this have to be copied or else they are linked and can be modified!!!
-            val sellingList = Array<ItemPriceLink>()
+            val sellingList = Array<SellingItemData>()
             definition.sellingItems.sellingList.forEach { (itemName) ->
-                sellingList.add(ItemPriceLink(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice))
+                sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1))
             }
 
             selling.baseSellingItems = sellingList //Use the base array here
@@ -165,7 +165,7 @@ object Factory {
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
 
-            val listener: (InventoryChangeListener)->Unit = { (itemName, change, finalAmount) ->
+            val listener: (InventoryChangeListener)->Unit = { (itemName, _, finalAmount) ->
                 if(itemName == "Gold"){
                     selling.goldHistory.add(finalAmount)
                 }

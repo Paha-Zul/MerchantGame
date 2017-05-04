@@ -3,11 +3,11 @@ package com.quickbite.economy.behaviour.leaf
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuyerComponent
-import com.quickbite.economy.util.ItemAmountLink
-import com.quickbite.economy.util.ItemPriceLink
-import com.quickbite.economy.util.ItemSold
+import com.quickbite.economy.event.EventSystem
+import com.quickbite.economy.objects.ItemAmountLink
+import com.quickbite.economy.objects.ItemSold
+import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
-import com.quickbite.spaceslingshot.util.EventSystem
 
 /**
  * Created by Paha on 1/25/2017.
@@ -33,7 +33,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
         for(i in (buyer.buyList.size - 1).downTo(0)){
             val itemToBuy = buyer.buyList[i]
             val list = sellComp.currSellingItems.filter { it.itemName == itemToBuy.itemName } //Find if the building is selling the item
-            val itemBeingSold:ItemPriceLink? = if(list.isEmpty()) null else list[0] //Get either the first index or assign null
+            val itemBeingSold: SellingItemData? = if(list.isEmpty()) null else list[0] //Get either the first index or assign null
 
             //If we are selling the item and out inventory contains it, let's sell!
             if(itemBeingSold != null && sellInv.hasItem(itemToBuy.itemName)){

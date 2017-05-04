@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.components.*
-import com.quickbite.economy.util.ItemPriceLink
 import com.quickbite.economy.util.Util
 
 /**
@@ -42,7 +41,7 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
 //        workforce.workerTasks = listOf(listOf("haul, produce, sell"), listOf("produce", "haul, sell"), listOf("produce", "haul", "sell"))
         workforce.workerTasks = Array.with("produce", "haul", "sell")
 
-        sellingItems.currSellingItems.add(ItemPriceLink("Wood Plank", 10))
+        sellingItems.currSellingItems.add(SellingItemData("Wood Plank", 10, -1))
 
         init.initFuncs.add({
             inventory.addItem("Wood Plank", 100)

@@ -19,9 +19,13 @@ import java.util.*
  * Created by Paha on 3/9/2017.
  */
 open class GUIWindow(val guiManager: GameScreenGUIManager) {
+    /** The main GUI window that is movable*/
     protected val window: Window
+    /** The main table that holds the tabTable and contentTable. Can be modified*/
     protected val mainTable = Table()
+    /** The tab table for any tabs. Can be removed if not using tabs*/
     protected val tabTable = Table()
+    /** The content table that sites under the tab table*/
     protected val contentTable = Table()
 
     /** A place to put actions to refresh GUI elements while a certain tab is open. Gets cleared on every window change.*/
@@ -30,6 +34,7 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     protected var changedTabsFunc:()->Unit = {}
 
     protected val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE)
+    protected val defaultTextFieldStyle = TextField.TextFieldStyle()
 
     protected val defaultTextButtonStyle = TextButton.TextButtonStyle()
     protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
@@ -39,6 +44,9 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
         defaultTextButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
         defaultTextButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
         defaultTextButtonStyle.fontColor = Color.WHITE
+
+        defaultTextFieldStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
+        defaultTextFieldStyle.fontColor = Color.WHITE
 
         //Scroll pane for the main content window under the buttons.
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle()

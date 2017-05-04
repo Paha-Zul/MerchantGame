@@ -20,7 +20,7 @@ import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.Spawner.town
-import com.quickbite.spaceslingshot.util.EventSystem
+import com.quickbite.economy.event.EventSystem
 
 
 /**
@@ -41,7 +41,7 @@ class GameScreen :Screen{
     var showGrid = false
 
     override fun show() {
-        EventSystem.onEvent("addPlayerMoney", {list ->
+        EventSystem.onEvent("addPlayerMoney", { list ->
             val money = list[0] as Int
             gameScreeData.playerMoney+=money
         })

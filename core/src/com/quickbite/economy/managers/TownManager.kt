@@ -10,7 +10,7 @@ object TownManager {
     private val townMap = hashMapOf<String, Town>()
 
     fun init(){
-        val town = Town()
+        val town = Town("Town")
         town.itemIncomeMap.put("Wheat", TownItemIncome("Wheat", 75))
         town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 75))
         town.itemIncomeMap.put("Wood Log", TownItemIncome("Wood Log", 20))

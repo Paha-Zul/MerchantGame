@@ -1,9 +1,10 @@
 package com.quickbite.economy.behaviour.leaf
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
-import com.quickbite.economy.util.EntityListLink
+import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -12,12 +13,12 @@ import com.quickbite.economy.util.Mappers
  * Attempts to get the closest Entity from the shop link that has the item we are requesting
  */
 class GetClosestShopLinkWithItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 1) : LeafTask(bb) {
-    lateinit var links:Array<EntityListLink>
+    lateinit var links:Array<SellingItemData>
 
     override fun check(): Boolean {
         val worker = Mappers.worker[bb.myself]
         val sellingComp = Mappers.selling.get(worker.workerBuilding)
-        links = sellingComp.resellingEntityItemLinks
+        links = sellingComp.resellingItemsList
 
         return sellingComp != null
     }
@@ -28,16 +29,14 @@ class GetClosestShopLinkWithItem(bb:BlackBoard, var itemName:String = "", var it
             itemAmount = bb.targetItem.itemAmount
         }
 
-        //Here we are going to search through each entity link and find if the entity has the item we want...
-
         //For each entity, check it's itemPriceLinkList of items
-        links.forEach { (entity, itemPriceLinkList) ->
-            val inventory = Mappers.inventory[entity]
-            //For each item, check if the item matches what we want and the
-            itemPriceLinkList.forEach { itemLink ->
+        links.forEach { sellingItemData ->
+            //Check if the item Entity source is null here...
+            if(sellingItemData.itemSourceData != null) {
+                val inventory = Mappers.inventory[sellingItemData.itemSourceData as Entity]
                 //If the item we wanted matches a link AND the building has the item, success!
-                if(itemLink.itemName == this.itemName && inventory.hasItem(itemName)){
-                    bb.targetEntity = entity
+                if (sellingItemData.itemName == this.itemName && inventory.hasItem(itemName)) {
+                    bb.targetEntity = sellingItemData.itemSourceData as Entity
                     controller.finishWithSuccess()
                     return
                 }

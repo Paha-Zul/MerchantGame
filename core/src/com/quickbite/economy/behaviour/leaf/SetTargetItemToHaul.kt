@@ -1,11 +1,11 @@
 package com.quickbite.economy.behaviour.leaf
 
+import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
-import com.quickbite.economy.components.SellingItemsComponent
-import com.quickbite.economy.util.EntityListLink
-import com.quickbite.economy.util.ItemAmountLink
+import com.quickbite.economy.objects.ItemAmountLink
+import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -50,7 +50,7 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
         bb.targetItem.itemName = least.itemName
         bb.targetItem.itemAmount = least.itemAmount
 
-        //Increment the index
+        //Increment the indexCounter
         producesItems.currProductionIndex = (producesItems.currProductionIndex + 1) % producesItems.productionList.size
 
         this.controller.finishWithSuccess()
@@ -60,50 +60,37 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
         val worker = Mappers.worker[bb.myself]
         val sellingComp = Mappers.selling[worker.workerBuilding]
 
-        val links = sellingComp.resellingEntityItemLinks
+        val sellingItemsList = sellingComp.resellingItemsList
 
-        //Gotta make sure we even have any links
-        if(links.size > 0) {
-            validateIndex(sellingComp)
+        //Gotta make sure we even have any items
+        if(sellingItemsList.size > 0) {
+            //First, get the selling item and the inventory of the entity source
+            var sellingItem:SellingItemData
+            val initialIndex = sellingComp.indexCounter
+            var found:Boolean
+            //Here we need to loop through all the items to find an item selling that has an entity source
+            do{
+                sellingItem = sellingComp!!.resellingItemsList[sellingComp.indexCounter] //Get the selling item
+                found = sellingItem.itemSourceData != null //Check if it's valid (not null)
+                sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index counter
+            }while(sellingComp.indexCounter != initialIndex && !found) //Loop until either our index counter matches the initial index or our flag is tripped
 
-            //First, get the entity list link that connects and Entity to a list of items that it's selling
-            val entityListLink = sellingComp!!.resellingEntityItemLinks[sellingComp.index]
-            val entityInventory = Mappers.inventory[entityListLink.entity]
-
-            validateSubIndex(entityListLink, sellingComp)
-
-            if(entityListLink.itemPriceLinkList.size > 0) {
-                //Set the target item.
-                bb.targetItem.itemName = entityListLink.itemPriceLinkList[sellingComp.indexSubCounter].itemName
-                bb.targetItem.itemAmount = entityInventory.getItemAmount(bb.targetItem.itemName)
-
-                this.controller.finishWithSuccess()
-            }else
+            //If we never found an item, fail and return
+            if(!found){
                 controller.finishWithFailure()
+                return
+            }
+            //Get the inventory of the entity source
+            val entityInventory = Mappers.inventory[sellingItem.itemSourceData as Entity]
 
-            incrementCounters(sellingComp)
+            //Set the target item.
+            bb.targetItem.itemName = sellingItem.itemName
+            bb.targetItem.itemAmount = entityInventory.getItemAmount(bb.targetItem.itemName)
+
+            sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index a final time
+
+            this.controller.finishWithSuccess()
         }else
             controller.finishWithFailure()
-    }
-
-    private fun validateIndex(sellingComp:SellingItemsComponent){
-        if(sellingComp.index >= sellingComp.resellingEntityItemLinks.size)
-            sellingComp.index = 0
-    }
-
-    private fun validateSubIndex(entityListLink: EntityListLink, sellingComp:SellingItemsComponent){
-
-
-        //If the sub counter is over the size limit, reset it
-        if(sellingComp.indexSubCounter >= entityListLink.itemPriceLinkList.size)
-            sellingComp.indexSubCounter = 0
-    }
-
-    private fun incrementCounters(sellingComp:SellingItemsComponent){
-        //TODO Dividing by zero problems
-
-        sellingComp.index = (sellingComp.index + 1) % sellingComp.resellingEntityItemLinks.size
-        if(sellingComp.resellingEntityItemLinks[sellingComp.index].itemPriceLinkList.size > 0)
-            sellingComp.indexSubCounter = (sellingComp.indexSubCounter + 1) % sellingComp.resellingEntityItemLinks[sellingComp.index].itemPriceLinkList.size
     }
 }

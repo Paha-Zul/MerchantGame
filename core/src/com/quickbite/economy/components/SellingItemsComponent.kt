@@ -3,9 +3,8 @@ package com.quickbite.economy.components
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.util.EntityListLink
-import com.quickbite.economy.util.ItemPriceLink
-import com.quickbite.economy.util.ItemSold
+import com.quickbite.economy.objects.ItemSold
+import com.quickbite.economy.objects.SellingItemData
 
 /**
  * Created by Paha on 1/19/2017.
@@ -13,8 +12,8 @@ import com.quickbite.economy.util.ItemSold
 class SellingItemsComponent : MyComponent {
     var taxRate = 0.1f
 
-    var baseSellingItems = Array<ItemPriceLink>()
-    var currSellingItems = Array<ItemPriceLink>()
+    var baseSellingItems = Array<SellingItemData>()
+    var currSellingItems = Array<SellingItemData>()
     val sellHistory = Array<ItemSold>()
     val goldHistory = Array<Int>()
 
@@ -22,10 +21,10 @@ class SellingItemsComponent : MyComponent {
     /**
      * A itemPriceLinkList of contracts basically
      */
-    val resellingEntityItemLinks:Array<EntityListLink> = Array(5)
+    val resellingItemsList:Array<SellingItemData> = Array(5)
 
     //TODO Figure out how to better keep track of counters for the links
-    var index = 0
+    var indexCounter = 0
     var indexSubCounter = 0
 
     init{

@@ -6,6 +6,7 @@ import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
+import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.Town
 
 /**

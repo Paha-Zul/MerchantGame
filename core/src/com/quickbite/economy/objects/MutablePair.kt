@@ -1,4 +1,4 @@
-package com.quickbite.economy.util
+package com.quickbite.economy.objects
 
 /**
  * Created by Paha on 12/14/2016.

@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
-import com.quickbite.economy.util.ItemAmountLink
-import com.quickbite.economy.util.Names
 import com.quickbite.economy.util.Util
 
 /**

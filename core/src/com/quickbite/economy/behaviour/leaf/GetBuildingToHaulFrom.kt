@@ -32,14 +32,14 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
 
     private fun shop(){
         val worker = Mappers.worker[bb.myself]
-        val links = Mappers.selling[worker.workerBuilding].resellingEntityItemLinks
+        val itemsReselling = Mappers.selling[worker.workerBuilding].resellingItemsList
         val itemName = bb.targetItem.itemName
         val itemAmount = bb.targetItem.itemAmount
 
-        //First, Find all links that are reselling the item to use AND have the item in their inventory
-        val list = links.filter { it.itemPriceLinkList.any { it.itemName == itemName } && Mappers.inventory[it.entity].hasItem(itemName) }
+        //First, filter a list that has the item name, an Entity source, and the Entity source has the item in its inventory
+        val list = itemsReselling.filter { it.itemName == itemName && it.itemSourceData != null && Mappers.inventory[it.itemSourceData as Entity].hasItem(itemName) }
         if(list.isNotEmpty()) {
-            bb.targetEntity = list[MathUtils.random(list.size - 1)].entity //Get a random link and get the entity
+            bb.targetEntity = list[MathUtils.random(list.size - 1)].itemSourceData as Entity //Get a random link and get the entity
             controller.finishWithSuccess()
         }else
             controller.finishWithFailure()

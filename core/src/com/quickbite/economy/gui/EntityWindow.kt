@@ -17,11 +17,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.components.*
+import com.quickbite.economy.event.EventSystem
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
-import com.quickbite.economy.util.*
-import com.quickbite.spaceslingshot.util.EventSystem
+import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.Factory
+import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 3/9/2017.
@@ -494,8 +498,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val taxRateTable = Table()
         taxRateTable.background = darkBackgroundDrawable
 
-        val sellingItemsTable = Table()
-        sellingItemsTable.background = darkBackgroundDrawable
+        val sellItemsMainTable = Table()
+        sellItemsMainTable.background = darkBackgroundDrawable
 
         val sellHistoryTable = Table()
         sellHistoryTable.background = darkBackgroundDrawable
@@ -507,39 +511,122 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         //This will populate the table of items being sold
         val populateItemsTable = {
-            sellingItemsTable.clear()
+            sellItemsMainTable.clear()
 
-            sellingItemsTable.add(sellLabel).colspan(4)
-            sellingItemsTable.row()
+            sellItemsMainTable.add(sellLabel)
+            sellItemsMainTable.row()
 
-            comp.currSellingItems.forEach { (itemName, itemPrice) ->
-                val itemNameLabel = Label(itemName, defaultLabelStyle)
+            val sellItemsListTable = Table()
+
+            val itemNameColTitle = Label("Name", defaultLabelStyle)
+            itemNameColTitle.setFontScale(0.2f)
+
+            val itemAmountColTitle = Label("Price", defaultLabelStyle)
+            itemAmountColTitle.setFontScale(0.2f)
+
+            val itemStockColTitle = Label("Stock", defaultLabelStyle)
+            itemStockColTitle.setFontScale(0.2f)
+
+            //Add the three titles
+            sellItemsListTable.add(itemNameColTitle)
+            sellItemsListTable.add(itemAmountColTitle)
+            sellItemsListTable.add(itemStockColTitle)
+            sellItemsListTable.add() //Empty spot for the X button
+            sellItemsListTable.row()
+
+            comp.currSellingItems.forEach { sellItemData ->
+                //The item name
+                val itemNameLabel = Label(sellItemData.itemName, defaultLabelStyle)
                 itemNameLabel.setFontScale(0.2f)
                 itemNameLabel.setAlignment(Align.center)
 
-                val itemAmountLabel = Label(itemPrice.toString(), defaultLabelStyle)
+                //The item amount
+                val itemAmountLabel = Label(sellItemData.itemPrice.toString(), defaultLabelStyle)
                 itemAmountLabel.setFontScale(0.2f)
                 itemAmountLabel.setAlignment(Align.center)
 
+                /** The item stock amount */
+                val itemStockTable = Table()
+
+                val lessStockButton = TextButton("<", defaultTextButtonStyle)
+                lessStockButton.label.setFontScale(0.15f)
+
+                val moreStockButton = TextButton(">", defaultTextButtonStyle)
+                moreStockButton.label.setFontScale(0.15f)
+
+                fun getItemStockText():String =
+                    if(sellItemData.itemStockAmount < 0) "max" else sellItemData.itemStockAmount.toString()
+
+                val itemStockLabel = Label(getItemStockText(), defaultLabelStyle)
+                itemStockLabel.setFontScale(0.2f)
+//                itemStockLabel.style.font.data.scale(0.5f)
+
+                itemStockTable.add(lessStockButton).size(32f)
+                itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f)
+                itemStockTable.add(moreStockButton).size(32f)
+
+                lessStockButton.addListener(object:ClickListener(){
+                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                        super.touchUp(event, x, y, pointer, button)
+                        sellItemData.itemStockAmount--
+                        if(sellItemData.itemStockAmount < 0) sellItemData.itemStockAmount = -1
+
+                        itemStockLabel.setText(getItemStockText())
+                    }
+                })
+
+                moreStockButton.addListener(object:ClickListener(){
+                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                        super.touchUp(event, x, y, pointer, button)
+                        sellItemData.itemStockAmount++
+                        itemStockLabel.setText(getItemStockText())
+                    }
+                })
+
+//                moreStockButton.addListener(object:ChangeListener(){
+//                    override fun changed(event: ChangeEvent?, actor: Actor?) {
+//                        sellItemData.itemStockAmount++
+//                        itemStockLabel.setText(getItemStockText())
+//                    }
+//                })
+
+//                lessStockButton.addChangeListener { _, _ ->
+//                    sellItemData.itemStockAmount--
+//                    if(sellItemData.itemStockAmount < 0) sellItemData.itemStockAmount = -1
+//
+//                    itemStockLabel.setText(getItemStockText())
+//                }
+
+//                moreStockButton.addChangeListener { _, _ ->
+//                    sellItemData.itemStockAmount++
+//                    itemStockLabel.setText(getItemStockText())
+//                }
+
+                //TODO Need listeners for the more/less stock buttons and need to restrict amounts...
+
+                //The x Label if we want to delete the link from a store that is reselling
                 val xLabel = TextButton("X", defaultTextButtonStyle)
                 xLabel.label.setFontScale(0.2f)
                 xLabel.label.setAlignment(Align.center)
 
-                sellingItemsTable.add(itemNameLabel).width(100f)
-                sellingItemsTable.add(itemAmountLabel).width(100f)
-                sellingItemsTable.add()
-                if(comp.resellingEntityItemLinks.size > 0) sellingItemsTable.add(xLabel)
-                sellingItemsTable.row()
+                sellItemsListTable.add(itemNameLabel).width(100f)
+                sellItemsListTable.add(itemAmountLabel).width(100f)
+                sellItemsListTable.add(itemStockTable)
+                if(comp.resellingItemsList.size > 0) sellItemsListTable.add(xLabel) //Either add the x label
+                else sellItemsListTable.add() //Or add an empty column
+                sellItemsListTable.row()
 
                 xLabel.addListener(object:ClickListener(){
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        if(comp.resellingEntityItemLinks.size <= 0)
+                        if(comp.resellingItemsList.size <= 0)
                             return
-                        Util.removeSellingItemFromReseller(comp, itemName, itemPrice)
+                        Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceData)
                         super.touchUp(event, x, y, pointer, button)
                     }
                 })
             }
+
+            sellItemsMainTable.add(sellItemsListTable)
         }
 
         populateItemsTable()
@@ -685,7 +772,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //Add all the stuff to the table
         table.add(taxRateTable).expandX().fillX().padTop(20f) //The tax rate
         table.row().expandX().fillX().spaceTop(20f)
-        table.add(sellingItemsTable).expandX().fillX() //What we are selling
+        table.add(sellItemsMainTable).expandX().fillX() //What we are selling
         table.row().expandX().fillX().spaceTop(20f)
         table.add(sellHistoryTable).expandX().fillX() //The history table
         table.row().expand().fill().spaceTop(20f) //Push everything up!
@@ -716,8 +803,13 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val linkButton = TextButton("Link", buttonStyle)
         linkButton.label.setFontScale(0.2f)
 
+        val importButton = TextButton("Import", buttonStyle)
+        importButton.label.setFontScale(0.2f)
+
         table.add(linkButton) //The link button
-        table.row().expandX().fillX()
+        table.row()
+        table.add(importButton) //The import button
+        table.row()
 
         //The listener for the link button
         linkButton.addListener(object: ChangeListener(){
@@ -738,13 +830,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                                 //Make sure we actually have stuff to add
                                 if (otherSelling.currSellingItems.size > 0) {
 
-                                    val list = Array<ItemPriceLink>()
+                                    val list = Array<SellingItemData>()
                                     otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
-                                        list.add(ItemPriceLink(itemName, (itemPrice * 1.5).toInt()))
+                                        list.add(SellingItemData(itemName, (itemPrice * 1.5).toInt(), -1))
+                                        comp.resellingItemsList.add(SellingItemData(itemName, (itemPrice * 1.5).toInt(), -1, ent))
                                     }
-
-                                    //Add a EntityListLink to the reselling entity item links list
-                                    comp.resellingEntityItemLinks.add(EntityListLink(ent, list))
 
                                     //Add the list of items to our selling list to let pawns know we are selling stuff
                                     list.forEach { itemLink ->
@@ -761,5 +851,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 }
             }
         })
+
+        importButton.addChangeListener { _, _ ->
+            println("Something")
+            guiManager.openImportWindow(this.entity)
+        }
     }
 }

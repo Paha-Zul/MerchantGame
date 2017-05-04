@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.util.InventoryChangeListener
-import com.quickbite.economy.util.ItemAmountLink
+import com.quickbite.economy.objects.ItemAmountLink
 
 /**
  * Created by Paha on 12/14/2016.
