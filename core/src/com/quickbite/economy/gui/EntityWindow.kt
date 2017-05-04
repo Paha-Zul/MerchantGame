@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.components.*
@@ -583,36 +582,18 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                     }
                 })
 
-//                moreStockButton.addListener(object:ChangeListener(){
-//                    override fun changed(event: ChangeEvent?, actor: Actor?) {
-//                        sellItemData.itemStockAmount++
-//                        itemStockLabel.setText(getItemStockText())
-//                    }
-//                })
-
-//                lessStockButton.addChangeListener { _, _ ->
-//                    sellItemData.itemStockAmount--
-//                    if(sellItemData.itemStockAmount < 0) sellItemData.itemStockAmount = -1
-//
-//                    itemStockLabel.setText(getItemStockText())
-//                }
-
-//                moreStockButton.addChangeListener { _, _ ->
-//                    sellItemData.itemStockAmount++
-//                    itemStockLabel.setText(getItemStockText())
-//                }
 
                 //TODO Need listeners for the more/less stock buttons and need to restrict amounts...
 
                 //The x Label if we want to delete the link from a store that is reselling
                 val xLabel = TextButton("X", defaultTextButtonStyle)
-                xLabel.label.setFontScale(0.2f)
+                xLabel.label.setFontScale(0.15f)
                 xLabel.label.setAlignment(Align.center)
 
                 sellItemsListTable.add(itemNameLabel).width(100f)
                 sellItemsListTable.add(itemAmountLabel).width(100f)
                 sellItemsListTable.add(itemStockTable)
-                if(comp.resellingItemsList.size > 0) sellItemsListTable.add(xLabel) //Either add the x label
+                if(comp.resellingItemsList.size > 0) sellItemsListTable.add(xLabel).size(16f).spaceLeft(10f).right() //Either add the x label
                 else sellItemsListTable.add() //Or add an empty column
                 sellItemsListTable.row()
 
@@ -830,17 +811,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                                 //Make sure we actually have stuff to add
                                 if (otherSelling.currSellingItems.size > 0) {
 
-                                    val list = Array<SellingItemData>()
                                     otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
-                                        list.add(SellingItemData(itemName, (itemPrice * 1.5).toInt(), -1))
-                                        comp.resellingItemsList.add(SellingItemData(itemName, (itemPrice * 1.5).toInt(), -1, ent))
-                                    }
-
-                                    //Add the list of items to our selling list to let pawns know we are selling stuff
-                                    list.forEach { itemLink ->
-                                        //We need to make sure that the selling items doesn't already contain the item
-                                        if(!selling.currSellingItems.any{it.itemName == itemLink.itemName})
-                                            selling.currSellingItems.add(itemLink)
+                                        val sellingItemData = SellingItemData(itemName, (itemPrice * 1.5).toInt(), -1, SellingItemData.ItemSource.Workshop, ent)
+                                        comp.resellingItemsList.add(sellingItemData)
+                                        if(!selling.currSellingItems.any{it.itemName == itemName})
+                                            selling.currSellingItems.add(sellingItemData)
                                     }
 
                                     otherSelling.currSellingItems.clear()

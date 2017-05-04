@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.ItemPriceLink
-import com.quickbite.economy.objects.SellingItemData
 import java.util.*
 
 /**
@@ -48,19 +47,6 @@ object DefinitionManager {
 
             override fun write(json: Json, `object`: ItemAmountLink, knownType: Class<*>?) {
                 json.writeValue(arrayOf(`object`.itemName, `object`.itemAmount)) //Write as an array
-            }
-
-        })
-
-        json.setSerializer(SellingItemData::class.java, object: Json.Serializer<SellingItemData> {
-            override fun read(json: Json, jsonData: JsonValue, type: Class<*>): SellingItemData {
-                val data = jsonData.child
-                val itemAmountLink = SellingItemData(data.asString(), data.next.asInt(), data.next.next.asInt()) //Make the item link
-                return itemAmountLink //Return in
-            }
-
-            override fun write(json: Json, `object`: SellingItemData, knownType: Class<*>?) {
-                json.writeValue(arrayOf(`object`.itemName, `object`.itemPrice, `object`.itemStockAmount)) //Write as an array
             }
 
         })

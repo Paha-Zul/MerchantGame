@@ -30,13 +30,13 @@ class GetClosestShopLinkWithItem(bb:BlackBoard, var itemName:String = "", var it
         }
 
         //For each entity, check it's itemPriceLinkList of items
-        links.forEach { sellingItemData ->
-            //Check if the item Entity source is null here...
-            if(sellingItemData.itemSourceData != null) {
-                val inventory = Mappers.inventory[sellingItemData.itemSourceData as Entity]
+        links.forEach { (itemName1, _, _, itemSourceType, itemSourceData) ->
+            //Make sure we are getting a workshop item source...
+            if(itemSourceType == SellingItemData.ItemSource.Workshop) {
+                val inventory = Mappers.inventory[itemSourceData as Entity]
                 //If the item we wanted matches a link AND the building has the item, success!
-                if (sellingItemData.itemName == this.itemName && inventory.hasItem(itemName)) {
-                    bb.targetEntity = sellingItemData.itemSourceData as Entity
+                if (itemName1 == this.itemName && inventory.hasItem(itemName)) {
+                    bb.targetEntity = itemSourceData as Entity
                     controller.finishWithSuccess()
                     return
                 }

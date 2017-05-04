@@ -41,7 +41,7 @@ class Workshop(sprite: Sprite, initialPosition: Vector2, dimensions:Vector2) : E
 //        workforce.workerTasks = listOf(listOf("haul, produce, sell"), listOf("produce", "haul, sell"), listOf("produce", "haul", "sell"))
         workforce.workerTasks = Array.with("produce", "haul", "sell")
 
-        sellingItems.currSellingItems.add(SellingItemData("Wood Plank", 10, -1))
+        sellingItems.currSellingItems.add(SellingItemData("Wood Plank", 10, -1, SellingItemData.ItemSource.None))
 
         init.initFuncs.add({
             inventory.addItem("Wood Plank", 100)

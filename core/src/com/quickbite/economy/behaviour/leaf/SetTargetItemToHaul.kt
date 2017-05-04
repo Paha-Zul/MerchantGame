@@ -71,7 +71,7 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             //Here we need to loop through all the items to find an item selling that has an entity source
             do{
                 sellingItem = sellingComp!!.resellingItemsList[sellingComp.indexCounter] //Get the selling item
-                found = sellingItem.itemSourceData != null //Check if it's valid (not null)
+                found = sellingItem.itemSourceType == SellingItemData.ItemSource.Workshop
                 sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index counter
             }while(sellingComp.indexCounter != initialIndex && !found) //Loop until either our index counter matches the initial index or our flag is tripped
 

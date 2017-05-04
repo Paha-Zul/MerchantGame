@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
+import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
@@ -37,7 +38,7 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         val itemAmount = bb.targetItem.itemAmount
 
         //First, filter a list that has the item name, an Entity source, and the Entity source has the item in its inventory
-        val list = itemsReselling.filter { it.itemName == itemName && it.itemSourceData != null && Mappers.inventory[it.itemSourceData as Entity].hasItem(itemName) }
+        val list = itemsReselling.filter { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop && Mappers.inventory[it.itemSourceData as Entity].hasItem(itemName) }
         if(list.isNotEmpty()) {
             bb.targetEntity = list[MathUtils.random(list.size - 1)].itemSourceData as Entity //Get a random link and get the entity
             controller.finishWithSuccess()

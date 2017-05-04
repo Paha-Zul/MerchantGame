@@ -157,7 +157,7 @@ object Factory {
             //Things like this have to be copied or else they are linked and can be modified!!!
             val sellingList = Array<SellingItemData>()
             definition.sellingItems.sellingList.forEach { (itemName) ->
-                sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1))
+                sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1, SellingItemData.ItemSource.None))
             }
 
             selling.baseSellingItems = sellingList //Use the base array here

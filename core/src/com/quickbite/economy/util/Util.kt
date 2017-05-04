@@ -359,7 +359,7 @@ object Util {
                     if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
                         otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
 
-                    sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData != null}
+                    sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop }
                 }
 
                 //If it's an import from a town...
@@ -401,8 +401,7 @@ object Util {
 
         val itemDef = DefinitionManager.itemDefMap[itemName]!!
         val reselling = Mappers.selling[entity]
-        val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice*1.5f).toInt(), -1, sourceData)
-        sellingData.itemSourceType = itemSource
+        val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice*1.5f).toInt(), -1, itemSource, sourceData)
 
         //If the reselling and currSelling lists don't already contain this...
         if(!reselling.resellingItemsList.any { it.itemName == itemName && it.itemSourceData == sourceData} &&

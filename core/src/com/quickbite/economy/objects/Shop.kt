@@ -41,7 +41,7 @@ class Shop(sprite: Sprite, initialPosition: Vector2, dimensions: Vector2) : Enti
 //        workforce.workerTasks = listOf(listOf("haul", "sell"), listOf("sell"))
         workforce.workerTasks = Array.with("haul", "sell")
 
-        sellingItems.currSellingItems.add(SellingItemData("Wood Plank", 10, -1))
+        sellingItems.currSellingItems.add(SellingItemData("Wood Plank", 10, -1, SellingItemData.ItemSource.None))
 
         init.initFuncs.add({
             bodyComp.body = Util.createBody(BodyDef.BodyType.StaticBody, dimensions, initialPosition, this)
