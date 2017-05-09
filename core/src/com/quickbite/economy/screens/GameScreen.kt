@@ -15,12 +15,14 @@ import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.CollectedTaxEvent
+import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.Spawner.town
-import com.quickbite.economy.event.EventSystem
 
 
 /**
@@ -41,10 +43,9 @@ class GameScreen :Screen{
     var showGrid = false
 
     override fun show() {
-        EventSystem.onEvent("addPlayerMoney", { list ->
-            val money = list[0] as Int
-            gameScreeData.playerMoney+=money
-        })
+        GameEventSystem.subscribe<ItemSoldEvent> {
+            gameScreeData.playerMoney += it.taxCollected
+        }
 
         gameScreenGUI = GameScreenGUIManager(this)
 
@@ -57,6 +58,7 @@ class GameScreen :Screen{
         val movementSystem = MovementSystem()
         val gridSystem = GridSystem()
         val workshopSystem = WorkforceSystem(2f)
+        val goldTrackingSystem = GoldTrackingSystem()
 
         MyGame.entityEngine.addSystem(behaviourSystem)
         MyGame.entityEngine.addSystem(renderSystem)
@@ -64,6 +66,7 @@ class GameScreen :Screen{
         MyGame.entityEngine.addSystem(debugSystem)
         MyGame.entityEngine.addSystem(gridSystem)
         MyGame.entityEngine.addSystem(workshopSystem)
+        MyGame.entityEngine.addSystem(goldTrackingSystem)
 
         MyGame.entityEngine.addEntityListener(object:EntityListener{
             override fun entityRemoved(ent: Entity?) {

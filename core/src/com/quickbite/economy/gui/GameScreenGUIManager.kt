@@ -13,7 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
-import com.quickbite.economy.event.EventSystem
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
@@ -67,7 +68,9 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
         topTable.setPosition(MyGame.camera.viewportWidth/2f, MyGame.camera.viewportHeight - 50f)
 
-        EventSystem.onEvent("addPlayerMoney", {moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")})
+        GameEventSystem.subscribe<ItemSoldEvent> {
+            moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")
+        }
 
         setupSpawnEntityTable()
 

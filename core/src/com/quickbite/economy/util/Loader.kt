@@ -1,5 +1,6 @@
 package com.quickbite.spaceslingshot.util
 
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader
 import com.badlogic.gdx.assets.loaders.TextureLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.files.FileHandle
@@ -38,6 +39,11 @@ object Loader {
     }
 
     fun loadFonts(manager: EasyAssetManager, dir: FileHandle){
+        val params = BitmapFontLoader.BitmapFontParameter()
+        params.genMipMaps = true
+        params.minFilter = Texture.TextureFilter.MipMapLinearLinear
+        params.magFilter = Texture.TextureFilter.MipMapLinearLinear
+
         for(file in dir.list()){
             if(file.extension() == "fnt"){
                 manager.load(file.path(), BitmapFont::class.java)

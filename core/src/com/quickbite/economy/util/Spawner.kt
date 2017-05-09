@@ -7,6 +7,7 @@ import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.ItemAmountLink
+import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.objects.Town
 
 /**
@@ -64,18 +65,26 @@ object Spawner {
         spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
             val list = town.itemIncomeMap.values.toList()
             val randomItem = list[MathUtils.random(list.size - 1)]
-            //TODO crashes when no stockpile
-            val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, randomItem.accumulatedItemCounter.toInt()))
-            randomItem.accumulatedItemCounter -= itemToBuy.itemAmount
 
-            if(Util.getClosestBuildingType(spawnPosition, BuildingComponent.BuildingType.Stockpile) != null){
+            //Get the closest building that is reselling our item via import
+            val closest = Util.getClosestBuildingType(spawnPosition, BuildingComponent.BuildingType.Shop, {
+                val selling = Mappers.selling[it]
+                selling.resellingItemsList.any { it.itemName == randomItem.itemName && it.itemSourceType == SellingItemData.ItemSource.Import }
+            })
+
+            //If we did find a building...
+            if(closest != null){
                 //Randomly assign an item and amount wanted
                 val entity = Factory.createObjectFromJson("hauler", spawnPosition)
                 val inventory = Mappers.inventory[entity]
                 val beh = Mappers.behaviour[entity]
 
+                val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, randomItem.accumulatedItemCounter.toInt()))
+                randomItem.accumulatedItemCounter -= itemToBuy.itemAmount
+
                 inventory.addItem(itemToBuy.itemName, itemToBuy.itemAmount)
 
+                beh.blackBoard.targetItem.set(randomItem.itemName, 1) //Item amount doesn't matter here
                 beh.currTask = Tasks.haulInventoryToStockpile(beh.blackBoard)
             }
 

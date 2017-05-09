@@ -19,6 +19,8 @@ import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.components.*
 import com.quickbite.economy.event.EventSystem
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.objects.SellingItemData
@@ -675,11 +677,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
             //TODO Don't use magic number to limit this size?
             //The limit of the history
-            val limit = Math.max(0, comp.sellHistory.size - 5)
+            val limit = Math.max(0, comp.sellHistory.queue.size - 5)
 
             //For each history, set up the labels
-            for (i in (comp.sellHistory.size-1).downTo(limit)){
-                val sell = comp.sellHistory[i]
+            for (i in (comp.sellHistory.queue.size-1).downTo(limit)){
+                val sell = comp.sellHistory.queue[i]
 
                 val _item = Label(sell.itemName, defaultLabelStyle)
                 _item.setFontScale(0.2f)
@@ -751,7 +753,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         table.top()
 
         //Add all the stuff to the table
-        table.add(taxRateTable).expandX().fillX().padTop(20f) //The tax rate
+        table.add(taxRateTable).expandX().fillX().padTop(20f) //The taxCollected rate
         table.row().expandX().fillX().spaceTop(20f)
         table.add(sellItemsMainTable).expandX().fillX() //What we are selling
         table.row().expandX().fillX().spaceTop(20f)
@@ -763,12 +765,17 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         updateMap.put("sellHistory", historyTableFunc)
 
         updateList.add { populateItemsTable() }
-        updateList.add { goldHistoryGraph.points = comp.goldHistory.toList() }
+        updateList.add { goldHistoryGraph.points = comp.goldHistory.queue.toList() }
 
         //Put in the event system
-        EventSystem.onEvent("guiUpdateSellHistory", {historyTableFunc()})
+//        EventSystem.onEvent("guiUpdateSellHistory", {historyTableFunc()})
 
-        changedTabsFunc = { EventSystem.removeEvent("guiUpdateSellHistory")}
+        val event = GameEventSystem.subscribe<ItemSoldEvent> { historyTableFunc() }
+
+        changedTabsFunc = {
+//            EventSystem.removeEvent("guiUpdateSellHistory")
+            GameEventSystem.unsubscribe(event)
+        }
 
 //        goldHistoryGraph.debug = true
     }

@@ -164,7 +164,8 @@
       "onGrid": true,
       "gridBlockWhenPlaced": true,
       "inventoryDef": {
-        "hasInventory": true
+        "hasInventory": true,
+        "debugItemList": [["Gold", 2000]]
       },
       "sellingItems": {
         "isSelling": true,

@@ -6,7 +6,6 @@ import com.quickbite.economy.behaviour.decorator.AlwaysTrue
 import com.quickbite.economy.behaviour.decorator.RepeatUntilFail
 import com.quickbite.economy.behaviour.decorator.SucceedOpposite
 import com.quickbite.economy.behaviour.leaf.*
-import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.components.BuyerComponent
 import com.quickbite.economy.util.Mappers
 
@@ -277,7 +276,7 @@ object Tasks {
 //        val optionalBranchSequence = Sequence(bb)
 //        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
 
-        task.controller.addTask(GetClosestBuildingOfType(bb, BuildingComponent.BuildingType.Stockpile))
+        task.controller.addTask(GetClosestShopResellingViaImport(bb))
         task.controller.addTask(GetEntranceOfBuilding(bb))
         task.controller.addTask(GetPath(bb))
         task.controller.addTask(MoveToPath(bb))

@@ -1,9 +1,13 @@
 package com.quickbite.economy.util
 
+import com.badlogic.gdx.utils.Array
+
 /**
  * Created by Paha on 3/16/2017.
  */
 object TimeOfDay{
+    val hourlyListeners:Array<() -> Unit> = Array()
+
     private var counter = 0f
         get
         set(value) {
@@ -27,6 +31,9 @@ object TimeOfDay{
     var lastSecond = second
 
     private fun set():TimeOfDay{
+        if(lastHour != this.hour)
+            hourlyListeners.forEach { it() }
+
         //Save the previous
         lastHour = this.hour
         lastMinute = this.minute

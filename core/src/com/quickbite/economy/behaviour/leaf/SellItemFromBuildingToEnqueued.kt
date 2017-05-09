@@ -4,6 +4,10 @@ import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuyerComponent
 import com.quickbite.economy.event.EventSystem
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.CollectedTaxEvent
+import com.quickbite.economy.event.events.GUIUpdateSellHistoryEvent
+import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.ItemSold
 import com.quickbite.economy.objects.SellingItemData
@@ -44,8 +48,8 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 //Remove the money from the buyer's inventory
                 val moneyRemovedFromBuyerInv = buyerInv.removeItem("Gold", itemBeingSold.itemPrice*itemAmtRemoved)
 
-                //TODO Make sure this tax is okay for low value items. We don't want to be getting 1 gold tax on a 2 gold item
-                val tax = if(moneyRemovedFromBuyerInv >=1) Math.max(1, (moneyRemovedFromBuyerInv*sellComp.taxRate).toInt()) else 0 //We need at least 1 gold tax (if we made at least 1 gold)
+                //TODO Make sure this taxCollected is okay for low value items. We don't want to be getting 1 gold taxCollected on a 2 gold item
+                val tax = if(moneyRemovedFromBuyerInv >=1) Math.max(1, (moneyRemovedFromBuyerInv*sellComp.taxRate).toInt()) else 0 //We need at least 1 gold taxCollected (if we made at least 1 gold)
                 val remainingMoney = moneyRemovedFromBuyerInv - tax
 
                 sellInv.addItem("Gold", remainingMoney)
@@ -59,9 +63,10 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 val ic = Mappers.identity.get(unitInQueue)
                 sellComp.sellHistory.add(ItemSold(itemToBuy.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
 
-                //Call some events
-                EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
-                EventSystem.callEvent("addPlayerMoney", listOf(tax)) //Call the event to add money to the player
+
+                GameEventSystem.fire(CollectedTaxEvent(tax))
+                GameEventSystem.fire(GUIUpdateSellHistoryEvent())
+                GameEventSystem.fire(ItemSoldEvent(itemToBuy.itemName, remainingMoney, tax))
 
                 //Set the buyer flag
                 buyer.buyerFlag = BuyerComponent.BuyerFlag.Bought //Set the buyer's flag as something was bought

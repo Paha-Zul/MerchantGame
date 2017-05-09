@@ -60,7 +60,7 @@ object Util {
         return closest
     }
 
-    fun getClosestBuildingType(position:Vector2, buildingType:BuildingComponent.BuildingType):Entity?{
+    fun getClosestBuildingType(position:Vector2, buildingType:BuildingComponent.BuildingType, predicate:(Entity) -> Boolean = {true}):Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
 
@@ -71,7 +71,7 @@ object Util {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 
-                if (dst <= closestDst) {
+                if (dst <= closestDst && predicate(ent)) {
                     closest = ent
                     closestDst = dst
                 }
@@ -90,7 +90,7 @@ object Util {
      * @param buildingsToExclude A HashSet of buildings to exclude from the search
      * @return The closest building that was found, null if no building was found.
      */
-    fun getClosestBuildingTypeWithItem(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity> = hashSetOf()):Entity?{
+    fun getClosestBuildingTypeWithItemInInventory(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity> = hashSetOf()):Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
 
@@ -235,8 +235,8 @@ object Util {
                 val inv = Mappers.inventory.get(ent)
 
                 val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
-                val hasItem = inv != null && inv.hasItem(itemName)
-                var contains = false
+                val hasItem = inv != null && inv.hasItem(itemName) //If the entity has the item in its inventory
+                var contains = false //If the entity contains the item in the selling list
                 sc.currSellingItems.forEach contains@ {
                     if (it.itemName == itemName) {
                         contains = true; return@contains

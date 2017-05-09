@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.objects.ItemSold
 import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.CircularQueueWrapper
 
 /**
  * Created by Paha on 1/19/2017.
@@ -14,8 +15,17 @@ class SellingItemsComponent : MyComponent {
 
     var baseSellingItems = Array<SellingItemData>()
     var currSellingItems = Array<SellingItemData>()
-    val sellHistory = Array<ItemSold>()
-    val goldHistory = Array<Int>()
+
+    /** The items sold recently of this entity*/
+    val sellHistory = CircularQueueWrapper<ItemSold>(10)
+    /** The gold history of this selling entity */
+    val goldHistory = CircularQueueWrapper<Int>(100)
+    /** The daily income history of this selling entity*/
+    val incomePerDayHistory = CircularQueueWrapper<Int>(100)
+
+    var incomeDaily = 0
+
+    var taxCollectedDaily = 0
 
     var isReselling = false
     /**

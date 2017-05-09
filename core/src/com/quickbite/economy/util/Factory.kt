@@ -161,20 +161,9 @@ object Factory {
             }
 
             selling.baseSellingItems = sellingList //Use the base array here
-            selling.currSellingItems = Array(sellingList) //Copy it for this one
+            selling.currSellingItems = Array(sellingList) //Copy it for this oned
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
-
-            val listener: (InventoryChangeListener)->Unit = { (itemName, _, finalAmount) ->
-                if(itemName == "Gold"){
-                    selling.goldHistory.add(finalAmount)
-                }
-            }
-
-            init.initFuncs.add {
-                val inv = Mappers.inventory[entity]
-                inv.inventoryChangeListeners.add(listener)
-            }
 
             entity.add(selling)
         }
