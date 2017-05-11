@@ -15,11 +15,11 @@ object TimeOfDay{
             set()
         }
 
-    val scale = 10
+    val timeScale = 5
 
-    /** Takes into account the scale of delta time from TimeUtil. This is the calculated scale of time progression*/
-    val currTimeScale:Int
-        get() = scale*TimeUtil.deltaTimeScale
+    /** Takes into account the timeScale of delta time from TimeUtil. This is the calculated timeScale of time progression*/
+    val currScaledTime:Int
+        get() = timeScale *TimeUtil.deltaTimeScale
 
     var day = 0
     var hour = 0
@@ -52,10 +52,10 @@ object TimeOfDay{
     }
 
     fun update(delta:Float){
-        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.scale * TimeUtil.deltaTimeScale)
+        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.timeScale * TimeUtil.deltaTimeScale)
 
         //The %1440 keeps it from going forever up
-//        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.scale * TimeUtil.deltaTimeScale)%1440
+//        TimeOfDay.counter = (TimeOfDay.counter + delta * TimeOfDay.timeScale * TimeUtil.deltaTimeScale)%1440
     }
 
     override fun toString(): String {
