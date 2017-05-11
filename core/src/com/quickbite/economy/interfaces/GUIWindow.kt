@@ -33,7 +33,7 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     protected val updateMap: HashMap<String, () -> Unit> = hashMapOf()
     protected var changedTabsFunc:()->Unit = {}
 
-    protected val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE)
+    protected val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
     protected val defaultTextFieldStyle = TextField.TextFieldStyle()
 
     protected val defaultTextButtonStyle = TextButton.TextButtonStyle()
@@ -42,10 +42,10 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
 
     init {
         defaultTextButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
-        defaultTextButtonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
+        defaultTextButtonStyle.font = MyGame.defaultFont14
         defaultTextButtonStyle.fontColor = Color.WHITE
 
-        defaultTextFieldStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
+        defaultTextFieldStyle.font = MyGame.defaultFont14
         defaultTextFieldStyle.fontColor = Color.WHITE
 
         //Scroll pane for the main content window under the buttons.

@@ -1,6 +1,7 @@
 package com.quickbite.economy.util
 
-import com.badlogic.gdx.utils.Queue
+import java.util.*
+
 
 /**
  * Created by Paha on 4/29/2017.
@@ -8,13 +9,13 @@ import com.badlogic.gdx.utils.Queue
  * remove the first element of the queue if the maxSize is reached
  */
 class CircularQueueWrapper<T>(val maxSize:Int) {
-    val queue:Queue<T> = Queue()
+    val queue:LinkedList<T> = LinkedList()
 
     fun add(element:T){
         if(queue.size + 1 > maxSize)
             queue.removeFirst()
 
-        queue.addLast(element)
+        queue.add(element)
     }
 
     operator fun plusAssign(element:T){

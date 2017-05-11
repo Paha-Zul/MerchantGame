@@ -5,20 +5,17 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.components.*
-import com.quickbite.economy.event.EventSystem
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.widgets.Graph
@@ -34,6 +31,7 @@ import com.quickbite.economy.util.Util
 class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
+    private var currentTabType: Int = 0
 
     private var lastWorkerListCounter = 0
 
@@ -51,108 +49,122 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val ic = Mappers.inventory.get(entity)
         val buying = Mappers.buyer.get(entity)
 
-        val buildingLabel = TextButton("Building", defaultTextButtonStyle)
-        buildingLabel.label.setFontScale(0.17f)
+        val buildingTab = TextButton("Building", defaultTextButtonStyle)
+        buildingTab.label.setFontScale(1f)
 
-        val sellLabel = TextButton("Sell", defaultTextButtonStyle)
-        sellLabel.label.setFontScale(0.17f)
+        val sellTab = TextButton("Sell", defaultTextButtonStyle)
+        sellTab.label.setFontScale(1f)
 
-        val workLabel = TextButton("Work", defaultTextButtonStyle)
-        workLabel.label.setFontScale(0.17f)
+        val economyTab = TextButton("Eco", defaultTextButtonStyle)
+        economyTab.label.setFontScale(1f)
 
-        val behaviourLabel = TextButton("Beh", defaultTextButtonStyle)
-        behaviourLabel.label.setFontScale(0.17f)
+        val workTab = TextButton("Work", defaultTextButtonStyle)
+        workTab.label.setFontScale(1f)
 
-        val inventoryLabel = TextButton("Inv", defaultTextButtonStyle)
-        inventoryLabel.label.setFontScale(0.17f)
+        val behaviourTab = TextButton("Beh", defaultTextButtonStyle)
+        behaviourTab.label.setFontScale(1f)
+
+        val inventoryTab = TextButton("Inv", defaultTextButtonStyle)
+        inventoryTab.label.setFontScale(1f)
 
         val buyingLabel = TextButton("Buying", defaultTextButtonStyle)
-        buyingLabel.label.setFontScale(0.17f)
+        buyingLabel.label.setFontScale(1f)
 
         val deleteLabel = TextButton("Delete", defaultTextButtonStyle)
-        deleteLabel.label.setFontScale(0.17f)
+        deleteLabel.label.setFontScale(1f)
 
         val exitLabel = TextButton("X", defaultTextButtonStyle)
-        exitLabel.label.setFontScale(0.17f)
+        exitLabel.label.setFontScale(1f)
 
         if(bc != null)
-            tabTable.add(buildingLabel).spaceRight(5f)
-        if(sc != null)
-            tabTable.add(sellLabel).spaceRight(5f)
+            tabTable.add(buildingTab).spaceRight(5f)
+        if(sc != null) {
+            tabTable.add(sellTab).spaceRight(5f)
+            tabTable.add(economyTab).spaceRight(5f)
+        }
         if(wc != null)
-            tabTable.add(workLabel).spaceRight(5f)
+            tabTable.add(workTab).spaceRight(5f)
         if(behComp != null)
-            tabTable.add(behaviourLabel).spaceRight(5f)
+            tabTable.add(behaviourTab).spaceRight(5f)
         if(ic != null)
-            tabTable.add(inventoryLabel).spaceRight(5f)
+            tabTable.add(inventoryTab).spaceRight(5f)
         if(buying != null)
             tabTable.add(buyingLabel).spaceRight(5f)
 
         tabTable.add(deleteLabel)
 
-        tabTable.add().expandX().fillX()
+        tabTable.add().growX()
         tabTable.add(exitLabel).right().width(32f)
 
-        buildingLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(contentTable, bc)
-                return true
+        buildingTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, bc, 1)
             }
         })
 
-        sellLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(contentTable, sc)
-                return true
+        sellTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, sc, 2)
             }
         })
 
-        workLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(contentTable, wc)
-                return true
+        economyTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, sc, 3)
             }
         })
 
-        behaviourLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(contentTable, behComp)
-                return true
+
+        workTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, wc, 4)
             }
         })
 
-        inventoryLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(contentTable, ic)
-                return true
+        behaviourTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, behComp, 5)
+            }
+        })
+
+        inventoryTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, ic, 6)
             }
         })
 
         buyingLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                loadTable(contentTable, buying)
-                return true
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, buying, 7)
             }
         })
 
         exitLabel.addListener(object: ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int){
+                super.touchUp(event, x, y, pointer, button)
                 close()
-                return true
             }
         })
 
         deleteLabel.addListener(object:ClickListener(){
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 close()
                 Factory.destroyEntity(entity)
-                return true
             }
         })
 
         //When we select a new building, try to display whatever section we were displaying on the last one
         if(currentlyDisplayingComponent != null)
-            loadTable(contentTable, currentlyDisplayingComponent!!)
+            loadTable(contentTable, currentlyDisplayingComponent!!, currentTabType)
+
+//        window.debugAll()
     }
 
     override fun update(delta:Float){
@@ -172,7 +184,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         currentlySelectedEntity = null
     }
 
-    private fun loadTable(table: Table, component: Component){
+    private fun loadTable(table: Table, component: Component, tabType:Int){
         table.clear()
         updateList.clear()
 
@@ -180,28 +192,31 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         debug.debugDrawWorkers = false
         debug.debugDrawWorkplace = false
 
-        changedTabsFunc.invoke()
+        changedTabsFunc() //Call the change tabs function
+        changedTabsFunc = {} //Clear the change tabs function
 
-        when(component.javaClass){
-            BuildingComponent::class.java -> setupBuildingTable(table, component as BuildingComponent)
-            SellingItemsComponent::class.java -> setupSellingTable(table, component as SellingItemsComponent)
-            WorkForceComponent::class.java -> {
+        when(tabType){
+            1 -> setupBuildingTable(table, component as BuildingComponent)
+            2 -> setupSellingTable(table, component as SellingItemsComponent)
+            3 -> setupEconomyTable(table, component as SellingItemsComponent)
+            4 -> {
                 debug.debugDrawWorkers = true
                 setupWorkforceTable(table, component as WorkForceComponent)
             }
-            BehaviourComponent::class.java -> setupBehaviourTable(table, component as BehaviourComponent)
-            InventoryComponent::class.java -> setupInventoryTable(table, component as InventoryComponent)
-            BuyerComponent::class.java -> setupBuyingTable(table, component as BuyerComponent)
+            5 -> setupBehaviourTable(table, component as BehaviourComponent)
+            6-> setupInventoryTable(table, component as InventoryComponent)
+            7 -> setupBuyingTable(table, component as BuyerComponent)
         }
 
         currentlyDisplayingComponent = component
+        currentTabType = tabType
     }
 
     private fun setupBuildingTable(table: Table, comp: BuildingComponent){
         val typeLabel = Label("Type: ${comp.buildingType}", defaultLabelStyle)
-        typeLabel.setFontScale(0.2f)
+        typeLabel.setFontScale(1f)
         val queueLabel = Label("Queue size: ${comp.unitQueue.size}", defaultLabelStyle)
-        queueLabel.setFontScale(0.2f)
+        queueLabel.setFontScale(1f)
 
         table.add(typeLabel).expandX().fillX()
         table.row()
@@ -238,10 +253,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         mainTableWorkerInfo.background = darkBackgroundDrawable
 
         val numWorkersLabel = Label("Workers: ${comp.workersAvailable.size}/${comp.numWorkerSpots}", defaultLabelStyle)
-        numWorkersLabel.setFontScale(0.2f)
+        numWorkersLabel.setFontScale(1f)
 
         val hireButton = TextButton("Hire", defaultTextButtonStyle)
-        hireButton.label.setFontScale(0.2f)
+        hireButton.label.setFontScale(1f)
 
         val tasksAndHireTable = Table()
         tasksAndHireTable.add(bottomScrollPane)
@@ -264,19 +279,19 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             val identity = Mappers.identity[workerEntity]
 
             val mainNameLabel = Label(identity.name, defaultLabelStyle)
-            mainNameLabel.setFontScale(0.4f)
+            mainNameLabel.setFontScale(1f)
 
             val mainHappinessLabel = Label("Happiness: ${worker.happiness}", defaultLabelStyle)
-            mainHappinessLabel.setFontScale(0.2f)
+            mainHappinessLabel.setFontScale(1f)
 
             val mainWageLabel = Label("Daily Wage: ${worker.dailyWage}", defaultLabelStyle)
-            mainWageLabel.setFontScale(0.2f)
+            mainWageLabel.setFontScale(1f)
 
             val workHoursLabel = Label("Hours: ${worker.timeRange.first}-${worker.timeRange.second}", defaultLabelStyle)
-            workHoursLabel.setFontScale(0.2f)
+            workHoursLabel.setFontScale(1f)
 
             val mainTasksLabel = Label(worker.taskList.joinToString(), defaultLabelStyle)
-            mainTasksLabel.setFontScale(0.2f)
+            mainTasksLabel.setFontScale(1f)
 
 
             mainTableWorkerInfo.add(mainNameLabel)
@@ -310,7 +325,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 worker.taskList.forEach { task -> tasks += "${task[0].toUpperCase()}, " }
 
                 val tasksLabel = Label(tasks, defaultLabelStyle)
-                tasksLabel.setFontScale(0.12f)
+                tasksLabel.setFontScale(1f)
 
                 //Add the name and taskList to our worker table button
                 workerButton.add(nameLabel)
@@ -335,7 +350,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //For the taskList available, list them
         comp.workerTasks.forEach { taskName ->
             val taskNameLabel = Label(taskName, defaultLabelStyle)
-            taskNameLabel.setFontScale(0.2f)
+            taskNameLabel.setFontScale(1f)
 
             workerTaskList.add(taskNameLabel).space(0f, 5f, 0f, 5f)
 
@@ -388,7 +403,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
     private fun setupBehaviourTable(table: Table, comp: BehaviourComponent){
         val taskLabel = Label("CurrTask: ${comp.currTask}", defaultLabelStyle)
-        taskLabel.setFontScale(0.2f)
+        taskLabel.setFontScale(1f)
         taskLabel.setWrap(true)
 
         table.add(taskLabel).expandX().fillX()
@@ -402,10 +417,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         contentsTable.background = darkBackgroundDrawable
 
         val amountLabel = Label("Amount of items: ${comp.itemMap.size}", defaultLabelStyle)
-        amountLabel.setFontScale(0.2f)
+        amountLabel.setFontScale(1f)
 
         val listLabel = Label("Item List", defaultLabelStyle)
-        listLabel.setFontScale(0.2f)
+        listLabel.setFontScale(1f)
         listLabel.setAlignment(Align.center)
 
         //The main table...
@@ -422,11 +437,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
                 val itemLabel = Label(itemName, defaultLabelStyle)
-                itemLabel.setFontScale(0.2f)
+                itemLabel.setFontScale(1f)
                 itemLabel.setAlignment(Align.center)
 
                 val itemAmountLabel = Label("$itemAmount", defaultLabelStyle)
-                itemAmountLabel.setFontScale(0.2f)
+                itemAmountLabel.setFontScale(1f)
                 itemAmountLabel.setAlignment(Align.center)
 
                 contentsTable.add(itemLabel).width(100f)
@@ -472,9 +487,9 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
             comp.buyList.forEach { pair ->
                 val itemName = Label(pair.itemName, defaultLabelStyle)
-                itemName.setFontScale(0.2f)
+                itemName.setFontScale(1f)
                 val itemAmount = Label("${pair.itemAmount}", defaultLabelStyle)
-                itemAmount.setFontScale(0.2f)
+                itemAmount.setFontScale(1f)
 
                 buyingTable.row()
                 buyingTable.add(itemName)
@@ -492,10 +507,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
     }
 
     private fun setupSellingTable(table: Table, comp: SellingItemsComponent){
-        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK)
-        graphStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY)))
-        graphStyle.graphBackground = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.ORANGE)))
-
         val taxRateTable = Table()
         taxRateTable.background = darkBackgroundDrawable
 
@@ -507,7 +518,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         //Set up the selling title
         val sellLabel = Label("Selling", defaultLabelStyle)
-        sellLabel.setFontScale(0.25f)
+        sellLabel.setFontScale(1f)
         sellLabel.setAlignment(Align.center)
 
         //This will populate the table of items being sold
@@ -520,13 +531,13 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             val sellItemsListTable = Table()
 
             val itemNameColTitle = Label("Name", defaultLabelStyle)
-            itemNameColTitle.setFontScale(0.2f)
+            itemNameColTitle.setFontScale(1f)
 
             val itemAmountColTitle = Label("Price", defaultLabelStyle)
-            itemAmountColTitle.setFontScale(0.2f)
+            itemAmountColTitle.setFontScale(1f)
 
             val itemStockColTitle = Label("Stock", defaultLabelStyle)
-            itemStockColTitle.setFontScale(0.2f)
+            itemStockColTitle.setFontScale(1f)
 
             //Add the three titles
             sellItemsListTable.add(itemNameColTitle)
@@ -538,33 +549,33 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             comp.currSellingItems.forEach { sellItemData ->
                 //The item name
                 val itemNameLabel = Label(sellItemData.itemName, defaultLabelStyle)
-                itemNameLabel.setFontScale(0.2f)
+                itemNameLabel.setFontScale(1f)
                 itemNameLabel.setAlignment(Align.center)
 
                 //The item amount
                 val itemAmountLabel = Label(sellItemData.itemPrice.toString(), defaultLabelStyle)
-                itemAmountLabel.setFontScale(0.2f)
+                itemAmountLabel.setFontScale(1f)
                 itemAmountLabel.setAlignment(Align.center)
 
                 /** The item stock amount */
                 val itemStockTable = Table()
 
-                val lessStockButton = TextButton("<", defaultTextButtonStyle)
-                lessStockButton.label.setFontScale(0.15f)
+                val lessStockButton = TextButton("-", defaultTextButtonStyle)
+                lessStockButton.label.setFontScale(1f)
 
-                val moreStockButton = TextButton(">", defaultTextButtonStyle)
-                moreStockButton.label.setFontScale(0.15f)
+                val moreStockButton = TextButton("+", defaultTextButtonStyle)
+                moreStockButton.label.setFontScale(1f)
 
                 fun getItemStockText():String =
                     if(sellItemData.itemStockAmount < 0) "max" else sellItemData.itemStockAmount.toString()
 
                 val itemStockLabel = Label(getItemStockText(), defaultLabelStyle)
-                itemStockLabel.setFontScale(0.2f)
+                itemStockLabel.setFontScale(1f)
 //                itemStockLabel.style.font.data.scale(0.5f)
 
-                itemStockTable.add(lessStockButton).size(32f)
+                itemStockTable.add(lessStockButton).size(16f)
                 itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f)
-                itemStockTable.add(moreStockButton).size(32f)
+                itemStockTable.add(moreStockButton).size(16f)
 
                 lessStockButton.addListener(object:ClickListener(){
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -589,7 +600,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                 //The x Label if we want to delete the link from a store that is reselling
                 val xLabel = TextButton("X", defaultTextButtonStyle)
-                xLabel.label.setFontScale(0.15f)
+                xLabel.label.setFontScale(1f)
                 xLabel.label.setAlignment(Align.center)
 
                 sellItemsListTable.add(itemNameLabel).width(100f)
@@ -601,10 +612,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                 xLabel.addListener(object:ClickListener(){
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                        super.touchUp(event, x, y, pointer, button)
                         if(comp.resellingItemsList.size <= 0)
                             return
                         Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceData)
-                        super.touchUp(event, x, y, pointer, button)
                     }
                 })
             }
@@ -617,18 +628,18 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //--- Tax rate section ---
 
         val taxRateLabel = Label("${comp.taxRate}", defaultLabelStyle)
-        taxRateLabel.setFontScale(0.2f)
+        taxRateLabel.setFontScale(1f)
         taxRateLabel.setAlignment(Align.center)
 
-        val lessTaxButton = TextButton("<", defaultTextButtonStyle)
-        lessTaxButton.label.setFontScale(0.2f)
+        val lessTaxButton = TextButton("-", defaultTextButtonStyle)
+        lessTaxButton.label.setFontScale(1f)
 
-        val moreTaxButton = TextButton(">", defaultTextButtonStyle)
-        moreTaxButton.label.setFontScale(0.2f)
+        val moreTaxButton = TextButton("+", defaultTextButtonStyle)
+        moreTaxButton.label.setFontScale(1f)
 
-        taxRateTable.add(lessTaxButton).size(32f ,32f)
+        taxRateTable.add(lessTaxButton).size(16f)
         taxRateTable.add(taxRateLabel).width(50f)
-        taxRateTable.add(moreTaxButton).size(32f ,32f)
+        taxRateTable.add(moreTaxButton).size(16f)
 
         //If we are also reselling, add this stuff
         if(comp.isReselling)
@@ -636,30 +647,28 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         //--- The titles for all the columns ---
         val title = Label("History:", defaultLabelStyle)
-        title.setFontScale(0.25f)
+        title.setFontScale(1f)
         title.setAlignment(Align.center)
 
         val itemNameLabel = Label("Item", defaultLabelStyle)
-        itemNameLabel.setFontScale(0.2f)
+        itemNameLabel.setFontScale(1f)
         itemNameLabel.setAlignment(Align.center)
 
         val itemAmountLabel = Label("Amt", defaultLabelStyle)
-        itemAmountLabel.setFontScale(0.2f)
+        itemAmountLabel.setFontScale(1f)
         itemAmountLabel.setAlignment(Align.center)
 
         val pricePerUnitLabel = Label("PPU", defaultLabelStyle)
-        pricePerUnitLabel.setFontScale(0.2f)
+        pricePerUnitLabel.setFontScale(1f)
         pricePerUnitLabel.setAlignment(Align.center)
 
         val timeStampLabel = Label("Time", defaultLabelStyle)
-        timeStampLabel.setFontScale(0.2f)
+        timeStampLabel.setFontScale(1f)
         timeStampLabel.setAlignment(Align.center)
 
         val buyerNameLabel = Label("Buyer", defaultLabelStyle)
-        buyerNameLabel.setFontScale(0.2f)
+        buyerNameLabel.setFontScale(1f)
         buyerNameLabel.setAlignment(Align.center)
-
-        val goldHistoryGraph = Graph(mutableListOf(), 50, graphStyle)
 
         //The history table function. This will populate the table
         val historyTableFunc = {
@@ -684,23 +693,23 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 val sell = comp.sellHistory.queue[i]
 
                 val _item = Label(sell.itemName, defaultLabelStyle)
-                _item.setFontScale(0.2f)
+                _item.setFontScale(1f)
                 _item.setAlignment(Align.center)
 
                 val _amount = Label(sell.itemAmount.toString(), defaultLabelStyle)
-                _amount.setFontScale(0.2f)
+                _amount.setFontScale(1f)
                 _amount.setAlignment(Align.center)
 
                 val _ppu = Label(sell.pricePerItem.toString(), defaultLabelStyle)
-                _ppu.setFontScale(0.2f)
+                _ppu.setFontScale(1f)
                 _ppu.setAlignment(Align.center)
 
                 val _time = Label(sell.timeStamp.toString(), defaultLabelStyle)
-                _time.setFontScale(0.2f)
+                _time.setFontScale(1f)
                 _time.setAlignment(Align.center)
 
                 val _buyer = Label(sell.buyerName, defaultLabelStyle)
-                _buyer.setFontScale(0.2f)
+                _buyer.setFontScale(1f)
                 _buyer.setAlignment(Align.center)
 
                 //Add them all to the table and add a new row
@@ -759,44 +768,82 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         table.row().expandX().fillX().spaceTop(20f)
         table.add(sellHistoryTable).expandX().fillX() //The history table
         table.row().expand().fill().spaceTop(20f) //Push everything up!
-        table.add(goldHistoryGraph).size(350f, 250f)
 
         //Put the history function into our update map
         updateMap.put("sellHistory", historyTableFunc)
 
         updateList.add { populateItemsTable() }
-        updateList.add { goldHistoryGraph.points = comp.goldHistory.queue.toList() }
 
         //Put in the event system
-//        EventSystem.onEvent("guiUpdateSellHistory", {historyTableFunc()})
-
-        val event = GameEventSystem.subscribe<ItemSoldEvent> { historyTableFunc() }
+        val entID = Mappers.identity[currentlySelectedEntity].uniqueID
+        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({historyTableFunc()}, entID) //Subscribe to the entity selling an item
 
         changedTabsFunc = {
-//            EventSystem.removeEvent("guiUpdateSellHistory")
-            GameEventSystem.unsubscribe(event)
+            GameEventSystem.unsubscribe(entityEvent) //Unsubscribe when we leave this tab
         }
 
 //        goldHistoryGraph.debug = true
     }
 
-    private fun setupResellingStuff(table: Table, comp: SellingItemsComponent){
-        //Button style
-        val buttonStyle = TextButton.TextButtonStyle()
-        buttonStyle.up = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.CYAN))) as Drawable?
-        buttonStyle.font = MyGame.manager["defaultFont", BitmapFont::class.java]
-        buttonStyle.fontColor = Color.WHITE
+    private fun setupEconomyTable(table: Table, comp: SellingItemsComponent){
+        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK, MyGame.defaultFont14)
+        graphStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY)))
+        graphStyle.graphBackground = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.ORANGE)))
 
-        //The link button for linking together this shop and a store
-        val linkButton = TextButton("Link", buttonStyle)
-        linkButton.label.setFontScale(0.2f)
+        val darkLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
+        darkLabelStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.DARK_GRAY)))
 
-        val importButton = TextButton("Import", buttonStyle)
-        importButton.label.setFontScale(0.2f)
+        val incomeDailyTitleLabel = Label("Daily Income", defaultLabelStyle)
+        incomeDailyTitleLabel.setFontScale(1f)
 
-        table.add(linkButton) //The link button
+        val incomeDailyLabel = Label("${comp.incomeDaily}", darkLabelStyle)
+        incomeDailyLabel.setFontScale(1f)
+        incomeDailyLabel.setAlignment(Align.center)
+
+        val taxDailyTileLabel = Label("Daily Tax", defaultLabelStyle)
+        taxDailyTileLabel.setFontScale(1f)
+
+        val taxDailyLabel = Label("${comp.taxCollectedDaily}", darkLabelStyle)
+        taxDailyLabel.setFontScale(1f)
+        taxDailyLabel.setAlignment(Align.center)
+
+        val goldHistoryGraph = Graph(mutableListOf(), 50, graphStyle)
+
+        val dailyTable = Table()
+
+        dailyTable.add(incomeDailyTitleLabel).spaceRight(20f).width(75f).uniformX().fillX()
+        dailyTable.add(incomeDailyLabel).width(50f)
+        dailyTable.add().growX()
+        dailyTable.row()
+        dailyTable.add(taxDailyTileLabel).spaceRight(20f).uniformX().fillX()
+        dailyTable.add(taxDailyLabel).width(50f)
+        dailyTable.add().growX()
+
+        table.add(dailyTable).left().expandX().fillX()
         table.row()
-        table.add(importButton) //The import button
+        table.add(goldHistoryGraph).size(350f, 250f)
+
+//        table.debugAll()
+        table.top()
+
+        updateList.add {
+            incomeDailyLabel.setText("${comp.incomeDaily}")
+            taxDailyLabel.setText("${comp.taxCollectedDaily}")
+            goldHistoryGraph.points = comp.goldHistory.queue.toList()
+        }
+
+    }
+
+    private fun setupResellingStuff(table: Table, comp: SellingItemsComponent){
+        //The link button for linking together this shop and a store
+        val linkButton = TextButton("Link", defaultTextButtonStyle)
+        val importButton = TextButton("Import", defaultTextButtonStyle)
+
+        val buttonTable = Table()
+        buttonTable.add(linkButton).spaceRight(50f) //The link button
+        buttonTable.add(importButton) //The import button
+
+        table.add(buttonTable).padTop(20f)
         table.row()
 
         //The listener for the link button

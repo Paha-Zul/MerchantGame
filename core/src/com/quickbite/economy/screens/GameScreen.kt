@@ -16,7 +16,6 @@ import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.event.GameEventSystem
-import com.quickbite.economy.event.events.CollectedTaxEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.TownManager
@@ -43,6 +42,7 @@ class GameScreen :Screen{
     var showGrid = false
 
     override fun show() {
+        //Subscribe to the general item sold event
         GameEventSystem.subscribe<ItemSoldEvent> {
             gameScreeData.playerMoney += it.taxCollected
         }

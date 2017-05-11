@@ -3,10 +3,8 @@ package com.quickbite.economy.behaviour.leaf
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuyerComponent
-import com.quickbite.economy.event.EventSystem
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.CollectedTaxEvent
-import com.quickbite.economy.event.events.GUIUpdateSellHistoryEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.ItemSold
@@ -63,10 +61,9 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
                 val ic = Mappers.identity.get(unitInQueue)
                 sellComp.sellHistory.add(ItemSold(itemToBuy.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
 
-
-                GameEventSystem.fire(CollectedTaxEvent(tax))
-                GameEventSystem.fire(GUIUpdateSellHistoryEvent())
-                GameEventSystem.fire(ItemSoldEvent(itemToBuy.itemName, remainingMoney, tax))
+                GameEventSystem.fire(CollectedTaxEvent(tax)) //Fire an Event that we collected tax
+                GameEventSystem.fire(ItemSoldEvent(itemToBuy.itemName, remainingMoney, tax), Mappers.identity[bb.targetEntity].uniqueID) //Fire the event for only this entity
+                GameEventSystem.fire(ItemSoldEvent(itemToBuy.itemName, remainingMoney, tax)) //Fire the event globally
 
                 //Set the buyer flag
                 buyer.buyerFlag = BuyerComponent.BuyerFlag.Bought //Set the buyer's flag as something was bought
@@ -83,7 +80,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
         val ic = Mappers.identity.get(unitInQueue)
         sellComp.sellHistory.add(ItemSold("nothing", 0, 10, 1f, ic.name))
-        EventSystem.callEvent("guiUpdateSellHistory", listOf()) //Call the event to update the gui if needed
+        GameEventSystem.fire(ItemSoldEvent("", 0, 0), Mappers.identity[bb.targetEntity].uniqueID) //Fire the event for only this entity
 
         controller.finishWithFailure()
 

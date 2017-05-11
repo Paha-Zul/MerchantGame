@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.quickbite.economy.MyGame;
 import com.quickbite.economy.util.Util;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class Graph extends Actor {
     private Vector2 tmp1 = new Vector2();
     private Vector2 tmp2 = new Vector2();
 
-    float padLeft = 50, padBot = 50, padTop = 50, padRight = 50;
+    float padLeft = 25, padBot = 25, padTop = 50, padRight = 50;
 
     private Label maxLabel, minLabel;
 
@@ -38,16 +37,14 @@ public class Graph extends Actor {
         this.maxPointsHoriz = maxPointsHoriz;
         this.style = style;
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle(MyGame.manager.get("defaultFont", BitmapFont.class), Color.BLACK);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(style.font, style.fontColor);
 
         //TODO Figure out how to deal with the font scale from outside
         maxLabel = new Label("max", labelStyle);
-        maxLabel.setFontScale(0.2f);
         maxLabel.setSize(50f, 20f);
         maxLabel.setAlignment(Align.right);
 
         minLabel = new Label("min", labelStyle);
-        minLabel.setFontScale(0.2f);
         minLabel.setSize(50f, 20f);
         minLabel.setAlignment(Align.right);
 
@@ -225,6 +222,10 @@ public class Graph extends Actor {
         /** Optional. */
         public Color lineColor = new Color(0f,0f,0f,1f);
 
+        public BitmapFont font;
+
+        public Color fontColor = new Color(1f,1f,1f,1f);
+
         /** Optional. */
         public Drawable pointDrawable;
 
@@ -239,9 +240,10 @@ public class Graph extends Actor {
 
         }
 
-        public GraphStyle (TextureRegionDrawable lineDrawable, Color lineColor) {
+        public GraphStyle (TextureRegionDrawable lineDrawable, Color lineColor, BitmapFont font) {
             this.lineDrawable = lineDrawable;
             this.lineColor = lineColor;
+            this.font = font;
         }
 
         public GraphStyle (TextureRegionDrawable lineDrawable, Color lineColor, TextureRegionDrawable pointDrawable, Color pointColor) {

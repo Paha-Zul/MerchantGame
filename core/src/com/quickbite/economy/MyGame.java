@@ -5,7 +5,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -30,6 +32,8 @@ public class MyGame extends Game {
     public static World world;
     public static Box2DDebugRenderer box2DDebugRenderer;
     public static Stage stage;
+
+    public static BitmapFont defaultFont14;
 
     @Override
 	public void create () {
@@ -58,7 +62,17 @@ public class MyGame extends Game {
         DefinitionManager.INSTANCE.readDefinitionsJson();
 
         this.setScreen(new GameScreen());
+
+        genFonts();
 	}
+
+	private void genFonts(){
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/titillium/Titillium-Regular.otf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 14;
+        defaultFont14 = generator.generateFont(parameter); // font size 14 pixels
+        generator.dispose(); // don't forget to dispose to avoid memory leaks!
+    }
 
 	@Override
 	public void render () {

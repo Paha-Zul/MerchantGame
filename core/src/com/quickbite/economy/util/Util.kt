@@ -343,7 +343,6 @@ object Util {
      * was selling the item is given back the selling capabilities
      * @param sellingComp The SellingItemsComponent to modify
      * @param itemName The name of the item
-     * @param itemPrice The price of the item (for further matching)
      */
     fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceData:Any? = null){
         sellingComp.currSellingItems.removeAll { it.itemName == itemName } //Remove all currently selling items with this name

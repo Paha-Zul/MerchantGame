@@ -16,7 +16,6 @@ class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         window.setSize(150f, 300f)
 
         val closeButton = TextButton("X", defaultTextButtonStyle)
-        closeButton.label.setFontScale(0.15f)
 
         tabTable.add().expandX().fillX()
         tabTable.add(closeButton).right().size(16f, 16f)
@@ -26,7 +25,6 @@ class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
             TownManager.getTown("Town").itemIncomeMap.values.filter { it.linkedToEntity == null }.forEach { income ->
                 val itemIncomeButton = TextButton("", defaultTextButtonStyle)
-                itemIncomeButton.label.setFontScale(0.15f)
 
                 itemIncomeButton.setText("${income.itemName} - ${income.baseProductionAmtPerDay}/day")
 

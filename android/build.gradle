@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "com.quickbite.economy"
-        minSdkVersion 8
+        minSdkVersion 24
         targetSdkVersion 25
     }
 }

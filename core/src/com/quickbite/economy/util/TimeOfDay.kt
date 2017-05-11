@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array
  * Created by Paha on 3/16/2017.
  */
 object TimeOfDay{
-    val hourlyListeners:Array<() -> Unit> = Array()
+    val hourlyListeners:Array<(Int) -> Unit> = Array()
 
     private var counter = 0f
         get
@@ -32,7 +32,7 @@ object TimeOfDay{
 
     private fun set():TimeOfDay{
         if(lastHour != this.hour)
-            hourlyListeners.forEach { it() }
+            hourlyListeners.forEach { it(this.hour) }
 
         //Save the previous
         lastHour = this.hour

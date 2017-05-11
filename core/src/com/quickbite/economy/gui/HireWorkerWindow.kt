@@ -23,10 +23,9 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
         window.setSize(200f, 400f)
 
         val exitButton = TextButton("X", defaultTextButtonStyle)
-        exitButton.label.setFontScale(0.15f)
 
         tabTable.add().expandX().fillX()
-        tabTable.add(exitButton).right().width(32f)
+        tabTable.add(exitButton).right().size(16f)
 
         val firstNames = DefinitionManager.names.firstNames
         val lastNames = DefinitionManager.names.lastNames
@@ -40,7 +39,6 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
 
         list.forEach { name ->
             val workerButton = TextButton(name, defaultTextButtonStyle)
-            workerButton.label.setFontScale(0.2f)
 
             contentTable.add(workerButton).width(150f).spaceTop(20f)
             contentTable.row()

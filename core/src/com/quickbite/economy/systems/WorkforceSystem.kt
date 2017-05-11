@@ -20,7 +20,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         val wc = Mappers.workforce.get(ent)
         val building = Mappers.building.get(ent)
 
-        wc.workersAvailable.forEachIndexed { index, workerEntity ->
+        wc.workersAvailable.forEachIndexed { _, workerEntity ->
             val bc = Mappers.behaviour.get(workerEntity)
             val worker = Mappers.worker[workerEntity]
 
@@ -33,17 +33,22 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
 
                 //TODO Deal with the time schedule
 
-//                //If we are withing the working hour range
-//                if(workerTaskLink.timeRange.first <= TimeOfDay.hour && workerTaskLink.timeRange.second >= TimeOfDay.hour) {
-//                    val taskList = workerTaskLink.taskList.toList()
-//                    val task = assignTasks(taskList, bc)
-//                    bc.currTask = task
-//
-//                //Otherwise
-//                }else{
-//                    val task = Tasks.leaveMapAndHide(bc.blackBoard)
-//                    bc.currTask = task
-//                }
+                val diff = 24 - worker.timeRange.first //We get how far from 0 we are (24 == 0 in hours)
+                val scaledTime = (TimeOfDay.hour + diff)%24 //We add the diff to the current time to get the scaled time (ie: 22 + 6 % 24 = 4)
+                val scaledWorkerTimeStart = (worker.timeRange.first + diff)%24 //This should always be 0 but we do this for consistency
+                val scaledWorkerTimeEnd = (worker.timeRange.second + diff)%24 //This will be the ending time, ie: 6 (after scaling)
+
+                //If we are withing the working hour range, assign our person the regular tasks
+                if(scaledTime in scaledWorkerTimeStart..scaledWorkerTimeEnd) {
+                    val taskList = worker.taskList.toList()
+                    val task = assignTasks(taskList, bc)
+                    bc.currTask = task
+
+                //Otherwise, assign us a leave the map task
+                }else{
+                    val task = Tasks.leaveMapAndHide(bc.blackBoard)
+                    bc.currTask = task
+                }
             }
         }
 

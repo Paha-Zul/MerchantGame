@@ -1,5 +1,7 @@
 package com.quickbite.economy.event
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
+import java.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -14,7 +16,7 @@ object GameEventSystem {
         }
     }
 
-    class GameEventRegistration(val eventType: KClass<out GameEvent>, val action: GameEventContext.(GameEvent) -> Unit){
+    class GameEventRegistration(val eventType: KClass<out GameEvent>, val action: GameEventContext.(GameEvent) -> Unit, val ID:Long){
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other?.javaClass != javaClass) return false
@@ -31,25 +33,63 @@ object GameEventSystem {
         }
     }
 
-    val subscriptions: HashMap<KClass<out GameEvent>, ArrayList<GameEventRegistration>> = hashMapOf()
 
+//    val subscriptions: HashMap<KClass<out GameEvent>, ArrayList<GameEventRegistration>> = hashMapOf()
+
+    val subscriptions: HashMap<KClass<out GameEvent>, Long2ObjectOpenHashMap<ArrayList<GameEventRegistration>>> = hashMapOf()
+
+    /***
+     * Subscribes a GameEvent to this system
+     * @param action The function to invoke when the event is fired.
+     * @param ID A Long ID to subscribe this event to. -1 is default and signifies global
+     */
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T:GameEvent> subscribe(noinline action: GameEventContext.(T) -> Unit) : GameEventContext.(T) -> Unit{
-        val registration = GameEventRegistration(T::class, action as GameEventContext.(GameEvent) -> Unit)
-        subscriptions.computeIfAbsent(T::class, {ArrayList()}).add(registration)
-        return action
+    inline fun <reified T:GameEvent> subscribe(noinline action: GameEventContext.(T) -> Unit, ID:Long) : GameEventRegistration{
+        val registration = GameEventRegistration(T::class, action as GameEventContext.(GameEvent) -> Unit, ID)
+        subscriptions.computeIfAbsent(T::class, {Long2ObjectOpenHashMap(10)}).computeIfAbsent(ID, {ArrayList()}).add(registration)
+//        subscriptions.computeIfAbsent(T::class, {ArrayList()}).add(registration)
+        return registration
     }
 
-    fun <T:GameEvent> fire(event:T){
-        subscriptions[event.javaClass.kotlin]?.forEach{
+    /**
+     * Subscribes a GameEvent to this system. Uses -1 as the ID and is considered a global scoped event
+     * @param action The function to invoke when the event is fired.
+     */
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T:GameEvent> subscribe(noinline action: GameEventContext.(T) -> Unit) : GameEventRegistration{
+        val registration = GameEventRegistration(T::class, action as GameEventContext.(GameEvent) -> Unit, -1)
+        subscriptions.computeIfAbsent(T::class, {Long2ObjectOpenHashMap(10)}).computeIfAbsent(-1, {ArrayList()}).add(registration)
+//        subscriptions.computeIfAbsent(T::class, {ArrayList()}).add(registration)
+        return registration
+    }
+
+    /**
+     * Fires a GameEvent in this system
+     * @param event The GameEvent class to fire.
+     * @param ID The ID used for specific entities. -1 is default and signifies global.
+     */
+    fun <T:GameEvent> fire(event:T, ID: Long = -1){
+        subscriptions[event.javaClass.kotlin]?.get(ID)?.forEach{
             val context = GameEventContext()
             it.action.invoke(context, event)
             //TODO Unsubscribe from here if done?
         }
     }
 
+    /**
+     * Unsubscribes an event from this system. The ID must be specified here.
+     * @param action The action to remove
+     * @param ID The Long ID of the action
+     */
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : GameEvent> unsubscribe(noinline action: GameEventContext.(T) -> Unit) {
-        subscriptions[T::class]?.removeAll { it.action == action }
+    fun unsubscribe(registration: GameEventRegistration) {
+        subscriptions[registration.eventType]?.get(registration.ID)?.removeAll { it.action == registration.action }
+    }
+
+    /**
+     * Unsubscribes all events from the event system for the ID specified
+     */
+    fun unsubscribeAll(ID:Long){
+        subscriptions.values.forEach { it.remove(ID) }
     }
 }

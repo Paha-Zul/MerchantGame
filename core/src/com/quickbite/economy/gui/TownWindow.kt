@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.quickbite.economy.MyGame
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.PopulationChangeEvent
 import com.quickbite.economy.gui.widgets.Graph
@@ -17,10 +18,10 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 4/9/2017.
  */
 class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
-    val updatePopGraphEvent:GameEventSystem.GameEventContext.(PopulationChangeEvent)->Unit
+    val updatePopGraphEvent:GameEventSystem.GameEventRegistration
 
     init{
-        val style = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK)
+        val style = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK, MyGame.defaultFont14)
         style.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.DARK_GRAY)))
         style.lineThickness = 2f
 

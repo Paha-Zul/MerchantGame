@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.BuildingDefManager
 import com.quickbite.economy.managers.DefinitionManager
@@ -165,6 +167,12 @@ object Factory {
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
 
+            //A game event to listen for. Record our profit and tax collected from this event
+            GameEventSystem.subscribe<ItemSoldEvent>({
+                selling.incomeDaily += it.profit
+                selling.taxCollectedDaily += it.taxCollected
+            }, identityComp.uniqueID)
+
             entity.add(selling)
         }
 
@@ -280,9 +288,10 @@ object Factory {
     }
 
     fun destroyEntity(entity:Entity){
-        val comps = entity.components
-        comps.forEach { comp -> (comp as MyComponent).dispose(entity)}
-        MyGame.entityEngine.removeEntity(entity)
+        val comps = entity.components //Get all components
+        GameEventSystem.unsubscribeAll(Mappers.identity[entity].uniqueID) //Unsubscribe from all game events
+        comps.forEach { comp -> (comp as MyComponent).dispose(entity)} //Dispose each component
+        MyGame.entityEngine.removeEntity(entity) //Remove it from the engine
     }
 
     fun destroyEntityFamily(family: Family){
