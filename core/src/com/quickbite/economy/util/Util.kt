@@ -344,36 +344,33 @@ object Util {
      * @param sellingComp The SellingItemsComponent to modify
      * @param itemName The name of the item
      */
-    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceData:Any? = null){
+    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceType:SellingItemData.ItemSource, itemSourceData:Any? = null){
         sellingComp.currSellingItems.removeAll { it.itemName == itemName } //Remove all currently selling items with this name
 
-        //Make a copy using .toList() and loop over it....
-        sellingComp.resellingItemsList.toList().forEach { //For each entity link...
+        //Deal with the source type
+        when(itemSourceType){
+            //If it's from a workshop....
+            SellingItemData.ItemSource.Workshop -> {
+                val otherSelling = Mappers.selling[itemSourceData as Entity] //Get the selling component of the linked Entity
+                val baseSellingItem = otherSelling.baseSellingItems.first { it.itemName == itemName } //Get the base selling item
+                if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
+                    otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
 
-            when(it.itemSourceType){
-                //If it's from a workshop....
-                SellingItemData.ItemSource.Workshop -> {
-                    val otherSelling = Mappers.selling[it.itemSourceData as Entity] //Get the selling component of the linked Entity
-                    val baseSellingItem = otherSelling.baseSellingItems.first { it.itemName == itemName } //Get the base selling item
-                    if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
-                        otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
+                sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop }
+            }
 
-                    sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop }
-                }
+            //If it's an import from a town...
+            SellingItemData.ItemSource.Import ->{
+                //TODO We need to figure out how to get the correct town here. This is just a prototyping quickie here
+                //Get the first item that matches the name AND the item source data passed in
+                val item = sellingComp.resellingItemsList.first{it.itemName == itemName && it.itemSourceData == itemSourceData}
+                //Get the town using the item source data
+                TownManager.getTown(item.itemSourceData as String).itemIncomeMap[itemName]!!.linkedToEntity = null
+                //Remove the item from the selling comp
+                sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
+            }
+            else -> {
 
-                //If it's an import from a town...
-                SellingItemData.ItemSource.Import ->{
-                    //TODO We need to figure out how to get the correct town here. This is just a prototyping quickie here
-                    //Get the first item that matches the name AND the item source data passed in
-                    val item = sellingComp.resellingItemsList.first{it.itemName == itemName && it.itemSourceData == itemSourceData}
-                    //Get the town using the item source data
-                    TownManager.getTown(item.itemSourceData as String).itemIncomeMap[itemName]!!.linkedToEntity = null
-                    //Remove the item from the selling comp
-                    sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
-                }
-                else -> {
-
-                }
             }
         }
 
@@ -418,7 +415,7 @@ object Util {
 //        val itemDef = DefinitionManager.itemDefMap[itemName]!!
 //        val reselling = Mappers.selling[entity]
 
-        removeSellingItemFromReseller(selling, itemName, town.name)
+//        removeSellingItemFromReseller(selling, itemName, town.name)
 
         town.itemIncomeMap.values.first { it.itemName == itemName }.linkedToEntity = null
     }

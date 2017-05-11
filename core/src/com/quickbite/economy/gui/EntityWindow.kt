@@ -615,7 +615,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                         super.touchUp(event, x, y, pointer, button)
                         if(comp.resellingItemsList.size <= 0)
                             return
-                        Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceData)
+                        println("called")
+                        Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceType, sellItemData.itemSourceData)
                     }
                 })
             }
