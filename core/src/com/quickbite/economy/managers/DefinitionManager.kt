@@ -97,8 +97,7 @@ object DefinitionManager {
         val list = json.fromJson(Array<ItemDef>::class.java, Gdx.files.internal("data/itemDefs.json"))
         list.forEach { itemDef ->
             itemDefMap.put(itemDef.itemName, itemDef)
-            val itemDefList = itemCategoryMap.getOrPut(itemDef.category, {com.badlogic.gdx.utils.Array()})
-            itemDefList.add(itemDef)
+            itemDef.categories.forEach { itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
         }
     }
 
@@ -192,7 +191,7 @@ object DefinitionManager {
     class ItemDef{
         lateinit var itemName:String
         var baseMarketPrice:Int = 0
-        var category:String = ""
+        var categories:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
     }
 
     private class ProductionList{

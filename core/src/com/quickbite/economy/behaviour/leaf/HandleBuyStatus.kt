@@ -19,7 +19,7 @@ class HandleBuyStatus(bb:BlackBoard) : LeafTask(bb) {
             //If we bought an item, deal with it!
             BuyerComponent.BuyerFlag.Bought -> {
                 buyer.buyHistory.forEach { (itemName, itemAmount) ->
-                    if(DefinitionManager.itemDefMap[itemName]!!.category == "Food")
+                    if(DefinitionManager.itemDefMap[itemName]!!.categories.contains("Food"))
                         //The buyer starts with necessity negative equal to the amount of food it needs
                         //We double this to provide a positive rating if at least half the food is bought
                         buyer.needsSatisfactionRating += itemAmount *2

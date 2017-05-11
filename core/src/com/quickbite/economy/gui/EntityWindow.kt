@@ -287,12 +287,29 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             val mainWageLabel = Label("Daily Wage: ${worker.dailyWage}", defaultLabelStyle)
             mainWageLabel.setFontScale(1f)
 
-            val workHoursLabel = Label("Hours: ${worker.timeRange.first}-${worker.timeRange.second}", defaultLabelStyle)
+            val workHoursLabel = Label("Work Hours", defaultLabelStyle)
             workHoursLabel.setFontScale(1f)
+
+            val workHoursStartLabel = Label("${worker.timeRange.first}", defaultLabelStyle)
+            val workHoursEndLabel = Label("${worker.timeRange.second}", defaultLabelStyle)
+
+            val workHourStartLessButton = TextButton("-", defaultTextButtonStyle)
+            val workHourStartMoreButton = TextButton("+", defaultTextButtonStyle)
+            val workHourEndLessButton = TextButton("-", defaultTextButtonStyle)
+            val workHourEndMoreButton = TextButton("+", defaultTextButtonStyle)
+
+            val workHoursTable = Table()
+
+            workHoursTable.add(workHourStartLessButton).size(16f)
+            workHoursTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f)
+            workHoursTable.add(workHourStartMoreButton).size(16f)
+            workHoursTable.add().width(20f)
+            workHoursTable.add(workHourEndLessButton).size(16f)
+            workHoursTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f)
+            workHoursTable.add(workHourEndMoreButton).size(16f)
 
             val mainTasksLabel = Label(worker.taskList.joinToString(), defaultLabelStyle)
             mainTasksLabel.setFontScale(1f)
-
 
             mainTableWorkerInfo.add(mainNameLabel)
             mainTableWorkerInfo.row()
@@ -302,9 +319,31 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             mainTableWorkerInfo.row()
             mainTableWorkerInfo.add(workHoursLabel)
             mainTableWorkerInfo.row()
+            mainTableWorkerInfo.add(workHoursTable)
+            mainTableWorkerInfo.row()
             mainTableWorkerInfo.add(mainTasksLabel)
 
             selectedWorkerEntity = workerEntity
+
+            workHourStartLessButton.addChangeListener { _, _ ->
+                worker.timeRange.first = Math.floorMod(worker.timeRange.first - 1, 24)
+                workHoursStartLabel.setText("${worker.timeRange.first}")
+            }
+
+            workHourStartMoreButton.addChangeListener { _, _ ->
+                worker.timeRange.first = Math.floorMod(worker.timeRange.first + 1, 24)
+                workHoursStartLabel.setText("${worker.timeRange.first}")
+            }
+
+            workHourEndLessButton.addChangeListener { _, _ ->
+                worker.timeRange.second = Math.floorMod(worker.timeRange.second - 1, 24)
+                workHoursEndLabel.setText("${worker.timeRange.second}")
+            }
+
+            workHourEndMoreButton.addChangeListener { _, _ ->
+                worker.timeRange.second = Math.floorMod(worker.timeRange.second + 1, 24)
+                workHoursEndLabel.setText("${worker.timeRange.second}")
+            }
         }
 
         //The function to populate the left side scrolling table where the list of workers are displayed
@@ -319,13 +358,13 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 val workerButton = Button(buttonStyle)
 
                 val nameLabel = Label(identity.name, defaultLabelStyle)
-                nameLabel.setFontScale(0.18f)
+                nameLabel.setFontScale(1f)
 
                 var tasks = ""
                 worker.taskList.forEach { task -> tasks += "${task[0].toUpperCase()}, " }
 
                 val tasksLabel = Label(tasks, defaultLabelStyle)
-                tasksLabel.setFontScale(1f)
+                tasksLabel.setFontScale(0.8f)
 
                 //Add the name and taskList to our worker table button
                 workerButton.add(nameLabel)
@@ -462,16 +501,16 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val buyingTable = Table()
 
         val itemNameTitle = Label("Item", defaultLabelStyle)
-        itemNameTitle.setFontScale(0.25f)
+        itemNameTitle.setFontScale(1f)
 
         val itemAmountTitle = Label("Amount", defaultLabelStyle)
-        itemAmountTitle.setFontScale(0.25f)
+        itemAmountTitle.setFontScale(1f)
 
         val necessityRatingLabel = Label("Needs: ${comp.needsSatisfactionRating}", defaultLabelStyle)
-        necessityRatingLabel.setFontScale(0.25f)
+        necessityRatingLabel.setFontScale(1f)
 
         val luxuryRatingLabel = Label("Luxury: ${comp.luxurySatisfactionRating}", defaultLabelStyle)
-        luxuryRatingLabel.setFontScale(0.25f)
+        luxuryRatingLabel.setFontScale(1f)
 
         val populateTableFunc = {
             buyingTable.clear()
@@ -571,7 +610,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                 val itemStockLabel = Label(getItemStockText(), defaultLabelStyle)
                 itemStockLabel.setFontScale(1f)
-//                itemStockLabel.style.font.data.scale(0.5f)
+//                itemStockLabel.style.font.data.timeScale(0.5f)
 
                 itemStockTable.add(lessStockButton).size(16f)
                 itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f)
@@ -615,7 +654,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                         super.touchUp(event, x, y, pointer, button)
                         if(comp.resellingItemsList.size <= 0)
                             return
-                        println("called")
                         Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceType, sellItemData.itemSourceData)
                     }
                 })
@@ -822,7 +860,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         table.add(dailyTable).left().expandX().fillX()
         table.row()
-        table.add(goldHistoryGraph).size(350f, 250f)
+        table.add(goldHistoryGraph).size(350f, 250f).padTop(20f)
 
 //        table.debugAll()
         table.top()

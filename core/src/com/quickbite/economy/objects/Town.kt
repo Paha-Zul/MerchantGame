@@ -41,7 +41,7 @@ class Town(val name:String) {
             //For each item in the income map, increase it!
             itemIncomeMap.values.forEach { income ->
                 //1440 is how many minutes in 24 hours
-                income.accumulatedItemCounter = income.accumulatedItemCounter + (income.calculatedProductionAmtPerDay/(1440f/(TimeOfDay.currTimeScale)))
+                income.accumulatedItemCounter = income.accumulatedItemCounter + (income.calculatedProductionAmtPerDay/(1440f/(TimeOfDay.currScaledTime)))
             }
         })
 

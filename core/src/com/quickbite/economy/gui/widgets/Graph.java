@@ -28,7 +28,7 @@ public class Graph extends Actor {
     private Vector2 tmp1 = new Vector2();
     private Vector2 tmp2 = new Vector2();
 
-    float padLeft = 25, padBot = 25, padTop = 50, padRight = 50;
+    float padLeft = 50, padBot = 25, padTop = 50, padRight = 50;
 
     private Label maxLabel, minLabel;
 
@@ -39,7 +39,7 @@ public class Graph extends Actor {
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(style.font, style.fontColor);
 
-        //TODO Figure out how to deal with the font scale from outside
+        //TODO Figure out how to deal with the font timeScale from outside
         maxLabel = new Label("max", labelStyle);
         maxLabel.setSize(50f, 20f);
         maxLabel.setAlignment(Align.right);
