@@ -1,6 +1,7 @@
 package com.quickbite.economy.behaviour.leaf
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
@@ -59,7 +60,7 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
     private fun shop(){
         val worker = Mappers.worker[bb.myself]
         val sellingComp = Mappers.selling[worker.workerBuilding]
-
+        val myBuildingInventory = Mappers.inventory[worker.workerBuilding]
         val sellingItemsList = sellingComp.resellingItemsList
 
         //Gotta make sure we even have any items
@@ -68,7 +69,8 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             var sellingItem:SellingItemData
             val initialIndex = sellingComp.indexCounter
             var found:Boolean
-            //Here we need to loop through all the items to find an item selling that has an entity source
+
+            //Here we loop through the reselling items list to find an item we are selling from a workshop.
             do{
                 sellingItem = sellingComp!!.resellingItemsList[sellingComp.indexCounter] //Get the selling item
                 found = sellingItem.itemSourceType == SellingItemData.ItemSource.Workshop
@@ -80,12 +82,19 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
                 controller.finishWithFailure()
                 return
             }
+
             //Get the inventory of the entity source
             val entityInventory = Mappers.inventory[sellingItem.itemSourceData as Entity]
 
+            val workshopInvAmount = entityInventory.getItemAmount(bb.targetItem.itemName) //The amount the workshop has in it's inventory
+
+            //If we want the max amount then we take all of the workshop's amount. Otherwise, we want to fulfill the stock, take the stock minus our inventory amount
+            val amountToGet = if(sellingItem.itemStockAmount < 0) workshopInvAmount
+                else MathUtils.clamp(sellingItem.itemStockAmount - myBuildingInventory.getItemAmount(sellingItem.itemName), 0, Int.MAX_VALUE)
+
             //Set the target item.
             bb.targetItem.itemName = sellingItem.itemName
-            bb.targetItem.itemAmount = entityInventory.getItemAmount(bb.targetItem.itemName)
+            bb.targetItem.itemAmount = amountToGet
 
             sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index a final time
 
