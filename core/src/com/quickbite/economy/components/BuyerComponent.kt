@@ -27,7 +27,7 @@ class BuyerComponent : MyComponent{
 
     val buyHistory:Array<ItemAmountLink> = Array()
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

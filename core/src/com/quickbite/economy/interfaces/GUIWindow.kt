@@ -62,7 +62,7 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
         //Add the stuff to the main table
         this.mainTable.add(tabTable).expandX().fillX()
         this.mainTable.row()
-        this.mainTable.add(contentTableScrollPane).expand().fill()
+        this.mainTable.add(contentTableScrollPane).grow()
 
         //Make the window
         val windowBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box", Texture::class.java], 50, 50, 50, 50))

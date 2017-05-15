@@ -10,7 +10,7 @@ class InitializationComponent : MyComponent {
     var initiated = false
     var initFuncs:MutableList<()->Unit> = mutableListOf()
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

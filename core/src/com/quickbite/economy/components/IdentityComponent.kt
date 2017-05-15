@@ -15,7 +15,9 @@ class IdentityComponent : MyComponent{
 
     }
 
-    override fun dispose(entity: Entity) {
+
+
+    override fun dispose(myself: Entity) {
 
     }
 }

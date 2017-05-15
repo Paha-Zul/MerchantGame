@@ -9,6 +9,7 @@ import com.quickbite.economy.interfaces.MyComponent
  * Created by Paha on 1/30/2017.
  */
 class BodyComponent : MyComponent {
+
     var body:Body? = null
 
 
@@ -16,7 +17,7 @@ class BodyComponent : MyComponent {
 
     }
 
-    override fun dispose(entity:Entity) {
+    override fun dispose(myself:Entity) {
         if(body != null)
             MyGame.world.destroyBody(body)
     }

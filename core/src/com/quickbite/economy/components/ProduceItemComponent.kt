@@ -10,6 +10,7 @@ import com.quickbite.economy.managers.DefinitionManager
  * Gives an Entity the capability of producing items
  */
 class ProduceItemComponent : MyComponent{
+
     var currProductionIndex = 0
     val productionList: Array<DefinitionManager.Production> = Array()
 
@@ -17,7 +18,7 @@ class ProduceItemComponent : MyComponent{
 
     }
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
     }
 
 

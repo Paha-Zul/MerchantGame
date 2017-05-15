@@ -17,7 +17,7 @@ class BuildingComponent : MyComponent {
     val entranceSpotOffsets = mutableListOf<Vector2>()
     val unitQueue = LinkedList<Entity>()
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

@@ -11,7 +11,7 @@ class TransformComponent : MyComponent {
     val position = Vector2()
     var dimensions = Vector2()
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
     }
 
     override fun initialize() {

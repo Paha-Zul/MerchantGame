@@ -41,7 +41,7 @@ class SellingItemsComponent : MyComponent {
 
     }
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
     }
 
     override fun initialize() {

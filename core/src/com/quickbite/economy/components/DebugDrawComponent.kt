@@ -24,7 +24,7 @@ class DebugDrawComponent : MyComponent {
     var debugDrawWorkplace = false
     var debugDrawWorkers = false
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

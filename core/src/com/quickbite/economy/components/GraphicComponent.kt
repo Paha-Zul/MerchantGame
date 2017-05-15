@@ -25,7 +25,7 @@ class GraphicComponent : MyComponent {
 
     val moodIcons = Array<MutablePair<Sprite, Float>>(4)
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 }

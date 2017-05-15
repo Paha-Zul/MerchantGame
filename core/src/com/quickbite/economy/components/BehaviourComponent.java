@@ -2,13 +2,17 @@ package com.quickbite.economy.components;
 
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
 import com.quickbite.economy.behaviour.BlackBoard;
 import com.quickbite.economy.behaviour.Task;
 import com.quickbite.economy.interfaces.MyComponent;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import org.jetbrains.annotations.NotNull;
 
-public class BehaviourComponent implements MyComponent
-{
+public class BehaviourComponent implements MyComponent{
+	public Array<Function1<Entity, Unit>> destroyFuncs = new Array<>();
+
 	private Task currTask;
 
 	private BlackBoard bb;
@@ -65,7 +69,7 @@ public class BehaviourComponent implements MyComponent
     }
 
     @Override
-    public void dispose(@NotNull Entity entity) {
+    public void dispose(@NotNull Entity myself) {
 
     }
 

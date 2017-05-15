@@ -11,6 +11,7 @@ import com.quickbite.economy.util.Mappers
  * Created by Paha on 1/22/2017.
  */
 class WorkerUnitComponent : MyComponent {
+
     var paid = false
     var dailyWage = 0
     var workerBuilding:Entity? = null
@@ -29,9 +30,9 @@ class WorkerUnitComponent : MyComponent {
 
     }
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
         //When we destroy this, remove ourselves from the work building
         if(workerBuilding != null)
-            Mappers.workforce[workerBuilding].workersAvailable.removeAll { entity === entity }
+            Mappers.workforce[workerBuilding].workersAvailable.removeAll { it === myself }
     }
 }

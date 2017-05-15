@@ -11,7 +11,7 @@ class GridComponent : MyComponent {
     var initiated = false
     var blockWhenPlaced = false
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

@@ -8,7 +8,8 @@ import com.quickbite.economy.interfaces.MyComponent
  */
 
 class PawnStateComponent : MyComponent{
-    override fun dispose(entity: Entity) {
+
+    override fun dispose(myself: Entity) {
     }
 
     override fun initialize() {

@@ -3,8 +3,8 @@ package com.quickbite.economy.behaviour.leaf
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuyerComponent
+import com.quickbite.economy.util.FindEntityUtil
 import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 3/12/2017.
@@ -25,7 +25,7 @@ class SetTargetItemAndEntityFromDemand(bb:BlackBoard) : LeafTask(bb){
 
         //Search through each item to buy and see if there is a building selling it
         buyer!!.buyList.forEach {
-            val building = Util.getClosestSellingItem(position, it.itemName, true, bb.entitiesToIgnore)
+            val building = FindEntityUtil.getClosestSellingItem(position, it.itemName, true, bb.entitiesToIgnore)
             if(building != null){
                 bb.targetItem.itemName = it.itemName
                 bb.targetItem.itemAmount = it.itemAmount

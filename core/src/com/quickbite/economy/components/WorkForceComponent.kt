@@ -2,7 +2,10 @@ package com.quickbite.economy.components
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
+import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.interfaces.MyComponent
+import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 1/22/2017.
@@ -13,10 +16,15 @@ class WorkForceComponent : MyComponent {
     var workerTasks:Array<String> = Array()
     var workersPaidFlag = false
 
-    override fun dispose(entity: Entity) {
-    }
-
     override fun initialize() {
 
+    }
+
+    override fun dispose(myself: Entity) {
+        workersAvailable.forEach {
+            Util.removeWorkerFromBuilding(it, myself)
+            val beh = Mappers.behaviour[it]
+            beh.currTask = Tasks.leaveMap(beh.blackBoard)
+        }
     }
 }

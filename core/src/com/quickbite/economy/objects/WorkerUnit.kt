@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.quickbite.economy.components.*
+import com.quickbite.economy.util.FindEntityUtil
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
@@ -32,7 +33,7 @@ class WorkerUnit(sprite: Sprite, initialPosition:Vector2, dimensions:Vector2) : 
         transform.dimensions.set(dimensions.x, dimensions.y)
 
         initComponent.initFuncs.add({
-            val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
+            val closestWorkshop = FindEntityUtil.getClosestBuildingWithWorkerPosition(transform.position)
 
             //TODO Figure out what to do if this workshop is null?
             if(closestWorkshop != null) {

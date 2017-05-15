@@ -15,9 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
+import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
+import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.objects.SellingItemData
@@ -29,9 +31,12 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 3/9/2017.
  */
 class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
+    private data class SelectedWorkerAndTable(var worker:Entity?, var table:Table?)
+
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
     private var currentTabType: Int = 0
+    private var selectedWorker = SelectedWorkerAndTable(null, null)
 
     private var lastWorkerListCounter = 0
 
@@ -238,155 +243,149 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         buttonStyle.up = buttonBackgroundDrawable
 
         //Our scroll pane
-        val workerList = Table() //Our worker list
+        val workerListTable = Table() //Our worker list
+        val mainScrollPane = ScrollPane(workerListTable, scrollPaneStyle)
 
-        val leftScrollPane = ScrollPane(workerList, scrollPaneStyle)
+        workerListTable.top()
 
-        //The main table area.
-        val mainTableArea = Table()
+        fun populateWorkerTable() {
+            workerListTable.clear()
 
-        val workerTaskList = Table()
-        val bottomScrollPane = ScrollPane(workerTaskList, scrollPaneStyle)
+            val nameTitleLabel = Label("Name", defaultLabelStyle)
+            nameTitleLabel.setAlignment(Align.center)
+            nameTitleLabel.setFontScale(1.2f)
+            val currTaskTitleLabel = Label("Tasks", defaultLabelStyle)
+            currTaskTitleLabel.setAlignment(Align.center)
+            currTaskTitleLabel.setFontScale(1.2f)
+            val startTimeTitleLAbel = Label("Start", defaultLabelStyle)
+            startTimeTitleLAbel.setAlignment(Align.center)
+            startTimeTitleLAbel.setFontScale(1.2f)
+            val endTimeTitleLabel = Label("End", defaultLabelStyle)
+            endTimeTitleLabel.setAlignment(Align.center)
+            endTimeTitleLabel.setFontScale(1.2f)
+            val salaryTitleLabel = Label("Salary", defaultLabelStyle)
+            salaryTitleLabel.setAlignment(Align.center)
+            salaryTitleLabel.setFontScale(1.2f)
+            val fireTitleLabel = Label("Fire", defaultLabelStyle)
+            fireTitleLabel.setAlignment(Align.center)
+            fireTitleLabel.setFontScale(1.2f)
 
-        val topInfoTable = Table()
-        val mainTableWorkerInfo = Table()
-        mainTableWorkerInfo.background = darkBackgroundDrawable
+            val titleTable = Table()
+            workerListTable.add(titleTable).growX()
+            workerListTable.row().growX()
 
-        val numWorkersLabel = Label("Workers: ${comp.workersAvailable.size}/${comp.numWorkerSpots}", defaultLabelStyle)
-        numWorkersLabel.setFontScale(1f)
+            //Add all the titles....
+            titleTable.add(nameTitleLabel).growX().uniformX()
+            titleTable.add(currTaskTitleLabel).growX().uniformX()
+            titleTable.add(startTimeTitleLAbel).growX().uniformX()
+            titleTable.add(endTimeTitleLabel).growX().uniformX()
+            titleTable.add(salaryTitleLabel).growX().uniformX()
+            titleTable.add(fireTitleLabel).growX().uniformX()
 
-        val hireButton = TextButton("Hire", defaultTextButtonStyle)
-        hireButton.label.setFontScale(1f)
-
-        val tasksAndHireTable = Table()
-        tasksAndHireTable.add(bottomScrollPane)
-        tasksAndHireTable.add(hireButton)
-
-        topInfoTable.add(numWorkersLabel)
-
-        mainTableArea.add(topInfoTable)
-        mainTableArea.row()
-        mainTableArea.add(mainTableWorkerInfo).fill().expand().pad(5f, 5f, 5f, 0f)
-        mainTableArea.row()
-        mainTableArea.add(tasksAndHireTable)
-
-        var selectedWorkerEntity: Entity? = null
-
-        //The function to populate the main table where the worker and info are displayed
-        val populateMainTableFunc = { workerEntity: Entity ->
-            mainTableWorkerInfo.clear()
-            val worker = Mappers.worker[workerEntity]!!
-            val identity = Mappers.identity[workerEntity]
-
-            val mainNameLabel = Label(identity.name, defaultLabelStyle)
-            mainNameLabel.setFontScale(1f)
-
-            val mainHappinessLabel = Label("Happiness: ${worker.happiness}", defaultLabelStyle)
-            mainHappinessLabel.setFontScale(1f)
-
-            val mainWageLabel = Label("Daily Wage: ${worker.dailyWage}", defaultLabelStyle)
-            mainWageLabel.setFontScale(1f)
-
-            val workHoursLabel = Label("Work Hours", defaultLabelStyle)
-            workHoursLabel.setFontScale(1f)
-
-            val workHoursStartLabel = Label("${worker.timeRange.first}", defaultLabelStyle)
-            val workHoursEndLabel = Label("${worker.timeRange.second}", defaultLabelStyle)
-
-            val workHourStartLessButton = TextButton("-", defaultTextButtonStyle)
-            val workHourStartMoreButton = TextButton("+", defaultTextButtonStyle)
-            val workHourEndLessButton = TextButton("-", defaultTextButtonStyle)
-            val workHourEndMoreButton = TextButton("+", defaultTextButtonStyle)
-
-            val workHoursTable = Table()
-
-            workHoursTable.add(workHourStartLessButton).size(16f)
-            workHoursTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f)
-            workHoursTable.add(workHourStartMoreButton).size(16f)
-            workHoursTable.add().width(20f)
-            workHoursTable.add(workHourEndLessButton).size(16f)
-            workHoursTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f)
-            workHoursTable.add(workHourEndMoreButton).size(16f)
-
-            val mainTasksLabel = Label(worker.taskList.joinToString(), defaultLabelStyle)
-            mainTasksLabel.setFontScale(1f)
-
-            mainTableWorkerInfo.add(mainNameLabel)
-            mainTableWorkerInfo.row()
-            mainTableWorkerInfo.add(mainHappinessLabel)
-            mainTableWorkerInfo.row()
-            mainTableWorkerInfo.add(mainWageLabel)
-            mainTableWorkerInfo.row()
-            mainTableWorkerInfo.add(workHoursLabel)
-            mainTableWorkerInfo.row()
-            mainTableWorkerInfo.add(workHoursTable)
-            mainTableWorkerInfo.row()
-            mainTableWorkerInfo.add(mainTasksLabel)
-
-            selectedWorkerEntity = workerEntity
-
-            workHourStartLessButton.addChangeListener { _, _ ->
-                worker.timeRange.first = Math.floorMod(worker.timeRange.first - 1, 24)
-                workHoursStartLabel.setText("${worker.timeRange.first}")
-            }
-
-            workHourStartMoreButton.addChangeListener { _, _ ->
-                worker.timeRange.first = Math.floorMod(worker.timeRange.first + 1, 24)
-                workHoursStartLabel.setText("${worker.timeRange.first}")
-            }
-
-            workHourEndLessButton.addChangeListener { _, _ ->
-                worker.timeRange.second = Math.floorMod(worker.timeRange.second - 1, 24)
-                workHoursEndLabel.setText("${worker.timeRange.second}")
-            }
-
-            workHourEndMoreButton.addChangeListener { _, _ ->
-                worker.timeRange.second = Math.floorMod(worker.timeRange.second + 1, 24)
-                workHoursEndLabel.setText("${worker.timeRange.second}")
-            }
-        }
-
-        //The function to populate the left side scrolling table where the list of workers are displayed
-        val populateWorkerListScrollTable = {
-            workerList.clear() //Clear the worker list from any leftover junk
-
-            //Populate the left scrolling table
             comp.workersAvailable.forEach { entity ->
-                val identity = Mappers.identity[entity]
                 val worker = Mappers.worker[entity]
-
-                val workerButton = Button(buttonStyle)
-
-                val nameLabel = Label(identity.name, defaultLabelStyle)
-                nameLabel.setFontScale(1f)
+                val id = Mappers.identity[entity]
 
                 var tasks = ""
-                worker.taskList.forEach { task -> tasks += "${task[0].toUpperCase()}, " }
+                worker.taskList.forEachIndexed { index, task -> tasks += "${task[0].toUpperCase()}${if (index < worker.taskList.size - 1) "," else ""} " } //The complicated bit at the end controls the ending comma
 
-                val tasksLabel = Label(tasks, defaultLabelStyle)
-                tasksLabel.setFontScale(0.8f)
+                //The name and task label
+                val workerNameLabel = Label(id.name, defaultLabelStyle)
+                workerNameLabel.setAlignment(Align.center)
+                val workerTasksLabel = Label(tasks, defaultLabelStyle)
+                workerTasksLabel.setAlignment(Align.center)
 
-                //Add the name and taskList to our worker table button
-                workerButton.add(nameLabel)
-                workerButton.row()
-                workerButton.add(tasksLabel)
+                //The start and end time, with controls to handle each (slightly complicated)
+                val startTimeTable = Table()
+                val endTimeTable = Table()
+                val workHoursStartLabel = Label("${worker.timeRange.first}", defaultLabelStyle)
+                val workHoursEndLabel = Label("${worker.timeRange.second}", defaultLabelStyle)
 
-                //Add the worker table and a row (we want it to be a vertical list)
-                workerList.add(workerButton).spaceTop(5f).width(80f)
-                workerList.row()
+                val workHourStartLessButton = TextButton("-", defaultTextButtonStyle)
+                val workHourStartMoreButton = TextButton("+", defaultTextButtonStyle)
+                val workHourEndLessButton = TextButton("-", defaultTextButtonStyle)
+                val workHourEndMoreButton = TextButton("+", defaultTextButtonStyle)
 
-                //When we click a worker, let's populate the main area with info
-                workerButton.addListener(object : ClickListener() {
-                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                        super.clicked(event, x, y)
+                workHourStartLessButton.addChangeListener { _, _ ->
+                    worker.timeRange.first = Math.floorMod(worker.timeRange.first - 1, 24)
+                    workHoursStartLabel.setText("${worker.timeRange.first}")
+                }
 
-                        populateMainTableFunc(entity)
+                workHourStartMoreButton.addChangeListener { _, _ ->
+                    worker.timeRange.first = Math.floorMod(worker.timeRange.first + 1, 24)
+                    workHoursStartLabel.setText("${worker.timeRange.first}")
+                }
+
+                workHourEndLessButton.addChangeListener { _, _ ->
+                    worker.timeRange.second = Math.floorMod(worker.timeRange.second - 1, 24)
+                    workHoursEndLabel.setText("${worker.timeRange.second}")
+                }
+
+                workHourEndMoreButton.addChangeListener { _, _ ->
+                    worker.timeRange.second = Math.floorMod(worker.timeRange.second + 1, 24)
+                    workHoursEndLabel.setText("${worker.timeRange.second}")
+                }
+
+                val salaryLabel = Label("${worker.dailyWage}", defaultLabelStyle)
+                salaryLabel.setAlignment(Align.center)
+
+                startTimeTable.add(workHourStartLessButton).size(16f)
+                startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f)
+                startTimeTable.add(workHourStartMoreButton).size(16f)
+
+                endTimeTable.add(workHourEndLessButton).size(16f)
+                endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f)
+                endTimeTable.add(workHourEndMoreButton).size(16f)
+
+                val removeWorkerButton = TextButton("x", defaultTextButtonStyle)
+                removeWorkerButton.addListener(object:ClickListener(){
+                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                        super.touchUp(event, x, y, pointer, button)
+                        println("Size before: ${comp.workersAvailable.size}")
+                        comp.workersAvailable.removeValue(entity, true) //Remove the entity
+                        val bc = Mappers.behaviour[entity]
+                        bc.currTask = Tasks.leaveMap(bc.blackBoard) //Make the entity leave the map and be destroyed
+                        populateWorkerTable()
+                        println("Size after: ${comp.workersAvailable.size}")
+                    }
+                })
+
+                val workerTable = Table()
+
+                workerTable.add(workerNameLabel).growX().uniformX()
+                workerTable.add(workerTasksLabel).growX().uniformX()
+                workerTable.add(startTimeTable).growX().uniformX()
+                workerTable.add(endTimeTable).growX().uniformX()
+                workerTable.add(salaryLabel).growX().uniformX()
+                workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
+
+                workerListTable.add(workerTable).growX()
+                workerListTable.row().growX()
+
+                //Since this table gets updated on changes, make sure to keep the background if we reload this table
+                //Also, we check the entity because the tables are new and won't match. We need to set the table again
+                if(entity == selectedWorker.worker) {
+                    workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                    selectedWorker.table = workerTable
+                }
+
+                workerTable.addListener(object:ClickListener(){
+                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                        super.touchUp(event, x, y, pointer, button)
+                        selectedWorker.table?.background = null //Set the last table background to null
+                        selectedWorker.worker = entity //Save the new entity
+                        selectedWorker.table = workerTable //Save the new table
+                        workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
                     }
                 })
             }
         }
 
-        //For the taskList available, list them
+        populateWorkerTable()
+
+        val workerTaskList = Table()
+
+        /** This sets the tasks that are available to set to each worker */
         comp.workerTasks.forEach { taskName ->
             val taskNameLabel = Label(taskName, defaultLabelStyle)
             taskNameLabel.setFontScale(1f)
@@ -399,9 +398,9 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                     super.clicked(event, x, y)
 
                     //If the link is not null, lets do stuff
-                    if(selectedWorkerEntity != null){
+                    if(selectedWorker.worker != null){
                         val taskNameText = taskNameLabel.text.toString()
-                        val worker = Mappers.worker[selectedWorkerEntity]!!
+                        val worker = Mappers.worker[selectedWorker.worker]!!
 
                         //If it doesn't contain it, add it. Otherwise, remove it
                         if(!worker.taskList.contains(taskNameText))
@@ -409,35 +408,35 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                         else
                             worker.taskList.removeValue(taskNameText, false)
 
-                        //We need to update the main table and worker list
-                        populateWorkerListScrollTable()
-                        populateMainTableFunc(selectedWorkerEntity!!)
+                        //Update the worker table
+                        populateWorkerTable()
                     }
                 }
             })
         }
 
+        //The button to open the hire window
+        val hireButton = TextButton("Hire", defaultTextButtonStyle)
+        hireButton.label.setFontScale(1f)
+
+        //Hire button listener
         hireButton.addListener(object:ChangeListener(){
             override fun changed(event: ChangeEvent?, actor: Actor?) {
                 guiManager.openHireWindow(this@EntityWindow.entity)
             }
         })
 
-        populateWorkerListScrollTable()
+        //An event to listen for a worker to be hired
+        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> { populateWorkerTable() }
 
-        table.add(leftScrollPane).width(100f).expandY().fillY()
-        table.add(mainTableArea).expand().fill()
+        //Remember to remove this from the event system
+        changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
 
-        //Add a check to see if the worker list changed
-        this.updateList.add {
-            val size = comp.workersAvailable.size
-            if(size != lastWorkerListCounter){
-                lastWorkerListCounter = size
-                populateWorkerListScrollTable()
-            }
-        }
-
-        currentlyDisplayingComponent = comp
+        //Add our main scroll pane and the hiring button
+        table.add(mainScrollPane).grow().top().colspan(2).height(250f)
+        table.row()
+        table.add(workerTaskList)
+        table.add(hireButton)
     }
 
     private fun setupBehaviourTable(table: Table, comp: BehaviourComponent){

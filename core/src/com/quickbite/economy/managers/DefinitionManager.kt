@@ -203,4 +203,9 @@ object DefinitionManager {
         var produceAmount:Int = 0
         lateinit var requirements:Array<ItemAmountLink>
     }
+
+    class ConstructionDef{
+        var cost = 0
+        var buildingTimeGameMinutes = 60 //Default of 1 hour
+    }
 }

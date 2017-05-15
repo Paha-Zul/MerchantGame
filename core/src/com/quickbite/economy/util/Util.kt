@@ -19,7 +19,6 @@ import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.SellingItemData
-import com.quickbite.economy.objects.Town
 
 
 /**
@@ -38,229 +37,6 @@ object Util {
         pixmap.dispose()
 
         return pixmaptex
-    }
-
-    fun getClosestWorkshop(position:Vector2) : Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            val bc = Mappers.building.get(ent)
-            if(bc.buildingType == BuildingComponent.BuildingType.Workshop) {
-                val tm = Mappers.transform.get(ent)
-                val dst = tm.position.dst2(position)
-
-                if (dst <= closestDst) {
-                    closest = ent
-                    closestDst = dst
-                }
-            }
-        }
-
-        return closest
-    }
-
-    fun getClosestBuildingType(position:Vector2, buildingType:BuildingComponent.BuildingType, predicate:(Entity) -> Boolean = {true}):Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            val bc = Mappers.building.get(ent)
-
-            if (bc.buildingType == buildingType) {
-                val tm = Mappers.transform.get(ent)
-                val dst = tm.position.dst2(position)
-
-                if (dst <= closestDst && predicate(ent)) {
-                    closest = ent
-                    closestDst = dst
-                }
-            }
-        }
-
-        return closest
-    }
-
-    /**
-     * Attempts to find the closest building of a type with an item in its inventory
-     * @param position The position to search from
-     * @param buildingType The type of building to do the search on
-     * @param itemName The name of the item to find
-     * @param itemAmount The amount of the item
-     * @param buildingsToExclude A HashSet of buildings to exclude from the search
-     * @return The closest building that was found, null if no building was found.
-     */
-    fun getClosestBuildingTypeWithItemInInventory(position:Vector2, buildingType:BuildingComponent.BuildingType, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity> = hashSetOf()):Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            if(!buildingsToExclude.contains(ent)) {
-
-                val bc = Mappers.building.get(ent)
-                val inv = Mappers.inventory.get(ent)
-
-                if (bc.buildingType == buildingType && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
-                    val tm = Mappers.transform.get(ent)
-                    val dst = tm.position.dst2(position)
-
-                    if (dst <= closestDst) {
-                        closest = ent
-                        closestDst = dst
-                    }
-                }
-            }
-        }
-
-        return closest
-    }
-
-    /**
-     * Attempts to find the nearest building with an item in its inventory
-     * @param position The position to search from
-     * @param itemName The name of the item to get
-     * @param itemAmount The amount of the item
-     * @param buildingsToExclude A HashSet of buildings to exclude from the search
-     * @return The closest building that was found, null if no building was found.
-     */
-    fun getClosestBuildingWithItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity>):Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            if(!buildingsToExclude.contains(ent)) {
-
-                val bc = Mappers.building.get(ent)
-                val inv = Mappers.inventory.get(ent)
-
-                if (inv != null && inv.getItemAmount(itemName) >= itemAmount) {
-                    val tm = Mappers.transform.get(ent)
-                    val dst = tm.position.dst2(position)
-
-                    if (dst <= closestDst) {
-                        closest = ent
-                        closestDst = dst
-                    }
-                }
-            }
-        }
-
-        return closest
-    }
-
-    /**
-     * Attempts to find the nearest building that has an item in it's output and inventory
-     * @param position The position to search from
-     * @param itemName The name of the item to get
-     * @param itemAmount The amount of the item
-     * @param buildingsToExclude A HashSet of buildings to exclude from the search
-     * @return The closest building that was found, null if no building was found.
-     */
-    fun getClosestBuildingWithOutputItemInInventory(position:Vector2, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity>):Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            if(!buildingsToExclude.contains(ent)) {
-
-                val bc = Mappers.building.get(ent)
-                val inv = Mappers.inventory.get(ent)
-                val hasOutput = inv.outputItems.contains("All") || inv.outputItems.contains(itemName)
-
-                if (inv != null && hasOutput && inv.getItemAmount(itemName) >= itemAmount) {
-                    val tm = Mappers.transform.get(ent)
-                    val dst = tm.position.dst2(position)
-
-                    if (dst <= closestDst) {
-                        closest = ent
-                        closestDst = dst
-                    }
-                }
-            }
-        }
-
-        return closest
-    }
-
-    fun getClosestStockpileWithItem(position:Vector2, itemName:String, itemAmount:Int = 1) : Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            val bc = Mappers.building.get(ent)
-            val inv = Mappers.inventory.get(ent)
-            if(bc.buildingType == BuildingComponent.BuildingType.Stockpile && inv != null && inv.getItemAmount(itemName) >= itemAmount) {
-                val tm = Mappers.transform.get(ent)
-                val dst = tm.position.dst2(position)
-
-                if (dst <= closestDst) {
-                    closest = ent
-                    closestDst = dst
-                }
-            }
-        }
-
-        return closest
-    }
-
-    fun getClosestBuildingWithWorkerPosition(position:Vector2) : Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.buildings.forEach { ent ->
-            val wc = Mappers.workforce.get(ent)
-            if(wc != null && wc.workersAvailable.size < wc.numWorkerSpots) {
-                val tm = Mappers.transform.get(ent)
-                val dst = tm.position.dst2(position)
-
-                if (dst <= closestDst) {
-                    closest = ent
-                    closestDst = dst
-                }
-            }
-        }
-
-        return closest
-    }
-
-    fun getClosestSellingItem(position:Vector2, itemName:String, mustBeBuilding:Boolean = true, entitiesToIgnore:HashSet<Entity> = hashSetOf()) : Entity?{
-        var closestDst = Float.MAX_VALUE
-        var closest: Entity? = null
-
-        Families.sellingItems.forEach { ent ->
-            //If we aren't ignore this entity...
-            if(!entitiesToIgnore.contains(ent)) {
-                val sc = Mappers.selling.get(ent)
-                val bc = Mappers.building.get(ent)
-                val inv = Mappers.inventory.get(ent)
-
-                val buildingCheck = !mustBeBuilding || (mustBeBuilding && bc != null)
-                val hasItem = inv != null && inv.hasItem(itemName) //If the entity has the item in its inventory
-                var contains = false //If the entity contains the item in the selling list
-                sc.currSellingItems.forEach contains@ {
-                    if (it.itemName == itemName) {
-                        contains = true; return@contains
-                    }
-                }
-
-                if (buildingCheck && contains && hasItem) {
-                    val tm = Mappers.transform.get(ent)
-                    val dst = tm.position.dst2(position)
-
-                    if (dst <= closestDst) {
-                        closest = ent
-                        closestDst = dst
-                    }
-                }
-            }
-        }
-
-        return closest
-    }
-
-    fun getRandomBuildingSellingItems():Entity?{
-        val buildingsThatAreSellingItems = Families.buildingsSellingItems
-        return buildingsThatAreSellingItems[MathUtils.random(buildingsThatAreSellingItems.size() - 1)]
     }
 
     fun roundUp(a:Float, increment:Int):Int{
@@ -376,19 +152,25 @@ object Util {
 
         //Remove all matching items from the reselling list. Make sure the itemSourceData is not null. This is
         //important because we only want to remove links to other buildings/sellers
-
     }
 
     /**
-     * Assigns an Entity worker to an Entity with a WorkForce.
+     * Attemps to assign an Entity worker to an Entity with a WorkForce. Fails if the workforce can't accept any more workers
      * @param entityWorker The Entity that has a WorkerComponent that will be added to the workforce
      * @param entityWorkForce The Entity that has a WorkForceComponent that will be managing the worker Entity.
+     * @return True if a worker was able to be added, false otherwise
      */
-    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity){
+    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity):Boolean{
         val worker = Mappers.worker[entityWorker]
         val workForce = Mappers.workforce[entityWorkForce]
-        workForce.workersAvailable.add(entityWorker)
-        worker.workerBuilding = entityWorkForce
+        //TODO need to check here if we are actually able to add them
+        if(workForce.numWorkerSpots > workForce.workersAvailable.size + 1) {
+            workForce.workersAvailable.add(entityWorker)
+            worker.workerBuilding = entityWorkForce
+            return true
+        }
+
+        return false
     }
 
     fun addItemToEntitySelling(entity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
@@ -408,15 +190,8 @@ object Util {
         }
     }
 
-    fun removeImportFromReseller(entity:Entity, itemName:String, town:Town){
-        val selling = Mappers.selling[entity]
-        selling.resellingItemsList
+    fun removeWorkerFromBuilding(entityWorker:Entity, entityWorkForce: Entity){
 
-//        val itemDef = DefinitionManager.itemDefMap[itemName]!!
-//        val reselling = Mappers.selling[entity]
-
-//        removeSellingItemFromReseller(selling, itemName, town.name)
-
-        town.itemIncomeMap.values.first { it.itemName == itemName }.linkedToEntity = null
     }
+
 }

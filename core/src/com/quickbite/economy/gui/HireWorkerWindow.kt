@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.quickbite.economy.addChangeListener
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Factory
@@ -45,11 +47,13 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
 
             workerButton.addListener(object: ChangeListener(){
                 override fun changed(event: ChangeEvent?, actor: Actor?) {
-                    list.remove(name)
-                    workerButton.remove()
                     val entity = Factory.createObjectFromJson("worker", Vector2(-1000f, 0f))!!
-                    Util.assignWorkerToBuilding(entity, workforceEntity)
-//                    close()
+                    val assigned = Util.assignWorkerToBuilding(entity, workforceEntity)
+                    if(assigned) {
+                        GameEventSystem.fire(ReloadGUIEvent())
+                        list.remove(name)
+                        workerButton.remove()
+                    }
                 }
             })
         }

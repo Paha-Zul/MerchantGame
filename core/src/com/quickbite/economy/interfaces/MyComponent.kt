@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Entity
  * Created by Paha on 1/30/2017.
  */
 interface MyComponent : Component{
+
     fun initialize()
-    fun dispose(entity: Entity)
+    fun dispose(myself: Entity)
 }

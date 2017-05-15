@@ -3,13 +3,14 @@ package com.quickbite.economy.components
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.util.InventoryChangeListener
 import com.quickbite.economy.objects.ItemAmountLink
+import com.quickbite.economy.util.InventoryChangeListener
 
 /**
  * Created by Paha on 12/14/2016.
  */
 class InventoryComponent : MyComponent {
+
     val itemMap = hashMapOf<String, ItemAmountLink>()
 
     val outputItems = hashSetOf("All")
@@ -83,7 +84,7 @@ class InventoryComponent : MyComponent {
         return 0
     }
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

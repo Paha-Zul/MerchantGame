@@ -6,8 +6,8 @@ import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.FindEntityUtil
 import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 3/22/2017.
@@ -52,7 +52,7 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         val itemAmount = bb.targetItem.itemAmount
 
         //Could result in a null building
-        val building = Util.getClosestBuildingWithOutputItemInInventory(transform.position, itemName, 1, hashSetOf(myBuilding))
+        val building = FindEntityUtil.getClosestBuildingWithOutputItemInInventory(transform.position, itemName, 1, hashSetOf(myBuilding))
 
         bb.targetEntity = building
 

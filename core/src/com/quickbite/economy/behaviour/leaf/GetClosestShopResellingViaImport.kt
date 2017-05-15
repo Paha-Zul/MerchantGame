@@ -5,8 +5,8 @@ import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
 import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.FindEntityUtil
 import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 5/4/2017.
@@ -23,7 +23,7 @@ class GetClosestShopResellingViaImport(bb:BlackBoard, var itemName:String = "") 
         if(itemName == "")
             itemName = bb.targetItem.itemName
 
-        val building = Util.getClosestBuildingType(Mappers.transform.get(bb.myself).position, BuildingComponent.BuildingType.Shop, {
+        val building = FindEntityUtil.getClosestBuildingType(Mappers.transform.get(bb.myself).position, BuildingComponent.BuildingType.Shop, {
             val selling = Mappers.selling[it]
             selling.resellingItemsList.any { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Import }
         })

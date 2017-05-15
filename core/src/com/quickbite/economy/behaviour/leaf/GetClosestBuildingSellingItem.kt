@@ -3,6 +3,7 @@ package com.quickbite.economy.behaviour.leaf
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
+import com.quickbite.economy.util.FindEntityUtil
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
@@ -18,7 +19,7 @@ class GetClosestBuildingSellingItem(bb:BlackBoard, var itemName:String = "") : L
             itemName = bb.targetItem.itemName
         }
 
-        val building = Util.getClosestSellingItem(Mappers.transform.get(bb.myself).position, itemName)
+        val building = FindEntityUtil.getClosestSellingItem(Mappers.transform.get(bb.myself).position, itemName)
         if(building!= null){
             bb.targetPosition = Vector2(Mappers.transform.get(building).position)
             bb.targetEntity = building

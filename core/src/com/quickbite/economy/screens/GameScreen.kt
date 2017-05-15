@@ -92,6 +92,8 @@ class GameScreen :Screen{
         })
 
         TownManager.init()
+
+        gameScreeData.playerMoney = 1000
     }
 
     override fun pause() {

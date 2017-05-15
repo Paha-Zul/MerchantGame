@@ -11,7 +11,7 @@ open class VelocityComponent : MyComponent {
     var baseSpeed = 0f
     val velocity = Vector2()
 
-    override fun dispose(entity: Entity) {
+    override fun dispose(myself: Entity) {
 
     }
 

@@ -238,18 +238,8 @@ object Factory {
 
         if(definition.isWorker){
             val workerUnit = WorkerUnitComponent()
-            workerUnit.dailyWage = MathUtils.random(25, 150)
+            workerUnit.dailyWage = MathUtils.random(10, 75)
             entity.add(workerUnit)
-
-            init.initFuncs.add({
-//                val closestWorkshop = Util.getClosestBuildingWithWorkerPosition(transform.position)
-//
-//                //TODO Figure out what to do if this workshop is null?
-//                if(closestWorkshop != null) {
-//                    workerUnit.workerBuilding = closestWorkshop
-//                    Mappers.workforce.get(closestWorkshop).workersAvailable.add(entity)
-//                }
-            })
         }
 
         if(definition.isBuyer){
