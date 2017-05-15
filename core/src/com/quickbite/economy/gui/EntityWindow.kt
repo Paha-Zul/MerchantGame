@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.behaviour.Tasks
@@ -31,12 +32,12 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 3/9/2017.
  */
 class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
-    private data class SelectedWorkerAndTable(var worker:Entity?, var table:Table?)
+    private data class SelectedWorkerAndTable(var worker:Entity, var table:Table)
 
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
     private var currentTabType: Int = 0
-    private var selectedWorker = SelectedWorkerAndTable(null, null)
+    private var selectedWorkers = Array<SelectedWorkerAndTable>()
 
     private var lastWorkerListCounter = 0
 
@@ -330,11 +331,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 salaryLabel.setAlignment(Align.center)
 
                 startTimeTable.add(workHourStartLessButton).size(16f)
-                startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f)
+                startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f).width(25f)
                 startTimeTable.add(workHourStartMoreButton).size(16f)
 
                 endTimeTable.add(workHourEndLessButton).size(16f)
-                endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f)
+                endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f).width(25f)
                 endTimeTable.add(workHourEndMoreButton).size(16f)
 
                 val removeWorkerButton = TextButton("x", defaultTextButtonStyle)
@@ -364,17 +365,24 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                 //Since this table gets updated on changes, make sure to keep the background if we reload this table
                 //Also, we check the entity because the tables are new and won't match. We need to set the table again
-                if(entity == selectedWorker.worker) {
+                selectedWorkers.firstOrNull { it.worker == entity }?.run {
                     workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-                    selectedWorker.table = workerTable
+                    this.table = workerTable
                 }
 
                 workerTable.addListener(object:ClickListener(){
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                         super.touchUp(event, x, y, pointer, button)
-                        selectedWorker.table?.background = null //Set the last table background to null
-                        selectedWorker.worker = entity //Save the new entity
-                        selectedWorker.table = workerTable //Save the new table
+                        val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
+
+                        //If we're not holding shift, clear the list before starting again
+                        if(!holdingShift) {
+                            selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
+                            selectedWorkers.clear() //Clear the list
+                        }
+
+                        selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
+
                         workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
                     }
                 })
@@ -397,20 +405,18 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
 
-                    //If the link is not null, lets do stuff
-                    if(selectedWorker.worker != null){
+                    selectedWorkers.forEach { selected ->
                         val taskNameText = taskNameLabel.text.toString()
-                        val worker = Mappers.worker[selectedWorker.worker]!!
+                        val worker = Mappers.worker[selected.worker]!!
 
                         //If it doesn't contain it, add it. Otherwise, remove it
                         if(!worker.taskList.contains(taskNameText))
                             worker.taskList.add(taskNameText)
                         else
                             worker.taskList.removeValue(taskNameText, false)
-
-                        //Update the worker table
-                        populateWorkerTable()
                     }
+
+                    populateWorkerTable()
                 }
             })
         }
@@ -612,7 +618,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 //                itemStockLabel.style.font.data.timeScale(0.5f)
 
                 itemStockTable.add(lessStockButton).size(16f)
-                itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f)
+                itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f).width(25f)
                 itemStockTable.add(moreStockButton).size(16f)
 
                 lessStockButton.addListener(object:ClickListener(){
