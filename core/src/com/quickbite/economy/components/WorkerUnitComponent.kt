@@ -33,6 +33,6 @@ class WorkerUnitComponent : MyComponent {
     override fun dispose(myself: Entity) {
         //When we destroy this, remove ourselves from the work building
         if(workerBuilding != null)
-            Mappers.workforce[workerBuilding].workersAvailable.removeAll { it === myself }
+            Mappers.workforce[workerBuilding]?.workersAvailable?.removeAll { it === myself }
     }
 }

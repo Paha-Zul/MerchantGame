@@ -167,11 +167,20 @@ object Factory {
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
 
+
             //A game event to listen for. Record our profit and tax collected from this event
             GameEventSystem.subscribe<ItemSoldEvent>({
                 selling.incomeDaily += it.profit
                 selling.taxCollectedDaily += it.taxCollected
             }, identityComp.uniqueID)
+
+            //Add this inventory listener in this init funcs so we can make sure the inventory component actually exists
+            init.initFuncs.add {
+                val inventory = Mappers.inventory[entity]
+                inventory.addInventoryListener("Gold", { _, amtChanged, _ ->
+                    selling.incomeDaily += amtChanged
+                })
+            }
 
             entity.add(selling)
         }
@@ -281,6 +290,7 @@ object Factory {
         val comps = entity.components //Get all components
         GameEventSystem.unsubscribeAll(Mappers.identity[entity].uniqueID) //Unsubscribe from all game events
         comps.forEach { comp -> (comp as MyComponent).dispose(entity)} //Dispose each component
+        entity.removeAll() //We remove all components here because we use 0 components as a sign of being destroyed. IMPORTANT!!!
         MyGame.entityEngine.removeEntity(entity) //Remove it from the engine
     }
 

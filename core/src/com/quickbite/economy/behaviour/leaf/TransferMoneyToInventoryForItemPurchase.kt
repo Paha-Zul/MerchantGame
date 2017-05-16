@@ -35,6 +35,7 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
         val toInventory = if(toMyself) myInventory else targetEntityInventory //Either to me or to the target entity
         val fromInventory = if(toMyself) myBuildingInventory else myInventory //Either from my building or to my inventory
 
+        //If this is true we transfer all gold that we have
         if(giveAllMoneyRegardless){
             val money = fromInventory.removeItem("Gold", -1)
             toInventory.addItem("Gold", money)

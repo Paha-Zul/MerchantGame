@@ -1,5 +1,6 @@
 package com.quickbite.economy
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 
@@ -19,4 +20,11 @@ fun Actor.addChangeListener(changeListener: (event: ChangeListener.ChangeEvent, 
             changeListener(event, actor)
         }
     })
+}
+
+/**
+ * Simply checks if this entity has any components attached to it. 0 components means it's been destroyed
+ */
+fun Entity.isValid():Boolean {
+    return this.components.size() > 0
 }
