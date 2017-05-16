@@ -300,7 +300,9 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 val startTimeTable = Table()
                 val endTimeTable = Table()
                 val workHoursStartLabel = Label("${worker.timeRange.first}", defaultLabelStyle)
+                workHoursStartLabel.setAlignment(Align.center)
                 val workHoursEndLabel = Label("${worker.timeRange.second}", defaultLabelStyle)
+                workHoursEndLabel.setAlignment(Align.center)
 
                 val workHourStartLessButton = TextButton("-", defaultTextButtonStyle)
                 val workHourStartMoreButton = TextButton("+", defaultTextButtonStyle)
@@ -374,16 +376,28 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                         super.touchUp(event, x, y, pointer, button)
                         val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
+                        var existingWorker:SelectedWorkerAndTable? = null
 
                         //If we're not holding shift, clear the list before starting again
                         if(!holdingShift) {
                             selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
                             selectedWorkers.clear() //Clear the list
+
+                        //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
+                        }else{
+                            existingWorker = selectedWorkers.firstOrNull { it.worker == entity }
+                            if(existingWorker != null) { //If not null, unselect it
+                                existingWorker.table.background = null
+                                selectedWorkers.removeValue(existingWorker, true)
+
+                            //Otherwise, add the new one
+                            }
                         }
 
-                        selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
-
-                        workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                        if(existingWorker == null) {
+                            selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
+                            workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                        }
                     }
                 })
             }
@@ -615,7 +629,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                 val itemStockLabel = Label(getItemStockText(), defaultLabelStyle)
                 itemStockLabel.setFontScale(1f)
-//                itemStockLabel.style.font.data.timeScale(0.5f)
+                itemStockLabel.setAlignment(Align.center)
 
                 itemStockTable.add(lessStockButton).size(16f)
                 itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f).width(25f)
