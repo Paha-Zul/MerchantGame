@@ -3,7 +3,6 @@ package com.quickbite.economy.gui
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
@@ -29,7 +28,7 @@ import java.util.*
 class GameScreenGUIManager(val gameScreen: GameScreen) {
     val guiStack:Stack<GUIWindow> = Stack()
 
-    val defaultLabelStyle = Label.LabelStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.BLACK)
+    val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.BLACK)
     val bottomTable = Table()
 
     val topTable = Table()
@@ -43,19 +42,15 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
     init{
         val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", defaultLabelStyle)
-        moneyLabel.setFontScale(0.2f)
         moneyLabel.setAlignment(Align.center)
 
         timeOfDayLabel = Label(TimeOfDay.toString(), defaultLabelStyle)
-        timeOfDayLabel.setFontScale(0.2f)
         timeOfDayLabel.setAlignment(Align.center)
 
         populationLabel = Label("", defaultLabelStyle)
-        populationLabel.setFontScale(0.2f)
         populationLabel.setAlignment(Align.center)
 
         ratingLabel = Label("", defaultLabelStyle)
-        ratingLabel.setFontScale(0.2f)
         ratingLabel.setAlignment(Align.center)
 
         topTable.add(moneyLabel).width(200f)

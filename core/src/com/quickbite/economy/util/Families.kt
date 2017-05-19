@@ -10,6 +10,9 @@ import com.quickbite.economy.components.*
  * Created by Paha on 1/17/2017.
  */
 object Families {
+    val resources: ImmutableArray<Entity> = MyGame.entityEngine.getEntitiesFor(Family.all(TransformComponent::class.java, ResourceComponent::class.java)
+            .exclude(PreviewComponent::class.java).get())
+
     val buildings: ImmutableArray<Entity> = MyGame.entityEngine.getEntitiesFor(Family.all(TransformComponent::class.java, BuildingComponent::class.java)
             .exclude(PreviewComponent::class.java).get())
 

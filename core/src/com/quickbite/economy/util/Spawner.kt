@@ -79,6 +79,10 @@ object Spawner {
                 val inventory = Mappers.inventory[entity]
                 val beh = Mappers.behaviour[entity]
 
+                //This case is if we have a hauler that tries to spawn too quickly
+                if(randomItem.accumulatedItemCounter <= 1)
+                    return@CustomTimer
+
                 val itemToBuy = ItemAmountLink(randomItem.itemName, MathUtils.random(1, randomItem.accumulatedItemCounter.toInt()))
                 randomItem.accumulatedItemCounter -= itemToBuy.itemAmount
 

@@ -35,6 +35,7 @@ public class MyGame extends Game {
     public static Stage stage;
 
     public static BitmapFont defaultFont14;
+    public static BitmapFont defaultFont20;
 
     @Override
 	public void create () {
@@ -58,23 +59,30 @@ public class MyGame extends Game {
         Loader.INSTANCE.loadAllImgs(manager, Gdx.files.internal("images/"), false);
         Loader.INSTANCE.loadFonts(manager, Gdx.files.internal("fonts/"));
 
+        genFonts();
+
         manager.finishLoading();
 
         DefinitionManager.INSTANCE.readDefinitionsJson();
 
         this.setScreen(new GameScreen());
-
-        genFonts();
 	}
 
 	private void genFonts(){
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/titillium/Titillium-Regular.otf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/titillium/Titillium-Regular.otf"));
         parameter.size = 14;
         parameter.genMipMaps = true;
         parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
-        parameter.magFilter = Texture.TextureFilter.MipMapLinearNearest;
+        parameter.magFilter = Texture.TextureFilter.Linear;
         defaultFont14 = generator.generateFont(parameter); // font size 14 pixels
+
+        parameter.size = 20;
+        parameter.genMipMaps = true;
+        parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
+        parameter.magFilter = Texture.TextureFilter.Linear;
+        defaultFont20 = generator.generateFont(parameter); // font size 14 pixels
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
     }
 

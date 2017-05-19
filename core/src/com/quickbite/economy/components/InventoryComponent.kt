@@ -74,7 +74,7 @@ class InventoryComponent : MyComponent {
     /**
      * Gets the item amount if available
      * @param name The name of the item
-     * @return The amount of the item or 0 if the item doesn not exist.
+     * @return The amount of the item or 0 if the item doesn't exist.
      */
     fun getItemAmount(name:String):Int{
         if(hasItem(name))

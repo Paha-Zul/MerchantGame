@@ -2,7 +2,6 @@ package com.quickbite.economy.interfaces
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
@@ -29,7 +28,7 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     protected val contentTable = Table()
 
     /** A place to put actions to refresh GUI elements while a certain tab is open. Gets cleared on every window change.*/
-    protected val updateList: Array<() -> Unit> = Array(5)
+    protected val updateFuncsList: Array<() -> Unit> = Array(5)
     protected val updateMap: HashMap<String, () -> Unit> = hashMapOf()
     protected var changedTabsFunc:()->Unit = {}
 
@@ -66,14 +65,16 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
 
         //Make the window
         val windowBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box", Texture::class.java], 50, 50, 50, 50))
-        val windowSkin = Window.WindowStyle(MyGame.manager["defaultFont", BitmapFont::class.java], Color.WHITE, windowBackground)
+        val windowSkin = Window.WindowStyle(MyGame.defaultFont20, Color.WHITE, windowBackground)
 
         //Window
         window = Window("", windowSkin)
+//        window.getCell(window.titleLabel)
+//        window.titleLabel.setFontScale(1.1f)
         window.isMovable = true
         window.setSize(500f, 400f)
         window.setPosition(MathUtils.random(90f, 110f), MathUtils.random(90f, 110f))
-        window.pad(20f, 10f, 10f, 10f)
+        window.pad(30f, 10f, 10f, 10f)
 
         window.add(this.mainTable).expand().fill()
 

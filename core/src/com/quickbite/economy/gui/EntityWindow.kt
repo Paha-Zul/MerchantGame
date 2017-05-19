@@ -42,6 +42,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
     private var lastWorkerListCounter = 0
 
     init {
+        val identity = Mappers.identity[entity]
+        window.titleLabel.setText(identity.name)
         initEntityStuff()
     }
 
@@ -174,7 +176,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
     }
 
     override fun update(delta:Float){
-        updateList.forEach { it() }
+        updateFuncsList.forEach { it() }
     }
 
     override fun close() {
@@ -192,7 +194,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
     private fun loadTable(table: Table, component: Component, tabType:Int){
         table.clear()
-        updateList.clear()
+        updateFuncsList.clear()
 
         val debug = Mappers.debugDraw[currentlySelectedEntity]
         debug.debugDrawWorkers = false
@@ -228,8 +230,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         table.row()
         table.add(queueLabel).expandX().fillX()
 
-        updateList.add({typeLabel.setText("Type: ${comp.buildingType}")})
-        updateList.add({queueLabel.setText("Queue size: ${comp.unitQueue.size}")})
+        updateFuncsList.add({typeLabel.setText("Type: ${comp.buildingType}")})
+        updateFuncsList.add({queueLabel.setText("Queue size: ${comp.unitQueue.size}")})
     }
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){
@@ -466,7 +468,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         table.add(taskLabel).expandX().fillX()
 
-        updateList.add({taskLabel.setText("CurrTask: ${comp.currTask}")})
+        updateFuncsList.add({taskLabel.setText("CurrTask: ${comp.currTask}")})
     }
 
     private fun setupInventoryTable(table: Table, comp: InventoryComponent){
@@ -512,8 +514,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         table.top()
 
-        updateList.add({populateItemTable()})
-//        updateList.add({listLabel.setText("Item List: ${comp.itemMap.values}")})
+        updateFuncsList.add({populateItemTable()})
+//        updateFuncsList.add({listLabel.setText("Item List: ${comp.itemMap.values}")})
     }
 
     private fun setupBuyingTable(table: Table, comp: BuyerComponent){
@@ -557,27 +559,29 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         populateTableFunc()
 
-        updateList.add {  populateTableFunc() }
+        updateFuncsList.add {  populateTableFunc() }
 
         table.add(buyingTable)
 
-//        updateList.add(UpdateLabel(nameLabel, { label -> label.setText("CurrTaskName: ${comp.currTaskName}")}))
+//        updateFuncsList.add(UpdateLabel(nameLabel, { label -> label.setText("CurrTaskName: ${comp.currTaskName}")}))
     }
 
     private fun setupSellingTable(table: Table, comp: SellingItemsComponent){
+        contentTable.debugAll()
         val taxRateTable = Table()
         taxRateTable.background = darkBackgroundDrawable
 
         val sellItemsMainTable = Table()
         sellItemsMainTable.background = darkBackgroundDrawable
+        sellItemsMainTable.debugAll()
 
         val sellHistoryTable = Table()
         sellHistoryTable.background = darkBackgroundDrawable
 
         //Set up the selling title
         val sellLabel = Label("Selling", defaultLabelStyle)
-        sellLabel.setFontScale(1f)
         sellLabel.setAlignment(Align.center)
+        sellLabel.setFontScale(1.2f)
 
         //This will populate the table of items being sold
         val populateItemsTable = {
@@ -587,20 +591,24 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             sellItemsMainTable.row()
 
             val sellItemsListTable = Table()
+            sellItemsListTable.debugAll()
 
             val itemNameColTitle = Label("Name", defaultLabelStyle)
             itemNameColTitle.setFontScale(1f)
+            itemNameColTitle.setAlignment(Align.center)
 
             val itemAmountColTitle = Label("Price", defaultLabelStyle)
             itemAmountColTitle.setFontScale(1f)
+            itemAmountColTitle.setAlignment(Align.center)
 
             val itemStockColTitle = Label("Stock", defaultLabelStyle)
             itemStockColTitle.setFontScale(1f)
+            itemStockColTitle.setAlignment(Align.center)
 
             //Add the three titles
-            sellItemsListTable.add(itemNameColTitle)
-            sellItemsListTable.add(itemAmountColTitle)
-            sellItemsListTable.add(itemStockColTitle)
+            sellItemsListTable.add(itemNameColTitle).width(100f).uniformX()
+            sellItemsListTable.add(itemAmountColTitle).width(100f).uniformX()
+            sellItemsListTable.add(itemStockColTitle).width(100f).uniformX()
             sellItemsListTable.add() //Empty spot for the X button
             sellItemsListTable.row()
 
@@ -830,7 +838,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //Put the history function into our update map
         updateMap.put("sellHistory", historyTableFunc)
 
-        updateList.add { populateItemsTable() }
+        updateFuncsList.add { populateItemsTable() }
 
         //Put in the event system
         val entID = Mappers.identity[currentlySelectedEntity].uniqueID
@@ -884,7 +892,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 //        table.debugAll()
         table.top()
 
-        updateList.add {
+        updateFuncsList.add {
             incomeDailyLabel.setText("${comp.incomeDaily}")
             taxDailyLabel.setText("${comp.taxCollectedDaily}")
             goldHistoryGraph.points = comp.goldHistory.queue.toList()
