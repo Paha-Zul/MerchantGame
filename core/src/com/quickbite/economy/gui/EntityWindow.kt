@@ -16,15 +16,16 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
-import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
+import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Factory
+import com.quickbite.economy.util.GUIUtil
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
@@ -32,7 +33,6 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 3/9/2017.
  */
 class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
-    private data class SelectedWorkerAndTable(var worker:Entity, var table:Table)
 
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
@@ -286,83 +286,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             titleTable.add(fireTitleLabel).growX().uniformX()
 
             comp.workersAvailable.forEach { entity ->
-                val worker = Mappers.worker[entity]
-                val id = Mappers.identity[entity]
-
-                var tasks = ""
-                worker.taskList.forEachIndexed { index, task -> tasks += "${task[0].toUpperCase()}${if (index < worker.taskList.size - 1) "," else ""} " } //The complicated bit at the end controls the ending comma
-
-                //The name and task label
-                val workerNameLabel = Label(id.name, defaultLabelStyle)
-                workerNameLabel.setAlignment(Align.center)
-                val workerTasksLabel = Label(tasks, defaultLabelStyle)
-                workerTasksLabel.setAlignment(Align.center)
-
-                //The start and end time, with controls to handle each (slightly complicated)
-                val startTimeTable = Table()
-                val endTimeTable = Table()
-                val workHoursStartLabel = Label("${worker.timeRange.first}", defaultLabelStyle)
-                workHoursStartLabel.setAlignment(Align.center)
-                val workHoursEndLabel = Label("${worker.timeRange.second}", defaultLabelStyle)
-                workHoursEndLabel.setAlignment(Align.center)
-
-                val workHourStartLessButton = TextButton("-", defaultTextButtonStyle)
-                val workHourStartMoreButton = TextButton("+", defaultTextButtonStyle)
-                val workHourEndLessButton = TextButton("-", defaultTextButtonStyle)
-                val workHourEndMoreButton = TextButton("+", defaultTextButtonStyle)
-
-                workHourStartLessButton.addChangeListener { _, _ ->
-                    worker.timeRange.first = Math.floorMod(worker.timeRange.first - 1, 24)
-                    workHoursStartLabel.setText("${worker.timeRange.first}")
-                }
-
-                workHourStartMoreButton.addChangeListener { _, _ ->
-                    worker.timeRange.first = Math.floorMod(worker.timeRange.first + 1, 24)
-                    workHoursStartLabel.setText("${worker.timeRange.first}")
-                }
-
-                workHourEndLessButton.addChangeListener { _, _ ->
-                    worker.timeRange.second = Math.floorMod(worker.timeRange.second - 1, 24)
-                    workHoursEndLabel.setText("${worker.timeRange.second}")
-                }
-
-                workHourEndMoreButton.addChangeListener { _, _ ->
-                    worker.timeRange.second = Math.floorMod(worker.timeRange.second + 1, 24)
-                    workHoursEndLabel.setText("${worker.timeRange.second}")
-                }
-
-                val salaryLabel = Label("${worker.dailyWage}", defaultLabelStyle)
-                salaryLabel.setAlignment(Align.center)
-
-                startTimeTable.add(workHourStartLessButton).size(16f)
-                startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f).width(25f)
-                startTimeTable.add(workHourStartMoreButton).size(16f)
-
-                endTimeTable.add(workHourEndLessButton).size(16f)
-                endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f).width(25f)
-                endTimeTable.add(workHourEndMoreButton).size(16f)
-
-                val removeWorkerButton = TextButton("x", defaultTextButtonStyle)
-                removeWorkerButton.addListener(object:ClickListener(){
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        super.touchUp(event, x, y, pointer, button)
-                        println("Size before: ${comp.workersAvailable.size}")
-                        comp.workersAvailable.removeValue(entity, true) //Remove the entity
-                        val bc = Mappers.behaviour[entity]
-                        bc.currTask = Tasks.leaveMap(bc.blackBoard) //Make the entity leave the map and be destroyed
-                        populateWorkerTable()
-                        println("Size after: ${comp.workersAvailable.size}")
-                    }
-                })
-
-                val workerTable = Table()
-
-                workerTable.add(workerNameLabel).growX().uniformX()
-                workerTable.add(workerTasksLabel).growX().uniformX()
-                workerTable.add(startTimeTable).growX().uniformX()
-                workerTable.add(endTimeTable).growX().uniformX()
-                workerTable.add(salaryLabel).growX().uniformX()
-                workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
+                val workerTable = GUIUtil.makeWorkerTable(entity, comp, defaultLabelStyle, defaultTextButtonStyle)
 
                 workerListTable.add(workerTable).growX()
                 workerListTable.row().growX()

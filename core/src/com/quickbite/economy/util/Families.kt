@@ -23,6 +23,9 @@ object Families {
             SellingItemsComponent::class.java, BuildingComponent::class.java)
             .exclude(PreviewComponent::class.java).get())
 
+    val workBuildings: ImmutableArray<Entity> = MyGame.entityEngine.getEntitiesFor(Family.all(TransformComponent::class.java, WorkForceComponent::class.java)
+            .exclude(PreviewComponent::class.java).get())
+
     val initFamily: Family = Family.all(InitializationComponent::class.java).get()
 
     init{
