@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.components.GraphicComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.util.Mappers
+import java.util.*
 
 /**
  * Created by Paha on 1/16/2017.
@@ -18,19 +19,28 @@ import com.quickbite.economy.util.Mappers
  */
 class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
     lateinit var entities: ImmutableArray<Entity>
+    lateinit var sortedEntities:List<Entity>
 
-    val bounceOut = Interpolation.bounceOut
+    val bounceOut: Interpolation.BounceOut = Interpolation.bounceOut
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
 
-        entities = engine.getEntitiesFor(Family.all(GraphicComponent::class.java, TransformComponent::class.java).get())
+        val family = Family.all(GraphicComponent::class.java, TransformComponent::class.java).get()
+        entities = engine.getEntitiesFor(family)
     }
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
 
-        entities.forEach { ent ->
+        //TODO This could possibly get super laggy. Might need a better way to deal with this...
+        sortedEntities = entities.sortedWith(Comparator<Entity> { o1, o2 ->
+            val tc1 = Mappers.transform[o1]
+            val tc2 = Mappers.transform[o2]
+            (tc2.position.y - tc1.position.y).toInt()
+        })
+
+        sortedEntities.forEach { ent ->
             val gc = Mappers.graphic.get(ent)
             val tc = Mappers.transform.get(ent)
             val pc = Mappers.preview.get(ent)
