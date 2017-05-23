@@ -22,6 +22,7 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
+import com.quickbite.economy.isValid
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Factory
@@ -249,10 +250,21 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val workerListTable = Table() //Our worker list
         val mainScrollPane = ScrollPane(workerListTable, scrollPaneStyle)
 
+        val tasksAmountTable = Table()
+
         workerListTable.top()
 
         fun populateWorkerTable() {
             workerListTable.clear()
+            tasksAmountTable.clear()
+
+            comp.workerTasksLimits.forEach {
+                val taskLabel = Label(it.taskName, defaultLabelStyle)
+                val amountLabel = Label(comp.workerTaskMap[it.taskName]!!.size.toString(), defaultLabelStyle)
+
+                tasksAmountTable.add(taskLabel).width(75f)
+                tasksAmountTable.add(amountLabel).width(25f).spaceRight(5f)
+            }
 
             val nameTitleLabel = Label("Name", defaultLabelStyle)
             nameTitleLabel.setAlignment(Align.center)
@@ -286,6 +298,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             titleTable.add(fireTitleLabel).growX().uniformX()
 
             comp.workersAvailable.forEach { entity ->
+                if(!entity.isValid()) return@forEach
                 val workerTable = GUIUtil.makeWorkerTable(entity, comp, defaultLabelStyle, defaultTextButtonStyle)
 
                 workerListTable.add(workerTable).growX()
@@ -301,29 +314,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 workerTable.addListener(object:ClickListener(){
                     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                         super.touchUp(event, x, y, pointer, button)
-                        val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-                        var existingWorker:SelectedWorkerAndTable? = null
 
-                        //If we're not holding shift, clear the list before starting again
-                        if(!holdingShift) {
-                            selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
-                            selectedWorkers.clear() //Clear the list
-
-                        //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
-                        }else{
-                            existingWorker = selectedWorkers.firstOrNull { it.worker == entity }
-                            if(existingWorker != null) { //If not null, unselect it
-                                existingWorker.table.background = null
-                                selectedWorkers.removeValue(existingWorker, true)
-
-                            //Otherwise, add the new one
-                            }
-                        }
-
-                        if(existingWorker == null) {
-                            selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
-                            workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-                        }
+                        EntityWindowController.changeWorkerSelectionInTable(selectedWorkers, entity, workerTable)
                     }
                 })
             }
@@ -334,7 +326,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val workerTaskList = Table()
 
         /** This sets the tasks that are available to set to each worker */
-        comp.workerTasks.forEach { taskName ->
+        comp.workerTasksLimits.forEach { (taskName, amount) ->
             val taskNameLabel = Label(taskName, defaultLabelStyle)
             taskNameLabel.setFontScale(1f)
 
@@ -344,17 +336,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             taskNameLabel.addListener(object:ClickListener(){
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
+                    val taskNameText = taskNameLabel.text.toString()
+                    val workerTaskLimit = comp.workerTasksLimits.find { it.taskName == taskNameText}!!
 
-                    selectedWorkers.forEach { selected ->
-                        val taskNameText = taskNameLabel.text.toString()
-                        val worker = Mappers.worker[selected.worker]!!
-
-                        //If it doesn't contain it, add it. Otherwise, remove it
-                        if(!worker.taskList.contains(taskNameText))
-                            worker.taskList.add(taskNameText)
-                        else
-                            worker.taskList.removeValue(taskNameText, false)
-                    }
+                    EntityWindowController.addTasksToWorkers(taskNameText, selectedWorkers, workerTaskLimit, comp.workerTaskMap)
 
                     populateWorkerTable()
                 }
@@ -379,6 +364,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
 
         //Add our main scroll pane and the hiring button
+        table.add(tasksAmountTable).colspan(2)
+        table.row()
         table.add(mainScrollPane).grow().top().colspan(2).height(250f)
         table.row()
         table.add(workerTaskList)
