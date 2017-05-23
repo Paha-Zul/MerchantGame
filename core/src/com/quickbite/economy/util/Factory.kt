@@ -128,7 +128,8 @@ object Factory {
         if(definition.workforceDef.workforceMax > 0){
             val workforce = WorkForceComponent()
             workforce.numWorkerSpots = definition.workforceDef.workforceMax
-            workforce.workerTasks = Array(definition.workforceDef.workerTasks) //Make a copy here just to be sure...
+            workforce.workerTasksLimits = Array(definition.workforceDef.workerTasks) //Make a copy here just to be sure...
+            workforce.workerTasksLimits.forEach { workforce.workerTaskMap.put(it.taskName, Array())} //Populate the hashmap
             entity.add(workforce)
         }
 

@@ -75,6 +75,7 @@ object EntityWindowController {
             }
         }
 
+        //If the existing worker is null, add the selected worker and table to the selectedWorkers list. And set the background!
         if(existingWorker == null) {
             selectedWorkers.add(SelectedWorkerAndTable(entityBeingSelected, workerTable))
             workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table

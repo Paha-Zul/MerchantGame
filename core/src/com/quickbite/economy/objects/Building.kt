@@ -64,7 +64,7 @@ class Building(buildingDef: BuildingDefManager.BuildingDefinition, position:Vect
         if(buildingDef.workforceMax > 0){
             val workforce = WorkForceComponent()
             workforce.numWorkerSpots = buildingDef.workforceMax
-            workforce.workerTasks = buildingDef.workerTasks
+            workforce.workerTasksLimits = buildingDef.workerTasks
             this.add(workforce)
         }
 

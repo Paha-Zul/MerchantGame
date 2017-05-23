@@ -17,6 +17,7 @@ import com.quickbite.economy.event.events.PopulationChangeEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
+import com.quickbite.economy.isValid
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.util.Families
@@ -177,7 +178,9 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
             Families.workBuildings.forEach { workBuildingEnt ->
                 val workForceComp = Mappers.workforce[workBuildingEnt]
 
-                workForceComp.workersAvailable.forEach { entity ->
+                workForceComp.workersAvailable.forEach workers@{ entity ->
+                    if(!entity.isValid()) return@workers
+
                     val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle)
 
                     workerListTable.add(workerTable).growX()

@@ -94,6 +94,8 @@ class GameScreen :Screen{
         TownManager.init()
 
         gameScreeData.playerMoney = 1000
+
+        Factory.createObjectFromJson("Tree", Vector2(100f, 100f))
     }
 
     override fun pause() {

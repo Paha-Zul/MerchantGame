@@ -9,7 +9,7 @@ import com.quickbite.economy.interfaces.MyComponent
 class ResourceComponent : MyComponent {
     var resourceType:String = ""
     var resourceAmount:Int = 0
-    var numHarvestersTotal:Int = 0
+    var numHarvestersMax:Int = 0
     var numCurrentHarvesters:Int = 0
 
     override fun initialize() {

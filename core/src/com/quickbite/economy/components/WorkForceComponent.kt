@@ -14,8 +14,12 @@ import com.quickbite.economy.util.Util
 class WorkForceComponent : MyComponent {
     var numWorkerSpots:Int = 0
     var workersAvailable:Array<Entity> = Array(10)
-    var workerTasks:Array<WorkerTaskLimitLink> = Array()
+
+    /** The worker tasks and their limits*/
+    var workerTasksLimits:Array<WorkerTaskLimitLink> = Array()
     var workersPaidFlag = false
+
+    val workerTaskMap : HashMap<String, Array<Entity>> = hashMapOf()
 
     override fun initialize() {
 

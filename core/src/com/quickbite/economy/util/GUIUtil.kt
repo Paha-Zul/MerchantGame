@@ -12,6 +12,7 @@ import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.WorkForceComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ReloadGUIEvent
+import com.quickbite.economy.isValid
 
 /**
  * Created by Paha on 5/20/2017.
@@ -80,8 +81,10 @@ object GUIUtil {
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 workforceComp.workersAvailable.removeValue(entity, true) //Remove the entity
-                val bc = Mappers.behaviour[entity]
-                bc.currTask = Tasks.leaveMap(bc.blackBoard) //Make the entity leave the map and be destroyed
+                if(entity.isValid()) {
+                    val bc = Mappers.behaviour[entity]
+                    bc.currTask = Tasks.leaveMap(bc.blackBoard) //Make the entity leave the map and be destroyed
+                }
                 GameEventSystem.fire(ReloadGUIEvent())
             }
         })

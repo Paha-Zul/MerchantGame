@@ -1,5 +1,5 @@
 {
-  "buildingDefs": [
+  "defs": [
     {
       "name": "Buyer",
       "graphicDef": {

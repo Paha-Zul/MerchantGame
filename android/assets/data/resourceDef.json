@@ -1,0 +1,26 @@
+{
+  "defs":
+    [
+      {
+        "name": "Tree",
+        "graphicDef": {
+          "graphicName": "Tree",
+          "graphicAnchor": [1, 0.5],
+          "graphicSize": [32, 64],
+          "initialAnimation": false
+        },
+        "physicalDimensions": [16, 16],
+        "onGrid": true,
+        "gridBlockWhenPlaced": true,
+        "physicsDef": {
+          "hasPhysicsBody": true,
+          "bodyType": "static"
+        },
+        "resourceDef": {
+          "resourceType": "tree",
+          "resourceAmount": 1000,
+          "numHarvestersMax": 1
+        }
+      }
+    ]
+}
