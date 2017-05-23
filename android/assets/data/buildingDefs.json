@@ -1,5 +1,5 @@
 {
-  "buildingDefs": [
+  "defs": [
     {
       "name": "Wall",
       "graphicDef": {
@@ -45,7 +45,7 @@
       },
       "workforceDef": {
         "workforceMax": 5,
-        "workerTasks": ["haul", "sell"]
+        "workerTasks": [["haul", 5], ["sell", 5]]
       },
       "physicsDef":{
         "hasPhysicsBody": true,
@@ -109,7 +109,7 @@
       },
       "workforceDef": {
         "workforceMax": 5,
-        "workerTasks": ["haul", "produce", "sell"]
+        "workerTasks": [["haul", 3], ["produce", 1], ["sell", 1]]
       }
     },
     {
@@ -145,7 +145,7 @@
     },
       "workforceDef": {
         "workforceMax": 5,
-        "workerTasks": ["haul", "produce", "sell"]
+        "workerTasks": [["haul", 3], ["produce", 1], ["sell", 1]]
       }
     },
     {
@@ -181,7 +181,7 @@
       },
       "workforceDef": {
         "workforceMax": 5,
-        "workerTasks": ["haul", "produce", "sell"]
+        "workerTasks": [["haul", 3], ["produce", 1], ["sell", 1]]
       }
     },
     {
@@ -217,7 +217,7 @@
       },
       "workforceDef": {
         "workforceMax": 5,
-        "workerTasks": ["haul", "produce", "sell"]
+        "workerTasks": [["haul", 3], ["produce", 1], ["sell", 1]]
       }
     }
   ]

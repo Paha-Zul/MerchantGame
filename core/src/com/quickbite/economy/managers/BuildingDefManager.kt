@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.quickbite.economy.objects.ItemPriceLink
 import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.objects.WorkerTaskLimitLink
 import java.util.*
 
 /**
@@ -51,7 +52,7 @@ object BuildingDefManager {
         var hasInventory = false
         var sellingItems:Array<SellingItemData> = arrayOf()
         var workforceMax = 0
-        var workerTasks:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
+        var workerTasks:com.badlogic.gdx.utils.Array<WorkerTaskLimitLink> = com.badlogic.gdx.utils.Array()
         var reselling = false
     }
 }

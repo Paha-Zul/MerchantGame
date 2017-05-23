@@ -16,76 +16,15 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.BuildingDefManager
 import com.quickbite.economy.managers.DefinitionManager
-import com.quickbite.economy.objects.*
+import com.quickbite.economy.objects.Building
+import com.quickbite.economy.objects.SellingItemData
 
 /**
  * Created by Paha on 12/13/2016.
+ *
+ * A Factory object for creating Entities easily. Also handles destruction of Entities.
  */
 object Factory {
-
-    fun createObject(type:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
-        var thing:Entity? = null
-        val dimensions:Vector2 = Vector2()
-
-        //TODO Figure out how to use dimensions better. Right now they are hardcoded for prototyping
-        when(type){
-            "lumberyard" -> {
-                dimensions.set(125f, 125f)
-                val sprite = Sprite(MyGame.manager["workshop", Texture::class.java])
-                sprite.setSize(dimensions.x, dimensions.y)
-
-                thing = Workshop(sprite, position, dimensions)
-            }
-
-            "shop" -> {
-                dimensions.set(75f, 75f)
-                val sprite = Sprite(MyGame.manager["market", Texture::class.java])
-                sprite.setSize(dimensions.x, dimensions.y)
-
-                thing = Shop(sprite, position, dimensions)
-            }
-
-            "wall" -> {
-                dimensions.set(50f, 50f)
-                val sprite = Sprite(MyGame.manager["palisade_wall_horizontal", Texture::class.java])
-                sprite.setSize(dimensions.x, dimensions.y)
-
-                thing = Wall(sprite, position, dimensions)
-            }
-
-            "stockpile" -> {
-                dimensions.set(90f, 90f)
-                val sprite = Sprite(MyGame.manager["stockpile", Texture::class.java])
-                sprite.setSize(dimensions.x, dimensions.y)
-
-                thing = Stockpile(sprite, position, dimensions)
-            }
-
-            "worker" -> {
-                dimensions.set(20f, 20f)
-                val sprite = Sprite(MyGame.manager["seller", Texture::class.java])
-                sprite.setSize(dimensions.x, dimensions.y)
-
-                thing = WorkerUnit(sprite, position, dimensions)
-            }
-
-            "buyer" -> {
-                dimensions.set(20f, 20f)
-                val sprite = Sprite(MyGame.manager["buyer", Texture::class.java])
-                sprite.setSize(dimensions.x, dimensions.y)
-
-                thing = BuyerUnit(sprite, position, dimensions)
-            }
-        }
-
-        if(thing != null) {
-            compsToAdd.forEach { thing!!.add(it) }
-            thing.components.forEach { comp -> (comp as MyComponent).initialize() }
-            MyGame.entityEngine.addEntity(thing)
-        }
-
-        return thing
-    }
 
     fun createBuilding(name:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
         val thing:Entity? = Building(BuildingDefManager.buildingDefsMap[name.toLowerCase()]!!, position)
@@ -189,7 +128,7 @@ object Factory {
         if(definition.workforceDef.workforceMax > 0){
             val workforce = WorkForceComponent()
             workforce.numWorkerSpots = definition.workforceDef.workforceMax
-            workforce.workerTasks = definition.workforceDef.workerTasks
+            workforce.workerTasks = Array(definition.workforceDef.workerTasks) //Make a copy here just to be sure...
             entity.add(workforce)
         }
 

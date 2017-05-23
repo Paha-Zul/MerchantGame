@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.interfaces.MyComponent
+import com.quickbite.economy.objects.WorkerTaskLimitLink
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
@@ -13,7 +14,7 @@ import com.quickbite.economy.util.Util
 class WorkForceComponent : MyComponent {
     var numWorkerSpots:Int = 0
     var workersAvailable:Array<Entity> = Array(10)
-    var workerTasks:Array<String> = Array()
+    var workerTasks:Array<WorkerTaskLimitLink> = Array()
     var workersPaidFlag = false
 
     override fun initialize() {

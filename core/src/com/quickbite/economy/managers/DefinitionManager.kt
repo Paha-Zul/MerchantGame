@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.ItemPriceLink
+import com.quickbite.economy.objects.WorkerTaskLimitLink
 import java.util.*
 
 /**
@@ -21,6 +22,7 @@ object DefinitionManager {
     lateinit var names:Names
 
     private val buildingDefName = "data/buildingDefs.json"
+    private val resourcesDefName = "data/resourceDef.json"
     private val unitDefName = "data/unitDefs.json"
     private val namesDefName = "data/names.json"
 
@@ -76,16 +78,33 @@ object DefinitionManager {
                 json.writeValue(arrayOf(`object`.itemName, `object`.itemAmount)) //Write as an array
             }
         })
+
+        //Add a serializer for WorkerTaskLimitLink
+        json.setSerializer(WorkerTaskLimitLink::class.java, object: Json.Serializer<WorkerTaskLimitLink> {
+            override fun read(json: Json, jsonData: JsonValue, type: Class<*>): WorkerTaskLimitLink {
+                val data = jsonData.child
+                val link = WorkerTaskLimitLink(data.asString(), data.next.asInt()) //Make the item link
+                return link //Return in
+            }
+
+            override fun write(json: Json, `object`: WorkerTaskLimitLink, knownType: Class<*>?) {
+                json.writeValue(arrayOf(`object`.taskName, `object`.amount)) //Write as an array
+            }
+        })
     }
 
     fun readDefinitionsJson(){
         //Load the building defs
         var list = json.fromJson(DefList::class.java, Gdx.files.internal(buildingDefName))
-        list.buildingDefs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         //Load the unit defs
         list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
-        list.buildingDefs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+
+        //Load the resources
+        list = json.fromJson(DefList::class.java, Gdx.files.internal(resourcesDefName))
+        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
 
@@ -112,7 +131,7 @@ object DefinitionManager {
     }
 
     private class DefList {
-        lateinit var buildingDefs:Array<Definition>
+        lateinit var defs:Array<Definition>
     }
 
     class Definition {
@@ -132,6 +151,7 @@ object DefinitionManager {
         var gridBlockWhenPlaced = false
         var sellingItems:SellingDef = SellingDef()
         var workforceDef:WorkforceDef = WorkforceDef()
+        var resourceDef:ResourceDef = ResourceDef()
         var compsToAdd:List<ComponentDef> = listOf()
     }
 
@@ -145,7 +165,7 @@ object DefinitionManager {
 
     class WorkforceDef{
         var workforceMax = 0
-        var workerTasks:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
+        var workerTasks:com.badlogic.gdx.utils.Array<WorkerTaskLimitLink> = com.badlogic.gdx.utils.Array()
     }
 
     class BuildingDef{
@@ -186,6 +206,12 @@ object DefinitionManager {
         var sellingList:com.badlogic.gdx.utils.Array<ItemPriceLink> = com.badlogic.gdx.utils.Array()
         var isReselling = false
         var taxRate = 0f
+    }
+
+    class ResourceDef{
+        var resourceType:String = ""
+        var resourceAmount:Int = 0
+        var numHarvestersMax:Int = 0
     }
 
     class ItemDef{
