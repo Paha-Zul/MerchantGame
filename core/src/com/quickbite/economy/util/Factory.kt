@@ -58,7 +58,8 @@ object Factory {
         graphicComp.anchor.set(definition.graphicDef.graphicAnchor[0], definition.graphicDef.graphicAnchor[1])
         graphicComp.initialAnimation = definition.graphicDef.initialAnimation
 
-        transform.dimensions.set(definition.physicalDimensions[0], definition.physicalDimensions[1])
+        transform.dimensions.set(definition.transformDef.physicalDimensions.x, definition.transformDef.physicalDimensions.y)
+        transform.spotMap = definition.transformDef.spots
         transform.position.set(position)
 
         grid.blockWhenPlaced = definition.gridBlockWhenPlaced
@@ -76,9 +77,6 @@ object Factory {
         if(buildingType != BuildingComponent.BuildingType.None){
             val building = BuildingComponent()
             building.buildingType = buildingType
-            definition.buildingDef.entranceSpots.forEach { spot ->
-                building.entranceSpotOffsets += spot
-            }
             entity.add(building)
         }
 
@@ -200,6 +198,23 @@ object Factory {
             })
 
             entity.add(buyerComponent)
+        }
+
+        if(definition.resourceDef != null){
+            val resourceComp = ResourceComponent()
+            val resourceDef = definition.resourceDef!!
+
+            with(resourceComp){
+                numHarvestersMax = resourceDef.numHarvestersMax
+                harvestAmount = resourceDef.harvestAmount
+                resourceAmount = resourceDef.resourceAmount
+                resourceType = resourceDef.resourceType
+                harvestItemName = resourceDef.harvestedItemName
+                baseHarvestTime = resourceDef.baseHarvestTime
+            }
+
+
+            entity.add(resourceComp)
         }
 
         definition.compsToAdd.forEach { compDef ->

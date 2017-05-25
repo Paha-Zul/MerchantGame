@@ -7,7 +7,9 @@
         "graphicAnchor": [0.5, 0.5],
         "graphicSize": [20, 20]
       },
-      "physicalDimensions": [20, 20],
+      "transformDef": {
+        "physicalDimensions": [20, 20]
+      },
       "physicsDef":{
         "hasPhysicsBody": true,
         "bodyType": "dynamic"
@@ -29,7 +31,9 @@
         "graphicAnchor": [0.5, 0.5],
         "graphicSize": [25, 25]
       },
-      "physicalDimensions": [25, 25],
+      "transformDef": {
+        "physicalDimensions": [25, 25]
+      },
       "physicsDef":{
         "hasPhysicsBody": true,
         "bodyType": "dynamic"
@@ -51,7 +55,9 @@
         "graphicAnchor": [0.5, 0.5],
         "graphicSize": [25, 25]
       },
-      "physicalDimensions": [25, 25],
+      "transformDef": {
+        "physicalDimensions": [25, 25]
+      },
       "physicsDef":{
         "hasPhysicsBody": true,
         "bodyType": "dynamic"

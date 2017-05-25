@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.JsonValue
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.ItemPriceLink
 import com.quickbite.economy.objects.WorkerTaskLimitLink
-import java.util.*
 
 /**
  * Created by Paha on 2/16/2017.
@@ -139,7 +138,7 @@ object DefinitionManager {
         var identityDef = IdentityDef()
         var graphicDef = GraphicDef()
         var buildingDef = BuildingDef()
-        var physicalDimensions:Array<Float> = arrayOf()
+        var transformDef = TransformDef()
         var hasBehaviours = false
         var velocityDef = VelocityDef()
         var physicsDef:PhysicsDef = PhysicsDef()
@@ -151,7 +150,7 @@ object DefinitionManager {
         var gridBlockWhenPlaced = false
         var sellingItems:SellingDef = SellingDef()
         var workforceDef:WorkforceDef = WorkforceDef()
-        var resourceDef:ResourceDef = ResourceDef()
+        var resourceDef:ResourceDef? = null
         var compsToAdd:List<ComponentDef> = listOf()
     }
 
@@ -163,6 +162,11 @@ object DefinitionManager {
         var produces:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
     }
 
+    class TransformDef{
+        var physicalDimensions = Vector2()
+        var spots:HashMap<String, Array<Vector2>> = hashMapOf()
+    }
+
     class WorkforceDef{
         var workforceMax = 0
         var workerTasks:com.badlogic.gdx.utils.Array<WorkerTaskLimitLink> = com.badlogic.gdx.utils.Array()
@@ -171,7 +175,6 @@ object DefinitionManager {
     class BuildingDef{
         var isBuilding = false
         var buildingType = ""
-        var entranceSpots:com.badlogic.gdx.utils.Array<Vector2> = com.badlogic.gdx.utils.Array()
     }
 
     class PhysicsDef{
@@ -212,6 +215,9 @@ object DefinitionManager {
         var resourceType:String = ""
         var resourceAmount:Int = 0
         var numHarvestersMax:Int = 0
+        var harvestAmount = 0
+        var harvestedItemName = ""
+        var baseHarvestTime = 0f
     }
 
     class ItemDef{

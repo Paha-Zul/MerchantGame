@@ -11,6 +11,10 @@ class TransformComponent : MyComponent {
     val position = Vector2()
     var dimensions = Vector2()
 
+    //TODO We'll try to keep the spot map here, maybe we don't need a component for a sing hashmap?
+    /** A Mapping of spot names (ie: entrance, delivery, harvesting) to an array of vector2*/
+    var spotMap:HashMap<String, Array<Vector2>> = hashMapOf()
+
     override fun dispose(myself: Entity) {
     }
 

@@ -9,7 +9,12 @@
           "graphicSize": [32, 64],
           "initialAnimation": false
         },
-        "physicalDimensions": [16, 16],
+        "transformDef": {
+          "physicalDimensions": [16, 16],
+          "spots":{
+            "harvest": [[0, -20]]
+          }
+        },
         "onGrid": true,
         "gridBlockWhenPlaced": true,
         "physicsDef": {
@@ -19,7 +24,10 @@
         "resourceDef": {
           "resourceType": "tree",
           "resourceAmount": 1000,
-          "numHarvestersMax": 1
+          "harvestAmount": 1,
+          "harvestedItemName": "Wood Log",
+          "numHarvestersMax": 1,
+          "baseHarvestTime": 1.5
         }
       }
     ]

@@ -37,7 +37,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
 
         entities.forEach { ent ->
             val bm = Mappers.behaviour.get(ent)
-            val tm = Mappers.transform.get(ent)
+            val tc = Mappers.transform.get(ent)
             val dc = Mappers.debugDraw.get(ent)
             val bc = Mappers.building.get(ent)
             val sc = Mappers.selling.get(ent)
@@ -64,7 +64,7 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
 
                 sc.resellingItemsList.forEach { (_, _, _, _, entity) ->
                     if(entity != null) {
-                        val currPoint = tm.position
+                        val currPoint = tc.position
                         val nextPoint = Mappers.transform.get(entity as Entity).position
 
                         drawLineTo(currPoint, nextPoint)
@@ -73,17 +73,22 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             }
 
             if(dc.debugDrawCenter || DebugDrawComponent.GLOBAL_DEBUG_CENTER)
-                batch.draw(centerPixel, tm.position.x - 5f, tm.position.y - 5f, 10f, 10f)
+                batch.draw(centerPixel, tc.position.x - 5f, tc.position.y - 5f, 10f, 10f)
 
-            if(bc != null && (dc.debugDrawEntrace || DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE) && bc.entranceSpotOffsets.size > 0)
-                bc.entranceSpotOffsets.forEach { entrance ->
-                    batch.draw(entrancePixel, tm.position.x + entrance.x - 5f, tm.position.y + entrance.y - 5f, 10f, 10f)
+            //TODO Need to handle all spots?
+            if(tc != null && (dc.debugDrawEntrace || DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE) && tc.spotMap.isNotEmpty()){
+                val values = tc.spotMap.values //Get the values
+                values.forEach { list -> //For each list
+                    list.forEach { point -> //For each point
+                        batch.draw(entrancePixel, tc.position.x + point.x - 5f, tc.position.y + point.y - 5f, 10f, 10f)
+                    }
                 }
+            }
 
             if(wc != null && dc.debugDrawWorkers){
                 wc.workersAvailable.forEach { entity ->
                     val workerPosition = Mappers.transform[entity].position
-                    drawLineTo(workerPosition, tm.position)
+                    drawLineTo(workerPosition, tc.position)
                 }
             }
         }

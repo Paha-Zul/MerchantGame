@@ -1,7 +1,6 @@
 package com.quickbite.economy.components
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.interfaces.MyComponent
 import java.util.*
 
@@ -14,7 +13,6 @@ class BuildingComponent : MyComponent {
     }
 
     lateinit var buildingType:BuildingType
-    val entranceSpotOffsets = mutableListOf<Vector2>()
     val unitQueue = LinkedList<Entity>()
 
     override fun dispose(myself: Entity) {
