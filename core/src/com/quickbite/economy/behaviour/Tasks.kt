@@ -27,6 +27,43 @@ object Tasks {
     }
 
     /**
+     * Finds the closest resource, harvests it, and bring it back to a building to transfer
+     */
+    fun harvestClosestResourceType(bb:BlackBoard, type:String = "") : Task{
+        val seq = Sequence(bb, "Harvesting Resource")
+
+        val unhide = ChangeHidden(bb, false)
+        val getResource = GetClosestResourceWithHarvesterSpot(bb)
+        val getResourceHarvestSpot = GetSpotOfEntity(bb, "harvest")
+        val getPathToResource = GetPath(bb)
+        val moveToResource = MoveToPath(bb)
+        val harvest = HarvestResource(bb)
+        val releaseResource = ReleaseResourceHarvesterSpot(bb)
+        val getMyWorkshop = SetMyWorkBuildingAsTarget(bb)
+        val getEntranceOfBuilding = GetSpotOfEntity(bb, "entrance")
+        val getPathToMyBuilding = GetPath(bb)
+        val moveToMyBuilding = MoveToPath(bb)
+        val hide = ChangeHidden(bb, true)
+        val transferAll = TransferFromInventoryToInventory(bb, true, true)
+
+        seq.controller.addTask(unhide)
+        seq.controller.addTask(getResource)
+        seq.controller.addTask(getResourceHarvestSpot)
+        seq.controller.addTask(getPathToResource)
+        seq.controller.addTask(moveToResource)
+        seq.controller.addTask(harvest)
+        seq.controller.addTask(releaseResource)
+        seq.controller.addTask(getMyWorkshop)
+        seq.controller.addTask(getEntranceOfBuilding)
+        seq.controller.addTask(getPathToMyBuilding)
+        seq.controller.addTask(moveToMyBuilding)
+        seq.controller.addTask(hide)
+        seq.controller.addTask(transferAll)
+
+        return seq
+    }
+
+    /**
      * Constructs a task to buy an item (from the buyer demands) from a building. Once the item is bought the pawn will
      * unhide and do nothing. This task is mostly for helping to build other taskList.
      */

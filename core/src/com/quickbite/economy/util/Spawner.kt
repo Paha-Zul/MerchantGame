@@ -97,7 +97,7 @@ object Spawner {
     }
 
     fun update(delta:Float){
-        spawnBuyerTimer.update(delta)
-        spawnHaulerTimer.update(delta)
+//        spawnBuyerTimer.update(delta)
+//        spawnHaulerTimer.update(delta)
     }
 }

@@ -258,12 +258,21 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             workerListTable.clear()
             tasksAmountTable.clear()
 
-            comp.workerTasksLimits.forEach {
-                val taskLabel = Label(it.taskName, defaultLabelStyle)
-                val amountLabel = Label(comp.workerTaskMap[it.taskName]!!.size.toString(), defaultLabelStyle)
+            //Loop over a copy so we can use another iterator....
+            comp.workerTasksLimits.toList().forEachIndexed { i, taskLimit ->
+                //The current amount out of the max amount, ie: 1/4
+                val amountText = "${comp.workerTaskMap[taskLimit.taskName]!!.size}/${comp.workerTasksLimits.find { it.taskName == taskLimit.taskName }!!.amount}"
 
-                tasksAmountTable.add(taskLabel).width(75f)
+                val taskLabel = Label(taskLimit.taskName, defaultLabelStyle)
+                val amountLabel = Label(amountText, defaultLabelStyle)
+
+                tasksAmountTable.add(taskLabel).spaceRight(5f)
                 tasksAmountTable.add(amountLabel).width(25f).spaceRight(5f)
+
+                if(i < comp.workerTasksLimits.size - 1) {
+                    val dashLabel = Label(" - ", defaultLabelStyle)
+                    tasksAmountTable.add(dashLabel).space(0f, 5f, 0f, 5f)
+                }
             }
 
             val nameTitleLabel = Label("Name", defaultLabelStyle)
@@ -284,6 +293,9 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             val fireTitleLabel = Label("Fire", defaultLabelStyle)
             fireTitleLabel.setAlignment(Align.center)
             fireTitleLabel.setFontScale(1.2f)
+            val infoTitleLabel = Label("Info", defaultLabelStyle)
+            infoTitleLabel.setAlignment(Align.center)
+            infoTitleLabel.setFontScale(1.2f)
 
             val titleTable = Table()
             workerListTable.add(titleTable).growX()
@@ -296,10 +308,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             titleTable.add(endTimeTitleLabel).growX().uniformX()
             titleTable.add(salaryTitleLabel).growX().uniformX()
             titleTable.add(fireTitleLabel).growX().uniformX()
+            titleTable.add(infoTitleLabel).growX().uniformX()
 
             comp.workersAvailable.forEach { entity ->
                 if(!entity.isValid()) return@forEach
-                val workerTable = GUIUtil.makeWorkerTable(entity, comp, defaultLabelStyle, defaultTextButtonStyle)
+                val workerTable = GUIUtil.makeWorkerTable(entity, comp, defaultLabelStyle, defaultTextButtonStyle, {guiManager.openEntityWindow(it)})
 
                 workerListTable.add(workerTable).growX()
                 workerListTable.row().growX()
@@ -364,7 +377,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
 
         //Add our main scroll pane and the hiring button
-        table.add(tasksAmountTable).colspan(2)
+        table.add(tasksAmountTable).colspan(2).spaceBottom(5f)
         table.row()
         table.add(mainScrollPane).grow().top().colspan(2).height(250f)
         table.row()

@@ -19,7 +19,7 @@ import com.quickbite.economy.isValid
  */
 object GUIUtil {
 
-    fun makeWorkerTable(entity:Entity, workforceComp:WorkForceComponent, labelStyle:Label.LabelStyle, textButtonStyle:TextButton.TextButtonStyle):Table{
+    fun makeWorkerTable(entity:Entity, workforceComp:WorkForceComponent, labelStyle:Label.LabelStyle, textButtonStyle:TextButton.TextButtonStyle, openEntityWindowFunc:(Entity)->Unit):Table{
         val worker = Mappers.worker[entity]
         val id = Mappers.identity[entity]
 
@@ -89,6 +89,11 @@ object GUIUtil {
             }
         })
 
+        val infoButton = TextButton("?", textButtonStyle)
+        infoButton.addChangeListener { _, _ ->
+            openEntityWindowFunc(entity)
+        }
+
         val workerTable = Table()
 
         workerTable.add(workerNameLabel).growX().uniformX()
@@ -97,6 +102,7 @@ object GUIUtil {
         workerTable.add(endTimeTable).growX().uniformX()
         workerTable.add(salaryLabel).growX().uniformX()
         workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
+        workerTable.add(infoButton).growX().uniformX().size(16f)
 
         return workerTable
     }

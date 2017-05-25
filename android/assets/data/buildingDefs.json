@@ -214,7 +214,7 @@
         "graphicSize": [125, 125],
         "initialAnimation": true
       },
-      "buildingDef":{
+      "buildingDef": {
         "buildingType": "Workshop"
       },
       "transformDef": {
@@ -234,16 +234,53 @@
         "sellingList": [["Bread", 10, -1]],
         "taxRate": 0.1
       },
-      "physicsDef":{
+      "physicsDef": {
         "hasPhysicsBody": true,
         "bodyType": "static"
       },
-      "productionDef":{
+      "productionDef": {
         "produces": ["Bread"]
       },
       "workforceDef": {
         "workforceMax": 5,
         "workerTasks": [["haul", 3], ["produce", 1], ["sell", 1]]
+      }
+    },
+    {
+      "name": "Tree Feller",
+      "graphicDef": {
+        "graphicName": "tree_feller",
+        "graphicAnchor": [0.5, 0.5],
+        "graphicSize": [75, 75],
+        "initialAnimation": true
+      },
+      "buildingDef":{
+        "buildingType": "Workshop"
+      },
+      "transformDef": {
+        "physicalDimensions": [75, 75],
+        "spots": {
+          "entrance": [[0, -50]]
+        }
+      },
+      "onGrid": true,
+      "gridBlockWhenPlaced": true,
+      "inventoryDef": {
+        "hasInventory": true,
+        "debugItemList": [["Gold", 2000]]
+      },
+      "sellingItems": {
+        "isSelling": true,
+        "sellingList": [["Wood Log", 10, -1]],
+        "taxRate": 0.1
+      },
+      "physicsDef":{
+        "hasPhysicsBody": true,
+        "bodyType": "static"
+      },
+      "workforceDef": {
+        "workforceMax": 7,
+        "workerTasks": [["harvest", 7]]
       }
     }
   ]

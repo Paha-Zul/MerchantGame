@@ -32,15 +32,14 @@ object EntityWindowController {
         selectedWorkers.forEach { (entity, _) ->
             val worker = Mappers.worker[entity]!!
 
-            //If the current worker amount for this task is less than the allowed amount
-            if(workerTaskMap[taskNameText]!!.size < workerTaskLimit.amount) {
-
-                when(worker.taskList.contains(taskNameText)){
-                    true -> { //If it does contain it, remove it!
-                        worker.taskList.removeValue(taskNameText, false)
-                        workerTaskMap[taskNameText]!!.removeValue(entity, true)
-                    }
-                    else -> { //If it doesn't contain it, add it!
+            when(worker.taskList.contains(taskNameText)){
+                true -> { //If it does contain it, remove it!
+                    worker.taskList.removeValue(taskNameText, false)
+                    workerTaskMap[taskNameText]!!.removeValue(entity, true)
+                }
+                else -> { //If it doesn't contain it, add it!
+                    //Make sure we have enough room to add it
+                    if(workerTaskMap[taskNameText]!!.size < workerTaskLimit.amount) {
                         worker.taskList.add(taskNameText)
                         workerTaskMap[taskNameText]!!.add(entity)
                     }

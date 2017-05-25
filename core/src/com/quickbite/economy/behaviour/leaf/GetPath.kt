@@ -9,6 +9,8 @@ import com.quickbite.economy.util.Pathfinder
 
 /**
  * Created by Paha on 1/16/2017.
+ *
+ * Calculates and stores the path to the current bb.targetPosition
  */
 class GetPath(bb:BlackBoard) : LeafTask(bb) {
 

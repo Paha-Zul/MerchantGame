@@ -162,6 +162,9 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
             val fireTitleLabel = Label("Fire", defaultLabelStyle)
             fireTitleLabel.setAlignment(Align.center)
             fireTitleLabel.setFontScale(1.2f)
+            val infoTableLabel = Label("Info", defaultLabelStyle)
+            infoTableLabel.setAlignment(Align.center)
+            infoTableLabel.setFontScale(1.2f)
 
             val titleTable = Table()
             workerListTable.add(titleTable).growX()
@@ -181,7 +184,7 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
                 workForceComp.workersAvailable.forEach workers@{ entity ->
                     if(!entity.isValid()) return@workers
 
-                    val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle)
+                    val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle, {guiManager.openEntityWindow(it)})
 
                     workerListTable.add(workerTable).growX()
                     workerListTable.row().growX()
