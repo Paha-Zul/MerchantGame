@@ -12,7 +12,7 @@
         "transformDef": {
           "physicalDimensions": [16, 16],
           "spots":{
-            "harvest": [[0, -20]]
+            "harvest": [[0, -25]]
           }
         },
         "onGrid": true,

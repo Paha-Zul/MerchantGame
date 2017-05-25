@@ -251,4 +251,28 @@ object FindEntityUtil {
         val buildingsThatAreSellingItems = Families.buildingsSellingItems
         return buildingsThatAreSellingItems[MathUtils.random(buildingsThatAreSellingItems.size() - 1)]
     }
+
+    fun getClosestOpenResource(position:Vector2, type:String = ""):Entity?{
+        var closest:Entity? = null
+        var closestDst = Float.MAX_VALUE
+
+        Families.resources.forEach { entity ->
+            val tc = Mappers.transform[entity]
+            val rc = Mappers.resource[entity]
+
+            val isType = type == "" || type == rc.resourceType
+
+            //If we have no room for another harvester or the type doesn't match, continue...
+            if(rc.numCurrentHarvesters >= rc.numHarvestersMax || !isType)
+                return@forEach
+
+            val dst = tc.position.dst2(position)
+            if(dst < closestDst){
+                closest = entity
+                closestDst = dst
+            }
+        }
+
+        return closest
+    }
 }
