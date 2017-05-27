@@ -20,13 +20,13 @@ import java.util.*
  */
 open class GUIWindow(val guiManager: GameScreenGUIManager) {
     /** The main GUI window that is movable*/
-    protected val window: Window
+    val window: Window
     /** The main table that holds the tabTable and contentTable. Can be modified*/
-    protected val mainTable = Table()
+    val mainTable = Table()
     /** The tab table for any tabs. Can be removed if not using tabs*/
-    protected val tabTable = Table()
+    val tabTable = Table()
     /** The content table that sites under the tab table*/
-    protected val contentTable = Table()
+    val contentTable = Table()
 
     /** A place to put actions to refresh GUI elements while a certain tab is open. Gets cleared on every window change.*/
     protected val updateFuncsList: Array<() -> Unit> = Array(5)

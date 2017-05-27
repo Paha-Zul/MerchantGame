@@ -25,8 +25,8 @@ import com.quickbite.spaceslingshot.util.Loader;
 public class MyGame extends Game {
     public static com.quickbite.economy.util.EasyAssetManager manager;
 	public static Viewport viewport, UIViewport;
-    public static OrthographicCamera camera;
-    public static SpriteBatch batch;
+    public static OrthographicCamera camera, UICamera;
+    public static SpriteBatch batch, UIBatch;
     public static ShapeRenderer renderer;
     public static Engine entityEngine;
     public static Grid grid;
@@ -45,16 +45,18 @@ public class MyGame extends Game {
         int height = Gdx.graphics.getHeight();
 
         camera = new OrthographicCamera(width, height);
+        UICamera = new OrthographicCamera(width, height);
         viewport = new StretchViewport(width, height, camera);
-        UIViewport = new StretchViewport(width, height);
+        UIViewport = new StretchViewport(width, height, UICamera);
 
         batch = new SpriteBatch();
+        UIBatch = new SpriteBatch();
         renderer = new ShapeRenderer();
         entityEngine = new Engine();
 		grid = new Grid(25, 3000, 3000);
 		world = new World(new Vector2(0f, 0f), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
-        stage = new Stage(UIViewport, batch);
+        stage = new Stage(UIViewport, UIBatch);
 
         Loader.INSTANCE.loadAllImgs(manager, Gdx.files.internal("images/"), false);
         Loader.INSTANCE.loadFonts(manager, Gdx.files.internal("fonts/"));
@@ -94,12 +96,19 @@ public class MyGame extends Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
+		UICamera.update();
 
 		super.render();
 
         stage.act();
         stage.draw();
-	}
+
+//        UIBatch.setProjectionMatrix(UICamera.combined);
+//        UIBatch.setColor(1f, 1f, 1f, 1f); //Stupid stage messes with the color so we have to reset it here
+//        UIBatch.begin();
+//        TutorialTest.INSTANCE.render(Gdx.graphics.getDeltaTime(), UIBatch); //TODO Maybe this could go in a better place? Needs to be after the stage though
+//        UIBatch.end();
+    }
 	
 	@Override
 	public void dispose () {

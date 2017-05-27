@@ -115,9 +115,14 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
             guiStack += HireWorkerWindow(this, workforceEntity)
     }
 
-    fun openTownWindow(){
-        if(!guiStack.any{ it is TownWindow})
-            guiStack += TownWindow(this)
+    fun openTownWindow() : TownWindow?{
+        if(!guiStack.any{ it is TownWindow}) {
+            val window = TownWindow(this)
+            guiStack += window
+            return window
+        }
+
+        return null
     }
 
     fun openImportWindow(entity:Entity){

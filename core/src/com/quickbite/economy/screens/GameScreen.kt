@@ -20,6 +20,7 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.systems.*
+import com.quickbite.economy.tutorialtest.TutorialTest
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.Spawner.town
 
@@ -48,6 +49,7 @@ class GameScreen :Screen{
         }
 
         gameScreenGUI = GameScreenGUIManager(this)
+        TutorialTest.gameScreenGUIManager = gameScreenGUI
 
         inputHandler = InputHandler(this)
         Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, inputHandler)
@@ -92,6 +94,7 @@ class GameScreen :Screen{
         })
 
         TownManager.init()
+//        TutorialTest.test()
 
         gameScreeData.playerMoney = 1000
     }

@@ -40,8 +40,8 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
     }
 
     private fun initTabs(){
-        val popButton = TextButton("Pop", defaultTextButtonStyle)
-        val workersButton = TextButton("Workers", defaultTextButtonStyle)
+        val popButton = TextButton("Pop", defaultTextButtonStyle).apply { name = "pop" }
+        val workersButton = TextButton("Workers", defaultTextButtonStyle).apply { name = "workers" }
 
         popButton.addChangeListener { _, _ -> changeTabs("pop") }
         workersButton.addChangeListener { _, _ -> changeTabs("workers") }
@@ -112,7 +112,7 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
         contentTable.top().left()
     }
 
-    fun setupWorkersTable(){
+    private fun setupWorkersTable(){
         //TODO This doesn't update if it's open a building is destroyed, hmm....
         contentTable.clear()
 

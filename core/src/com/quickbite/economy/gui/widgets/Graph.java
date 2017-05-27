@@ -157,7 +157,7 @@ public class Graph extends Actor {
             //Draw the point
             shapes.arc(tmp1.x, tmp1.y, 5f, 0f, 360f);
 
-            //If we are at the end, draw the last point too!
+            //If we are at the end, render the last point too!
             if(i == size - 1)
                 shapes.arc(tmp2.x, tmp2.y, 5f, 0f, 360f);
         }
