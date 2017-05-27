@@ -6,12 +6,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Factory
+import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
 /**
@@ -23,11 +23,7 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
 
     init{
         window.setSize(200f, 400f)
-
-        val exitButton = TextButton("X", defaultTextButtonStyle)
-
-        tabTable.add().expandX().fillX()
-        tabTable.add(exitButton).right().size(16f)
+        tabTable.remove() //We don't want the tab table!
 
         val firstNames = DefinitionManager.names.firstNames
         val lastNames = DefinitionManager.names.lastNames
@@ -39,6 +35,8 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
         list.add(firstNames[MathUtils.random(firstNames.size-1)])
         list.add(firstNames[MathUtils.random(firstNames.size-1)])
 
+        val workforce = Mappers.workforce[workforceEntity]
+
         list.forEach { name ->
             val workerButton = TextButton(name, defaultTextButtonStyle)
 
@@ -47,18 +45,18 @@ class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: En
 
             workerButton.addListener(object: ChangeListener(){
                 override fun changed(event: ChangeEvent?, actor: Actor?) {
-                    val entity = Factory.createObjectFromJson("worker", Vector2(-1000f, 0f))!!
-                    val assigned = Util.assignWorkerToBuilding(entity, workforceEntity)
-                    if(assigned) {
-                        GameEventSystem.fire(ReloadGUIEvent())
-                        list.remove(name)
-                        workerButton.remove()
+                    //Check to make sure we can add a worker
+                    if(workforce.workersAvailable.size < workforce.numWorkerSpots) {
+                        val entity = Factory.createObjectFromJson("worker", Vector2(-1000f, 0f))!! //Create the worker
+                        Util.assignWorkerToBuilding(entity, workforceEntity) //Assign it to the building
+                        GameEventSystem.fire(ReloadGUIEvent()) //Fire an event to reload the GUI
+                        list.remove(name) //Remove the possible worker from the list, we just hired him!
+                        workerButton.remove() //Remove the button
+                        //TODO Removing this button leaves weird spacing... maybe rebuild the list or something?
                     }
                 }
             })
         }
-
-        exitButton.addChangeListener { _, _ ->  close()}
 
         contentTable.background = this.darkBackgroundDrawable
     }

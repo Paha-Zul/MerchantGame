@@ -42,22 +42,13 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
     private fun initTabs(){
         val popButton = TextButton("Pop", defaultTextButtonStyle)
         val workersButton = TextButton("Workers", defaultTextButtonStyle)
-        val exitButton = TextButton("x", defaultTextButtonStyle)
 
         popButton.addChangeListener { _, _ -> changeTabs("pop") }
         workersButton.addChangeListener { _, _ -> changeTabs("workers") }
 
-        exitButton.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                close()
-            }
-        })
-
-        tabTable.add(popButton).right().size(75f, 32f).spaceRight(5f)
-        tabTable.add(workersButton).right().size(75f, 32f).spaceRight(5f)
+        tabTable.add(popButton).right().size(75f, TAB_HEIGHT).spaceRight(5f)
+        tabTable.add(workersButton).right().size(75f, TAB_HEIGHT).spaceRight(5f)
         tabTable.add().expandX().fillX()
-        tabTable.add(exitButton).right().size(32f)
     }
 
     private fun changeTabs(type:String){
@@ -175,8 +166,8 @@ class TownWindow(guiManager: GameScreenGUIManager) : GUIWindow(guiManager) {
             titleTable.add(currTaskTitleLabel).growX().uniformX()
             titleTable.add(startTimeTitleLAbel).growX().uniformX()
             titleTable.add(endTimeTitleLabel).growX().uniformX()
-            titleTable.add(salaryTitleLabel).growX().uniformX()
             titleTable.add(fireTitleLabel).growX().uniformX()
+            titleTable.add(salaryTitleLabel).growX().uniformX()
 
             Families.workBuildings.forEach { workBuildingEnt ->
                 val workForceComp = Mappers.workforce[workBuildingEnt]

@@ -1,23 +1,100 @@
 package com.quickbite.economy.util
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.WorkForceComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ReloadGUIEvent
+import com.quickbite.economy.gui.EntityWindowController
+import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.isValid
+import com.quickbite.economy.objects.SelectedWorkerAndTable
 
 /**
  * Created by Paha on 5/20/2017.
  */
 object GUIUtil {
+
+    fun populateWorkerTable(workforceComp:WorkForceComponent, selectedWorkers:Array<SelectedWorkerAndTable>, workerListTable:Table, labelStyle:Label.LabelStyle,
+                            textButtonStyle: TextButton.TextButtonStyle, guiManager:GameScreenGUIManager){
+
+        workerListTable.clear()
+
+        val nameTitleLabel = Label("Name", labelStyle)
+        nameTitleLabel.setAlignment(Align.center)
+        nameTitleLabel.setFontScale(1.2f)
+        val currTaskTitleLabel = Label("Tasks", labelStyle)
+        currTaskTitleLabel.setAlignment(Align.center)
+        currTaskTitleLabel.setFontScale(1.2f)
+        val startTimeTitleLAbel = Label("Start", labelStyle)
+        startTimeTitleLAbel.setAlignment(Align.center)
+        startTimeTitleLAbel.setFontScale(1.2f)
+        val endTimeTitleLabel = Label("End", labelStyle)
+        endTimeTitleLabel.setAlignment(Align.center)
+        endTimeTitleLabel.setFontScale(1.2f)
+        val salaryTitleLabel = Label("Salary", labelStyle)
+        salaryTitleLabel.setAlignment(Align.center)
+        salaryTitleLabel.setFontScale(1.2f)
+        val fireTitleLabel = Label("Fire", labelStyle)
+        fireTitleLabel.setAlignment(Align.center)
+        fireTitleLabel.setFontScale(1.2f)
+        val infoTitleLabel = Label("Info", labelStyle)
+        infoTitleLabel.setAlignment(Align.center)
+        infoTitleLabel.setFontScale(1.2f)
+
+        //Make the title table...
+        val titleTable = Table()
+
+        //Add all the titles....
+        titleTable.add(nameTitleLabel).growX().uniformX()
+        titleTable.add(currTaskTitleLabel).growX().uniformX()
+        titleTable.add(startTimeTitleLAbel).growX().uniformX()
+        titleTable.add(endTimeTitleLabel).growX().uniformX()
+        titleTable.add(salaryTitleLabel).growX().uniformX()
+        titleTable.add(infoTitleLabel).growX().uniformX()
+        titleTable.add(fireTitleLabel).growX().uniformX()
+
+        //Add the title table and a row for the list of workers...
+        workerListTable.add(titleTable).growX()
+        workerListTable.row().growX()
+
+        //For each worker, lets get some info and make a table for it!
+        workforceComp.workersAvailable.forEach { entity ->
+            if(!entity.isValid()) return@forEach //If it's not valid, continue...
+
+            val workerTable = GUIUtil.makeWorkerTable(entity, workforceComp, labelStyle, textButtonStyle, {guiManager.openEntityWindow(it)})
+
+            //Add the worker table
+            workerListTable.add(workerTable).growX()
+            workerListTable.row().growX()
+
+            //Since this table gets updated on changes, make sure to keep the background if we reload this table
+            //Also, we check the entity because the tables are new and won't match. We need to set the table again
+            selectedWorkers.firstOrNull { it.worker == entity }?.run {
+                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                this.table = workerTable
+            }
+
+            workerTable.addListener(object:ClickListener(){
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+
+                    EntityWindowController.changeWorkerSelectionInTable(selectedWorkers, entity, workerTable)
+                }
+            })
+        }
+    }
 
     fun makeWorkerTable(entity:Entity, workforceComp:WorkForceComponent, labelStyle:Label.LabelStyle, textButtonStyle:TextButton.TextButtonStyle, openEntityWindowFunc:(Entity)->Unit):Table{
         val worker = Mappers.worker[entity]
@@ -69,11 +146,11 @@ object GUIUtil {
         salaryLabel.setAlignment(Align.center)
 
         startTimeTable.add(workHourStartLessButton).size(16f)
-        startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f).width(25f)
+        startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f).width(20f)
         startTimeTable.add(workHourStartMoreButton).size(16f)
 
         endTimeTable.add(workHourEndLessButton).size(16f)
-        endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f).width(25f)
+        endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f).width(20f)
         endTimeTable.add(workHourEndMoreButton).size(16f)
 
         val removeWorkerButton = TextButton("x", textButtonStyle)
@@ -101,9 +178,36 @@ object GUIUtil {
         workerTable.add(startTimeTable).growX().uniformX()
         workerTable.add(endTimeTable).growX().uniformX()
         workerTable.add(salaryLabel).growX().uniformX()
-        workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
         workerTable.add(infoButton).growX().uniformX().size(16f)
+        workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
 
         return workerTable
+    }
+
+    fun populateWorkerTasksAndAmountsTable(workforceComp:WorkForceComponent, workerTasksAndAmountsTable:Table, labelStyle: Label.LabelStyle):Table{
+        workerTasksAndAmountsTable.clear()
+        val currWorkersAndTotalWorkers = Label("workers: ${workforceComp.workersAvailable.size}/${workforceComp.numWorkerSpots}", labelStyle)
+
+        workerTasksAndAmountsTable.add(currWorkersAndTotalWorkers).colspan(100)
+        workerTasksAndAmountsTable.row()
+
+        //Loop over a copy so we can use another iterator....
+        workforceComp.workerTasksLimits.toList().forEachIndexed { i, taskLimit ->
+            //The current amount out of the max amount, ie: 1/4
+            val amountText = "${workforceComp.workerTaskMap[taskLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == taskLimit.taskName }!!.amount}"
+
+            val taskLabel = Label(taskLimit.taskName, labelStyle)
+            val amountLabel = Label(amountText, labelStyle)
+
+            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
+            workerTasksAndAmountsTable.add(amountLabel).width(25f).spaceRight(5f)
+
+            if(i < workforceComp.workerTasksLimits.size - 1) {
+                val dashLabel = Label(" - ", labelStyle)
+                workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
+            }
+        }
+
+        return workerTasksAndAmountsTable
     }
 }

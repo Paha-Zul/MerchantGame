@@ -160,17 +160,11 @@ object Util {
      * @param entityWorkForce The Entity that has a WorkForceComponent that will be managing the worker Entity.
      * @return True if a worker was able to be added, false otherwise
      */
-    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity):Boolean{
+    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity){
         val worker = Mappers.worker[entityWorker]
         val workForce = Mappers.workforce[entityWorkForce]
-        //TODO need to check here if we are actually able to add them
-        if(workForce.numWorkerSpots > workForce.workersAvailable.size + 1) {
-            workForce.workersAvailable.add(entityWorker)
-            worker.workerBuilding = entityWorkForce
-            return true
-        }
-
-        return false
+        workForce.workersAvailable.add(entityWorker)
+        worker.workerBuilding = entityWorkForce
     }
 
     fun addItemToEntitySelling(entity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){

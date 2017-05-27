@@ -22,7 +22,6 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
-import com.quickbite.economy.isValid
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Factory
@@ -82,28 +81,22 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val deleteLabel = TextButton("Delete", defaultTextButtonStyle)
         deleteLabel.label.setFontScale(1f)
 
-        val exitLabel = TextButton("X", defaultTextButtonStyle)
-        exitLabel.label.setFontScale(1f)
-
         if(bc != null)
-            tabTable.add(buildingTab).spaceRight(5f)
+            tabTable.add(buildingTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
         if(sc != null) {
-            tabTable.add(sellTab).spaceRight(5f)
-            tabTable.add(economyTab).spaceRight(5f)
+            tabTable.add(sellTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(economyTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
         }
         if(wc != null)
-            tabTable.add(workTab).spaceRight(5f)
+            tabTable.add(workTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
         if(behComp != null)
-            tabTable.add(behaviourTab).spaceRight(5f)
+            tabTable.add(behaviourTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
         if(ic != null)
-            tabTable.add(inventoryTab).spaceRight(5f)
+            tabTable.add(inventoryTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
         if(buying != null)
-            tabTable.add(buyingLabel).spaceRight(5f)
+            tabTable.add(buyingLabel).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
 
-        tabTable.add(deleteLabel)
-
-        tabTable.add().growX()
-        tabTable.add(exitLabel).right().width(32f)
+        tabTable.add(deleteLabel).height(TAB_HEIGHT).growX().uniformX()
 
         buildingTab.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -155,13 +148,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             }
         })
 
-        exitLabel.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int){
-                super.touchUp(event, x, y, pointer, button)
-                close()
-            }
-        })
-
         deleteLabel.addListener(object:ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 close()
@@ -172,8 +158,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //When we select a new building, try to display whatever section we were displaying on the last one
         if(currentlyDisplayingComponent != null)
             loadTable(contentTable, currentlyDisplayingComponent!!, currentTabType)
-
-//        window.debugAll()
     }
 
     override fun update(delta:Float){
@@ -246,95 +230,19 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val buttonStyle = Button.ButtonStyle()
         buttonStyle.up = buttonBackgroundDrawable
 
-        //Our scroll pane
-        val workerListTable = Table() //Our worker list
-        val mainScrollPane = ScrollPane(workerListTable, scrollPaneStyle)
-
-        val tasksAmountTable = Table()
-
+        //Our worker list table
+        val workerListTable = Table()
         workerListTable.top()
 
-        fun populateWorkerTable() {
-            workerListTable.clear()
-            tasksAmountTable.clear()
+        //Our scroll pane for the worker list table to sit inside
+        val workerListScrollPane = ScrollPane(workerListTable, scrollPaneStyle)
+        workerListScrollPane.setScrollingDisabled(true, false)
 
-            //Loop over a copy so we can use another iterator....
-            comp.workerTasksLimits.toList().forEachIndexed { i, taskLimit ->
-                //The current amount out of the max amount, ie: 1/4
-                val amountText = "${comp.workerTaskMap[taskLimit.taskName]!!.size}/${comp.workerTasksLimits.find { it.taskName == taskLimit.taskName }!!.amount}"
+        //The worker tasks and amounts table
+        val workerTasksAndAmountsTables = Table()
 
-                val taskLabel = Label(taskLimit.taskName, defaultLabelStyle)
-                val amountLabel = Label(amountText, defaultLabelStyle)
-
-                tasksAmountTable.add(taskLabel).spaceRight(5f)
-                tasksAmountTable.add(amountLabel).width(25f).spaceRight(5f)
-
-                if(i < comp.workerTasksLimits.size - 1) {
-                    val dashLabel = Label(" - ", defaultLabelStyle)
-                    tasksAmountTable.add(dashLabel).space(0f, 5f, 0f, 5f)
-                }
-            }
-
-            val nameTitleLabel = Label("Name", defaultLabelStyle)
-            nameTitleLabel.setAlignment(Align.center)
-            nameTitleLabel.setFontScale(1.2f)
-            val currTaskTitleLabel = Label("Tasks", defaultLabelStyle)
-            currTaskTitleLabel.setAlignment(Align.center)
-            currTaskTitleLabel.setFontScale(1.2f)
-            val startTimeTitleLAbel = Label("Start", defaultLabelStyle)
-            startTimeTitleLAbel.setAlignment(Align.center)
-            startTimeTitleLAbel.setFontScale(1.2f)
-            val endTimeTitleLabel = Label("End", defaultLabelStyle)
-            endTimeTitleLabel.setAlignment(Align.center)
-            endTimeTitleLabel.setFontScale(1.2f)
-            val salaryTitleLabel = Label("Salary", defaultLabelStyle)
-            salaryTitleLabel.setAlignment(Align.center)
-            salaryTitleLabel.setFontScale(1.2f)
-            val fireTitleLabel = Label("Fire", defaultLabelStyle)
-            fireTitleLabel.setAlignment(Align.center)
-            fireTitleLabel.setFontScale(1.2f)
-            val infoTitleLabel = Label("Info", defaultLabelStyle)
-            infoTitleLabel.setAlignment(Align.center)
-            infoTitleLabel.setFontScale(1.2f)
-
-            val titleTable = Table()
-            workerListTable.add(titleTable).growX()
-            workerListTable.row().growX()
-
-            //Add all the titles....
-            titleTable.add(nameTitleLabel).growX().uniformX()
-            titleTable.add(currTaskTitleLabel).growX().uniformX()
-            titleTable.add(startTimeTitleLAbel).growX().uniformX()
-            titleTable.add(endTimeTitleLabel).growX().uniformX()
-            titleTable.add(salaryTitleLabel).growX().uniformX()
-            titleTable.add(fireTitleLabel).growX().uniformX()
-            titleTable.add(infoTitleLabel).growX().uniformX()
-
-            comp.workersAvailable.forEach { entity ->
-                if(!entity.isValid()) return@forEach
-                val workerTable = GUIUtil.makeWorkerTable(entity, comp, defaultLabelStyle, defaultTextButtonStyle, {guiManager.openEntityWindow(it)})
-
-                workerListTable.add(workerTable).growX()
-                workerListTable.row().growX()
-
-                //Since this table gets updated on changes, make sure to keep the background if we reload this table
-                //Also, we check the entity because the tables are new and won't match. We need to set the table again
-                selectedWorkers.firstOrNull { it.worker == entity }?.run {
-                    workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-                    this.table = workerTable
-                }
-
-                workerTable.addListener(object:ClickListener(){
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        super.touchUp(event, x, y, pointer, button)
-
-                        EntityWindowController.changeWorkerSelectionInTable(selectedWorkers, entity, workerTable)
-                    }
-                })
-            }
-        }
-
-        populateWorkerTable()
+        GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
+        GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager)
 
         val workerTaskList = Table()
 
@@ -354,7 +262,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                     EntityWindowController.addTasksToWorkers(taskNameText, selectedWorkers, workerTaskLimit, comp.workerTaskMap)
 
-                    populateWorkerTable()
+                    GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager)
                 }
             })
         }
@@ -371,15 +279,15 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         })
 
         //An event to listen for a worker to be hired
-        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> { populateWorkerTable() }
+        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> { GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager) }
 
         //Remember to remove this from the event system
         changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
 
         //Add our main scroll pane and the hiring button
-        table.add(tasksAmountTable).colspan(2).spaceBottom(5f)
+        table.add(workerTasksAndAmountsTables).colspan(2).spaceBottom(5f)
         table.row()
-        table.add(mainScrollPane).grow().top().colspan(2).height(250f)
+        table.add(workerListScrollPane).grow().top().colspan(2).height(225f)
         table.row()
         table.add(workerTaskList)
         table.add(hireButton)
@@ -491,13 +399,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
     }
 
     private fun setupSellingTable(table: Table, comp: SellingItemsComponent){
-        contentTable.debugAll()
         val taxRateTable = Table()
         taxRateTable.background = darkBackgroundDrawable
 
         val sellItemsMainTable = Table()
         sellItemsMainTable.background = darkBackgroundDrawable
-        sellItemsMainTable.debugAll()
 
         val sellHistoryTable = Table()
         sellHistoryTable.background = darkBackgroundDrawable
@@ -515,7 +421,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             sellItemsMainTable.row()
 
             val sellItemsListTable = Table()
-            sellItemsListTable.debugAll()
 
             val itemNameColTitle = Label("Name", defaultLabelStyle)
             itemNameColTitle.setFontScale(1f)
@@ -772,7 +677,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             GameEventSystem.unsubscribe(entityEvent) //Unsubscribe when we leave this tab
         }
 
-//        goldHistoryGraph.debug = true
     }
 
     private fun setupEconomyTable(table: Table, comp: SellingItemsComponent){
@@ -813,7 +717,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         table.row()
         table.add(goldHistoryGraph).size(350f, 250f).padTop(20f)
 
-//        table.debugAll()
         table.top()
 
         updateFuncsList.add {

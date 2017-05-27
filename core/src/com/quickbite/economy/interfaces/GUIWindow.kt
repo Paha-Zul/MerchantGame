@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.util.Util
 import java.util.*
@@ -39,6 +40,8 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
     protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
+    val TAB_HEIGHT = 30f
+
     init {
         defaultTextButtonStyle.up = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
         defaultTextButtonStyle.font = MyGame.defaultFont14
@@ -57,6 +60,7 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
         tabTable.background = darkBackgroundDrawable
 
         val contentTableScrollPane = ScrollPane(contentTable, scrollPaneStyle)
+        contentTableScrollPane.setScrollingDisabled(true, false)
 
         //Add the stuff to the main table
         this.mainTable.add(tabTable).expandX().fillX()
@@ -67,16 +71,18 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
         val windowBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box", Texture::class.java], 50, 50, 50, 50))
         val windowSkin = Window.WindowStyle(MyGame.defaultFont20, Color.WHITE, windowBackground)
 
+        val exitButton = TextButton("x", defaultTextButtonStyle)
+        exitButton.addChangeListener { _, _ -> close() }
+
         //Window
         window = Window("", windowSkin)
-//        window.getCell(window.titleLabel)
-//        window.titleLabel.setFontScale(1.1f)
         window.isMovable = true
         window.setSize(500f, 400f)
-        window.setPosition(MathUtils.random(90f, 110f), MathUtils.random(90f, 110f))
+        window.setPosition(MathUtils.random(90, 130).toFloat(), MathUtils.random(70, 130).toFloat())
         window.pad(30f, 10f, 10f, 10f)
 
-        window.add(this.mainTable).expand().fill()
+        window.titleTable.add(exitButton).size(20f).right()
+        window.add(this.mainTable).expand().fill().colspan(2)
 
         MyGame.stage.addActor(window)
     }
