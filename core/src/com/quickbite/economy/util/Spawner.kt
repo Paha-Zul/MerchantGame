@@ -53,9 +53,8 @@ object Spawner {
             //Scan each item that we are buying and calculate necessity and luxury ratings
             buying.buyList.forEach { (itemName, itemAmount) ->
                 val itemDef = DefinitionManager.itemDefMap[itemName]!!
-                if(itemDef.categories.contains("Food"))
-                    buying.needsSatisfactionRating -= itemAmount
-                //TODO Calculate luxury rating
+                buying.needsSatisfactionRating += -itemDef.need
+                buying.luxurySatisfactionRating += -itemDef.luxury
             }
 
             spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
@@ -97,7 +96,7 @@ object Spawner {
     }
 
     fun update(delta:Float){
-//        spawnBuyerTimer.update(delta)
-//        spawnHaulerTimer.update(delta)
+        spawnBuyerTimer.update(delta)
+        spawnHaulerTimer.update(delta)
     }
 }

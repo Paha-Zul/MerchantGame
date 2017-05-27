@@ -170,8 +170,10 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //Prevent this crash....
         if(currentlySelectedEntity != null) {
             val debug = Mappers.debugDraw[currentlySelectedEntity]
-            debug.debugDrawWorkers = false
-            debug.debugDrawWorkplace = false
+            if(debug != null) {
+                debug.debugDrawWorkers = false
+                debug.debugDrawWorkplace = false
+            }
         }
 
         currentlySelectedEntity = null

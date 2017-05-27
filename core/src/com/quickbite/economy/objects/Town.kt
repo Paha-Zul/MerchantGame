@@ -46,11 +46,16 @@ class Town(val name:String) {
         })
 
         changePopulationTimer = CustomTimer(0f, 10f, false, {
-            val diff = needsRating - 500 //This will either be negative or positive
-            val change = diff.toFloat()/populationIncreaseFromRatingThreshold.toFloat() //Negative or positive change
+            val needDiff = needsRating - 500 //This will either be negative or positive
+            val needsChange = needDiff.toFloat()/populationIncreaseFromRatingThreshold.toFloat() //Negative or positive change
+            val luxuryDiff = luxuryRating - 500 //This will either be negative or positive
+            val luxuryChange = luxuryDiff.toFloat()/populationIncreaseFromRatingThreshold.toFloat() //Negative or positive change
+
+            //If needs is below 500, remove from needs. Otherwise, add the luxury amount.
+            val change:Float = if(needDiff > 0) Math.max(0f, luxuryChange) else needsChange
+
             population += change //Add the change
             populationHistory += population.toInt() //Add the most recent population to the history
-//            EventSystem.callEvent("pop_change", listOf(this))
             GameEventSystem.fire(PopulationChangeEvent(population.toInt(), populationHistory.queue.toList()))
         })
     }

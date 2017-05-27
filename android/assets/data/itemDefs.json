@@ -1,10 +1,5 @@
 [
-  {
-    "itemName": "Wood Log",
-    "baseMarketPrice": 5,
-    "categories": ["Currency"]
-  },
-  {
+    {
     "itemName": "Wood Log",
     "baseMarketPrice": 5,
     "categories": ["Ingredient"]
@@ -17,7 +12,8 @@
   {
     "itemName": "Wood Table",
     "baseMarketPrice": 250,
-    "categories": ["Furnishing"]
+    "categories": ["Furnishing"],
+    "luxury": 2
   },
   {
     "itemName": "Wheat",
@@ -32,11 +28,15 @@
   {
     "itemName": "Bread",
     "baseMarketPrice": 25,
-    "categories": ["Food"]
+    "categories": ["Food"],
+    "need": 1,
+    "luxury": 0
   },
   {
     "itemName": "Milk",
     "baseMarketPrice": 2,
-    "categories": ["Ingredient", "Food"]
+    "categories": ["Ingredient", "Food"],
+    "need": 1,
+    "luxury": 0
   }
 ]

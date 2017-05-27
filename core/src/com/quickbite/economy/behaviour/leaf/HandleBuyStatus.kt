@@ -19,10 +19,11 @@ class HandleBuyStatus(bb:BlackBoard) : LeafTask(bb) {
             //If we bought an item, deal with it!
             BuyerComponent.BuyerFlag.Bought -> {
                 buyer.buyHistory.forEach { (itemName, itemAmount) ->
-                    if(DefinitionManager.itemDefMap[itemName]!!.categories.contains("Food"))
-                        //The buyer starts with necessity negative equal to the amount of food it needs
-                        //We double this to provide a positive rating if at least half the food is bought
-                        buyer.needsSatisfactionRating += itemAmount *2
+                    val itemDef = DefinitionManager.itemDefMap[itemName]!!
+                    //TODO Maybe don't use a magic number?
+                    //We multiply by 2 as a bonus...
+                    buyer.needsSatisfactionRating += itemDef.need*2
+                    buyer.luxurySatisfactionRating += itemDef.luxury*2
                 }
 
                 //TODO Maybe have a separate buy history and recent buy history?

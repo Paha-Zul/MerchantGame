@@ -224,6 +224,8 @@ object DefinitionManager {
         lateinit var itemName:String
         var baseMarketPrice:Int = 0
         var categories:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
+        var need = 0
+        var luxury = 0
     }
 
     private class ProductionList{
