@@ -16,6 +16,7 @@ object Pathfinder {
         //GScore is distance to neighbor plus last gScore. FScore includes heuristic
         val scores = hashMapOf(Pair(start, Score(0, getH(start, end))))
 
+        //The open set is the sorted priority queue. It's sorted based on FScore
         val openSet = PriorityQueue<Grid.GridNode>(10, Comparator<Grid.GridNode> { o1, o2 ->
             val result = scores[o1]!!.FScore - scores[o2]!!.FScore //Compare based on FScore
             if(result < 0)
@@ -26,41 +27,50 @@ object Pathfinder {
                 1
         })
 
+        //Add the initial starting node
         openSet.add(start)
 
+        //The current node...
         var current:Grid.GridNode
 
+        //While we still have something in the open set...
         while(openSet.isNotEmpty()){
-            current = openSet.poll()
+            current = openSet.poll() //Get the head
 
+            //Break if we're at the end!
             if(current == end){
                 break
             }
 
+            //Add the current to the closed set, we don't want to check it again!
             closedSet.add(current)
+            //Get the neighbors
             val neighbors = grid.getNeighborsOf(current.x, current.y)
-            for(n in neighbors){
-                if(closedSet.contains(n) || n.blocked)
+            //For each neighbor...
+            for(neighbor in neighbors){
+                //If it's in the closed set or blocked, continue
+                if(closedSet.contains(neighbor) || neighbor.blocked)
                     continue
 
-                val currScore = scores[current]!!
-                val neighborScore = scores.getOrPut(n, {Score(Int.MAX_VALUE, Int.MAX_VALUE)})
+                val currScore = scores[current]!! //Get the current score
+                val neighborScore = scores.getOrPut(neighbor, {Score(Int.MAX_VALUE, Int.MAX_VALUE)})
 
-                val tentativeGScore = currScore.GScore + getDisCost(current, n) //TODO MAKE THIS BETTER
+                //Take the current node's GScore and add it to the new movement cost from
+                val tentativeGScore = currScore.GScore + getDisCost(current, neighbor) //TODO MAKE THIS BETTER
                 var flag = false
 
-                if(!openSet.contains(n)) {
+                if(!openSet.contains(neighbor)) {
                     flag = true
 
                 }else if(tentativeGScore >= neighborScore.GScore)
                     continue //Continue because the neighbor is not a good pick
 
-                cameFrom[n] = current
-                neighborScore.GScore = tentativeGScore
-                neighborScore.FScore = tentativeGScore + getH(n, end)
+                cameFrom[neighbor] = current //Assign the neighbors parent to the current node
+                neighborScore.GScore = tentativeGScore //Set the neighbors G score as the tentative GScore
+                neighborScore.FScore = neighborScore.GScore + getH(neighbor, end) //Set it's F Score as it's GScore + heuristic
 
                 if(flag)
-                    openSet.add(n) //The scores need to be set before adding to the set
+                    openSet.add(neighbor) //The scores need to be set before adding to the set
             }
         }
 
@@ -98,6 +108,10 @@ object Pathfinder {
         return 14 //Return 14 here cause it's a diagonal
     }
 
+    /**
+     * @param GScore The movement cost from the start node to this point
+     * @param FScore The combined cost of G plus a hueristic (H) score
+     */
     private class Score(var GScore:Int, var FScore:Int){
         override fun toString(): String {
             return "[G:$GScore, F:$FScore]"
