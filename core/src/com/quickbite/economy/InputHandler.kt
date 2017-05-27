@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.components.DebugDrawComponent
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.Constants
 import com.quickbite.economy.util.Factory
@@ -23,6 +24,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
     var entityClickedOn:Entity? = null
     var selectedEntity: Entity? = null
+    var collidedWith = false
 
     var linkingAnotherEntity = false
     var linkingEntityCallback:(Entity) -> Unit = {}
@@ -30,7 +32,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     private val queryCallback = {fixture:Fixture ->
         val entity = fixture.userData as Entity
         entityClickedOn = entity
-        false
+        false //Terminate
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -47,12 +49,17 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
                     val pos = Vector2(Util.roundDown(worldCoords.x + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat(),
                             Util.roundDown(worldCoords.y + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat())
 
-                    //If the grid node isn't already blocked, create the object there
-                    if(!MyGame.grid.getNodeAtPosition(pos.x, pos.y)!!.blocked){
+
+                    val entityDef = DefinitionManager.definitionMap[gameScreen.currentlySelectedType.toLowerCase()]!!
+                    val dimensions = entityDef.transformDef.physicalDimensions
+
+                    if(!MyGame.grid.isBlocked(pos.x, pos.y, dimensions.x/2, dimensions.y/2)){
                         Factory.createObjectFromJson(gameScreen.currentlySelectedType, Vector2(pos))!!
                     }
 
-                //If the selected type is empty, the we need to see if we are clicking on something
+                    collidedWith = false
+
+                    //If the selected type is empty, the we need to see if we are clicking on something
                 }else{
                     //Only clear the selected Entity if we are not linking another Entity
                     if(!linkingAnotherEntity)

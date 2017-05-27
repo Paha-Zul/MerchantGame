@@ -78,6 +78,17 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         return Pair(Util.roundDown(x, squareSize)/squareSize + offX, Util.roundDown(y, squareSize)/squareSize + offY)
     }
 
+    /**
+     * Converts a float value to a grid index value. Doesn't account for the offset
+     */
+    fun convertToGrid(value:Float):Int{
+        return Util.roundDown(value, squareSize)/squareSize
+    }
+
+    fun convertToGrid(value:Int):Int{
+        return value/squareSize
+    }
+
     fun getNeighborsOf(x:Float, y:Float):List<GridNode>{
         val index = getIndexOfGrid(x, y)
         return getNeighborsOf(index.first, index.second)
@@ -99,6 +110,19 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         }
 
         return list.toList()
+    }
+
+    /**
+     * Checks if any grid squares are blocked for the parameters...
+     */
+    fun isBlocked(centerX:Float, centerY:Float, halfWidth:Float, halfHeight: Float):Boolean{
+        var blocked = false
+        forNodesInSquare(centerX, centerY, halfWidth, halfHeight, {node ->
+            if(node.blocked)
+                blocked = true
+        })
+
+        return blocked
     }
 
     fun forNodesInSquare(centerX:Float, centerY:Float, halfWidth:Float, halfHeight:Float, func:(GridNode)->Unit){

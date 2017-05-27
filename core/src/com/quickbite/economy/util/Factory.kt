@@ -62,6 +62,7 @@ object Factory {
         transform.spotMap = definition.transformDef.spots
         transform.position.set(position)
 
+        //If the grid is set to block on placing, add an init func to block parts of the grid
         grid.blockWhenPlaced = definition.gridBlockWhenPlaced
         if(grid.blockWhenPlaced){
             init.initFuncs.add {
