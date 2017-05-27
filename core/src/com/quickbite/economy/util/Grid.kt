@@ -119,7 +119,7 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         }
     }
 
-    fun debugDraw(renderer:ShapeRenderer){
+    fun debugDrawGrid(renderer:ShapeRenderer){
         renderer.color = Color.BLACK
         for(x in 0..grid.size-1){
             for(y in 0..grid[x].size-1){
@@ -129,7 +129,7 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
     }
 
     fun debugDrawObstacles(renderer:ShapeRenderer){
-        renderer.color = Color(0f, 0f, 0f, 0.2f)
+        renderer.color = Color.RED
         for(x in 0..grid.size-1){
             for(y in 0..grid[x].size-1){
                 if(grid[x][y].blocked)

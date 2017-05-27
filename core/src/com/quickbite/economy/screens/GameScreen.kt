@@ -158,7 +158,7 @@ class GameScreen :Screen{
     fun debugDrawLine(renderer:ShapeRenderer){
         renderer.begin(ShapeRenderer.ShapeType.Line)
 
-        MyGame.grid.debugDraw(renderer)
+        MyGame.grid.debugDrawGrid(renderer)
 
         renderer.end()
     }

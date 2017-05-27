@@ -63,6 +63,11 @@ object Factory {
         transform.position.set(position)
 
         grid.blockWhenPlaced = definition.gridBlockWhenPlaced
+        if(grid.blockWhenPlaced){
+            init.initFuncs.add {
+                MyGame.grid.setBlocked(transform.position.x, transform.position.y, transform.dimensions.x*0.5f, transform.dimensions.y*0.5f)
+            }
+        }
 
         entity.add(identityComp)
         entity.add(graphicComp)
@@ -245,8 +250,8 @@ object Factory {
         val comps = entity.components //Get all components
         GameEventSystem.unsubscribeAll(Mappers.identity[entity].uniqueID) //Unsubscribe from all game events
         comps.forEach { comp -> (comp as MyComponent).dispose(entity)} //Dispose each component
-        entity.removeAll() //We remove all components here because we use 0 components as a sign of being destroyed. IMPORTANT!!!
         MyGame.entityEngine.removeEntity(entity) //Remove it from the engine
+        entity.removeAll() //We remove all components here because we use 0 components as a sign of being destroyed. IMPORTANT!!!
     }
 
     fun destroyEntityFamily(family: Family){
