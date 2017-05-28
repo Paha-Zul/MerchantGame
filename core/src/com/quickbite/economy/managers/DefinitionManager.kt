@@ -98,31 +98,31 @@ object DefinitionManager {
 //        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         //Load the unit defs
-        var list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
-        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+//        var list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
+//        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
-        //Load the resources
-        list = json.fromJson(DefList::class.java, Gdx.files.internal(resourcesDefName))
-        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+//        //Load the resources
+//        var list = json.fromJson(DefList::class.java, Gdx.files.internal(resourcesDefName))
+//        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
 
-        readItemDefs()
-        readProductionJson()
+//        readItemDefs()
+//        readProductionJson()
     }
 
-    private fun readItemDefs(){
-        val list = json.fromJson(Array<ItemDef>::class.java, Gdx.files.internal("data/itemDefs.json"))
-        list.forEach { itemDef ->
-            itemDefMap.put(itemDef.itemName, itemDef)
-            itemDef.categories.forEach { itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
-        }
-    }
+//    private fun readItemDefs(){
+//        val list = json.fromJson(Array<ItemDef>::class.java, Gdx.files.internal("data/itemDefs.json"))
+//        list.forEach { itemDef ->
+//            itemDefMap.put(itemDef.itemName, itemDef)
+//            itemDef.categories.forEach { itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
+//        }
+//    }
 
-    private fun readProductionJson(){
-        val list = json.fromJson(ProductionList::class.java, Gdx.files.internal("data/production.json"))
-        list.productions.forEach { prod -> productionMap.put(prod.producedItem, prod)}
-    }
+//    private fun readProductionJson(){
+//        val list = json.fromJson(ProductionList::class.java, Gdx.files.internal("data/production.json"))
+//        list.productions.forEach { prod -> productionMap.put(prod.producedItem, prod)}
+//    }
 
     class Names{
         lateinit var firstNames:com.badlogic.gdx.utils.Array<String>
@@ -223,12 +223,12 @@ object DefinitionManager {
     class ItemDef{
         lateinit var itemName:String
         var baseMarketPrice:Int = 0
-        var categories:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
+        var categories:Array<String> = arrayOf()
         var need = 0
         var luxury = 0
     }
 
-    private class ProductionList{
+    class ProductionList{
         lateinit var productions:Array<Production>
     }
 

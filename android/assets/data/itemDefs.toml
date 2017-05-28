@@ -1,0 +1,31 @@
+[[items]]
+  itemName = "Wood Log"
+  baseMarketPrice = 5
+  categories = ["Ingredient"]
+[[items]]
+  itemName = "Wood Plank"
+  baseMarketPrice = 10
+  categories = ["Ingredient"]
+[[items]]
+  itemName = "Wood Table"
+  baseMarketPrice = 250
+  categories = ["Furnishing"]
+  luxury = 2
+[[items]]
+  itemName = "Wheat"
+  baseMarketPrice = 1
+  categories = ["Ingredient"]
+[[items]]
+  itemName = "Flour"
+  baseMarketPrice = 5
+  categories = ["Ingredient"]
+[[items]]
+  itemName = "Bread"
+  baseMarketPrice = 25
+  categories = ["Ingredient", "Food"]
+  need = 1
+[[items]]
+  itemName = "Milk"
+  baseMarketPrice = 2
+  categories = ["Ingredient", "Food"]
+  need = 1
