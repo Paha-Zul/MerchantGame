@@ -90,7 +90,10 @@ class InventoryComponent : MyComponent {
     }
 
     override fun dispose(myself: Entity) {
-
+        //When we dispose this we need to manually remove each item to trigger the inventory change listeners
+        itemMap.values.toList().forEach { (itemName, itemAmount) ->
+            this.removeItem(itemName, itemAmount)
+        }
     }
 
     override fun initialize() {

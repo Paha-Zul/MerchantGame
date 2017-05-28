@@ -111,8 +111,11 @@ object Factory {
                 })
 
                 //Add a listener for ALL items to notify of an inventory change
+                //We specifically have this under the seller component area because we only want to keep track of what
+                //items are available for selling
                 inventory.addInventoryListener("all", { name, amtChanged, _ ->
-                    GameEventSystem.fire(ItemAmountChangeEvent(name, amtChanged)) //Fire this event globally
+                    if(name != "Gold") //Make sure to exclude gold...
+                        GameEventSystem.fire(ItemAmountChangeEvent(name, amtChanged)) //Fire this event globally
                 })
             }
 

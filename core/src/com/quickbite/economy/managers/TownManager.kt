@@ -19,7 +19,7 @@ object TownManager {
         town.population = 100f
 
         GameEventSystem.subscribe<ItemAmountChangeEvent> { (name, amount) ->
-            town.totalItemMap.compute(name, {_, result -> if(result == null) amount else result + amount})
+            town.totalSellingItemMap.compute(name, { _, result -> if(result == null) amount else result + amount})
         }
 
         TownManager.addTown("Town", town)

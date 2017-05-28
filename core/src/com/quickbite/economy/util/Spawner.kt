@@ -34,31 +34,36 @@ object Spawner {
 
     init{
         spawnBuyerTimer = CustomTimer(20f, MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
-            val numItemTypesToBuy = MathUtils.random(1, 2)
-            val list = DefinitionManager.itemDefMap.values.toList() //Get the list of items
-            val itemsToBuy = mutableListOf<ItemAmountLink>()
-            for(i in 0..numItemTypesToBuy){
-                val randomItem = list[MathUtils.random(list.size-1)] //Randomly pick an item
-                itemsToBuy += ItemAmountLink(randomItem.itemName, MathUtils.random(1, 4)) //Get an item to buy
-            }
+            //TODO Can this be abused by simply deleting all selling buildings? But then what's the fun of the game...
+            //Make sure the town has stuff to sell
+            if(town.totalSellingItemMap.isNotEmpty()) {
+                val list = town.totalSellingItemMap.toList()
+                val numItemTypesToBuy = MathUtils.random(1, Math.max(2, town.totalSellingItemMap.size))
+                val itemsToBuy = mutableListOf<ItemAmountLink>()
+                for (i in 0..numItemTypesToBuy) {
+                    val randomItem = list[MathUtils.random(list.size - 1)] //Randomly pick an item
+                    itemsToBuy += ItemAmountLink(randomItem.first, MathUtils.random(1, 4)) //Get an item to buy
+                }
 
-            //Randomly assign an item and amount wanted
-            val entity = Factory.createObjectFromJson("buyer", spawnPosition)
-            val buying = Mappers.buyer[entity]
-            val inventory = Mappers.inventory[entity]
+                //Randomly assign an item and amount wanted
+                val entity = Factory.createObjectFromJson("buyer", spawnPosition)
+                val buying = Mappers.buyer[entity]
+                val inventory = Mappers.inventory[entity]
 
-            buying.buyList.addAll(com.badlogic.gdx.utils.Array(itemsToBuy.toTypedArray()))
-            inventory.addItem("Gold", MathUtils.random(500, 1000))
+                buying.buyList.addAll(com.badlogic.gdx.utils.Array(itemsToBuy.toTypedArray()))
+                inventory.addItem("Gold", MathUtils.random(500, 1000))
 
-            //Scan each item that we are buying and calculate necessity and luxury ratings
-            buying.buyList.forEach { (itemName, itemAmount) ->
-                val itemDef = DefinitionManager.itemDefMap[itemName]!!
-                buying.needsSatisfactionRating += -itemDef.need
-                buying.luxurySatisfactionRating += -itemDef.luxury
+                //Scan each item that we are buying and calculate necessity and luxury ratings
+                buying.buyList.forEach { (itemName, itemAmount) ->
+                    val itemDef = DefinitionManager.itemDefMap[itemName]!!
+                    buying.needsSatisfactionRating += -itemDef.need
+                    buying.luxurySatisfactionRating += -itemDef.luxury
+                }
+
+//            spawnBuyerTimer.stop()
             }
 
             spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
-//            spawnBuyerTimer.stop()
         })
 
         spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {

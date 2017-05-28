@@ -16,7 +16,7 @@ class Town(val name:String) {
 
     val populationHistory = CircularQueueWrapper<Int>(50)
     val itemIncomeMap = hashMapOf<String, TownItemIncome>()
-    val totalItemMap = hashMapOf<String, Int>()
+    val totalSellingItemMap = hashMapOf<String, Int>()
     val populationIncreaseFromRatingThreshold = 20
 
     var needsRating:Int = 500
