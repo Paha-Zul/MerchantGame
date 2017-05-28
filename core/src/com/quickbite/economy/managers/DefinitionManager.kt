@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.moandjiezana.toml.Toml
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.ItemPriceLink
 import com.quickbite.economy.objects.WorkerTaskLimitLink
@@ -20,9 +21,11 @@ object DefinitionManager {
 
     lateinit var names:Names
 
-    private val buildingDefName = "data/buildingDefs.json"
-    private val resourcesDefName = "data/resourceDef.json"
-    private val unitDefName = "data/unitDefs.json"
+    private val buildingDefName = "data/buildingDefs.toml"
+    private val unitDefName = "data/unitDefs.toml"
+    private val resourceDefName = "data/resourceDefs.toml"
+    private val itemsDefName = "data/itemDefs.toml"
+    private val itemProdName = "data/productions.toml"
     private val namesDefName = "data/names.json"
 
     init {
@@ -92,37 +95,37 @@ object DefinitionManager {
         })
     }
 
-    fun readDefinitionsJson(){
-        //Load the building defs
-//        var list = json.fromJson(DefList::class.java, Gdx.files.internal(buildingDefName))
-//        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+    fun loadDefinitions(){
+        val buildingDefs = Toml().read(Gdx.files.internal(buildingDefName).file()).to(DefinitionManager.DefList::class.java)
+        buildingDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
 
-        //Load the unit defs
-//        var list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
-//        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+        val unitDefs = Toml().read(Gdx.files.internal(unitDefName).file()).to(DefinitionManager.DefList::class.java)
+        unitDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
 
-//        //Load the resources
-//        var list = json.fromJson(DefList::class.java, Gdx.files.internal(resourcesDefName))
-//        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+        val resourceDefs = Toml().read(Gdx.files.internal(resourceDefName).file()).to(DefinitionManager.DefList::class.java)
+        resourceDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+
+        val itemDefList = Toml().read(Gdx.files.internal(itemsDefName).file()).to(ItemDefList::class.java)
+        itemDefList.items.forEach { itemDef ->
+            DefinitionManager.itemDefMap.put(itemDef.itemName, itemDef)
+            itemDef.categories.forEach { DefinitionManager.itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
+        }
+
+        val itemProdList = Toml().read(Gdx.files.internal(itemProdName).file()).to(DefinitionManager.ProductionList::class.java)
+        itemProdList.productions.forEach { prod -> DefinitionManager.productionMap.put(prod.producedItem, prod)}
 
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
 
-//        readItemDefs()
-//        readProductionJson()
     }
 
-//    private fun readItemDefs(){
-//        val list = json.fromJson(Array<ItemDef>::class.java, Gdx.files.internal("data/itemDefs.json"))
-//        list.forEach { itemDef ->
-//            itemDefMap.put(itemDef.itemName, itemDef)
-//            itemDef.categories.forEach { itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
-//        }
-//    }
+    fun clearAllDataAndReload(){
+        definitionMap.clear()
+        itemDefMap.clear()
+        itemCategoryMap.clear()
+        productionMap.clear()
 
-//    private fun readProductionJson(){
-//        val list = json.fromJson(ProductionList::class.java, Gdx.files.internal("data/production.json"))
-//        list.productions.forEach { prod -> productionMap.put(prod.producedItem, prod)}
-//    }
+        loadDefinitions()
+    }
 
     class Names{
         lateinit var firstNames:com.badlogic.gdx.utils.Array<String>
@@ -131,6 +134,10 @@ object DefinitionManager {
 
     class DefList {
         lateinit var defs:Array<Definition>
+    }
+
+    class ItemDefList{
+        var items:Array<DefinitionManager.ItemDef> = arrayOf()
     }
 
     class Definition {
