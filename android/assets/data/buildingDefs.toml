@@ -1,0 +1,231 @@
+[[defs]]
+    name = "Wall"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "palisade_wall_horizontal"
+        graphicAnchor = [0.5, 0.0]
+        graphicSize = [75, 75]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Wall"
+    [defs.transformDef]
+        physicalDimensions = {x = 75, y = 20}
+        [defs.transformDef.such]
+            entrance = [[0, -50]]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"
+
+[[defs]]
+    name = "Shop"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "market"
+        graphicAnchor = [0.5, 0.5] # Not an error...
+        graphicSize = [75, 75]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Shop"
+    [defs.transformDef]
+        physicalDimensions = {x = 75, y = 75}
+        [defs.transformDef.such]
+            entrance = [[0, -50]]
+    [defs.inventoryDef]
+        hasInventory = true
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.sellingItems]
+        isSelling = true
+        isReselling = true
+        taxRate = 0.1 # 0.1
+    [defs.workforceDef]
+        workforceMax = 5
+        workerTasks = [
+            {taskName = "haul", amount = "5"},
+            {taskName = "sell", amount = "5"}
+        ]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"
+
+[[defs]]
+    name = "Lumberyard"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "lumberyard"
+        graphicAnchor = [0.5, 0.5]
+        graphicSize = [125, 125]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Workshop"
+    [defs.transformDef]
+        physicalDimensions = {x = 125, y = 125}
+        [defs.transformDef.such]
+            entrance = [[0, -75]]
+    [defs.inventoryDef]
+        hasInventory = true
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.sellingItems]
+        isSelling = true
+        sellingList = [
+            {itemName = "Wood Plank", itemPrice = 10}
+        ]
+        taxRate = 0.1 # 0.1
+    [defs.workforceDef]
+        workforceMax = 5
+        workerTasks = [
+            {taskName = "haul", amount = "3"},
+            {taskName = "sell", amount = "1"},
+            {taskName = "produce", amount = "1"}
+        ]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"
+    [defs.productionDef]
+        produces = ["Wood Plank"]
+
+[[defs]]
+    name = "Table Shop"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "table_shop"
+        graphicAnchor = [0.5, 0.5]
+        graphicSize = [125, 125]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Workshop"
+    [defs.transformDef]
+        physicalDimensions = {x = 125, y = 125}
+        [defs.transformDef.such]
+            entrance = [[0, -75]]
+    [defs.inventoryDef]
+        hasInventory = true
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.sellingItems]
+        isSelling = true
+        sellingList = [
+            {itemName = "Wood Table", itemPrice = 30}
+        ]
+        taxRate = 0.1 # 0.1
+    [defs.workforceDef]
+        workforceMax = 5
+        workerTasks = [
+            {taskName = "haul", amount = "3"},
+            {taskName = "sell", amount = "1"},
+            {taskName = "produce", amount = "1"}
+        ]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"
+    [defs.productionDef]
+        produces = ["Wood Table"]
+
+[[defs]]
+    name = "Flour Mill"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "flour_shop"
+        graphicAnchor = [0.5, 0.5]
+        graphicSize = [125, 125]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Workshop"
+    [defs.transformDef]
+        physicalDimensions = {x = 125, y = 125}
+        [defs.transformDef.such]
+            entrance = [[0, -75]]
+    [defs.inventoryDef]
+        hasInventory = true
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.sellingItems]
+        isSelling = true
+        sellingList = [
+            {itemName = "Flour", itemPrice = 10}
+        ]
+        taxRate = 0.1 # 0.1
+    [defs.workforceDef]
+        workforceMax = 5
+        workerTasks = [
+            {taskName = "haul", amount = "3"},
+            {taskName = "sell", amount = "1"},
+            {taskName = "produce", amount = "1"}
+        ]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"
+    [defs.productionDef]
+        produces = ["Flour"]
+
+[[defs]]
+    name = "Bakery"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "bread_shop"
+        graphicAnchor = [0.5, 0.5]
+        graphicSize = [125, 125]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Workshop"
+    [defs.transformDef]
+        physicalDimensions = {x = 125, y = 125}
+        [defs.transformDef.such]
+            entrance = [[0, -75]]
+    [defs.inventoryDef]
+        hasInventory = true
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.sellingItems]
+        isSelling = true
+        sellingList = [
+            {itemName = "Bread", itemPrice = 10}
+        ]
+        taxRate = 0.1 # 0.1
+    [defs.workforceDef]
+        workforceMax = 5
+        workerTasks = [
+            {taskName = "haul", amount = "3"},
+            {taskName = "sell", amount = "1"},
+            {taskName = "produce", amount = "1"}
+        ]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"
+    [defs.productionDef]
+        produces = ["Bread"]
+
+[[defs]]
+    name = "Tree Feller"
+    onGrid = true
+    gridBlockWhenPlaced = true
+    [defs.graphicDef]
+        graphicName = "tree_feller"
+        graphicAnchor = [0.5, 0.5]
+        graphicSize = [75, 75]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Workshop"
+    [defs.transformDef]
+        physicalDimensions = {x = 75, y = 75}
+        [defs.transformDef.such]
+            entrance = [[0, 50]]
+    [defs.inventoryDef]
+        hasInventory = true
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.sellingItems]
+        isSelling = true
+        sellingList = [
+            {itemName = "Wood Log", itemPrice = 10}
+        ]
+        taxRate = 0.1 # 0.1
+    [defs.workforceDef]
+        workforceMax = 7
+        workerTasks = [
+            {taskName = "harvest", amount = "7"}
+        ]
+    [defs.physicsDef]
+        hasPhysicsBody = true
+        bodyType = "static"

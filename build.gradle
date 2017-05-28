@@ -28,6 +28,7 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
         fastUtilVersion = '7.2.0'
+        toml4jVersion = '0.7.1'
     }
 
     repositories {
@@ -49,6 +50,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+        compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
     }
 }
 
@@ -120,6 +122,7 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.3"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "it.unimi.dsi:fastutil:$fastUtilVersion"
+        compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
         compile fileTree(dir: '../libs', include: '*.jar')
     }
 }

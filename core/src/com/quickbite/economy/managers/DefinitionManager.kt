@@ -94,11 +94,11 @@ object DefinitionManager {
 
     fun readDefinitionsJson(){
         //Load the building defs
-        var list = json.fromJson(DefList::class.java, Gdx.files.internal(buildingDefName))
-        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
+//        var list = json.fromJson(DefList::class.java, Gdx.files.internal(buildingDefName))
+//        list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         //Load the unit defs
-        list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
+        var list = json.fromJson(DefList::class.java, Gdx.files.internal(unitDefName))
         list.defs.forEach { def -> definitionMap.put(def.name.toLowerCase(), def)}
 
         //Load the resources
@@ -129,7 +129,7 @@ object DefinitionManager {
         lateinit var lastNames:com.badlogic.gdx.utils.Array<String>
     }
 
-    private class DefList {
+    class DefList {
         lateinit var defs:Array<Definition>
     }
 
@@ -159,7 +159,7 @@ object DefinitionManager {
     }
 
     class ProductionDef{
-        var produces:com.badlogic.gdx.utils.Array<String> = com.badlogic.gdx.utils.Array()
+        var produces:Array<String> = arrayOf()
     }
 
     class TransformDef{
@@ -169,7 +169,7 @@ object DefinitionManager {
 
     class WorkforceDef{
         var workforceMax = 0
-        var workerTasks:com.badlogic.gdx.utils.Array<WorkerTaskLimitLink> = com.badlogic.gdx.utils.Array()
+        lateinit var workerTasks:Array<WorkerTaskLimitLink>
     }
 
     class BuildingDef{
@@ -206,7 +206,7 @@ object DefinitionManager {
 
     class SellingDef{
         var isSelling = false
-        var sellingList:com.badlogic.gdx.utils.Array<ItemPriceLink> = com.badlogic.gdx.utils.Array()
+        var sellingList:Array<ItemPriceLink> = arrayOf()
         var isReselling = false
         var taxRate = 0f
     }

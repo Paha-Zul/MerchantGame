@@ -35,7 +35,7 @@
       "transformDef": {
         "physicalDimensions": [75, 75],
         "spots": {
-          "entrance": [[0, -45]]
+          "entrance": [[0, -50]]
         }
       },
       "onGrid": true,
@@ -111,7 +111,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Wood Plank", 10, -1]],
+        "sellingList": [["Wood Plank", 10]],
         "taxRate": 0.1
       },
       "physicsDef":{
@@ -151,7 +151,7 @@
     },
     "sellingItems": {
       "isSelling": true,
-      "sellingList": [["Wood Table", 10, -1]],
+      "sellingList": [["Wood Table", 30]],
       "taxRate": 0.1
     },
     "physicsDef":{
@@ -191,7 +191,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Flour", 10, -1]],
+        "sellingList": [["Flour", 10]],
         "taxRate": 0.1
       },
       "physicsDef":{
@@ -271,7 +271,7 @@
       },
       "sellingItems": {
         "isSelling": true,
-        "sellingList": [["Wood Log", 10, -1]],
+        "sellingList": [["Wood Log", 10]],
         "taxRate": 0.1
       },
       "physicsDef":{
