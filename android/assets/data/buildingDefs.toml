@@ -11,8 +11,6 @@
         buildingType = "Wall"
     [defs.transformDef]
         physicalDimensions = {x = 75, y = 20}
-        [defs.transformDef.such]
-            entrance = [[0, -50]]
     [defs.physicsDef]
         hasPhysicsBody = true
         bodyType = "static"
@@ -30,8 +28,8 @@
         buildingType = "Shop"
     [defs.transformDef]
         physicalDimensions = {x = 75, y = 75}
-        [defs.transformDef.such]
-            entrance = [[0, -50]]
+        [defs.transformDef.spots]
+            entrance = [{x = 0, y = -50}]
     [defs.inventoryDef]
         hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
@@ -62,8 +60,8 @@
         buildingType = "Workshop"
     [defs.transformDef]
         physicalDimensions = {x = 125, y = 125}
-        [defs.transformDef.such]
-            entrance = [[0, -75]]
+        [defs.transformDef.spots]
+            entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
         hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
@@ -99,8 +97,8 @@
         buildingType = "Workshop"
     [defs.transformDef]
         physicalDimensions = {x = 125, y = 125}
-        [defs.transformDef.such]
-            entrance = [[0, -75]]
+        [defs.transformDef.spots]
+            entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
         hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
@@ -136,8 +134,8 @@
         buildingType = "Workshop"
     [defs.transformDef]
         physicalDimensions = {x = 125, y = 125}
-        [defs.transformDef.such]
-            entrance = [[0, -75]]
+        [defs.transformDef.spots]
+            entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
         hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
@@ -173,8 +171,8 @@
         buildingType = "Workshop"
     [defs.transformDef]
         physicalDimensions = {x = 125, y = 125}
-        [defs.transformDef.such]
-            entrance = [[0, -75]]
+        [defs.transformDef.spots]
+            entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
         hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
@@ -210,8 +208,8 @@
         buildingType = "Workshop"
     [defs.transformDef]
         physicalDimensions = {x = 75, y = 75}
-        [defs.transformDef.such]
-            entrance = [[0, 50]]
+        [defs.transformDef.spots]
+            entrance = [{x=0, y=-50}]
     [defs.inventoryDef]
         hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
