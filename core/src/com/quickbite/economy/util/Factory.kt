@@ -14,9 +14,7 @@ import com.quickbite.economy.components.*
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.managers.BuildingDefManager
 import com.quickbite.economy.managers.DefinitionManager
-import com.quickbite.economy.objects.Building
 import com.quickbite.economy.objects.SellingItemData
 
 /**
@@ -25,19 +23,6 @@ import com.quickbite.economy.objects.SellingItemData
  * A Factory object for creating Entities easily. Also handles destruction of Entities.
  */
 object Factory {
-
-    fun createBuilding(name:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
-        val thing:Entity? = Building(BuildingDefManager.buildingDefsMap[name.toLowerCase()]!!, position)
-
-        if(thing != null) {
-            compsToAdd.forEach { thing.add(it) }
-            thing.components.forEach { comp -> (comp as MyComponent).initialize() }
-            MyGame.entityEngine.addEntity(thing)
-        }
-
-        return thing
-    }
-
     fun createObjectFromJson(name:String, position:Vector2, compsToAdd:List<Component> = listOf()):Entity? {
         val name = name.toLowerCase()
         val entity:Entity = Entity()
@@ -109,7 +94,6 @@ object Factory {
             selling.currSellingItems = Array(sellingList) //Copy it for this oned
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
-
 
             //A game event to listen for. Record our profit and tax collected from this event
             GameEventSystem.subscribe<ItemSoldEvent>({

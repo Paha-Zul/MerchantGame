@@ -15,7 +15,7 @@ class WorkerUnitComponent : MyComponent {
     var paid = false
     var dailyWage = 0
     var workerBuilding:Entity? = null
-    var timeRange:MutablePair<Int, Int> = MutablePair(7, 20)
+    var timeRange:MutablePair<Int, Int> = MutablePair(2, 22)
     var workDays:Array<String> = Array()
     var taskList:Array<String> = Array()
 

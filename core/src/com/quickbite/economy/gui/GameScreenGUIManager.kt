@@ -170,7 +170,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         guiStack.forEach { it.update(delta) }
 
         timeOfDayLabel.setText("D: ${TimeOfDay.day}, T: $TimeOfDay")
-        populationLabel.setText("Pop: ${myTown.population}")
+        populationLabel.setText("Pop: ${myTown.population.toInt()}")
         ratingLabel.setText("N: ${myTown.needsRating}, L: ${myTown.luxuryRating}")
     }
 }

@@ -37,7 +37,12 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
         sortedEntities = entities.sortedWith(Comparator<Entity> { o1, o2 ->
             val tc1 = Mappers.transform[o1]
             val tc2 = Mappers.transform[o2]
-            (tc2.position.y - tc1.position.y).toInt()
+            if(tc2.position.y - tc1.position.y < 0)
+                -1
+            else if(tc2.position.y - tc1.position.y > 0)
+                1
+            else
+                0
         })
 
         sortedEntities.forEach { ent ->

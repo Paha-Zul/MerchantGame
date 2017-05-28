@@ -294,10 +294,10 @@ object Tasks {
         //Optional branch. If we are not inside our target building, then move to it!
         optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb)))
         optionalBranchSequence.controller.addTask(ChangeHidden(bb, false))
-        optionalBranchSequence.controller.addTask(CheckBuildingHasQueue(bb))
         optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
         optionalBranchSequence.controller.addTask(GetPath(bb))
         optionalBranchSequence.controller.addTask(MoveToPath(bb))
+        optionalBranchSequence.controller.addTask(CheckBuildingHasQueue(bb))
 
         task.controller.addTask(ChangeHidden(bb, true))
         task.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
@@ -306,20 +306,25 @@ object Tasks {
         return task
     }
 
+    /**
+     * This task will move an Entity to a stockpile, transfer the inventory, and leave the map
+     */
     fun haulInventoryToStockpile(bb:BlackBoard):Task{
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling to Stockpile")
 
-        //Check if inside the building already?
-//        val optionalBranchSequence = Sequence(bb)
-//        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
+        //This is in case something happens to the building we are delivering to... we'll still leave the map if we can't finish it
+        val alwaysSucceedSeq = Sequence(bb)
+        val alwaysTrueBranch = AlwaysTrue(bb, alwaysSucceedSeq)
 
-        task.controller.addTask(GetClosestShopResellingViaImport(bb))
-        task.controller.addTask(GetEntranceOfBuilding(bb))
-        task.controller.addTask(GetPath(bb))
-        task.controller.addTask(MoveToPath(bb))
-        task.controller.addTask(ChangeHidden(bb, true))
-        task.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
-        task.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
+        alwaysSucceedSeq.controller.addTask(GetClosestShopResellingViaImport(bb))
+        alwaysSucceedSeq.controller.addTask(GetEntranceOfBuilding(bb))
+        alwaysSucceedSeq.controller.addTask(GetPath(bb))
+        alwaysSucceedSeq.controller.addTask(MoveToPath(bb))
+        alwaysSucceedSeq.controller.addTask(ChangeHidden(bb, true))
+        alwaysSucceedSeq.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
+        alwaysSucceedSeq.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
+
+        task.controller.addTask(alwaysTrueBranch) //Leave the map
         task.controller.addTask(leaveMap(bb)) //Leave the map
 
         return task

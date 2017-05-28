@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.quickbite.economy.managers.DefinitionManager;
+import com.quickbite.economy.managers.TOMLTest;
 import com.quickbite.economy.screens.GameScreen;
 import com.quickbite.economy.util.Grid;
 import com.quickbite.economy.util.TimeUtil;
@@ -65,6 +66,7 @@ public class MyGame extends Game {
 
         manager.finishLoading();
 
+        TOMLTest.INSTANCE.start();
         DefinitionManager.INSTANCE.readDefinitionsJson();
 
         this.setScreen(new GameScreen());

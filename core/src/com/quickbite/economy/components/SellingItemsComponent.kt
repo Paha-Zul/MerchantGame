@@ -6,6 +6,7 @@ import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.objects.ItemSold
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.CircularQueueWrapper
+import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 1/19/2017.
@@ -42,6 +43,9 @@ class SellingItemsComponent : MyComponent {
     }
 
     override fun dispose(myself: Entity) {
+        resellingItemsList.toList().forEach { item ->
+            Util.removeSellingItemFromReseller(this, item.itemName, item.itemSourceType, item.itemSourceData)
+        }
     }
 
     override fun initialize() {

@@ -97,6 +97,7 @@ class GameScreen :Screen{
 //        TutorialTest.test()
 
         gameScreeData.playerMoney = 1000
+
     }
 
     override fun pause() {

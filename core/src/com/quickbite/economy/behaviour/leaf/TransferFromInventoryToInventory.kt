@@ -16,6 +16,10 @@ import com.quickbite.economy.util.Mappers
 class TransferFromInventoryToInventory(bb:BlackBoard, val toTargetInventory:Boolean, var itemName:String = "", var itemAmount:Int = 1) : LeafTask(bb){
     var allOfInventory = false
 
+    override fun check(): Boolean {
+        return bb.targetEntity != null && Mappers.inventory[bb.targetEntity] != null
+    }
+
     /**
     * Transfers an item from one inventory to the other.
     * @param bb The BlackBoard instance to use
