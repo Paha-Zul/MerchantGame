@@ -690,40 +690,56 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         darkLabelStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.DARK_GRAY)))
 
         val incomeDailyTitleLabel = Label("Daily Income", defaultLabelStyle)
-        incomeDailyTitleLabel.setFontScale(1f)
 
         val incomeDailyLabel = Label("${comp.incomeDaily}", darkLabelStyle)
-        incomeDailyLabel.setFontScale(1f)
         incomeDailyLabel.setAlignment(Align.center)
 
         val taxDailyTileLabel = Label("Daily Tax", defaultLabelStyle)
-        taxDailyTileLabel.setFontScale(1f)
-
         val taxDailyLabel = Label("${comp.taxCollectedDaily}", darkLabelStyle)
-        taxDailyLabel.setFontScale(1f)
         taxDailyLabel.setAlignment(Align.center)
+
+        val incomeTotalTitleLabel = Label("Total Income", defaultLabelStyle)
+        val incomeTotalLabel = Label("${comp.incomeTotal}", darkLabelStyle)
+        incomeTotalLabel.setAlignment(Align.center)
+
+        val taxTotalTitleLabel = Label("Total Tax", defaultLabelStyle)
+        val taxTotalLabel = Label("${comp.taxCollectedTotal}", darkLabelStyle)
+        taxTotalLabel.setAlignment(Align.center)
 
         val goldHistoryGraph = Graph(mutableListOf(), 50, graphStyle)
 
-        val dailyTable = Table()
+        val incomeTable = Table()
 
-        dailyTable.add(incomeDailyTitleLabel).spaceRight(20f).width(75f).uniformX().fillX()
-        dailyTable.add(incomeDailyLabel).width(50f)
-        dailyTable.add().growX()
-        dailyTable.row()
-        dailyTable.add(taxDailyTileLabel).spaceRight(20f).uniformX().fillX()
-        dailyTable.add(taxDailyLabel).width(50f)
-        dailyTable.add().growX()
+        incomeTable.add(incomeDailyTitleLabel).spaceRight(20f).width(75f).uniformX().fillX()
+        incomeTable.add(incomeDailyLabel).width(50f)
+        incomeTable.add().growX()
+        incomeTable.row()
+        incomeTable.add(taxDailyTileLabel).spaceRight(20f).uniformX().fillX()
+        incomeTable.add(taxDailyLabel).width(50f)
+        incomeTable.add().growX()
+        incomeTable.row()
+        incomeTable.add(incomeTotalTitleLabel).spaceRight(20f).uniformX().fillX()
+        incomeTable.add(incomeTotalLabel).width(50f)
+        incomeTable.add().growX()
+        incomeTable.row()
+        incomeTable.add(taxTotalTitleLabel).spaceRight(20f).uniformX().fillX()
+        incomeTable.add(taxTotalLabel).width(50f)
+        incomeTable.add().growX()
 
-        table.add(dailyTable).left().expandX().fillX()
+
+        table.add(incomeTable).left().expandX().fillX()
         table.row()
         table.add(goldHistoryGraph).size(350f, 250f).padTop(20f)
 
         table.top()
 
+        //Keep these labels updated while this UI view is open
         updateFuncsList.add {
             incomeDailyLabel.setText("${comp.incomeDaily}")
             taxDailyLabel.setText("${comp.taxCollectedDaily}")
+            incomeTotalLabel.setText("${comp.incomeTotal}")
+            taxTotalLabel.setText("${comp.taxCollectedTotal}")
+
             goldHistoryGraph.points = comp.goldHistory.queue.toList()
         }
 

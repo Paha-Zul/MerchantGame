@@ -24,9 +24,14 @@ class SellingItemsComponent : MyComponent {
     /** The daily income history of this selling entity*/
     val incomePerDayHistory = CircularQueueWrapper<Int>(100)
 
+    /** The daily income collected. Resets every day*/
     var incomeDaily = 0
-
+    /** The daily tax collected. Resets every day*/
     var taxCollectedDaily = 0
+    /** The total income of this Entity. Doesn't reset! */
+    var incomeTotal = 0
+    /** The total tax collected from this Entity. Doesn't reset! */
+    var taxCollectedTotal = 0
 
     var isReselling = false
     /**
@@ -36,7 +41,6 @@ class SellingItemsComponent : MyComponent {
 
     //TODO Figure out how to better keep track of counters for the links
     var indexCounter = 0
-    var indexSubCounter = 0
 
     init{
 

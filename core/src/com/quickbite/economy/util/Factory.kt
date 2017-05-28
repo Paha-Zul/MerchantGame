@@ -12,6 +12,7 @@ import com.quickbite.economy.MyGame
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.*
 import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.DefinitionManager
@@ -95,10 +96,10 @@ object Factory {
             selling.isReselling = definition.sellingItems.isReselling
             selling.taxRate = definition.sellingItems.taxRate
 
-            //A game event to listen for. Record our profit and tax collected from this event
+            //A game event to listen for. Only record our tax collected here...
             GameEventSystem.subscribe<ItemSoldEvent>({
-                selling.incomeDaily += it.profit
                 selling.taxCollectedDaily += it.taxCollected
+                selling.taxCollectedTotal += it.taxCollected
             }, identityComp.uniqueID)
 
             //Add this inventory listener in this init funcs so we can make sure the inventory component actually exists
@@ -106,6 +107,12 @@ object Factory {
                 val inventory = Mappers.inventory[entity]
                 inventory.addInventoryListener("Gold", { _, amtChanged, _ ->
                     selling.incomeDaily += amtChanged
+                    selling.incomeTotal += amtChanged
+                })
+
+                //Add a listener for ALL items to notify of an inventory change
+                inventory.addInventoryListener("all", { name, amtChanged, _ ->
+                    GameEventSystem.fire(ItemAmountChangeEvent(name, amtChanged)) //Fire this event globally
                 })
             }
 
@@ -144,7 +151,7 @@ object Factory {
             entity.add(bodyComp)
         }
 
-        if(definition.productionDef.produces.size > 0){
+        if(definition.productionDef.produces.isNotEmpty()){
             val producesItems = ProduceItemComponent()
             definition.productionDef.produces.forEach { itemName ->
                 producesItems.productionList.add(DefinitionManager.productionMap[itemName])
@@ -198,6 +205,7 @@ object Factory {
                 numHarvestersMax = resourceDef.numHarvestersMax
                 harvestAmount = resourceDef.harvestAmount
                 resourceAmount = resourceDef.resourceAmount
+                currResourceAmount = resourceDef.resourceAmount
                 resourceType = resourceDef.resourceType
                 harvestItemName = resourceDef.harvestedItemName
                 baseHarvestTime = resourceDef.baseHarvestTime

@@ -70,6 +70,9 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             val initialIndex = sellingComp.indexCounter
             var found:Boolean
 
+            //This simply validates the index counter in case a size changed. Causes a crash otherwise
+            sellingComp.indexCounter = sellingComp.indexCounter%sellingComp.resellingItemsList.size
+
             //Here we loop through the reselling items list to find an item we are selling from a workshop.
             do{
                 sellingItem = sellingComp!!.resellingItemsList[sellingComp.indexCounter] //Get the selling item

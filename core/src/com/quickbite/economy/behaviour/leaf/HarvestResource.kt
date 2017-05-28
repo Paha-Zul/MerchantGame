@@ -16,6 +16,10 @@ class HarvestResource(bb:BlackBoard) : LeafTask(bb){
 
     val rc: ResourceComponent by lazy { Mappers.resource[bb.targetEntity]}
 
+    override fun check(): Boolean {
+        return rc.currResourceAmount > 0
+    }
+
     override fun start() {
         super.start()
 
@@ -28,8 +32,9 @@ class HarvestResource(bb:BlackBoard) : LeafTask(bb){
 
         timer.update(delta)
         if(timer.done){
-            val myInventory = Mappers.inventory[bb.myself]
-            myInventory.addItem(rc.harvestItemName, rc.harvestAmount)
+            val myInventory = Mappers.inventory[bb.myself] //Get my inventory
+            myInventory.addItem(rc.harvestItemName, rc.harvestAmount) //Add the item to my inventory
+            rc.currResourceAmount -= rc.harvestAmount //Reduce the resource amount
             controller.finishWithSuccess()
         }
 

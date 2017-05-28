@@ -16,6 +16,7 @@ import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.TestEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.TownManager

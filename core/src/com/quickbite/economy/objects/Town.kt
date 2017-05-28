@@ -12,12 +12,11 @@ import com.quickbite.economy.util.TownItemIncome
  * Created by Paha on 3/18/2017.
  */
 class Town(val name:String) {
-    private var _c = 0 //Temp counter to check if we're updating correctly
-
     var population:Float = 0f
 
     val populationHistory = CircularQueueWrapper<Int>(50)
     val itemIncomeMap = hashMapOf<String, TownItemIncome>()
+    val totalItemMap = hashMapOf<String, Int>()
     val populationIncreaseFromRatingThreshold = 20
 
     var needsRating:Int = 500
@@ -36,8 +35,6 @@ class Town(val name:String) {
     init{
         //TODO Make sure this timer works
         accumulateItemsTimer = CustomTimer(0f, 1f, false, {
-            _c++
-
             //For each item in the income map, increase it!
             itemIncomeMap.values.forEach { income ->
                 //1440 is how many minutes in 24 hours

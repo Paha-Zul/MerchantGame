@@ -9,6 +9,7 @@ import com.quickbite.economy.interfaces.MyComponent
 class ResourceComponent : MyComponent {
     var resourceType:String = ""
     var resourceAmount:Int = 0
+    var currResourceAmount:Int = 0
     var harvestAmount = 0
     var harvestItemName = ""
     var baseHarvestTime = 0f

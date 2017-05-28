@@ -6,7 +6,7 @@
     isBuyer = true
     [defs.graphicDef]
       graphicName = "buyer"
-      graphicAnchor = [0.5, 0.0]
+      graphicAnchor = [0.5, 0.5]
       graphicSize = [20, 20]
       initialAnimation = false
     [defs.transformDef]
@@ -17,6 +17,8 @@
     [defs.velocityDef]
       hasVelocity = true
       baseSpeed = 50
+    [defs.inventoryDef]
+      hasInventory = true
 
 [[defs]]
     #Try to keep single values up here...
@@ -28,7 +30,7 @@
     isWorker = true
     [defs.graphicDef]
       graphicName = "seller"
-      graphicAnchor = [0.5, 0.0]
+      graphicAnchor = [0.5, 0.5]
       graphicSize = [25, 25]
       initialAnimation = false
     [defs.transformDef]
@@ -39,6 +41,8 @@
     [defs.velocityDef]
       hasVelocity = true
       baseSpeed = 50
+    [defs.inventoryDef]
+      hasInventory = true
 
 [[defs]]
     name = "Hauler"
@@ -49,7 +53,7 @@
     isWorker = false
     [defs.graphicDef]
       graphicName = "hauler"
-      graphicAnchor = [0.5, 0.0]
+      graphicAnchor = [0.5, 0.5]
       graphicSize = [25, 25]
       initialAnimation = false
     [defs.transformDef]
@@ -60,3 +64,5 @@
     [defs.velocityDef]
       hasVelocity = true
       baseSpeed = 50
+    [defs.inventoryDef]
+      hasInventory = true

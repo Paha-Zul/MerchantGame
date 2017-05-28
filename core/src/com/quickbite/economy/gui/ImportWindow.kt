@@ -10,15 +10,13 @@ import com.quickbite.economy.util.Util
 
 /**
  * Created by Paha on 5/1/2017.
+ * A window for importing items into the town
  */
 class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
     init{
         window.setSize(150f, 300f)
 
-        val closeButton = TextButton("X", defaultTextButtonStyle)
-
-        tabTable.add().expandX().fillX()
-        tabTable.add(closeButton).right().size(16f, 16f)
+        tabTable.remove()
 
         fun loadIncomeList() {
             contentTable.clear()
@@ -40,9 +38,5 @@ class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         }
 
         loadIncomeList()
-
-        closeButton.addChangeListener { _, _ ->
-            close()
-        }
     }
 }

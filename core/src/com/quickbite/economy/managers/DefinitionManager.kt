@@ -118,6 +118,9 @@ object DefinitionManager {
 
     }
 
+    /**
+     * Clears all definitions and reloads them
+     */
     fun clearAllDataAndReload(){
         definitionMap.clear()
         itemDefMap.clear()

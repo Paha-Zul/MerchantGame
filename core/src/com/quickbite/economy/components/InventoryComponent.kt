@@ -30,6 +30,7 @@ class InventoryComponent : MyComponent {
         item.itemAmount += amount
 
         inventoryChangeListeners[itemName]?.forEach { it(itemName, amount, item.itemAmount) }
+        inventoryChangeListeners["all"]?.forEach { it(itemName, amount, item.itemAmount) } //Empty quotes signifies for any item
 
         return amount
     }
@@ -56,6 +57,7 @@ class InventoryComponent : MyComponent {
 
             //Call any listeners... The amountTaken needs to be negative here
             inventoryChangeListeners[name]?.forEach { it(name, -amountTaken, item.itemAmount) }
+            inventoryChangeListeners["all"]?.forEach { it(name, -amountTaken, item.itemAmount) }
 
             return amountTaken
         }

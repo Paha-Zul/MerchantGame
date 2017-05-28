@@ -1,5 +1,7 @@
 package com.quickbite.economy.managers
 
+import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.objects.Town
 import com.quickbite.economy.util.TownItemIncome
 
@@ -15,6 +17,10 @@ object TownManager {
         town.itemIncomeMap.put("Milk", TownItemIncome("Milk", 75))
         town.itemIncomeMap.put("Wood Log", TownItemIncome("Wood Log", 20))
         town.population = 100f
+
+        GameEventSystem.subscribe<ItemAmountChangeEvent> { (name, amount) ->
+            town.totalItemMap.compute(name, {_, result -> if(result == null) amount else result + amount})
+        }
 
         TownManager.addTown("Town", town)
     }
