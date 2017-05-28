@@ -133,12 +133,14 @@ object Tasks {
         val seq = Sequence(bb, "Leaving Map")
 
         val unhide = ChangeHidden(bb, false)
+        val setOutside = SetTargetEntityAsInside(bb, false)
         val getExit = GetMapExit(bb)
         val getPathToExit = GetPath(bb)
         val moveToExit = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
 
         seq.controller.addTask(unhide)
+        seq.controller.addTask(setOutside)
         seq.controller.addTask(getExit)
         seq.controller.addTask(getPathToExit)
         seq.controller.addTask(moveToExit)
@@ -266,7 +268,7 @@ object Tasks {
         task.controller.addTask(optionalBranch)
 
         //Optional branch. If we are not inside our target building already, move to it
-        optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb))) //If this fails, it means we are outside
+        optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb))) //If this succeeds (opposite), we are outside. Continue moving!
         optionalBranchSequence.controller.addTask(SetTargetEntityAsInside(bb))
         optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
         optionalBranchSequence.controller.addTask(ChangeHidden(bb, false))
