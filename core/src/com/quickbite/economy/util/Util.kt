@@ -167,12 +167,19 @@ object Util {
         worker.workerBuilding = entityWorkForce
     }
 
-    fun addItemToEntitySelling(entity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
-        val selling = Mappers.selling[entity]
+    /**
+     * Adds an item to the reselling list of an Entity that does reselling.
+     * @param resellingEntity The Entity that is reselling the item
+     * @param itemName The name of the item
+     * @param itemSource The source of the item (import, town, etc)
+     * @param The source data (ie: where it came from, entity?)
+     */
+    fun addItemToEntityReselling(resellingEntity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
+        val selling = Mappers.selling[resellingEntity]
         selling.resellingItemsList
 
         val itemDef = DefinitionManager.itemDefMap[itemName]!!
-        val reselling = Mappers.selling[entity]
+        val reselling = Mappers.selling[resellingEntity]
         val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice*1.5f).toInt(), -1, itemSource, sourceData)
 
         //If the reselling and currSelling lists don't already contain this...

@@ -1,4 +1,5 @@
 [[defs]]
+    #Try to keep single values up here...
     name = "Buyer"
     onGrid = true
     gridBlockWhenPlaced = false
@@ -45,6 +46,7 @@
       hasInventory = true
 
 [[defs]]
+    #Try to keep single values up here...
     name = "Hauler"
     onGrid = true
     gridBlockWhenPlaced = false

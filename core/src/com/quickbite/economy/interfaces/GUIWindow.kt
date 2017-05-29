@@ -40,6 +40,9 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
     protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
+    val defaultLightScrollPaneStyle = ScrollPane.ScrollPaneStyle()
+    val defaultDarkScrollPaneStyle = ScrollPane.ScrollPaneStyle()
+
     val TAB_HEIGHT = 30f
 
     init {
@@ -50,16 +53,20 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
         defaultTextFieldStyle.font = MyGame.defaultFont14
         defaultTextFieldStyle.fontColor = Color.WHITE
 
-        //Scroll pane for the main content window under the buttons.
-        val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
-        scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-        scrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
-        scrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
-        scrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK)))
+        defaultLightScrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        defaultLightScrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
+        defaultLightScrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        defaultLightScrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
+
+        defaultDarkScrollPaneStyle.background = darkBackgroundDrawable
+        defaultDarkScrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        defaultDarkScrollPaneStyle.vScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
+        defaultDarkScrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
+        defaultDarkScrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
 
         tabTable.background = darkBackgroundDrawable
 
-        val contentTableScrollPane = ScrollPane(contentTable, scrollPaneStyle)
+        val contentTableScrollPane = ScrollPane(contentTable, defaultLightScrollPaneStyle)
         contentTableScrollPane.setScrollingDisabled(true, false)
 
         //Add the stuff to the main table
@@ -87,7 +94,9 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
         MyGame.stage.addActor(window)
     }
 
-    open fun update(delta:Float){}
+    open fun update(delta:Float){
+        updateFuncsList.forEach { it() }
+    }
 
     fun toFront(){
         window.toFront()

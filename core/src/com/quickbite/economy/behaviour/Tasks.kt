@@ -204,29 +204,32 @@ object Tasks {
     fun haulItemFromBuilding(bb: BlackBoard):Task {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
-        val unhide = ChangeHidden(bb, false)
-        val clearInsideBuilding = SetTargetEntityAsInside(bb, false)
+        //TODO Need to make sure it knows its inside a building....
         val setTargetItem:Task = SetTargetItemToHaul(bb)
         val getBuildingToHaulFrom:Task = GetBuildingToHaulFrom(bb)
         val setTargetAsBuilding = SetTargetEntityAsTargetPosition(bb)
         val getMoneyForHaul = TransferMoneyToInventoryForItemPurchase(bb)
         val getTargetEntrance = GetEntranceOfBuilding(bb)
+        val unhide = ChangeHidden(bb, false)
+        val clearInsideBuilding = SetTargetEntityAsInside(bb, false)
         val getPathToTarget = GetPath(bb)
         val moveToTarget = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
+        val setInsideBuildingToHaulFrom = SetTargetEntityAsInside(bb)
         val wait = Wait(bb, 0.5f, 1.5f)
         val transferMoneyToBuildingForHaulMaterials = TransferMoneyToInventoryForItemPurchase(bb, false)
         val transferItemsToMe = TransferFromInventoryToInventory(bb, false) //Transfer items from target to me
         val unhideAgain = ChangeHidden(bb, false)
+        val leaveBuildingToHaulFrom = SetTargetEntityAsInside(bb, false)
         val setMyBuildingAsTarget = SetMyWorkBuildingAsTarget(bb)
         val getEntranceOfBuilding = GetEntranceOfBuilding(bb)
         val getPathToBuilding = GetPath(bb)
         val moveToBuilding = MoveToPath(bb)
         val hideAgain = ChangeHidden(bb, true)
+        val setInsideMyBuilding = SetTargetEntityAsInside(bb)
         val waitBeforeTransfer = Wait(bb, 1f, 2f)
         val transferItemsToWorkshop = TransferFromInventoryToInventory(bb, true) //Transfer items from me to target
         val giveAllMoneyBackToWorkerBuilding = TransferMoneyToInventoryForItemPurchase(bb, false, true) //Give all the money back
-        val unhideAgainAgain = ChangeHidden(bb, true)
 
         task.controller.addTask(unhide)
         task.controller.addTask(clearInsideBuilding)
@@ -238,19 +241,21 @@ object Tasks {
         task.controller.addTask(getPathToTarget)
         task.controller.addTask(moveToTarget)
         task.controller.addTask(hide)
+        task.controller.addTask(setInsideBuildingToHaulFrom)
         task.controller.addTask(wait)
         task.controller.addTask(transferMoneyToBuildingForHaulMaterials)
         task.controller.addTask(transferItemsToMe)
         task.controller.addTask(unhideAgain)
+        task.controller.addTask(leaveBuildingToHaulFrom)
         task.controller.addTask(setMyBuildingAsTarget)
         task.controller.addTask(getEntranceOfBuilding)
         task.controller.addTask(getPathToBuilding)
         task.controller.addTask(moveToBuilding)
         task.controller.addTask(hideAgain)
+        task.controller.addTask(setInsideMyBuilding)
         task.controller.addTask(waitBeforeTransfer)
         task.controller.addTask(transferItemsToWorkshop)
         task.controller.addTask(giveAllMoneyBackToWorkerBuilding)
-        task.controller.addTask(unhideAgainAgain)
 
         return task
     }
@@ -299,6 +304,7 @@ object Tasks {
         optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
         optionalBranchSequence.controller.addTask(GetPath(bb))
         optionalBranchSequence.controller.addTask(MoveToPath(bb))
+        optionalBranchSequence.controller.addTask(SetTargetEntityAsInside(bb))
         optionalBranchSequence.controller.addTask(CheckBuildingHasQueue(bb))
 
         task.controller.addTask(ChangeHidden(bb, true))
