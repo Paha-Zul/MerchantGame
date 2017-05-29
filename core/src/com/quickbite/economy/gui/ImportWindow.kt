@@ -31,7 +31,7 @@ class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                 itemIncomeButton.addChangeListener { _, _ ->
                     income.linkedToEntity = entity
-                    Util.addItemToEntitySelling(entity, income.itemName, SellingItemData.ItemSource.Import, "Town")
+                    Util.addItemToEntityReselling(entity, income.itemName, SellingItemData.ItemSource.Import, "Town")
                     loadIncomeList()
                 }
             }

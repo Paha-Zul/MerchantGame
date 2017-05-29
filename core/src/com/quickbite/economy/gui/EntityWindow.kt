@@ -161,7 +161,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
     }
 
     override fun update(delta:Float){
-        updateFuncsList.forEach { it() }
+        super.update(delta)
     }
 
     override fun close() {
@@ -760,8 +760,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //The listener for the link button
         linkButton.addListener(object: ChangeListener(){
             override fun changed(event: ChangeEvent?, actor: Actor?) {
-                val selling = Mappers.selling[entity]
-
                 //TODO Probably want to clean this up
                 guiManager.gameScreen.inputHandler.linkingAnotherEntity = true
                 guiManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
@@ -777,10 +775,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                                 if (otherSelling.currSellingItems.size > 0) {
 
                                     otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
-                                        val sellingItemData = SellingItemData(itemName, (itemPrice * 1.5).toInt(), -1, SellingItemData.ItemSource.Workshop, ent)
-                                        comp.resellingItemsList.add(sellingItemData)
-                                        if(!selling.currSellingItems.any{it.itemName == itemName})
-                                            selling.currSellingItems.add(sellingItemData)
+                                        Util.addItemToEntityReselling(entity, itemName, SellingItemData.ItemSource.Workshop, ent)
                                     }
 
                                     otherSelling.currSellingItems.clear()
