@@ -90,7 +90,7 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             //Get the inventory of the entity source
             val entityInventory = Mappers.inventory[sellingItem.itemSourceData as Entity]
 
-            val workshopInvAmount = entityInventory.getItemAmount(bb.targetItem.itemName) //The amount the workshop has in it's inventory
+            val workshopInvAmount = entityInventory.getItemAmount(sellingItem.itemName) //The amount the workshop has in it's inventory
 
             //If we want the max amount then we take all of the workshop's amount. Otherwise, we want to fulfill the stock, take the stock minus our inventory amount
             val amountToGet = if(sellingItem.itemStockAmount < 0) workshopInvAmount
