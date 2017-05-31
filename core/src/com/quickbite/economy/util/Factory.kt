@@ -49,7 +49,7 @@ object Factory {
         transform.position.set(position)
 
         //If the grid is set to block on placing, add an init func to block parts of the grid
-        grid.blockWhenPlaced = definition.gridBlockWhenPlaced
+        grid.blockWhenPlaced = definition.gridDef.blockGridWhenPlaced
         if(grid.blockWhenPlaced){
             init.initFuncs.add {
                 MyGame.grid.setBlocked(transform.position.x, transform.position.y, transform.dimensions.x*0.5f, transform.dimensions.y*0.5f)
@@ -64,37 +64,37 @@ object Factory {
         entity.add(debug)
 
         //Check for building definition
-        val buildingType = Util.getBuildingType(definition.buildingDef.buildingType)
 
-        if(buildingType != BuildingComponent.BuildingType.None){
+        if(definition.buildingDef != null){
             val building = BuildingComponent()
+            val buildingType = Util.getBuildingType(definition.buildingDef!!.buildingType)
             building.buildingType = buildingType
             entity.add(building)
         }
 
         //These are the optional components that a building can have
-        if(definition.inventoryDef.hasInventory){
+        if(definition.inventoryDef != null){
             val inv = InventoryComponent()
-            definition.inventoryDef.debugItemList.forEach { item ->
-                inv.addItem(item.itemName, item.itemAmount)
+            definition.inventoryDef!!.debugItemList.forEach { (itemName, itemAmount) ->
+                inv.addItem(itemName, itemAmount)
             }
             entity.add(inv)
         }
 
         //Check for selling items definition
-        if(definition.sellingItems.isSelling){
+        if(definition.sellingItems != null){
             val selling = SellingItemsComponent()
 
             //Things like this have to be copied or else they are linked and can be modified!!!
             val sellingList = Array<SellingItemData>()
-            definition.sellingItems.sellingList.forEach { (itemName) ->
+            definition.sellingItems!!.sellingList.forEach { (itemName) ->
                 sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1, SellingItemData.ItemSource.None))
             }
 
             selling.baseSellingItems = sellingList //Use the base array here
             selling.currSellingItems = Array(sellingList) //Copy it for this oned
-            selling.isReselling = definition.sellingItems.isReselling
-            selling.taxRate = definition.sellingItems.taxRate
+            selling.isReselling = definition.sellingItems!!.isReselling
+            selling.taxRate = definition.sellingItems!!.taxRate
 
             //A game event to listen for. Only record our tax collected here...
             GameEventSystem.subscribe<ItemSoldEvent>({
@@ -123,40 +123,40 @@ object Factory {
         }
 
         //Check for workforce definition
-        if(definition.workforceDef.workforceMax > 0){
+        if(definition.workforceDef != null){
             val workforce = WorkForceComponent()
-            workforce.numWorkerSpots = definition.workforceDef.workforceMax
-            workforce.workerTasksLimits = Array(definition.workforceDef.workerTasks) //Make a copy here just to be sure...
+            workforce.numWorkerSpots = definition.workforceDef!!.workforceMax
+            workforce.workerTasksLimits = Array(definition.workforceDef!!.workerTasks) //Make a copy here just to be sure...
             workforce.workerTasksLimits.forEach { workforce.workerTaskMap.put(it.taskName, Array())} //Populate the hashmap
             entity.add(workforce)
         }
 
         //Check for behaviour definition
-        if(definition.hasBehaviours){
+        if(definition.behaviourDef != null){
             val behaviour = BehaviourComponent(entity)
             entity.add(behaviour)
         }
 
         //Check for velocity component
-        if(definition.velocityDef.hasVelocity){
+        if(definition.velocityDef != null){
             val velocity = VelocityComponent()
-            velocity.baseSpeed = definition.velocityDef.baseSpeed
+            velocity.baseSpeed = definition.velocityDef!!.baseSpeed
             entity.add(velocity)
         }
 
         //Physics component
-        if(definition.physicsDef.hasPhysicsBody){
+        if(definition.physicsDef != null){
             val bodyComp = BodyComponent()
-            init.initFuncs.add { bodyComp.body = Util.createBody(definition.physicsDef.bodyType,
+            init.initFuncs.add { bodyComp.body = Util.createBody(definition.physicsDef!!.bodyType,
                     Vector2(transform.dimensions.x*Constants.BOX2D_SCALE, transform.dimensions.y*Constants.BOX2D_SCALE),
                     Vector2(transform.position.x*Constants.BOX2D_SCALE, transform.position.y*Constants.BOX2D_SCALE), entity, true) }
 
             entity.add(bodyComp)
         }
 
-        if(definition.productionDef.produces.isNotEmpty()){
+        if(definition.productionDef != null){
             val producesItems = ProduceItemComponent()
-            definition.productionDef.produces.forEach { itemName ->
+            definition.productionDef!!.produces.forEach { itemName ->
                 producesItems.productionList.add(DefinitionManager.productionMap[itemName])
             }
 
@@ -183,13 +183,13 @@ object Factory {
             }
         }
 
-        if(definition.isWorker){
+        if(definition.workerDef != null){
             val workerUnit = WorkerUnitComponent()
             workerUnit.dailyWage = MathUtils.random(10, 75)
             entity.add(workerUnit)
         }
 
-        if(definition.isBuyer){
+        if(definition.buyerDef != null){
             val buyerComponent = BuyerComponent()
 
             init.initFuncs.add({

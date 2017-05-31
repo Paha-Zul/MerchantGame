@@ -1,7 +1,5 @@
 [[defs]]
   name = "Tree"
-  onGrid = true
-  gridBlockWhenPlaced = true
   [defs.graphicDef]
     graphicName = "Tree"
     graphicAnchor = [1.0, 0.5]
@@ -12,7 +10,6 @@
     [defs.transformDef.spots]
       harvest = [{x=0, y=-25}]
   [defs.physicsDef]
-    hasPhysicsBody = true
     bodyType = "static"
   [defs.resourceDef]
     resourceType = "tree"
@@ -21,3 +18,31 @@
     harvestedItemName = "Wood Log"
     numHarvestersMax = 1
     baseHarvestTime = 1.5
+  [defs.gridDef]
+    onGrid = true
+    blockGridWhenPlaced = true
+
+[[defs]]
+  name = "Iron Ore Vein"
+  [defs.graphicDef]
+    graphicName = "iron_ore_vein"
+    graphicAnchor = [1.0, 0.5]
+    graphicSize = [32, 32]
+    initialAnimation = false
+  [defs.transformDef]
+    physicalDimensions = {x = 16, y = 16}
+    [defs.transformDef.spots]
+      harvest = [{x=0, y=-25}]
+  [defs.physicsDef]
+    bodyType = "static"
+  [defs.resourceDef]
+    resourceType = "ore"
+    resourceAmount = 1000
+    harvestAmount = 1
+    harvestedItemName = "Iron Ore"
+    numHarvestersMax = 1
+    baseHarvestTime = 3.0
+  [defs.gridDef]
+    onGrid = true
+    blockGridWhenPlaced = true
+

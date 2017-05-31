@@ -1,7 +1,5 @@
 [[defs]]
     name = "Wall"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "palisade_wall_horizontal"
         graphicAnchor = [0.5, 0.0]
@@ -12,16 +10,16 @@
     [defs.transformDef]
         physicalDimensions = {x = 75, y = 20}
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true
 
 [[defs]]
     name = "Shop"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "market"
-        graphicAnchor = [0.5, 0.5] # Not an error...
+        graphicAnchor = [0.5, 0.5]
         graphicSize = [75, 75]
         initialAnimation = true
     [defs.buildingDef]
@@ -31,12 +29,10 @@
         [defs.transformDef.spots]
             entrance = [{x = 0, y = -50}]
     [defs.inventoryDef]
-        hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
-        isSelling = true
         isReselling = true
-        taxRate = 0.1 # 0.1
+        taxRate = 0.1
     [defs.workforceDef]
         workforceMax = 5
         workerTasks = [
@@ -44,13 +40,13 @@
             {taskName = "sell", amount = "5"}
         ]
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true
 
 [[defs]]
     name = "Lumberyard"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "lumberyard"
         graphicAnchor = [0.5, 0.5]
@@ -63,14 +59,12 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
-        hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
-        isSelling = true
         sellingList = [
             {itemName = "Wood Plank", itemPrice = 10}
         ]
-        taxRate = 0.1 # 0.1
+        taxRate = 0.1
     [defs.workforceDef]
         workforceMax = 5
         workerTasks = [
@@ -79,15 +73,15 @@
             {taskName = "produce", amount = "1"}
         ]
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
     [defs.productionDef]
         produces = ["Wood Plank"]
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true
 
 [[defs]]
     name = "Table Shop"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "table_shop"
         graphicAnchor = [0.5, 0.5]
@@ -100,14 +94,12 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
-        hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
-        isSelling = true
         sellingList = [
             {itemName = "Wood Table", itemPrice = 30}
         ]
-        taxRate = 0.1 # 0.1
+        taxRate = 0.1 
     [defs.workforceDef]
         workforceMax = 5
         workerTasks = [
@@ -116,15 +108,15 @@
             {taskName = "produce", amount = "1"}
         ]
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
     [defs.productionDef]
         produces = ["Wood Table"]
+    [defs.gridDef]
+    onGrid = true
+    blockGridWhenPlaced = true
 
 [[defs]]
     name = "Flour Mill"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "flour_shop"
         graphicAnchor = [0.5, 0.5]
@@ -137,14 +129,12 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
-        hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
-        isSelling = true
         sellingList = [
             {itemName = "Flour", itemPrice = 10}
         ]
-        taxRate = 0.1 # 0.1
+        taxRate = 0.1
     [defs.workforceDef]
         workforceMax = 5
         workerTasks = [
@@ -153,15 +143,15 @@
             {taskName = "produce", amount = "1"}
         ]
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
     [defs.productionDef]
         produces = ["Flour"]
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true
 
 [[defs]]
     name = "Bakery"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "bread_shop"
         graphicAnchor = [0.5, 0.5]
@@ -174,14 +164,12 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
-        hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
-        isSelling = true
         sellingList = [
             {itemName = "Bread", itemPrice = 10}
         ]
-        taxRate = 0.1 # 0.1
+        taxRate = 0.1
     [defs.workforceDef]
         workforceMax = 5
         workerTasks = [
@@ -190,15 +178,15 @@
             {taskName = "produce", amount = "1"}
         ]
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
     [defs.productionDef]
         produces = ["Bread"]
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true
 
 [[defs]]
     name = "Tree Feller"
-    onGrid = true
-    gridBlockWhenPlaced = true
     [defs.graphicDef]
         graphicName = "tree_feller"
         graphicAnchor = [0.5, 0.5]
@@ -211,19 +199,19 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-50}]
     [defs.inventoryDef]
-        hasInventory = true
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
-        isSelling = true
         sellingList = [
             {itemName = "Wood Log", itemPrice = 10}
         ]
-        taxRate = 0.1 # 0.1
+        taxRate = 0.1
     [defs.workforceDef]
         workforceMax = 7
         workerTasks = [
             {taskName = "harvest", amount = "7"}
         ]
     [defs.physicsDef]
-        hasPhysicsBody = true
         bodyType = "static"
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true

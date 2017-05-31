@@ -145,22 +145,21 @@ object DefinitionManager {
 
     class Definition {
         var name = ""
-        var identityDef = IdentityDef()
-        var graphicDef = GraphicDef()
-        var buildingDef = BuildingDef()
-        var transformDef = TransformDef()
-        var hasBehaviours = false
-        var velocityDef = VelocityDef()
-        var physicsDef:PhysicsDef = PhysicsDef()
-        var isBuyer = false
-        var isWorker = false
-        var inventoryDef = InventoryDef()
-        var productionDef = ProductionDef()
-        var onGrid = false
-        var gridBlockWhenPlaced = false
-        var sellingItems:SellingDef = SellingDef()
-        var workforceDef:WorkforceDef = WorkforceDef()
-        var resourceDef:ResourceDef? = null
+        var identityDef = IdentityDef() //Must exist
+        var graphicDef = GraphicDef() //Must exist
+        var transformDef = TransformDef() //Must exist
+        var gridDef:GridDef = GridDef() //Must exist
+        var buildingDef:BuildingDef? = null //Optional
+        var velocityDef:VelocityDef? = null //Optional
+        var physicsDef:PhysicsDef? = null //Optional
+        var inventoryDef:InventoryDef? = null //Optional
+        var productionDef:ProductionDef? = null //Optional
+        var sellingItems:SellingDef? = null //Optional
+        var workforceDef:WorkforceDef? = null //Optional
+        var resourceDef:ResourceDef? = null //Optional
+        var behaviourDef:BehaviourDef? = null //Optional
+        var workerDef:WorkerDef? = null //Optional
+        var buyerDef:BuyerDef? = null //Optional
         var compsToAdd:List<ComponentDef> = listOf()
     }
 
@@ -168,8 +167,22 @@ object DefinitionManager {
         var useRandomName:Boolean = false
     }
 
+    class GridDef{
+        var onGrid = false
+        var blockGridWhenPlaced = false
+    }
+
     class ProductionDef{
         var produces:Array<String> = arrayOf()
+    }
+
+    class BehaviourDef{
+    }
+
+    class WorkerDef{
+    }
+
+    class BuyerDef{
     }
 
     class TransformDef{
@@ -188,17 +201,14 @@ object DefinitionManager {
     }
 
     class PhysicsDef{
-        var hasPhysicsBody = false
         var bodyType = ""
     }
 
     class VelocityDef{
-        var hasVelocity = false
         var baseSpeed = 0f
     }
 
     class InventoryDef{
-        var hasInventory = false
         var debugItemList:Array<ItemAmountLink> = arrayOf()
     }
 
@@ -215,7 +225,6 @@ object DefinitionManager {
     }
 
     class SellingDef{
-        var isSelling = false
         var sellingList:Array<ItemPriceLink> = arrayOf()
         var isReselling = false
         var taxRate = 0f
@@ -234,6 +243,7 @@ object DefinitionManager {
         lateinit var itemName:String
         var baseMarketPrice:Int = 0
         var categories:Array<String> = arrayOf()
+        var iconName = ""
         var need = 0
         var luxury = 0
     }

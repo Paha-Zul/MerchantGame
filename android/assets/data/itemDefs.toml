@@ -1,31 +1,43 @@
 [[items]]
+  itemName = "Gold"
+  baseMarketPrice = 0
+  categories = ["Currency"]
+  iconName = "gold_icon"
+[[items]]
   itemName = "Wood Log"
   baseMarketPrice = 5
   categories = ["Ingredient"]
+  iconName = "wood_log_icon"
 [[items]]
   itemName = "Wood Plank"
   baseMarketPrice = 10
   categories = ["Ingredient"]
+  iconName = "wood_plank_icon"
 [[items]]
   itemName = "Wood Table"
   baseMarketPrice = 250
   categories = ["Furnishing"]
+  iconName = "wood_table_icon"
   luxury = 2
 [[items]]
   itemName = "Wheat"
   baseMarketPrice = 1
   categories = ["Ingredient"]
+  iconName = "wheat_icon"
 [[items]]
   itemName = "Flour"
   baseMarketPrice = 5
   categories = ["Ingredient"]
+  iconName = "flour_icon"
 [[items]]
   itemName = "Bread"
   baseMarketPrice = 25
   categories = ["Ingredient", "Food"]
+  iconName = "bread_icon"
   need = 1
 [[items]]
   itemName = "Milk"
   baseMarketPrice = 2
   categories = ["Ingredient", "Food"]
+  iconName = "milk_icon"
   need = 1
