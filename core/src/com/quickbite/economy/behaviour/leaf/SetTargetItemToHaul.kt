@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
-import com.quickbite.economy.isValid
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers

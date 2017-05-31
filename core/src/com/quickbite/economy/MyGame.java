@@ -58,7 +58,7 @@ public class MyGame extends Game {
         box2DDebugRenderer = new Box2DDebugRenderer();
         stage = new Stage(UIViewport, UIBatch);
 
-        Loader.INSTANCE.loadAllImgs(manager, Gdx.files.internal("images/"), false);
+        Loader.INSTANCE.loadAllImgs(manager, Gdx.files.internal("images/"), true);
         Loader.INSTANCE.loadFonts(manager, Gdx.files.internal("fonts/"));
 
         genFonts();

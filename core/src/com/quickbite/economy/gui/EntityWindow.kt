@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -22,6 +23,7 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.interfaces.GUIWindow
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Factory
@@ -330,6 +332,9 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             contentsTable.row()
 
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
+                val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
+                val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
+
                 val itemLabel = Label(itemName, defaultLabelStyle)
                 itemLabel.setFontScale(1f)
                 itemLabel.setAlignment(Align.center)
@@ -338,7 +343,14 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 itemAmountLabel.setFontScale(1f)
                 itemAmountLabel.setAlignment(Align.center)
 
-                contentsTable.add(itemLabel).width(100f)
+                iconImage.addListener(object: ClickListener(){
+                    override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
+
+                        super.enter(event, x, y, pointer, fromActor)
+                    }
+                })
+
+                contentsTable.add(iconImage).size(24f)
                 contentsTable.add(itemAmountLabel).width(100f)
                 contentsTable.row()
             }
@@ -349,7 +361,6 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         table.top()
 
         updateFuncsList.add({populateItemTable()})
-//        updateFuncsList.add({listLabel.setText("Item List: ${comp.itemMap.values}")})
     }
 
     private fun setupBuyingTable(table: Table, comp: BuyerComponent){
