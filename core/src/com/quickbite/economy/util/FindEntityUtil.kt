@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.components.BuildingComponent
+import com.quickbite.economy.filters.ResourceParameter
 
 /**
  * Created by Paha on 5/13/2017.
@@ -252,7 +253,7 @@ object FindEntityUtil {
         return buildingsThatAreSellingItems[MathUtils.random(buildingsThatAreSellingItems.size() - 1)]
     }
 
-    fun getClosestOpenResource(position:Vector2, type:String = ""):Entity?{
+    fun getClosestOpenResource(position:Vector2, params:ResourceParameter):Entity?{
         var closest:Entity? = null
         var closestDst = Float.MAX_VALUE
 
@@ -260,10 +261,14 @@ object FindEntityUtil {
             val tc = Mappers.transform[entity]
             val rc = Mappers.resource[entity]
 
-            val isType = type == "" || type == rc.resourceType
+            val isType = params.resourceType == "" || params.resourceType == rc.resourceType
+            val isItem = rc.harvestItemName == "" || params.harvestedItemNames.contains(rc.harvestItemName)
+            val isQuality = true
+
+            val meetsReq = isType && isItem && isQuality
 
             //If we have no room for another harvester or the type doesn't match, continue...
-            if(rc.numCurrentHarvesters >= rc.numHarvestersMax || !isType)
+            if(rc.numCurrentHarvesters >= rc.numHarvestersMax || !meetsReq)
                 return@forEach
 
             val dst = tc.position.dst2(position)

@@ -29,7 +29,7 @@ object Tasks {
     /**
      * Finds the closest resource, harvests it, and bring it back to a building to transfer
      */
-    fun harvestClosestResourceType(bb:BlackBoard, type:String = "") : Task{
+    fun harvestClosestResourceType(bb:BlackBoard) : Task{
         val seq = Sequence(bb, "Harvesting Resource")
 
         val unhide = ChangeHidden(bb, false)
