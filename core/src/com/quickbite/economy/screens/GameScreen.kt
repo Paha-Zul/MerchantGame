@@ -16,7 +16,6 @@ import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.event.GameEventSystem
-import com.quickbite.economy.event.TestEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.TownManager
@@ -64,8 +63,8 @@ class GameScreen :Screen{
         val goldTrackingSystem = GoldTrackingSystem()
 
         MyGame.entityEngine.addSystem(behaviourSystem)
-        MyGame.entityEngine.addSystem(renderSystem)
         MyGame.entityEngine.addSystem(movementSystem)
+        MyGame.entityEngine.addSystem(renderSystem)
         MyGame.entityEngine.addSystem(debugSystem)
         MyGame.entityEngine.addSystem(gridSystem)
         MyGame.entityEngine.addSystem(workshopSystem)
@@ -141,7 +140,7 @@ class GameScreen :Screen{
 
         //Draw the body of all the things. This is not entity specific so it's outside of the entity loop
         if(DebugDrawComponent.GLOBAL_DEBUG_BODY){
-            MyGame.box2DDebugRenderer.render(MyGame.world, MyGame.camera.combined)
+            MyGame.box2DDebugRenderer.render(MyGame.world, MyGame.box2dCamera.combined)
         }
 
         gameScreenGUI.update(delta)

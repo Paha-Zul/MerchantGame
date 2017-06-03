@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.quickbite.economy.managers.DefinitionManager;
 import com.quickbite.economy.screens.GameScreen;
+import com.quickbite.economy.util.Constants;
 import com.quickbite.economy.util.Grid;
 import com.quickbite.economy.util.TimeUtil;
 import com.quickbite.spaceslingshot.util.Loader;
@@ -25,7 +26,7 @@ import com.quickbite.spaceslingshot.util.Loader;
 public class MyGame extends Game {
     public static com.quickbite.economy.util.EasyAssetManager manager;
 	public static Viewport viewport, UIViewport;
-    public static OrthographicCamera camera, UICamera;
+    public static OrthographicCamera camera, UICamera, box2dCamera;
     public static SpriteBatch batch, UIBatch;
     public static ShapeRenderer renderer;
     public static Engine entityEngine;
@@ -46,6 +47,8 @@ public class MyGame extends Game {
 
         camera = new OrthographicCamera(width, height);
         UICamera = new OrthographicCamera(width, height);
+        box2dCamera = new OrthographicCamera(width*Constants.BOX2D_SCALE, height*Constants.BOX2D_SCALE);
+
         viewport = new StretchViewport(width, height, camera);
         UIViewport = new StretchViewport(width, height, UICamera);
 
@@ -53,7 +56,7 @@ public class MyGame extends Game {
         UIBatch = new SpriteBatch();
         renderer = new ShapeRenderer();
         entityEngine = new Engine();
-		grid = new Grid(25, 3000, 3000);
+		grid = new Grid(32, 3000, 3000);
 		world = new World(new Vector2(0f, 0f), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
         stage = new Stage(UIViewport, UIBatch);
