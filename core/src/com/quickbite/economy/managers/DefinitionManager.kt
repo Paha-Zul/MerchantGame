@@ -1,6 +1,7 @@
 package com.quickbite.economy.managers
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
@@ -174,6 +175,7 @@ object DefinitionManager {
 
     class ProductionDef{
         var produces:Array<String> = arrayOf()
+        var harvests:Array<String> = arrayOf()
     }
 
     class BehaviourDef{
@@ -202,6 +204,8 @@ object DefinitionManager {
 
     class PhysicsDef{
         var bodyType = ""
+        var bodyAnchor = Vector2()
+        var bodyDimensions = Vector2()
     }
 
     class VelocityDef{

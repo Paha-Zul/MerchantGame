@@ -200,16 +200,13 @@
             entrance = [{x=0, y=-50}]
     [defs.inventoryDef]
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
-    [defs.sellingItems]
-        sellingList = [
-            {itemName = "Wood Log", itemPrice = 10}
-        ]
-        taxRate = 0.1
     [defs.workforceDef]
         workforceMax = 7
         workerTasks = [
             {taskName = "harvest", amount = "7"}
         ]
+    [defs.productionDef]
+        harvests = ["Wood Log"]
     [defs.physicsDef]
         bodyType = "static"
     [defs.gridDef]

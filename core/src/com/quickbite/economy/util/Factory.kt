@@ -147,9 +147,22 @@ object Factory {
         //Physics component
         if(definition.physicsDef != null){
             val bodyComp = BodyComponent()
-            init.initFuncs.add { bodyComp.body = Util.createBody(definition.physicsDef!!.bodyType,
-                    Vector2(transform.dimensions.x*Constants.BOX2D_SCALE, transform.dimensions.y*Constants.BOX2D_SCALE),
-                    Vector2(transform.position.x*Constants.BOX2D_SCALE, transform.position.y*Constants.BOX2D_SCALE), entity, true) }
+            val dimensions = if(definition.physicsDef!!.bodyDimensions.isZero)
+                                 Vector2(transform.dimensions.x, transform.dimensions.y)
+                            else
+                                Vector2(definition.physicsDef!!.bodyDimensions.x, definition.physicsDef!!.bodyDimensions.y)
+
+            val position = if(definition.physicsDef!!.bodyAnchor.isZero)
+                                Vector2(transform.position.x, transform.position.y)
+                            else
+                                Vector2((transform.position.x + definition.physicsDef!!.bodyAnchor.x*dimensions.x),
+                                        (transform.position.y + definition.physicsDef!!.bodyAnchor.y*dimensions.y))
+
+            //Scale these down to Box2D's system...
+            dimensions.set(dimensions.x*Constants.BOX2D_SCALE, dimensions.y*Constants.BOX2D_SCALE)
+            position.set(position.x*Constants.BOX2D_SCALE, position.y*Constants.BOX2D_SCALE)
+
+            init.initFuncs.add { bodyComp.body = Util.createBody(definition.physicsDef!!.bodyType, dimensions, position, entity, true) }
 
             entity.add(bodyComp)
         }
@@ -159,6 +172,8 @@ object Factory {
             definition.productionDef!!.produces.forEach { itemName ->
                 producesItems.productionList.add(DefinitionManager.productionMap[itemName])
             }
+
+            producesItems.harvests = definition.productionDef!!.harvests.toList()
 
             entity.add(producesItems)
 
