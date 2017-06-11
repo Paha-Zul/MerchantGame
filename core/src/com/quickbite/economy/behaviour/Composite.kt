@@ -27,12 +27,12 @@ open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackb
 
         //If the current task is not running, go to the next task.
         if (!this.controller.currTask!!.controller.running) {
-            //If the child task failed, call childFailed
-            if (this.controller.currTask!!.controller.failed || !this.controller.currTask!!.check()) {
-                this.ChildFailed()
-            //If the child task succeeded, call childSucceeded
-            } else if (this.controller.currTask!!.controller.success) {
+            //If the child succeeded, call child succeeded
+            if (this.controller.currTask!!.controller.success) {
                 this.ChildSucceeded()
+            //If the child failed or it's check() fails, call child failed
+            }else if (this.controller.currTask!!.controller.failed || !this.controller.currTask!!.check()) {
+                this.ChildFailed()
             //Otherwise we are starting new, call new!
             } else {
                 this.controller.currTask!!.controller.safeStart()
