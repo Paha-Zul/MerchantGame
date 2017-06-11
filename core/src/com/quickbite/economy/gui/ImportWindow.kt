@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.TownManager
-import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Util
 
 /**
@@ -21,7 +20,7 @@ class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         fun loadIncomeList() {
             contentTable.clear()
 
-            TownManager.getTown("Town").itemIncomeMap.values.filter { it.linkedToEntity == null }.forEach { income ->
+            TownManager.getTown("Town").itemImportMap.values.filter { it.linkedToEntity == null }.forEach { income ->
                 val itemIncomeButton = TextButton("", defaultTextButtonStyle)
 
                 itemIncomeButton.setText("${income.itemName} - ${income.baseProductionAmtPerDay}/day")
@@ -30,8 +29,7 @@ class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 contentTable.row()
 
                 itemIncomeButton.addChangeListener { _, _ ->
-                    income.linkedToEntity = entity
-                    Util.addItemToEntityReselling(entity, income.itemName, SellingItemData.ItemSource.Import, "Town")
+                    Util.addImportItemToEntityReselling(income, entity, "Town")
                     loadIncomeList()
                 }
             }

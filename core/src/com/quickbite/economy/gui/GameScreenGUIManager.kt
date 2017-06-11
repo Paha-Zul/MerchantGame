@@ -1,9 +1,11 @@
 package com.quickbite.economy.gui
 
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -20,6 +22,7 @@ import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.TimeOfDay
+import com.quickbite.economy.util.Util
 import java.util.*
 
 /**
@@ -29,6 +32,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     val guiStack:Stack<GUIWindow> = Stack()
 
     val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.BLACK)
+    private val tooltipLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
     val bottomTable = Table()
 
     val topTable = Table()
@@ -36,6 +40,11 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     var timeOfDayLabel:Label
     var populationLabel:Label
     var ratingLabel:Label
+
+    enum class TooltipLocation{Mouse, Building}
+    private val tooltipLabel:Label = Label("error", tooltipLabelStyle)
+    private var showingTooltip = false
+    private var tooltipLocation = TooltipLocation.Mouse
 
     //Gotta be lazy cause Import won't be available right away
     val myTown: Town by lazy {TownManager.getTown("Town")}
@@ -71,6 +80,8 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
         MyGame.stage.addActor(topTable)
         MyGame.stage.addActor(bottomTable)
+
+        tooltipLabelStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0.1f, 0.1f, 0.1f, 0.4f))))
     }
 
     /**
@@ -172,5 +183,40 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         timeOfDayLabel.setText("D: ${TimeOfDay.day}, T: $TimeOfDay")
         populationLabel.setText("Pop: ${myTown.population.toInt()}")
         ratingLabel.setText("N: ${myTown.needsRating}, L: ${myTown.luxuryRating}")
+
+        displayTooltip()
+    }
+
+    private fun displayTooltip(){
+        if(!showingTooltip) return
+
+        val position:Vector2
+        when(tooltipLocation){
+            TooltipLocation.Mouse -> {
+                position = Vector2(Gdx.input.x.toFloat() - tooltipLabel.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
+            }
+            TooltipLocation.Building -> {
+                position = Vector2(Gdx.input.x.toFloat() - tooltipLabel.width/2f, Gdx.input.y.toFloat())
+            }
+        }
+
+        tooltipLabel.setPosition(position.x, position.y)
+    }
+
+    /**
+     * Triggers the tooltip to show
+     * @param message The text message to display
+     * @param location The location for it to display like at the mouse or building hovered over
+     */
+    fun startShowingTooltip(message:String, location:TooltipLocation){
+        showingTooltip = true
+        tooltipLabel.setText(message)
+        tooltipLocation = location
+        MyGame.stage.addActor(tooltipLabel)
+    }
+
+    fun stopShowingTooltip(){
+        showingTooltip = false
+        tooltipLabel.remove()
     }
 }

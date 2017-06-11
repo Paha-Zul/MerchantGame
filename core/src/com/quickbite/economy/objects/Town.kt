@@ -15,7 +15,7 @@ class Town(val name:String) {
     var population:Float = 0f
 
     val populationHistory = CircularQueueWrapper<Int>(50)
-    val itemIncomeMap = hashMapOf<String, TownItemIncome>()
+    val itemImportMap = hashMapOf<String, TownItemIncome>()
     val totalSellingItemMap = hashMapOf<String, Int>()
     val populationIncreaseFromRatingThreshold = 20
 
@@ -36,7 +36,7 @@ class Town(val name:String) {
         //TODO Make sure this timer works
         accumulateItemsTimer = CustomTimer(0f, 1f, false, {
             //For each item in the income map, increase it!
-            itemIncomeMap.values.forEach { income ->
+            itemImportMap.values.forEach { income ->
                 //1440 is how many minutes in 24 hours
                 income.accumulatedItemCounter = income.accumulatedItemCounter + (income.calculatedProductionAmtPerDay/(1440f/(TimeOfDay.currScaledTime)))
             }

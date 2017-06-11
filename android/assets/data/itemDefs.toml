@@ -9,6 +9,12 @@
   categories = ["Ingredient"]
   iconName = "wood_log_icon"
 [[items]]
+  itemName = "Birch Wood Log"
+  baseMarketPrice = 7
+  categories = ["Ingredient"]
+  iconName = "wood_log_icon"
+  baseQuality = 2 # The base quality of an item. Default is 1 if not set
+[[items]]
   itemName = "Wood Plank"
   baseMarketPrice = 10
   categories = ["Ingredient"]

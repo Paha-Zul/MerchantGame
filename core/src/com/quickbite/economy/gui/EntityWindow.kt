@@ -335,18 +335,19 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
                 val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
 
-                val itemLabel = Label(itemName, defaultLabelStyle)
-                itemLabel.setFontScale(1f)
-                itemLabel.setAlignment(Align.center)
-
                 val itemAmountLabel = Label("$itemAmount", defaultLabelStyle)
                 itemAmountLabel.setFontScale(1f)
                 itemAmountLabel.setAlignment(Align.center)
 
                 iconImage.addListener(object: ClickListener(){
                     override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-
                         super.enter(event, x, y, pointer, fromActor)
+                        guiManager.startShowingTooltip(itemName, GameScreenGUIManager.TooltipLocation.Mouse)
+                    }
+
+                    override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
+                        super.exit(event, x, y, pointer, toActor)
+                        guiManager.stopShowingTooltip()
                     }
                 })
 
@@ -360,7 +361,13 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         table.top()
 
-        updateFuncsList.add({populateItemTable()})
+        val listener = comp.addInventoryListener("all", {_,_,_ -> populateItemTable()})
+
+//        updateFuncsList.add({populateItemTable()})
+
+        changedTabsFunc = {
+            comp.removeInventoryListener("all", listener)
+        }
     }
 
     private fun setupBuyingTable(table: Table, comp: BuyerComponent){

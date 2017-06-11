@@ -85,8 +85,15 @@ class InventoryComponent : MyComponent {
         return 0
     }
 
-    fun addInventoryListener(itemName:String, listener:(itemName:String, itemAmountChanged:Int, itemFinalAmount:Int) -> Unit){
+    fun addInventoryListener(itemName:String, listener:(itemName:String, itemAmountChanged:Int, itemFinalAmount:Int) -> Unit) :
+            (itemName:String, itemAmountChanged:Int, itemFinalAmount:Int) -> Unit{
         inventoryChangeListeners.computeIfAbsent(itemName, {Array()}).add(listener)
+
+        return listener
+    }
+
+    fun removeInventoryListener(itemName:String, listener: (itemName: String, itemAmountChanged: Int, itemFinalAmount: Int) -> Unit){
+        inventoryChangeListeners[itemName]?.removeValue(listener, true)
     }
 
     override fun dispose(myself: Entity) {

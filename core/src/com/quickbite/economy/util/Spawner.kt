@@ -67,7 +67,7 @@ object Spawner {
         })
 
         spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
-            val list = town.itemIncomeMap.values.toList()
+            val list = town.itemImportMap.values.toList()
             val randomItem = list[MathUtils.random(list.size - 1)]
 
             //Get the closest building that is reselling our item via import
