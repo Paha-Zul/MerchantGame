@@ -242,6 +242,7 @@ object DefinitionManager {
         var baseHarvestTime = 0f
         var canRegrow = false
         var baseRegrowTimeRange = arrayOf(180, 300)
+        var harvestedGraphicName = ""
     }
 
     class ItemDef{

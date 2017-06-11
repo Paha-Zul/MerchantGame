@@ -21,7 +21,7 @@
     numHarvestersMax = 1
     baseHarvestTime = 1.5
     canRegrow = true
-    baseRegrowTimeRange = [2, 5]
+    baseRegrowTimeRange = [5, 10]
     harvestedGraphicName = "tree_stump"
   [defs.gridDef]
     onGrid = true

@@ -214,6 +214,7 @@ object Util {
         }else{
             rc.harvested = true
             Mappers.graphic[entity].sprite.setRegion(MyGame.manager[rc.harvestedGraphicName, Texture::class.java])
+            rc.nextRegrowTime = MathUtils.random(rc.baseRegrowTime[0], rc.baseRegrowTime[1]).toFloat() //Might as well set our next regrow time
         }
     }
 

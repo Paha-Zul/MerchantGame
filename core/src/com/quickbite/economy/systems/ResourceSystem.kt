@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.ResourceComponent
 import com.quickbite.economy.managers.DefinitionManager
@@ -23,9 +22,10 @@ class ResourceSystem(interval:Float): IntervalIteratingSystem(Family.all(Resourc
         //When we are ready to regrow...
         if(rc.nextRegrowTime <=0){
             rc.harvested = false
-            rc.nextRegrowTime = MathUtils.random(rc.baseRegrowTime[0], rc.baseRegrowTime[1]).toFloat() //Might as well set our next regrow time
+            rc.currResourceAmount = rc.resourceAmount
+            rc.numCurrentHarvesters = 0
 
-            val resourceDef = DefinitionManager.definitionMap[Mappers.identity[ent].name]!! //Get the resource definition using the resources name from its identity
+            val resourceDef = DefinitionManager.definitionMap[Mappers.identity[ent].name.toLowerCase()]!! //Get the resource definition using the resources name from its identity
             val gc = Mappers.graphic[ent] //Get its graphic component
             gc.sprite.setRegion(MyGame.manager[resourceDef.graphicDef.graphicName, Texture::class.java]) //Set it to the graphic
         }

@@ -36,7 +36,7 @@ class HarvestResource(bb:BlackBoard) : LeafTask(bb){
             val myInventory = Mappers.inventory[bb.myself] //Get my inventory
             myInventory.addItem(rc.harvestItemName, rc.harvestAmount) //Add the item to my inventory
             rc.currResourceAmount -= rc.harvestAmount //Reduce the resource amount
-            if(rc.numCurrentHarvesters <= 0) Util.setResourceAsHarvested(bb.targetEntity!!, rc)
+            if(rc.currResourceAmount <= 0) Util.setResourceAsHarvested(bb.targetEntity!!, rc)
             controller.finishWithSuccess()
         }
 

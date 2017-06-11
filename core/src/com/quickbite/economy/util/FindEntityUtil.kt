@@ -263,9 +263,10 @@ object FindEntityUtil {
 
             val isType = params.resourceType == "" || params.resourceType == rc.resourceType
             val isItem = rc.harvestItemName == "" || params.harvestedItemNames.contains(rc.harvestItemName)
+            val isNotHarvested = !rc.harvested
             val isQuality = true
 
-            val meetsReq = isType && isItem && isQuality
+            val meetsReq = isType && isItem && isQuality && isNotHarvested
 
             //If we have no room for another harvester or the type doesn't match, continue...
             if(rc.numCurrentHarvesters >= rc.numHarvestersMax || !meetsReq)

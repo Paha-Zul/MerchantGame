@@ -229,6 +229,7 @@ object Factory {
                 baseHarvestTime = resourceDef.baseHarvestTime
                 canRegrow = resourceDef.canRegrow
                 baseRegrowTime = resourceDef.baseRegrowTimeRange
+                harvestedGraphicName = resourceDef.harvestedGraphicName
             }
 
 
