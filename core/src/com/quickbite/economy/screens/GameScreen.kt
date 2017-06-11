@@ -18,6 +18,7 @@ import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
+import com.quickbite.economy.levels.Level1
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.tutorialtest.TutorialTest
@@ -43,6 +44,8 @@ class GameScreen :Screen{
     var showGrid = false
 
     override fun show() {
+        gameScreeData.playerMoney = 1000
+
         //Subscribe to the general item sold event
         GameEventSystem.subscribe<ItemSoldEvent> {
             gameScreeData.playerMoney += it.taxCollected
@@ -59,8 +62,9 @@ class GameScreen :Screen{
         val debugSystem = DebugDrawSystem(MyGame.batch)
         val movementSystem = MovementSystem()
         val gridSystem = GridSystem()
-        val workshopSystem = WorkforceSystem(2f)
+        val workshopSystem = WorkforceSystem(1f)
         val goldTrackingSystem = GoldTrackingSystem()
+        val resourceSystem = ResourceSystem(1f)
 
         MyGame.entityEngine.addSystem(behaviourSystem)
         MyGame.entityEngine.addSystem(movementSystem)
@@ -69,6 +73,7 @@ class GameScreen :Screen{
         MyGame.entityEngine.addSystem(gridSystem)
         MyGame.entityEngine.addSystem(workshopSystem)
         MyGame.entityEngine.addSystem(goldTrackingSystem)
+        MyGame.entityEngine.addSystem(resourceSystem)
 
         MyGame.entityEngine.addEntityListener(object:EntityListener{
             override fun entityRemoved(ent: Entity?) {
@@ -94,10 +99,9 @@ class GameScreen :Screen{
         })
 
         TownManager.init()
+
+        Level1.start()
 //        TutorialTest.test()
-
-        gameScreeData.playerMoney = 1000
-
     }
 
     override fun pause() {

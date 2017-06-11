@@ -16,6 +16,17 @@ class ResourceComponent : MyComponent {
     var numHarvestersMax:Int = 0
     var numCurrentHarvesters:Int = 0
 
+    /** A boolean if the resource can grow back (like trees)*/
+    var canRegrow = false
+    /** A range of time (in seconds) to random between for the resource to grow back*/
+    var baseRegrowTime = arrayOf(180, 300)
+    /** The next time that this resource should regrow*/
+    var nextRegrowTime = 0f
+    /** A boolean if the resource is harvested. This is useful if the resource can grow back (trees)*/
+    var harvested = false
+    /** The name for the harvested graphic*/
+    var harvestedGraphicName = ""
+
     override fun initialize() {
 
     }

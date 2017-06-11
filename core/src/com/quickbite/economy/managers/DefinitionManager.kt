@@ -1,7 +1,6 @@
 package com.quickbite.economy.managers
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
@@ -241,6 +240,8 @@ object DefinitionManager {
         var harvestAmount = 0
         var harvestedItemName = ""
         var baseHarvestTime = 0f
+        var canRegrow = false
+        var baseRegrowTimeRange = arrayOf(180, 300)
     }
 
     class ItemDef{
@@ -250,6 +251,7 @@ object DefinitionManager {
         var iconName = ""
         var need = 0
         var luxury = 0
+        var baseQuality = 1
     }
 
     class ProductionList{

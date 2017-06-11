@@ -15,11 +15,14 @@
     bodyDimensions = {x = 32, y = 64}
   [defs.resourceDef]
     resourceType = "wood"
-    resourceAmount = 1000
+    resourceAmount = 2
     harvestAmount = 1
     harvestedItemName = "Wood Log"
     numHarvestersMax = 1
     baseHarvestTime = 1.5
+    canRegrow = true
+    baseRegrowTimeRange = [2, 5]
+    harvestedGraphicName = "tree_stump"
   [defs.gridDef]
     onGrid = true
     blockGridWhenPlaced = true
@@ -37,7 +40,6 @@
       harvest = [{x=0, y=-25}]
   [defs.physicsDef]
     bodyType = "static"
-  
   [defs.resourceDef]
     resourceType = "ore"
     resourceAmount = 1000

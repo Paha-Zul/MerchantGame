@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.BuildingComponent
+import com.quickbite.economy.components.ResourceComponent
 import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
@@ -141,7 +142,7 @@ object Util {
                 //Get the first item that matches the name AND the item source data passed in
                 val item = sellingComp.resellingItemsList.first{it.itemName == itemName && it.itemSourceData == itemSourceData}
                 //Get the town using the item source data
-                TownManager.getTown(item.itemSourceData as String).itemIncomeMap[itemName]!!.linkedToEntity = null
+                TownManager.getTown(item.itemSourceData as String).itemImportMap[itemName]!!.linkedToEntity = null
                 //Remove the item from the selling comp
                 sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
             }
@@ -191,8 +192,29 @@ object Util {
         }
     }
 
+    fun addImportItemToEntityReselling(itemIncome:TownItemIncome, resellingEntity:Entity, sourceData:Any? = null){
+        itemIncome.linkedToEntity = resellingEntity
+        addItemToEntityReselling(resellingEntity, itemIncome.itemName, SellingItemData.ItemSource.Import, sourceData)
+    }
+
     fun removeWorkerFromBuilding(entityWorker:Entity, entityWorkForce: Entity){
 
+    }
+
+    /**
+     * Sets a resource as harvested. Handles if the resource can regrow or should be destroyed
+     * @param entity The entity that has the resource component
+     * @param rc Optional resource component object if convenient
+     */
+    fun setResourceAsHarvested(entity:Entity, rc:ResourceComponent? = null){
+        val rc = rc ?: Mappers.resource[entity]
+
+        if(!rc.canRegrow){
+            Factory.destroyEntity(entity)
+        }else{
+            rc.harvested = true
+            Mappers.graphic[entity].sprite.setRegion(MyGame.manager[rc.harvestedGraphicName, Texture::class.java])
+        }
     }
 
 }

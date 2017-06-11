@@ -227,6 +227,8 @@ object Factory {
                 resourceType = resourceDef.resourceType
                 harvestItemName = resourceDef.harvestedItemName
                 baseHarvestTime = resourceDef.baseHarvestTime
+                canRegrow = resourceDef.canRegrow
+                baseRegrowTime = resourceDef.baseRegrowTimeRange
             }
 
 
