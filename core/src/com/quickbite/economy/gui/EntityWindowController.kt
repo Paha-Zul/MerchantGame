@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.objects.SelectedWorkerAndTable
-import com.quickbite.economy.objects.WorkerTaskLimitLink
-import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
 /**
@@ -26,25 +23,11 @@ object EntityWindowController {
      * @param workerTaskLimit The limit of the worker task
      */
     fun addTasksToWorkers(taskNameText:String, selectedWorkers:com.badlogic.gdx.utils.Array<SelectedWorkerAndTable>,
-                          workerTaskLimit:WorkerTaskLimitLink, workerTaskMap:HashMap<String, Array<Entity>>){
+                          workforceEntity:Entity){
 
         //For each of the currently selected workers...
         selectedWorkers.forEach { (entity, _) ->
-            val worker = Mappers.worker[entity]!!
-
-            when(worker.taskList.contains(taskNameText)){
-                true -> { //If it does contain it, remove it!
-                    worker.taskList.removeValue(taskNameText, false)
-                    workerTaskMap[taskNameText]!!.removeValue(entity, true)
-                }
-                else -> { //If it doesn't contain it, add it!
-                    //Make sure we have enough room to add it
-                    if(workerTaskMap[taskNameText]!!.size < workerTaskLimit.amount) {
-                        worker.taskList.add(taskNameText)
-                        workerTaskMap[taskNameText]!!.add(entity)
-                    }
-                }
-            }
+            Util.toggleTaskOnWorker(entity, workforceEntity, taskNameText)
         }
     }
 

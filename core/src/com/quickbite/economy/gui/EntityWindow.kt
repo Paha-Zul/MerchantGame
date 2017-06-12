@@ -264,7 +264,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                     val taskNameText = taskNameLabel.text.toString()
                     val workerTaskLimit = comp.workerTasksLimits.find { it.taskName == taskNameText}!!
 
-                    EntityWindowController.addTasksToWorkers(taskNameText, selectedWorkers, workerTaskLimit, comp.workerTaskMap)
+                    EntityWindowController.addTasksToWorkers(taskNameText, selectedWorkers, currentlySelectedEntity!!)
 
                     GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager)
                 }

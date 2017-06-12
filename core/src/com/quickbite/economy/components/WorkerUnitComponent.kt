@@ -17,6 +17,7 @@ class WorkerUnitComponent : MyComponent {
     var workerBuilding:Entity? = null
     var timeRange:MutablePair<Int, Int> = MutablePair(2, 22)
     var workDays:Array<String> = Array()
+    /** The current tasks that this worker is to perform*/
     var taskList:Array<String> = Array()
 
     /**

@@ -166,6 +166,32 @@ object Util {
         val workForce = Mappers.workforce[entityWorkForce]
         workForce.workersAvailable.add(entityWorker)
         worker.workerBuilding = entityWorkForce
+
+        if(workForce.workerTasksLimits.size == 1)
+            toggleTaskOnWorker(entityWorker, entityWorkForce, workForce.workerTasksLimits[0].taskName)
+    }
+
+    /**
+     * Adds or removes a task from a worker
+     */
+    fun toggleTaskOnWorker(workerEntity:Entity, workforceEntity : Entity, taskName:String){
+        val worker = Mappers.worker[workerEntity]
+        val workforce = Mappers.workforce[workforceEntity]
+        val workerTaskLimitLink = workforce.workerTasksLimits.find { it.taskName == taskName }!!
+
+        when(worker.taskList.contains(taskName)){
+            true -> { //If it does contain it, remove it!
+                worker.taskList.removeValue(taskName, false)
+                workforce.workerTaskMap[taskName]!!.removeValue(workerEntity, true)
+            }
+            else -> { //If it doesn't contain it, add it!
+                //Make sure we have enough room to add it
+                if(workforce.workerTaskMap[taskName]!!.size < workerTaskLimitLink.amount) {
+                    worker.taskList.add(taskName)
+                    workforce.workerTaskMap[taskName]!!.add(workerEntity)
+                }
+            }
+        }
     }
 
     /**

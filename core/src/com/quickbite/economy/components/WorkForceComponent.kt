@@ -15,10 +15,11 @@ class WorkForceComponent : MyComponent {
     var numWorkerSpots:Int = 0
     var workersAvailable:Array<Entity> = Array(10)
 
-    /** The worker tasks and their limits*/
+    /** The worker task names and their limits (how many jobs can be taken)*/
     var workerTasksLimits:Array<WorkerTaskLimitLink> = Array()
     var workersPaidFlag = false
 
+    /** A hashmap that links a task name/type to a list of entities that is currently performing them*/
     val workerTaskMap : HashMap<String, Array<Entity>> = hashMapOf()
 
     override fun initialize() {

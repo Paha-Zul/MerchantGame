@@ -23,7 +23,7 @@ object Spawner {
 
     const val populationMultiplierForBuyerThreshold = 200 //For every x amount of population, increase the multiplier by 1
     val populationMultiplierForBuyer:Float
-        get() = Math.max(1f, town.population.toFloat() / populationMultiplierForBuyerThreshold.toFloat()) //We want this to be at least 1
+        get() = Math.max(1f, town.population / populationMultiplierForBuyerThreshold.toFloat()) //We want this to be at least 1
 
     const val populationMultiplierForHaulerThreshold = 400 //For every x amount of population, increase the multiplier by 1
     val populationMultiplierForHauler:Float

@@ -15,13 +15,13 @@
     bodyDimensions = {x = 32, y = 64}
   [defs.resourceDef]
     resourceType = "wood"
-    resourceAmount = 2
+    resourceAmount = 100
     harvestAmount = 1
     harvestedItemName = "Wood Log"
     numHarvestersMax = 1
     baseHarvestTime = 1.5
     canRegrow = true
-    baseRegrowTimeRange = [5, 10]
+    baseRegrowTimeRange = [180, 300]
     harvestedGraphicName = "tree_stump"
   [defs.gridDef]
     onGrid = true
