@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
+import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.WorkForceComponent
@@ -191,12 +192,13 @@ object GUIUtil {
         workerTasksAndAmountsTable.add(currWorkersAndTotalWorkers).colspan(100)
         workerTasksAndAmountsTable.row()
 
-        //Loop over a copy so we can use another iterator....
-        workforceComp.workerTasksLimits.toList().forEachIndexed { i, taskLimit ->
+        val size = workforceComp.workerTasksLimits.size
+        for(i in 0..size-1){
+            val workerTasksLimit = workforceComp.workerTasksLimits[i]
             //The current amount out of the max amount, ie: 1/4
-            val amountText = "${workforceComp.workerTaskMap[taskLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == taskLimit.taskName }!!.amount}"
+            val amountText = "${workforceComp.workerTaskMap[workerTasksLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == workerTasksLimit.taskName }!!.amount}"
 
-            val taskLabel = Label(taskLimit.taskName, labelStyle)
+            val taskLabel = Label(workerTasksLimit.taskName, labelStyle)
             val amountLabel = Label(amountText, labelStyle)
 
             workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
@@ -208,6 +210,59 @@ object GUIUtil {
             }
         }
 
+//        for (workerTasksLimit in workforceComp.workerTasksLimits) {
+//            //The current amount out of the max amount, ie: 1/4
+//            val amountText = "${workforceComp.workerTaskMap[workerTasksLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == workerTasksLimit.taskName }!!.amount}"
+//
+//            val taskLabel = Label(workerTasksLimit.taskName, labelStyle)
+//            val amountLabel = Label(amountText, labelStyle)
+//
+//            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
+//            workerTasksAndAmountsTable.add(amountLabel).width(25f).spaceRight(5f)
+//
+//            if(i < workforceComp.workerTasksLimits.size - 1) {
+//                val dashLabel = Label(" - ", labelStyle)
+//                workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
+//            }
+//        }
+
+        //Loop over a copy so we can use another iterator....
+//        workforceComp.workerTasksLimits.toList().forEachIndexed { i, taskLimit ->
+//            //The current amount out of the max amount, ie: 1/4
+//            val amountText = "${workforceComp.workerTaskMap[taskLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == taskLimit.taskName }!!.amount}"
+//
+//            val taskLabel = Label(taskLimit.taskName, labelStyle)
+//            val amountLabel = Label(amountText, labelStyle)
+//
+//            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
+//            workerTasksAndAmountsTable.add(amountLabel).width(25f).spaceRight(5f)
+//
+//            if(i < workforceComp.workerTasksLimits.size - 1) {
+//                val dashLabel = Label(" - ", labelStyle)
+//                workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
+//            }
+//        }
+
         return workerTasksAndAmountsTable
+    }
+
+    fun makeSimpleLabelTooltip(message:String, guiManager:GameScreenGUIManager){
+        val table = guiManager.toolTipTable
+        table.clear()
+
+        val messageLabel = Label(message, guiManager.defaultLabelStyle)
+        table.add(messageLabel)
+    }
+
+    fun makeEntityTooltip(entity:Entity, guiManager:GameScreenGUIManager){
+        val table = guiManager.toolTipTable
+        table.clear()
+
+        val pc = Mappers.produces[entity]
+        val inv = Mappers.inventory[entity]
+        val ic = Mappers.identity[entity]
+        val rc = Mappers.resource[entity]
+
+        val titleMessage = Label(ic.name, Label.LabelStyle(MyGame.defaultFont20, Color.WHITE))
     }
 }

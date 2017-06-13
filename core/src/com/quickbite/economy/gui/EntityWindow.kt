@@ -58,6 +58,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val behComp = Mappers.behaviour.get(entity)
         val ic = Mappers.inventory.get(entity)
         val buying = Mappers.buyer.get(entity)
+        val resource = Mappers.resource.get(entity)
 
         val buildingTab = TextButton("Building", defaultTextButtonStyle)
         buildingTab.label.setFontScale(1f)
@@ -80,25 +81,33 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val buyingLabel = TextButton("Buying", defaultTextButtonStyle)
         buyingLabel.label.setFontScale(1f)
 
+        val resourceTab = TextButton("Resource", defaultTextButtonStyle)
+
         val deleteLabel = TextButton("Delete", defaultTextButtonStyle)
         deleteLabel.label.setFontScale(1f)
 
+        tabTable.defaults().width(60f).height(TAB_HEIGHT)
+
         if(bc != null)
-            tabTable.add(buildingTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(buildingTab).spaceRight(5f)
         if(sc != null) {
-            tabTable.add(sellTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
-            tabTable.add(economyTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(sellTab).spaceRight(5f)
+            tabTable.add(economyTab).spaceRight(5f)
         }
         if(wc != null)
-            tabTable.add(workTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(workTab).spaceRight(5f)
         if(behComp != null)
-            tabTable.add(behaviourTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(behaviourTab).spaceRight(5f)
         if(ic != null)
-            tabTable.add(inventoryTab).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(inventoryTab).spaceRight(5f)
         if(buying != null)
-            tabTable.add(buyingLabel).spaceRight(5f).height(TAB_HEIGHT).growX().uniformX()
+            tabTable.add(buyingLabel).spaceRight(5f)
+        if(resource != null)
+            tabTable.add(resourceTab).spaceRight(5f)
 
-        tabTable.add(deleteLabel).height(TAB_HEIGHT).growX().uniformX()
+        tabTable.add().width(0f).growX()
+
+        tabTable.add(deleteLabel).right()
 
         buildingTab.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -147,6 +156,13 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 loadTable(contentTable, buying, 7)
+            }
+        })
+
+        resourceTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, resource, 8)
             }
         })
 
@@ -203,6 +219,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             5 -> setupBehaviourTable(table, component as BehaviourComponent)
             6-> setupInventoryTable(table, component as InventoryComponent)
             7 -> setupBuyingTable(table, component as BuyerComponent)
+            8 -> setupResourceTable(table, component as ResourceComponent)
         }
 
         currentlyDisplayingComponent = component
@@ -342,7 +359,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 iconImage.addListener(object: ClickListener(){
                     override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                         super.enter(event, x, y, pointer, fromActor)
-                        guiManager.startShowingTooltip(itemName, GameScreenGUIManager.TooltipLocation.Mouse)
+                        GUIUtil.makeSimpleLabelTooltip(itemName, guiManager)
+                        guiManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
                     }
 
                     override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
@@ -809,5 +827,11 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             println("Something")
             guiManager.openImportWindow(this.entity)
         }
+    }
+
+    private fun setupResourceTable(table: Table, comp: ResourceComponent){
+        table.top().left()
+
+        val resourceTypeLabel = Label(comp.resourceType, defaultLabelStyle)
     }
 }

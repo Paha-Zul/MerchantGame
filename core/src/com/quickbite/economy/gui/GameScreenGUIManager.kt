@@ -42,9 +42,11 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     var ratingLabel:Label
 
     enum class TooltipLocation{Mouse, Building}
-    private val tooltipLabel:Label = Label("error", tooltipLabelStyle)
+    val toolTipTable:Table = Table()
     private var showingTooltip = false
     private var tooltipLocation = TooltipLocation.Mouse
+
+    private var entityHoverWindow:EntityHoverWindow? = null
 
     //Gotta be lazy cause Import won't be available right away
     val myTown: Town by lazy {TownManager.getTown("Town")}
@@ -149,6 +151,18 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         guiStack.removeIf {it is TownWindow}
     }
 
+    fun openHoverEntityWindow(entity:Entity){
+//        val window = guiStack.firstOrNull { it is EntityHoverWindow }
+//        if(window == null)
+//            guiStack.add(EntityHoverWindow(entity, this))
+
+        this.entityHoverWindow = EntityHoverWindow(entity, this)
+    }
+
+    fun closeEntityHoverWindow(){
+        this.entityHoverWindow = null
+    }
+
     /**
      * Opens an Entity window. If one already exists, brings it to the front
      * @param entity The Entity to display
@@ -185,6 +199,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         ratingLabel.setText("N: ${myTown.needsRating}, L: ${myTown.luxuryRating}")
 
         displayTooltip()
+        drawEntityHoverWindow()
     }
 
     private fun displayTooltip(){
@@ -193,14 +208,22 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         val position:Vector2
         when(tooltipLocation){
             TooltipLocation.Mouse -> {
-                position = Vector2(Gdx.input.x.toFloat() - tooltipLabel.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
+                position = Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
             }
             TooltipLocation.Building -> {
-                position = Vector2(Gdx.input.x.toFloat() - tooltipLabel.width/2f, Gdx.input.y.toFloat())
+                position = Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, Gdx.input.y.toFloat())
             }
         }
 
-        tooltipLabel.setPosition(position.x, position.y)
+        toolTipTable.setPosition(position.x, position.y)
+    }
+
+    private fun drawEntityHoverWindow(){
+        if(entityHoverWindow == null) return
+
+        val position:Vector2 = Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
+
+        entityHoverWindow!!.window.setPosition(position.x, position.y)
     }
 
     /**
@@ -208,15 +231,14 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
      * @param message The text message to display
      * @param location The location for it to display like at the mouse or building hovered over
      */
-    fun startShowingTooltip(message:String, location:TooltipLocation){
+    fun startShowingTooltip(location:TooltipLocation){
         showingTooltip = true
-        tooltipLabel.setText(message)
         tooltipLocation = location
-        MyGame.stage.addActor(tooltipLabel)
+        MyGame.stage.addActor(toolTipTable)
     }
 
     fun stopShowingTooltip(){
         showingTooltip = false
-        tooltipLabel.remove()
+        toolTipTable.remove()
     }
 }
