@@ -1,4 +1,4 @@
-package com.quickbite.economy.interfaces
+package com.quickbite.economy.gui
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
@@ -11,14 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
-import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.util.Util
 import java.util.*
 
 /**
  * Created by Paha on 3/9/2017.
  */
-open class GUIWindow(val guiManager: GameScreenGUIManager) {
+open class GUIWindow {
     /** The main GUI window that is movable*/
     val window: Window
     /** The main table that holds the tabTable and contentTable. Can be modified*/
@@ -105,6 +104,6 @@ open class GUIWindow(val guiManager: GameScreenGUIManager) {
     open fun close(){
         mainTable.remove()
         window.remove()
-        guiManager.closeWindow(this)
+        GameScreenGUIManager.closeWindow(this)
     }
 }

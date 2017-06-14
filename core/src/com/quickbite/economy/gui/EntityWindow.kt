@@ -22,7 +22,6 @@ import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
-import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
@@ -34,7 +33,7 @@ import com.quickbite.economy.util.Util
 /**
  * Created by Paha on 3/9/2017.
  */
-class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
+class EntityWindow(val entity:Entity) : GUIWindow(){
 
     private var currentlyDisplayingComponent: Component? = null
     private var currentlySelectedEntity: Entity? = null
@@ -263,7 +262,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         val workerTasksAndAmountsTables = Table()
 
         GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
-        GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager)
+        GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
 
         val workerTaskList = Table()
 
@@ -283,7 +282,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
                     EntityWindowController.addTasksToWorkers(taskNameText, selectedWorkers, currentlySelectedEntity!!)
 
-                    GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager)
+                    GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
                 }
             })
         }
@@ -295,12 +294,12 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         //Hire button listener
         hireButton.addListener(object:ChangeListener(){
             override fun changed(event: ChangeEvent?, actor: Actor?) {
-                guiManager.openHireWindow(this@EntityWindow.entity)
+                GameScreenGUIManager.openHireWindow(this@EntityWindow.entity)
             }
         })
 
         //An event to listen for a worker to be hired
-        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> { GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, guiManager) }
+        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> { GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager) }
 
         //Remember to remove this from the event system
         changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
@@ -348,6 +347,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
             contentsTable.add(listLabel).colspan(2)
             contentsTable.row()
 
+            println("populating")
+
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
                 val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
                 val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
@@ -356,16 +357,18 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
                 itemAmountLabel.setFontScale(1f)
                 itemAmountLabel.setAlignment(Align.center)
 
+                println("icon images")
+
                 iconImage.addListener(object: ClickListener(){
                     override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                         super.enter(event, x, y, pointer, fromActor)
-                        GUIUtil.makeSimpleLabelTooltip(itemName, guiManager)
-                        guiManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
+                        GUIUtil.makeSimpleLabelTooltip(itemName)
+                        GameScreenGUIManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
                     }
 
                     override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
                         super.exit(event, x, y, pointer, toActor)
-                        guiManager.stopShowingTooltip()
+                        GameScreenGUIManager.stopShowingTooltip()
                     }
                 })
 
@@ -797,8 +800,8 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
         linkButton.addListener(object: ChangeListener(){
             override fun changed(event: ChangeEvent?, actor: Actor?) {
                 //TODO Probably want to clean this up
-                guiManager.gameScreen.inputHandler.linkingAnotherEntity = true
-                guiManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
+                GameScreenGUIManager.gameScreen.inputHandler.linkingAnotherEntity = true
+                GameScreenGUIManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
                     if(ent != currentlySelectedEntity){
                         val otherBuilding = Mappers.building[ent]
                         val otherSelling = Mappers.selling[ent]
@@ -825,7 +828,7 @@ class EntityWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWin
 
         importButton.addChangeListener { _, _ ->
             println("Something")
-            guiManager.openImportWindow(this.entity)
+            GameScreenGUIManager.openImportWindow(this.entity)
         }
     }
 

@@ -3,7 +3,6 @@ package com.quickbite.economy.gui
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.quickbite.economy.addChangeListener
-import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.util.Util
 
@@ -11,7 +10,7 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 5/1/2017.
  * A window for importing items into the town
  */
-class ImportWindow(guiManager: GameScreenGUIManager, val entity:Entity) : GUIWindow(guiManager){
+class ImportWindow(val entity:Entity) : GUIWindow(){
     init{
         window.setSize(150f, 300f)
 

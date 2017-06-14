@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.quickbite.economy.CheckHoverOverEntity
 import com.quickbite.economy.InputHandler
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.DebugDrawComponent
@@ -21,7 +22,6 @@ import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.levels.Level1
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.systems.*
-import com.quickbite.economy.tutorialtest.TutorialTest
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.Spawner.town
 
@@ -33,7 +33,6 @@ class GameScreen :Screen{
     val gameScreeData = GameScreenData()
     var shadowObject : Pair<Entity, TransformComponent>? = null
     lateinit var inputHandler:InputHandler
-    lateinit var gameScreenGUI:GameScreenGUIManager
 
     var currentlySelectedType  = ""
         set(value) {
@@ -51,8 +50,7 @@ class GameScreen :Screen{
             gameScreeData.playerMoney += it.taxCollected
         }
 
-        gameScreenGUI = GameScreenGUIManager(this)
-        TutorialTest.gameScreenGUIManager = gameScreenGUI
+        GameScreenGUIManager.init(this)
 
         inputHandler = InputHandler(this)
         Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, inputHandler)
@@ -119,6 +117,8 @@ class GameScreen :Screen{
     override fun render(delta: Float) {
         val delta = TimeUtil.scaledDeltaTime
 
+        CheckHoverOverEntity.update(delta)
+
         positionBuildingShadow()
 
         val batch =  MyGame.batch
@@ -147,7 +147,7 @@ class GameScreen :Screen{
             MyGame.box2DDebugRenderer.render(MyGame.world, MyGame.box2dCamera.combined)
         }
 
-        gameScreenGUI.update(delta)
+        GameScreenGUIManager.update(delta)
         Spawner.update(delta)
 
         Gdx.gl.glDisable(GL20.GL_BLEND)

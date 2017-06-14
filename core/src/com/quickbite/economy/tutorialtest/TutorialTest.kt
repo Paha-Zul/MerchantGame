@@ -16,8 +16,6 @@ import com.quickbite.economy.gui.GameScreenGUIManager
  * Created by Paha on 5/26/2017.
  */
 object TutorialTest{
-
-    lateinit var gameScreenGUIManager: GameScreenGUIManager
     val outlineBox:NinePatchDrawable = NinePatchDrawable(NinePatch(TextureRegion(MyGame.manager["glowingOutlineBox", Texture::class.java]), 12, 12, 12, 12))
     var bounds:Rectangle = Rectangle()
     lateinit var currActor: Actor
@@ -32,7 +30,7 @@ object TutorialTest{
     const val OUTLINE_SCALE = 0.04f
 
     fun test(){
-        currActor = gameScreenGUIManager.openTownWindow()!!.window
+        currActor = GameScreenGUIManager.openTownWindow()!!.window
     }
 
     fun render(delta:Float, batch:SpriteBatch){

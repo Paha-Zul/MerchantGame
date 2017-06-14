@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ReloadGUIEvent
-import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
@@ -18,7 +17,7 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 4/23/2017.
  * A window that lists available workers to hire
  */
-class HireWorkerWindow(guiManager: GameScreenGUIManager, val workforceEntity: Entity) : GUIWindow(guiManager) {
+class HireWorkerWindow(val workforceEntity: Entity) : GUIWindow() {
     val list = mutableListOf<String>()
 
     init{

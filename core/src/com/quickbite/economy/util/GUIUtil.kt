@@ -246,23 +246,25 @@ object GUIUtil {
         return workerTasksAndAmountsTable
     }
 
-    fun makeSimpleLabelTooltip(message:String, guiManager:GameScreenGUIManager){
-        val table = guiManager.toolTipTable
+    fun makeSimpleLabelTooltip(message:String){
+        val table = GameScreenGUIManager.toolTipTable
         table.clear()
 
-        val messageLabel = Label(message, guiManager.defaultLabelStyle)
+        val messageLabel = Label(message, Label.LabelStyle(MyGame.defaultFont14, Color.WHITE))
         table.add(messageLabel)
     }
 
-    fun makeEntityTooltip(entity:Entity, guiManager:GameScreenGUIManager){
-        val table = guiManager.toolTipTable
+    fun makeEntityTooltip(entity:Entity){
+        val table = GameScreenGUIManager.toolTipTable
         table.clear()
 
+        val ic = Mappers.identity[entity]
         val pc = Mappers.produces[entity]
         val inv = Mappers.inventory[entity]
-        val ic = Mappers.identity[entity]
         val rc = Mappers.resource[entity]
 
         val titleMessage = Label(ic.name, Label.LabelStyle(MyGame.defaultFont20, Color.WHITE))
+
+        table.add(titleMessage)
     }
 }

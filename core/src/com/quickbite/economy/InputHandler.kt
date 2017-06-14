@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.components.DebugDrawComponent
+import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.Constants
@@ -82,7 +83,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
                         //If we aren't linking another entity, open another entity window
                         if(!linkingAnotherEntity)
-                            gameScreen.gameScreenGUI.openEntityWindow(selectedEntity!!)
+                            GameScreenGUIManager.openEntityWindow(selectedEntity!!)
 
                     }
 
@@ -129,9 +130,9 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.E -> DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE = !DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE
             Input.Keys.L -> DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK = !DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK
             Input.Keys.B -> DebugDrawComponent.GLOBAL_DEBUG_BODY = !DebugDrawComponent.GLOBAL_DEBUG_BODY
-            Input.Keys.T -> gameScreen.gameScreenGUI.openTownWindow()
+            Input.Keys.T -> GameScreenGUIManager.openTownWindow()
             Input.Keys.D -> Factory.destroyAllEntities()
-            Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; gameScreen.gameScreenGUI.closeAllWindows()}
+            Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; GameScreenGUIManager.closeAllWindows()}
             Input.Keys.SPACE -> TimeUtil.pausedBonus = if(TimeUtil.pausedBonus > 0) 0 else 1
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
 

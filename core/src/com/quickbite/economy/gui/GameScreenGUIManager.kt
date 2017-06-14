@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -16,7 +17,6 @@ import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
-import com.quickbite.economy.interfaces.GUIWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
@@ -28,18 +28,18 @@ import java.util.*
 /**
  * Created by Paha on 1/30/2017.
  */
-class GameScreenGUIManager(val gameScreen: GameScreen) {
+object GameScreenGUIManager {
+    lateinit var gameScreen:GameScreen
     val guiStack:Stack<GUIWindow> = Stack()
 
     val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.BLACK)
-    private val tooltipLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
     val bottomTable = Table()
 
     val topTable = Table()
 
-    var timeOfDayLabel:Label
-    var populationLabel:Label
-    var ratingLabel:Label
+    lateinit var timeOfDayLabel:Label
+    lateinit var populationLabel:Label
+    lateinit var ratingLabel:Label
 
     enum class TooltipLocation{Mouse, Building}
     val toolTipTable:Table = Table()
@@ -52,6 +52,12 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     val myTown: Town by lazy {TownManager.getTown("Town")}
 
     init{
+        toolTipTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0.1f, 0.1f, 0.1f, 0.7f))))
+    }
+
+    fun init(gameScreen:GameScreen){
+        this.gameScreen = gameScreen
+
         val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", defaultLabelStyle)
         moneyLabel.setAlignment(Align.center)
 
@@ -83,7 +89,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         MyGame.stage.addActor(topTable)
         MyGame.stage.addActor(bottomTable)
 
-        tooltipLabelStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0.1f, 0.1f, 0.1f, 0.4f))))
+        toolTipTable.touchable = Touchable.disabled
     }
 
     /**
@@ -125,12 +131,12 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
     fun openHireWindow(workforceEntity:Entity){
         if(!guiStack.any { it is HireWorkerWindow })
-            guiStack += HireWorkerWindow(this, workforceEntity)
+            guiStack += HireWorkerWindow(workforceEntity)
     }
 
     fun openTownWindow() : TownWindow?{
         if(!guiStack.any{ it is TownWindow}) {
-            val window = TownWindow(this)
+            val window = TownWindow()
             guiStack += window
             return window
         }
@@ -140,7 +146,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 
     fun openImportWindow(entity:Entity){
         if(!guiStack.any{ it is ImportWindow})
-            guiStack += ImportWindow(this, entity)
+            guiStack += ImportWindow(entity)
     }
 
     fun closeImportWindow(entity:Entity){
@@ -156,7 +162,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
 //        if(window == null)
 //            guiStack.add(EntityHoverWindow(entity, this))
 
-        this.entityHoverWindow = EntityHoverWindow(entity, this)
+        this.entityHoverWindow = EntityHoverWindow(entity)
     }
 
     fun closeEntityHoverWindow(){
@@ -179,7 +185,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         }
 
         if(!exists)
-            guiStack.add(EntityWindow(this, entity))
+            guiStack.add(EntityWindow(entity))
     }
 
     fun closeWindow(window: GUIWindow){
@@ -199,7 +205,6 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         ratingLabel.setText("N: ${myTown.needsRating}, L: ${myTown.luxuryRating}")
 
         displayTooltip()
-        drawEntityHoverWindow()
     }
 
     private fun displayTooltip(){
@@ -218,14 +223,6 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
         toolTipTable.setPosition(position.x, position.y)
     }
 
-    private fun drawEntityHoverWindow(){
-        if(entityHoverWindow == null) return
-
-        val position:Vector2 = Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
-
-        entityHoverWindow!!.window.setPosition(position.x, position.y)
-    }
-
     /**
      * Triggers the tooltip to show
      * @param message The text message to display
@@ -234,6 +231,7 @@ class GameScreenGUIManager(val gameScreen: GameScreen) {
     fun startShowingTooltip(location:TooltipLocation){
         showingTooltip = true
         tooltipLocation = location
+        toolTipTable.pack()
         MyGame.stage.addActor(toolTipTable)
     }
 
