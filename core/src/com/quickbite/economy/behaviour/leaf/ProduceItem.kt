@@ -45,7 +45,7 @@ class ProduceItem(bb:BlackBoard, var itemName:String = "", var itemAmount:Int = 
                     .forEach { inv.removeItem(it.itemName, it.itemAmount) }
 
 
-            inv.addItem(production.producedItem, itemAmount)
+            inv.addItem(production.produceItemName, itemAmount)
             controller.finishWithSuccess()
         }else{
             controller.finishWithFailure()

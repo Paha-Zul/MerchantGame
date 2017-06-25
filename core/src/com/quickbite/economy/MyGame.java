@@ -56,7 +56,7 @@ public class MyGame extends Game {
         UIBatch = new SpriteBatch();
         renderer = new ShapeRenderer();
         entityEngine = new Engine();
-		grid = new Grid(32, 3000, 3000);
+		grid = new Grid(25, 3000, 3000);
 		world = new World(new Vector2(0f, 0f), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
         stage = new Stage(UIViewport, UIBatch);
@@ -99,6 +99,7 @@ public class MyGame extends Game {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
+		box2dCamera.update();
 		UICamera.update();
 
 		super.render();

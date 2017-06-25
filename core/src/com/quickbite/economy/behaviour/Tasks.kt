@@ -32,7 +32,7 @@ object Tasks {
     fun harvestClosestResourceType(bb:BlackBoard) : Task{
         val seq = Sequence(bb, "Harvesting Resource")
 
-        val unhide = ChangeHidden(bb, false)
+        val leaveBuilding = ExitBuilding(bb)
         val getResource = GetClosestResourceWithHarvesterSpot(bb)
         val getResourceHarvestSpot = GetSpotOfEntity(bb, "harvest")
         val getPathToResource = GetPath(bb)
@@ -43,10 +43,10 @@ object Tasks {
         val getEntranceOfBuilding = GetSpotOfEntity(bb, "entrance")
         val getPathToMyBuilding = GetPath(bb)
         val moveToMyBuilding = MoveToPath(bb)
-        val hide = ChangeHidden(bb, true)
+        val enterBuilding = EnterBuilding(bb)
         val transferAll = TransferFromInventoryToInventory(bb, true, true)
 
-        seq.controller.addTask(unhide)
+        seq.controller.addTask(leaveBuilding)
         seq.controller.addTask(getResource)
         seq.controller.addTask(getResourceHarvestSpot)
         seq.controller.addTask(getPathToResource)
@@ -57,7 +57,7 @@ object Tasks {
         seq.controller.addTask(getEntranceOfBuilding)
         seq.controller.addTask(getPathToMyBuilding)
         seq.controller.addTask(moveToMyBuilding)
-        seq.controller.addTask(hide)
+        seq.controller.addTask(enterBuilding)
         seq.controller.addTask(transferAll)
 
         return seq
@@ -74,26 +74,26 @@ object Tasks {
         val getEntrance = GetEntranceOfBuilding(bb)
         val getPath = GetPath(bb)
         val moveTo = MoveToPath(bb)
-        val hide = ChangeHidden(bb, true)
+        val enterBuilding = EnterBuilding(bb)
         val setInside = SetTargetEntityAsInside(bb)
         val enterBuildingQueue = EnterBuildingQueue(bb)
         val buyItem = WaitTimeOrCondition(bb, MathUtils.random(15f, 25f), {ent -> Mappers.buyer.get(ent).buyerFlag != BuyerComponent.BuyerFlag.None})
         val handleBought = HandleBuyStatus(bb)
         val leaveBuildingQueue = LeaveBuildingQueue(bb)
-        val unhide = ChangeHidden(bb, false)
+        val leaveBuilding = ExitBuilding(bb)
         val setOutside = SetTargetEntityAsInside(bb, false)
 
         seq.controller.addTask(getItemDemand)
         seq.controller.addTask(getEntrance)
         seq.controller.addTask(getPath)
         seq.controller.addTask(moveTo)
-        seq.controller.addTask(hide)
+        seq.controller.addTask(enterBuilding)
         seq.controller.addTask(setInside)
         seq.controller.addTask(enterBuildingQueue)
         seq.controller.addTask(buyItem)
         seq.controller.addTask(handleBought)
         seq.controller.addTask(leaveBuildingQueue)
-        seq.controller.addTask(unhide)
+        seq.controller.addTask(leaveBuilding)
         seq.controller.addTask(setOutside)
 
         return seq
@@ -101,8 +101,6 @@ object Tasks {
 
     fun tryToBuyAllItemDemands(bb:BlackBoard):Task{
         val task = RepeatUntilFail(bb, buyItemDemandFromBuilding(bb))
-
-
         return task
     }
 
@@ -112,14 +110,14 @@ object Tasks {
     fun leaveMap(bb:BlackBoard):Task{
         val seq = Sequence(bb, "Leaving Map")
 
-        val unhide = ChangeHidden(bb, false)
+        val leaveBuilding = ExitBuilding(bb)
         val getExit = GetMapExit(bb)
         val getPathToExit = GetPath(bb)
         val moveToExit = MoveToPath(bb)
         val applyRatingsToTown = ApplyRatingsToTown(bb)
         val destroyMyself = DestroyMyself(bb)
 
-        seq.controller.addTask(unhide)
+        seq.controller.addTask(leaveBuilding)
         seq.controller.addTask(getExit)
         seq.controller.addTask(getPathToExit)
         seq.controller.addTask(moveToExit)
@@ -132,14 +130,14 @@ object Tasks {
     fun leaveMapAndHide(bb:BlackBoard):Task{
         val seq = Sequence(bb, "Leaving Map")
 
-        val unhide = ChangeHidden(bb, false)
+        val leaveBuilding = ExitBuilding(bb)
         val setOutside = SetTargetEntityAsInside(bb, false)
         val getExit = GetMapExit(bb)
         val getPathToExit = GetPath(bb)
         val moveToExit = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
 
-        seq.controller.addTask(unhide)
+        seq.controller.addTask(leaveBuilding)
         seq.controller.addTask(setOutside)
         seq.controller.addTask(getExit)
         seq.controller.addTask(getPathToExit)
@@ -180,7 +178,7 @@ object Tasks {
         val moveTo = MoveToPath(bb)
         val hide = ChangeHidden(bb, true)
         val wait = Wait(bb, 1f, 5f)
-        val unhide = ChangeHidden(bb, false)
+        val leaveBuilding = ExitBuilding(bb)
         val getExit = GetMapExit(bb)
         val getPathToExit = GetPath(bb)
         val moveToExit = MoveToPath(bb)
@@ -192,7 +190,7 @@ object Tasks {
         seq.controller.addTask(moveTo)
         seq.controller.addTask(hide)
         seq.controller.addTask(wait)
-        seq.controller.addTask(unhide)
+        seq.controller.addTask(leaveBuilding)
         seq.controller.addTask(getExit)
         seq.controller.addTask(getPathToExit)
         seq.controller.addTask(moveToExit)
@@ -320,7 +318,7 @@ object Tasks {
         alwaysSucceedSeq.controller.addTask(GetEntranceOfBuilding(bb))
         alwaysSucceedSeq.controller.addTask(GetPath(bb))
         alwaysSucceedSeq.controller.addTask(MoveToPath(bb))
-        alwaysSucceedSeq.controller.addTask(ChangeHidden(bb, true))
+        alwaysSucceedSeq.controller.addTask(EnterBuilding(bb))
         alwaysSucceedSeq.controller.addTask(Wait(bb, MathUtils.random(0.5f, 3f)))
         alwaysSucceedSeq.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
 

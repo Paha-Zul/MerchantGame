@@ -10,7 +10,10 @@ import com.quickbite.economy.util.Mappers
 class ChangeHidden(bb:BlackBoard, val hide:Boolean = false) : LeafTask(bb){
 
     override fun start() {
-        Mappers.graphic.get(bb.myself).hide = hide
+        val gc = Mappers.graphic.get(bb.myself)
+        gc.hide = hide
+        gc.sprite.setAlpha(if(hide) 0f else 1f)
+
         this.controller.finishWithSuccess()
     }
 }

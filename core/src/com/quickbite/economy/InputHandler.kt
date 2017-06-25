@@ -75,7 +75,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
                     //If not null, open the table for the Entity
                     }else{
-                        //Call this callback (probably empty most of the time
+                        //Call this callback (probably empty most of the moveTime
                         linkingEntityCallback(entityClickedOn!!)
 
                         //Save the selected entity
@@ -119,6 +119,8 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     }
 
     override fun scrolled(amount: Int): Boolean {
+        MyGame.camera.zoom += amount*0.1f
+        MyGame.box2dCamera.zoom += amount*0.1f
         return false
     }
 
@@ -131,7 +133,6 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.L -> DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK = !DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK
             Input.Keys.B -> DebugDrawComponent.GLOBAL_DEBUG_BODY = !DebugDrawComponent.GLOBAL_DEBUG_BODY
             Input.Keys.T -> GameScreenGUIManager.openTownWindow()
-            Input.Keys.D -> Factory.destroyAllEntities()
             Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; GameScreenGUIManager.closeAllWindows()}
             Input.Keys.SPACE -> TimeUtil.pausedBonus = if(TimeUtil.pausedBonus > 0) 0 else 1
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid

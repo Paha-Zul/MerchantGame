@@ -32,7 +32,8 @@ object GameScreenGUIManager {
     lateinit var gameScreen:GameScreen
     val guiStack:Stack<GUIWindow> = Stack()
 
-    val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.BLACK)
+    private val labelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.BLACK)
+    val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
     val bottomTable = Table()
 
     val topTable = Table()
@@ -58,16 +59,16 @@ object GameScreenGUIManager {
     fun init(gameScreen:GameScreen){
         this.gameScreen = gameScreen
 
-        val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", defaultLabelStyle)
+        val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", labelStyle)
         moneyLabel.setAlignment(Align.center)
 
-        timeOfDayLabel = Label(TimeOfDay.toString(), defaultLabelStyle)
+        timeOfDayLabel = Label(TimeOfDay.toString(), labelStyle)
         timeOfDayLabel.setAlignment(Align.center)
 
-        populationLabel = Label("", defaultLabelStyle)
+        populationLabel = Label("", labelStyle)
         populationLabel.setAlignment(Align.center)
 
-        ratingLabel = Label("", defaultLabelStyle)
+        ratingLabel = Label("", labelStyle)
         ratingLabel.setAlignment(Align.center)
 
         topTable.add(moneyLabel).width(200f)

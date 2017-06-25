@@ -189,7 +189,7 @@ object Factory {
 
                     //for each production, add the produced item to the output and all the requirements to the input
                     producesItems.productionList.forEach { production ->
-                        inventory.outputItems += production.producedItem
+                        inventory.outputItems += production.produceItemName
                         production.requirements.forEach { (itemName) ->
                             inventory.inputItems += itemName
                         }

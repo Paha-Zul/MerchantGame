@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.quickbite.economy.objects.Terrain
 
 /**
  * Created by Paha on 12/13/2016.
@@ -165,6 +166,7 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
     inner class GridNode(val x:Int, val y:Int){
         val entityList = com.badlogic.gdx.utils.Array<Entity>()
         var blocked = false
+        var terrain: Terrain? = null
 
         /**
          * The X position of this node (not centered)

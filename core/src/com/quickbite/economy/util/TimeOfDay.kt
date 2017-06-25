@@ -17,7 +17,7 @@ object TimeOfDay{
 
     val timeScale = 5
 
-    /** Takes into account the timeScale of delta time from TimeUtil. This is the calculated timeScale of time progression*/
+    /** Takes into account the timeScale of delta moveTime from TimeUtil. This is the calculated timeScale of moveTime progression*/
     val currScaledTime:Int
         get() = timeScale *TimeUtil.deltaTimeScale
 

@@ -110,7 +110,7 @@ object GUIUtil {
         val workerTasksLabel = Label(tasks, labelStyle)
         workerTasksLabel.setAlignment(Align.center)
 
-        //The start and end time, with controls to handle each (slightly complicated)
+        //The start and end moveTime, with controls to handle each (slightly complicated)
         val startTimeTable = Table()
         val endTimeTable = Table()
         val workHoursStartLabel = Label("${worker.timeRange.first}", labelStyle)
@@ -265,6 +265,51 @@ object GUIUtil {
 
         val titleMessage = Label(ic.name, Label.LabelStyle(MyGame.defaultFont20, Color.WHITE))
 
-        table.add(titleMessage)
+        table.add(titleMessage).colspan(100).left() //Add the title
+        table.row() //Add a row, stuff goes under the title
+
+        //For each component we want a table to hold its stuff
+
+        //For the production...
+        if(pc != null && pc.productionList.size > 0){
+            val productionTable = Table()
+            val producingTitleLabel = Label("Producing", GameScreenGUIManager.defaultLabelStyle)
+            productionTable.add(producingTitleLabel)
+            productionTable.row()
+            pc.productionList.forEach {
+                val production = Label(it.produceItemName, GameScreenGUIManager.defaultLabelStyle)
+                productionTable.add(production).padLeft(5f)
+                productionTable.row()
+            }
+
+            table.add(productionTable)
+        }
+
+        //For the inventory...
+        if(inv != null){
+            val invTable = Table()
+            val invTitleLabel = Label("Inventory", GameScreenGUIManager.defaultLabelStyle)
+            invTable.add(invTitleLabel)
+            invTable.row()
+            inv.itemMap.values.forEach {
+                val production = Label("${it.itemAmount} ${it.itemName}", GameScreenGUIManager.defaultLabelStyle)
+                invTable.add(production)
+                invTable.row()
+            }
+
+            table.add(invTable)
+        }
+
+        //For the resource...
+        if(rc != null){
+            val resourceTable = Table()
+            val resourceTitleLabel = Label("Resources", GameScreenGUIManager.defaultLabelStyle)
+            resourceTable.add(resourceTitleLabel)
+            resourceTable.row()
+            val production = Label("${rc.currResourceAmount} ${rc.harvestItemName}", GameScreenGUIManager.defaultLabelStyle)
+            resourceTable.add(production)
+
+            table.add(resourceTable)
+        }
     }
 }

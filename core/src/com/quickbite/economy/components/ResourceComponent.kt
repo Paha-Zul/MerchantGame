@@ -18,9 +18,9 @@ class ResourceComponent : MyComponent {
 
     /** A boolean if the resource can grow back (like trees)*/
     var canRegrow = false
-    /** A range of time (in seconds) to random between for the resource to grow back*/
+    /** A range of moveTime (in seconds) to random between for the resource to grow back*/
     var baseRegrowTime = arrayOf(180, 300)
-    /** The next time that this resource should regrow*/
+    /** The next moveTime that this resource should regrow*/
     var nextRegrowTime = 0f
     /** A boolean if the resource is harvested. This is useful if the resource can grow back (trees)*/
     var harvested = false

@@ -1,17 +1,17 @@
 [[productions]]
-  producedItem = "Wood Plank"
+  produceItemName = "Wood Plank"
   produceAmount = 10
   requirements = [{itemName = "Wood Log", itemAmount = 1}]
 [[productions]]
-  producedItem = "Wood Table"
+  produceItemName = "Wood Table"
   produceAmount = 1
   requirements = [{itemName = "Wood Plank", itemAmount = 10}]
 [[productions]]
-  producedItem = "Flour"
+  produceItemName = "Flour"
   produceAmount = 10
   requirements = [{itemName = "Wheat", itemAmount = 2}]
 [[productions]]
-  producedItem = "Bread"
+  produceItemName = "Bread"
   produceAmount = 5
   requirements = [
   {itemName = "Flour", itemAmount = 2},

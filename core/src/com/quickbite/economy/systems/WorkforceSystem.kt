@@ -34,7 +34,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
                 //TODO Deal with the time schedule
 
                 val diff = 24 - worker.timeRange.first //We get how far from 0 we are (24 == 0 in hours)
-                val scaledTime = (TimeOfDay.hour + diff)%24 //We add the diff to the current time to get the scaled time (ie: 22 + 6 % 24 = 4)
+                val scaledTime = (TimeOfDay.hour + diff)%24 //We add the diff to the current moveTime to get the scaled moveTime (ie: 22 + 6 % 24 = 4)
                 val scaledWorkerTimeStart = (worker.timeRange.first + diff)%24 //This should always be 0 but we do this for consistency
                 val scaledWorkerTimeEnd = (worker.timeRange.second + diff)%24 //This will be the ending time, ie: 6 (after scaling)
 

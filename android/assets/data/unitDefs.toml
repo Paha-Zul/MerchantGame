@@ -26,7 +26,7 @@
     #Try to keep single values up here...
     name = "Worker"
     [defs.graphicDef]
-      graphicName = "seller"
+      graphicName = "worker"
       graphicAnchor = [0.5, 0.5]
       graphicSize = [25, 25]
       initialAnimation = false
@@ -46,7 +46,7 @@
     #Try to keep single values up here...
     name = "Hauler"
     [defs.graphicDef]
-      graphicName = "hauler"
+      graphicName = "trader"
       graphicAnchor = [0.5, 0.5]
       graphicSize = [25, 25]
       initialAnimation = false

@@ -18,16 +18,16 @@
 [[defs]]
     name = "Shop"
     [defs.graphicDef]
-        graphicName = "market"
+        graphicName = "shop"
         graphicAnchor = [0.5, 0.5]
-        graphicSize = [75, 75]
+        graphicSize = [165, 165]
         initialAnimation = true
     [defs.buildingDef]
         buildingType = "Shop"
     [defs.transformDef]
-        physicalDimensions = {x = 75, y = 75}
+        physicalDimensions = {x = 145, y = 145}
         [defs.transformDef.spots]
-            entrance = [{x = 0, y = -50}]
+            entrance = [{x = 0, y = -90}]
     [defs.inventoryDef]
         debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]

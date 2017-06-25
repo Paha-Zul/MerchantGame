@@ -112,7 +112,7 @@ object DefinitionManager {
         }
 
         val itemProdList = Toml().read(Gdx.files.internal(itemProdName).file()).to(DefinitionManager.ProductionList::class.java)
-        itemProdList.productions.forEach { prod -> DefinitionManager.productionMap.put(prod.producedItem, prod)}
+        itemProdList.productions.forEach { prod -> DefinitionManager.productionMap.put(prod.produceItemName, prod)}
 
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
 
@@ -260,7 +260,7 @@ object DefinitionManager {
     }
 
     class Production{
-        lateinit var producedItem:String
+        lateinit var produceItemName:String
         var produceAmount:Int = 0
         lateinit var requirements:Array<ItemAmountLink>
     }

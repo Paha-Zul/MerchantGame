@@ -3,9 +3,13 @@ package com.quickbite.economy.screens
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntityListener
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
@@ -21,6 +25,7 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.levels.Level1
 import com.quickbite.economy.managers.TownManager
+import com.quickbite.economy.objects.Terrain
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.Spawner.town
@@ -28,6 +33,8 @@ import com.quickbite.economy.util.Spawner.town
 
 /**
  * Created by Paha on 12/13/2016.
+ *
+ * The main game screen for a level.
  */
 class GameScreen :Screen{
     val gameScreeData = GameScreenData()
@@ -73,14 +80,14 @@ class GameScreen :Screen{
         MyGame.entityEngine.addSystem(goldTrackingSystem)
         MyGame.entityEngine.addSystem(resourceSystem)
 
-        MyGame.entityEngine.addEntityListener(object:EntityListener{
+        MyGame.entityEngine.addEntityListener(object : EntityListener {
             override fun entityRemoved(ent: Entity?) {
                 val gc = Mappers.grid.get(ent) //The grid component
                 val pc = Mappers.preview.get(ent) //The preview component
-                if(gc != null && pc == null){ //We need to make sure we have a grid component AND DO NOT HAVE a preview component.
-                    if(gc.blockWhenPlaced){
+                if (gc != null && pc == null) { //We need to make sure we have a grid component AND DO NOT HAVE a preview component.
+                    if (gc.blockWhenPlaced) {
                         val tc = Mappers.transform.get(ent)
-                        MyGame.grid.setUnblocked(tc.position.x, tc.position.y, tc.dimensions.x*0.5f, tc.dimensions.y*0.5f)
+                        MyGame.grid.setUnblocked(tc.position.x, tc.position.y, tc.dimensions.x * 0.5f, tc.dimensions.y * 0.5f)
                     }
                 }
             }
@@ -88,7 +95,7 @@ class GameScreen :Screen{
             override fun entityAdded(ent: Entity) {
                 val init = Mappers.init.get(ent)
                 val preview = Mappers.preview.get(ent)
-                if(init != null && preview == null){
+                if (init != null && preview == null) {
                     init.initiated = true
                     init.initFuncs.forEach { func -> func() }
                     ent.remove(InitializationComponent::class.java)
@@ -96,10 +103,22 @@ class GameScreen :Screen{
             }
         })
 
+        initTerrain()
+
         TownManager.init()
 
         Level1.start()
 //        TutorialTest.test()
+
+    }
+
+    fun initTerrain(){
+        MyGame.grid.grid.forEach { it.forEach { gridNode ->
+//            gridNode.terrain = Terrain(TextureRegion(Util.createPixel(Color(216f/255f, 237f/255f, 85f/255f, 1f), MyGame.grid.squareSize, MyGame.grid.squareSize)),
+//                    gridNode.xPos, gridNode.yPos)
+            gridNode.terrain = Terrain(TextureRegion(MyGame.manager["grass14", Texture::class.java], MyGame.grid.squareSize, MyGame.grid.squareSize),
+                    gridNode.xPos, gridNode.yPos)
+        } }
     }
 
     override fun pause() {
@@ -126,6 +145,7 @@ class GameScreen :Screen{
 
         batch.begin()
 
+        drawTerrain(batch)
         MyGame.entityEngine.update(TimeUtil.scaledDeltaTime)
 
         batch.end()
@@ -154,6 +174,29 @@ class GameScreen :Screen{
 
         TimeOfDay.update(delta)
         updateTown(delta)
+
+        checkCameraMove()
+    }
+
+    private fun checkCameraMove(){
+        if(Gdx.input.isKeyPressed(Input.Keys.W)) moveCameras(0f, Constants.CAMERA_MOVE_SPEED)
+        else if(Gdx.input.isKeyPressed(Input.Keys.S)) moveCameras(0f, -Constants.CAMERA_MOVE_SPEED)
+        if(Gdx.input.isKeyPressed(Input.Keys.A)) moveCameras(-Constants.CAMERA_MOVE_SPEED, 0f)
+        else if(Gdx.input.isKeyPressed(Input.Keys.D)) moveCameras(Constants.CAMERA_MOVE_SPEED, 0f)
+    }
+
+    private fun moveCameras(x:Float, y:Float){
+        MyGame.camera.translate(x, y)
+        MyGame.box2dCamera.translate(x, y)
+    }
+
+    private fun drawTerrain(batch:SpriteBatch){
+        MyGame.grid.grid.forEach { it.forEach { gridNode ->
+            if(gridNode.terrain!=null){
+                val terrain = gridNode.terrain!!
+                batch.draw(terrain.texture, terrain.x, terrain.y)
+            }
+        } }
     }
 
     private fun updateTown(delta:Float){
