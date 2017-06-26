@@ -28,7 +28,6 @@ import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Terrain
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
-import com.quickbite.economy.util.Spawner.town
 
 
 /**
@@ -187,7 +186,7 @@ class GameScreen :Screen{
 
     private fun moveCameras(x:Float, y:Float){
         MyGame.camera.translate(x, y)
-        MyGame.box2dCamera.translate(x, y)
+        MyGame.box2dCamera.position.set(MyGame.camera.position.x*Constants.BOX2D_SCALE, MyGame.camera.position.y*Constants.BOX2D_SCALE, 0f)
     }
 
     private fun drawTerrain(batch:SpriteBatch){
@@ -200,7 +199,7 @@ class GameScreen :Screen{
     }
 
     private fun updateTown(delta:Float){
-        town.update(delta)
+        TownManager.update(delta)
     }
 
     fun debugDrawLine(renderer:ShapeRenderer){

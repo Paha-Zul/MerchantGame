@@ -11,10 +11,7 @@ import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
-import com.quickbite.economy.util.Constants
-import com.quickbite.economy.util.Factory
-import com.quickbite.economy.util.TimeUtil
-import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.*
 
 /**
  * Created by Paha on 1/17/2017.
@@ -132,6 +129,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.E -> DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE = !DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE
             Input.Keys.L -> DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK = !DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK
             Input.Keys.B -> DebugDrawComponent.GLOBAL_DEBUG_BODY = !DebugDrawComponent.GLOBAL_DEBUG_BODY
+            Input.Keys.F -> Spawner.spawnBuyer()
             Input.Keys.T -> GameScreenGUIManager.openTownWindow()
             Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; GameScreenGUIManager.closeAllWindows()}
             Input.Keys.SPACE -> TimeUtil.pausedBonus = if(TimeUtil.pausedBonus > 0) 0 else 1

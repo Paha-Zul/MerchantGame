@@ -13,22 +13,30 @@ import com.quickbite.economy.util.Mappers
  * Enters a building, which will move the Entity into the building with a quick fade.
  */
 class EnterBuilding(bb: BlackBoard) : LeafTask(bb) {
-    val moveTime = 0.5f
-    val fadeTime = 0.3f
+    var moveTime:Float = 0f
+    var fadeTime:Float = 0f
     var counter = 0f
 
     val ic by lazy { Mappers.graphic[bb.myself] }
     val tc by lazy { Mappers.transform[bb.myself] }
-    val destPos by lazy { Vector2(Mappers.transform[bb.targetEntity].position) } //Make sure to make this a new vector
+    val vc by lazy { Mappers.velocity[bb.myself] }
+    val destPos = Vector2()
     val bc by lazy { Mappers.body[bb.myself] }
     val startPos = Vector2()
 
     override fun start() {
         super.start()
 
+        destPos.set(Vector2(Mappers.transform[bb.targetEntity].position))
+
         //Scale both of these to box2D coordinates since we'll be manipulating bodies
         startPos.set(tc.position.x* Constants.BOX2D_SCALE, tc.position.y*Constants.BOX2D_SCALE)
         destPos.set(destPos.x* Constants.BOX2D_SCALE, destPos.y*Constants.BOX2D_SCALE)
+
+        moveTime = startPos.dst(destPos)/(vc.baseSpeed*Constants.BOX2D_SCALE)
+        fadeTime = moveTime*0.3f
+
+        println("move time $moveTime")
     }
 
     override fun update(delta: Float) {

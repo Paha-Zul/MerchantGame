@@ -20,4 +20,8 @@ object TownManager {
     fun getTown(name:String):Town{
         return townMap[name]!!
     }
+
+    fun update(delta:Float){
+        townMap.values.forEach { it.update(delta) }
+    }
 }

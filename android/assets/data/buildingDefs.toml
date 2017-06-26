@@ -18,18 +18,18 @@
 [[defs]]
     name = "Shop"
     [defs.graphicDef]
-        graphicName = "shop"
+        graphicName = "shop2"
         graphicAnchor = [0.5, 0.5]
-        graphicSize = [165, 165]
+        graphicSize = [175, 175]
         initialAnimation = true
     [defs.buildingDef]
         buildingType = "Shop"
     [defs.transformDef]
-        physicalDimensions = {x = 145, y = 145}
+        physicalDimensions = {x = 175, y = 175}
         [defs.transformDef.spots]
-            entrance = [{x = 0, y = -90}]
+            entrance = [{x = 0, y = -100}]
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}, {itemName = "Milk", itemAmount = 1000}]
     [defs.sellingItems]
         isReselling = true
         taxRate = 0.1
@@ -129,7 +129,7 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}, {itemName = "Flour", itemAmount = 1000}]
     [defs.sellingItems]
         sellingList = [
             {itemName = "Flour", itemPrice = 10}

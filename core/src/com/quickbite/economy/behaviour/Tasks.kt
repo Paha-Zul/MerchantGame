@@ -70,6 +70,7 @@ object Tasks {
     fun buyItemDemandFromBuilding(bb:BlackBoard):Task{
         val seq = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
+        val leaveInitialBuilding = ExitBuilding(bb)
         val getItemDemand = SetTargetItemAndEntityFromDemand(bb)
         val getEntrance = GetEntranceOfBuilding(bb)
         val getPath = GetPath(bb)
@@ -83,6 +84,7 @@ object Tasks {
         val leaveBuilding = ExitBuilding(bb)
         val setOutside = SetTargetEntityAsInside(bb, false)
 
+        seq.controller.addTask(leaveInitialBuilding)
         seq.controller.addTask(getItemDemand)
         seq.controller.addTask(getEntrance)
         seq.controller.addTask(getPath)

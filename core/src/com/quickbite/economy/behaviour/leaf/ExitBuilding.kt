@@ -19,13 +19,14 @@ import com.quickbite.economy.util.Mappers
  * and succeed
  */
 class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
-    val moveTime = 0.5f
-    val fadeTime = 0.3f
-    val fadeDelay = 0.2f
+    var moveTime = 0.5f
+    var fadeTime = 0.3f
+    var fadeDelay = 0.2f
     var counter = 0f
 
     val gc : GraphicComponent by lazy { Mappers.graphic[bb.myself] }
     val tc : TransformComponent by lazy { Mappers.transform[bb.myself] }
+    val vc by lazy { Mappers.velocity[bb.myself] }
     var targetTC : TransformComponent? = null
     val destPos = Vector2()
     val bc : BodyComponent by lazy { Mappers.body[bb.myself] }
@@ -56,6 +57,10 @@ class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
         destPos.set(destPos.x*Constants.BOX2D_SCALE, destPos.y*Constants.BOX2D_SCALE)
 
         gc.sprite.setAlpha(0f) //Initially set this to 0
+
+        moveTime = startPos.dst(destPos)/(vc.baseSpeed*Constants.BOX2D_SCALE)
+        fadeTime = moveTime*0.3f
+        fadeDelay = moveTime*0.7f
     }
 
     override fun update(delta: Float) {

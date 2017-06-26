@@ -72,15 +72,6 @@ object Factory {
             entity.add(building)
         }
 
-        //These are the optional components that a building can have
-        if(definition.inventoryDef != null){
-            val inv = InventoryComponent()
-            definition.inventoryDef!!.debugItemList.forEach { (itemName, itemAmount) ->
-                inv.addItem(itemName, itemAmount)
-            }
-            entity.add(inv)
-        }
-
         //Check for selling items definition
         if(definition.sellingItems != null){
             val selling = SellingItemsComponent()
@@ -105,10 +96,6 @@ object Factory {
             //Add this inventory listener in this init funcs so we can make sure the inventory component actually exists
             init.initFuncs.add {
                 val inventory = Mappers.inventory[entity]
-                inventory.addInventoryListener("Gold", { _, amtChanged, _ ->
-                    selling.incomeDaily += amtChanged
-                    selling.incomeTotal += amtChanged
-                })
 
                 //Add a listener for ALL items to notify of an inventory change
                 //We specifically have this under the seller component area because we only want to keep track of what
@@ -117,9 +104,27 @@ object Factory {
                     if(name != "Gold") //Make sure to exclude gold...
                         GameEventSystem.fire(ItemAmountChangeEvent(name, amtChanged)) //Fire this event globally
                 })
+
+                //A listener for when things are sold and gold changes. This is for the economy stats mainly
+                inventory.addInventoryListener("Gold", { _, amtChanged, _ ->
+                    selling.incomeDaily += amtChanged
+                    selling.incomeTotal += amtChanged
+                })
             }
 
             entity.add(selling)
+        }
+
+        //These are the optional components that a building can have
+        if(definition.inventoryDef != null){
+            val inv = InventoryComponent()
+            //We have to add this into the init funcs because we want listeners above ^ to be triggered when adding items
+            init.initFuncs.add {
+                definition.inventoryDef!!.debugItemList.forEach { (itemName, itemAmount) ->
+                    inv.addItem(itemName, itemAmount)
+                }
+            }
+            entity.add(inv)
         }
 
         //Check for workforce definition

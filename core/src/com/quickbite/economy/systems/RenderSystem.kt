@@ -53,7 +53,7 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
             if(pc != null)
                 gc.sprite.setAlpha(0.2f)
 
-            gc.sprite.setPosition(tc.position.x - gc.anchor.x*tc.dimensions.x, tc.position.y - gc.anchor.y*tc.dimensions.y)
+            gc.sprite.setPosition(tc.position.x - gc.anchor.x*gc.sprite.width, tc.position.y - gc.anchor.y*gc.sprite.height)
 
             if(gc.initialAnimation && pc == null){
                 runAnimation(deltaTime, gc, tc)
@@ -69,7 +69,7 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
         val out = bounceOut.apply(pos.y, tc.position.y, gc.animationCounter)
 
         gc.animationCounter += delta
-        gc.sprite.setPosition(tc.position.x - gc.anchor.x*tc.dimensions.x, out - gc.anchor.y*tc.dimensions.y)
+        gc.sprite.setPosition(tc.position.x - gc.anchor.x*gc.sprite.width, out - gc.anchor.y*gc.sprite.height)
 
         if(gc.animationCounter >= 1f)
             gc.initialAnimation = false
