@@ -102,6 +102,7 @@ open class GUIWindow {
     }
 
     open fun close(){
+        changedTabsFunc()
         mainTable.remove()
         window.remove()
         GameScreenGUIManager.closeWindow(this)
