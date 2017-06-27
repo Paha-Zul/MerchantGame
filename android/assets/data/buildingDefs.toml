@@ -29,7 +29,7 @@
         [defs.transformDef.spots]
             entrance = [{x = 0, y = -100}]
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}, {itemName = "Milk", itemAmount = 1000}]
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
         isReselling = true
         taxRate = 0.1
@@ -129,7 +129,7 @@
         [defs.transformDef.spots]
             entrance = [{x=0, y=-75}]
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}, {itemName = "Flour", itemAmount = 1000}]
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.sellingItems]
         sellingList = [
             {itemName = "Flour", itemPrice = 10}

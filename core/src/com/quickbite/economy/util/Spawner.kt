@@ -18,7 +18,7 @@ object Spawner {
 
     private val spawnPosition = Vector2(-500f, 0f)
 
-    private val spawnBuyerTimeRange = Vector2(1f, 5f)
+    private val spawnBuyerTimeRange = Vector2(5f, 10f)
     private val spawnHaulerTimeRange = Vector2(5f, 20f)
 
     private const val populationMultiplierForBuyerThreshold = 200 //For every x amount of population, increase the multiplier by 1
@@ -27,7 +27,7 @@ object Spawner {
 
     private const val populationMultiplierForHaulerThreshold = 400 //For every x amount of population, increase the multiplier by 1
     private val populationMultiplierForHauler:Float
-        get() = Math.max(1f, town.population.toFloat() / populationMultiplierForHaulerThreshold.toFloat()) //We want this to be at least 1
+        get() = Math.max(1f, town.population/ populationMultiplierForHaulerThreshold.toFloat()) //We want this to be at least 1
 
     private lateinit var spawnBuyerTimer:CustomTimer
     private lateinit var spawnHaulerTimer:CustomTimer
@@ -37,7 +37,9 @@ object Spawner {
             //TODO Can this be abused by simply deleting all selling buildings? But then what's the fun of the game...
             spawnBuyer()
 
-            spawnBuyerTimer.restart(MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForHauler)
+            val random = MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y)
+            val time = random/populationMultiplierForBuyer
+            spawnBuyerTimer.restart(time)
         })
 
         spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
