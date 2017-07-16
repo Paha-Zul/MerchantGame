@@ -1,7 +1,5 @@
 package com.quickbite.economy.behaviour
 
-import com.quickbite.economy.behaviour.controller.CompositeController
-
 open class Composite(blackboard: BlackBoard, taskName: String = ""): Task(blackboard, taskName) {
 
     override val controller: CompositeController = CompositeController(this)

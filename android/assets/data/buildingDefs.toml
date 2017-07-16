@@ -212,3 +212,37 @@
     [defs.gridDef]
         onGrid = true
         blockGridWhenPlaced = true
+
+[[defs]]
+    name = "Vegetable Farm"
+    [defs.graphicDef]
+        graphicName = "farm"
+        graphicAnchor = [0.5, 0.5]
+        graphicSize = [200, 200]
+        initialAnimation = true
+    [defs.buildingDef]
+        buildingType = "Workshop"
+    [defs.transformDef]
+        physicalDimensions = {x = 200, y = 200}
+        [defs.transformDef.spots]
+            entrance = [{x=0, y=-50}]
+    [defs.inventoryDef]
+        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+    [defs.workforceDef]
+        workforceMax = 7
+        workerTasks = [
+            {taskName = "harvest", amount = "7"}
+        ]
+    [defs.productionDef]
+        harvests = ["Wood Log"]
+    [defs.physicsDef]
+        bodyType = "static"
+    [defs.gridDef]
+        onGrid = true
+        blockGridWhenPlaced = true
+    [defs.farmDef]
+        xSpace = 10
+        ySpace = 10
+        rows = 6
+        cols = 4
+        offset = {x = -0.07, y = -0.35}

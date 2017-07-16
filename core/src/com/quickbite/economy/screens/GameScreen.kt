@@ -69,6 +69,7 @@ class GameScreen :Screen{
         val workshopSystem = WorkforceSystem(1f)
         val goldTrackingSystem = GoldTrackingSystem()
         val resourceSystem = ResourceSystem(1f)
+        val farmSystem = FarmSystem(1f)
 
         MyGame.entityEngine.addSystem(behaviourSystem)
         MyGame.entityEngine.addSystem(movementSystem)
@@ -78,6 +79,7 @@ class GameScreen :Screen{
         MyGame.entityEngine.addSystem(workshopSystem)
         MyGame.entityEngine.addSystem(goldTrackingSystem)
         MyGame.entityEngine.addSystem(resourceSystem)
+        MyGame.entityEngine.addSystem(farmSystem)
 
         MyGame.entityEngine.addEntityListener(object : EntityListener {
             override fun entityRemoved(ent: Entity?) {

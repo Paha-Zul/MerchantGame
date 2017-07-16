@@ -26,4 +26,5 @@ object Mappers{
     val identity: ComponentMapper<IdentityComponent> = ComponentMapper.getFor(IdentityComponent::class.java)
     val produces: ComponentMapper<ProduceItemComponent> = ComponentMapper.getFor(ProduceItemComponent::class.java)
     val resource: ComponentMapper<ResourceComponent> = ComponentMapper.getFor(ResourceComponent::class.java)
+    val farm: ComponentMapper<FarmComponent> = ComponentMapper.getFor(FarmComponent::class.java)
 }

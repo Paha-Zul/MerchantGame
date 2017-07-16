@@ -3,6 +3,7 @@ package com.quickbite.economy.util
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.MathUtils
@@ -16,6 +17,7 @@ import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.objects.FarmObject
 import com.quickbite.economy.objects.SellingItemData
 
 /**
@@ -237,8 +239,20 @@ object Factory {
                 harvestedGraphicName = resourceDef.harvestedGraphicName
             }
 
-
             entity.add(resourceComp)
+        }
+
+        if(definition.farmDef != null){
+            val farmComp = FarmComponent()
+            val farmDef = definition.farmDef!!
+
+            farmComp.plantSpots = kotlin.Array(definition.farmDef!!.cols, {x -> kotlin.Array(definition.farmDef!!.rows, {y ->
+                val xPos = x*(farmDef.xSpace + 16) + farmDef.offset.x*graphicComp.sprite.width
+                val yPos = y*(farmDef.ySpace + 16) + farmDef.offset.y*graphicComp.sprite.height
+                FarmObject(Vector2(xPos, yPos), 0f, Sprite(Util.createPixel(Color.BLACK, 0, 0)))
+            })})
+
+            entity.add(farmComp)
         }
 
         definition.compsToAdd.forEach { compDef ->

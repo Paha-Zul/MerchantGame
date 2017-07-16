@@ -1,4 +1,4 @@
-package com.quickbite.economy.behaviour.controller
+package com.quickbite.economy.behaviour
 
 import com.quickbite.economy.behaviour.Task
 import com.quickbite.economy.behaviour.TaskController

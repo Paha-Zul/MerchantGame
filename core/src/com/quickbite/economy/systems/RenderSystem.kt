@@ -49,6 +49,7 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
             val gc = Mappers.graphic.get(ent)
             val tc = Mappers.transform.get(ent)
             val pc = Mappers.preview.get(ent)
+            val fc = Mappers.farm[ent]
 
             if(pc != null)
                 gc.sprite.setAlpha(0.2f)
@@ -61,6 +62,13 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
 
             if(!gc.hide)
                 gc.sprite.draw(batch)
+
+            if(fc != null){
+                fc.plantSpots.forEach { it.forEach { (position, _, sprite) ->
+                    sprite.setPosition(position.x + tc.position.x - sprite.width/2f, position.y + tc.position.y - sprite.height/2f)
+                    sprite.draw(batch)
+                }}
+            }
         }
     }
 

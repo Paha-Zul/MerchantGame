@@ -157,6 +157,7 @@ object DefinitionManager {
         var sellingItems:SellingDef? = null //Optional
         var workforceDef:WorkforceDef? = null //Optional
         var resourceDef:ResourceDef? = null //Optional
+        var farmDef:FarmDef? = null //Optional
         var behaviourDef:BehaviourDef? = null //Optional
         var workerDef:WorkerDef? = null //Optional
         var buyerDef:BuyerDef? = null //Optional
@@ -243,6 +244,14 @@ object DefinitionManager {
         var canRegrow = false
         var baseRegrowTimeRange = arrayOf(180, 300)
         var harvestedGraphicName = ""
+    }
+
+    class FarmDef{
+        var xSpace:Float = 0f
+        var ySpace:Float = 0f
+        var rows:Int = 0
+        var cols:Int = 0
+        var offset:Vector2 = Vector2()
     }
 
     class ItemDef{
