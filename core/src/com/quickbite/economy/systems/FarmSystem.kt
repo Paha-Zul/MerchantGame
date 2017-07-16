@@ -14,7 +14,8 @@ import com.quickbite.economy.util.Mappers
  * A System to manage entities with farm components
  */
 class FarmSystem(interval:Float) : IntervalIteratingSystem(Family.all(FarmComponent::class.java).get(), interval) {
-    val plantSize = 16
+    val plantWidth = 16
+    val plantHeight = 32
     val growthSpeed = 0.05f
 
     override fun processEntity(ent: Entity) {
@@ -25,7 +26,7 @@ class FarmSystem(interval:Float) : IntervalIteratingSystem(Family.all(FarmCompon
         fc.plantSpots.forEach { it.forEach { spot ->
             spot.plantProgress += increment
             val alpha = MathUtils.clamp(spot.plantProgress/1f, 0f, 1f)
-            spot.sprite.setSize(alpha*plantSize, alpha*plantSize)
+            spot.sprite.setSize(alpha*plantWidth, alpha*plantHeight)
 
             if(spot.plantProgress >= 1.2f)
                 timeToHarvest = true

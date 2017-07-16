@@ -3,7 +3,6 @@ package com.quickbite.economy.util
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.MathUtils
@@ -247,9 +246,12 @@ object Factory {
             val farmDef = definition.farmDef!!
 
             farmComp.plantSpots = kotlin.Array(definition.farmDef!!.cols, {x -> kotlin.Array(definition.farmDef!!.rows, {y ->
-                val xPos = x*(farmDef.xSpace + 16) + farmDef.offset.x*graphicComp.sprite.width
+                val xPos = x*(farmDef.xSpace + 16) + farmDef.offset.x*graphicComp.sprite.width + MathUtils.random(-2, 2)
                 val yPos = y*(farmDef.ySpace + 16) + farmDef.offset.y*graphicComp.sprite.height
-                FarmObject(Vector2(xPos, yPos), 0f, Sprite(Util.createPixel(Color.BLACK, 0, 0)))
+                val texture:Texture = MyGame.manager["${farmComp.itemToGrow}_plant"]
+                FarmObject(Vector2(xPos, yPos), 0f, Sprite(texture)).apply {
+                    sprite.setSize(0f, 0f)
+                }
             })})
 
             entity.add(farmComp)

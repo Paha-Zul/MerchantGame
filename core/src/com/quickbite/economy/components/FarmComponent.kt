@@ -8,7 +8,7 @@ import com.quickbite.economy.objects.FarmObject
  * Created by Paha on 7/14/2017.
  */
 class FarmComponent : MyComponent {
-    lateinit var itemToGrow:String
+    var itemToGrow:String = "corn"
     lateinit var plantSpots:Array<Array<FarmObject>>
 
     override fun initialize() {

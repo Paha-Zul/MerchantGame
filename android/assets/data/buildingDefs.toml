@@ -245,4 +245,4 @@
         ySpace = 10
         rows = 6
         cols = 4
-        offset = {x = -0.07, y = -0.35}
+        offset = {x = -0.07, y = -0.37}

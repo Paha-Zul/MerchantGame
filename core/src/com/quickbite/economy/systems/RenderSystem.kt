@@ -65,7 +65,7 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
 
             if(fc != null){
                 fc.plantSpots.forEach { it.forEach { (position, _, sprite) ->
-                    sprite.setPosition(position.x + tc.position.x - sprite.width/2f, position.y + tc.position.y - sprite.height/2f)
+                    sprite.setPosition(position.x + tc.position.x - sprite.width/2f, position.y + tc.position.y)
                     sprite.draw(batch)
                 }}
             }
