@@ -34,7 +34,7 @@ open class TaskController(task: Task) {
     /**
      * Safely ends the TaskController and its task. Sets the task as not running.
      */
-    fun safeEnd() {
+    open fun safeEnd() {
         this.running = false
         this.task.end()
     }

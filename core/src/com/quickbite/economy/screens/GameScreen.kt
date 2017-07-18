@@ -117,7 +117,7 @@ class GameScreen :Screen{
         MyGame.grid.grid.forEach { it.forEach { gridNode ->
 //            gridNode.terrain = Terrain(TextureRegion(Util.createPixel(Color(216f/255f, 237f/255f, 85f/255f, 1f), MyGame.grid.squareSize, MyGame.grid.squareSize)),
 //                    gridNode.xPos, gridNode.yPos)
-            gridNode.terrain = Terrain(TextureRegion(MyGame.manager["grass14", Texture::class.java], MyGame.grid.squareSize, MyGame.grid.squareSize),
+            gridNode.terrain = Terrain(TextureRegion(MyGame.manager["grass", Texture::class.java], MyGame.grid.squareSize, MyGame.grid.squareSize),
                     gridNode.xPos, gridNode.yPos)
         } }
     }

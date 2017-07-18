@@ -84,6 +84,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
             "produce" -> return AlwaysTrue(bb, Tasks.produceItem(bb))
             "sell" -> return AlwaysTrue(bb, Tasks.sellItem(bb))
             "harvest" -> return AlwaysTrue(bb, Tasks.harvestClosestResourceType(bb))
+            "farm" -> return AlwaysTrue(bb, Tasks.farm(bb))
         }
 
         return com.quickbite.economy.behaviour.composite.Sequence(bb, "Empty Sequence")

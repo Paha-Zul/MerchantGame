@@ -53,7 +53,8 @@ object Factory {
         grid.blockWhenPlaced = definition.gridDef.blockGridWhenPlaced
         if(grid.blockWhenPlaced){
             init.initFuncs.add {
-                MyGame.grid.setBlocked(transform.position.x, transform.position.y, transform.dimensions.x*0.5f, transform.dimensions.y*0.5f)
+                MyGame.grid.setBlocked(transform.position.x, transform.position.y,
+                        transform.dimensions.x*0.5f, transform.dimensions.y*0.5f, definition.gridDef.gridSpotsToNotBlock)
             }
         }
 

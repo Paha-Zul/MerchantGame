@@ -14,7 +14,7 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
     var index = 0
 
     lateinit var position: Vector2
-    lateinit var velocity:VelocityComponent
+    var velocity:VelocityComponent? = null
 
     val tmp = Vector2()
 
@@ -28,14 +28,14 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
     override fun update(delta: Float) {
         super.update(delta)
 
-        val speed = velocity.baseSpeed*delta
+        val speed = velocity!!.baseSpeed*delta
 
         //If the path is not empty, move!
         if(bb.path.isNotEmpty()){
             tmp.set(position) //Set the tmp vector. We don't want to directly change the position
 
             //Set the velocity
-            velocity.velocity.set(tmp.moveTowards(bb.path[index], speed))
+            velocity!!.velocity.set(tmp.moveTowards(bb.path[index], speed))
 
             //If our unit's position is within the destination, move to the next path.
             if(this.position.dst(bb.path[index]) <= (speed*2f)){
@@ -50,7 +50,7 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
     override fun end() {
         super.end()
 
-        velocity.velocity.set(0f, 0f)
+        velocity?.velocity?.set(0f, 0f)
     }
 
     override fun reset() {

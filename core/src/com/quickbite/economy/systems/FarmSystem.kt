@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IntervalIteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.components.FarmComponent
-import com.quickbite.economy.util.FarmUtil
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -21,18 +20,18 @@ class FarmSystem(interval:Float) : IntervalIteratingSystem(Family.all(FarmCompon
     override fun processEntity(ent: Entity) {
         val increment = growthSpeed*interval
         val fc = Mappers.farm[ent]
-        var timeToHarvest = false
 
         fc.plantSpots.forEach { it.forEach { spot ->
-            spot.plantProgress += increment
-            val alpha = MathUtils.clamp(spot.plantProgress/1f, 0f, 1f)
-            spot.sprite.setSize(alpha*plantWidth, alpha*plantHeight)
+            if(!spot.needsTending) {
+                spot.plantProgress += increment
+                val alpha = MathUtils.clamp(spot.plantProgress / 1f, 0f, 1f)
+                spot.sprite.setSize(alpha * plantWidth, alpha * plantHeight)
 
-            if(spot.plantProgress >= 1.2f)
-                timeToHarvest = true
+                spot.needsTending = MathUtils.random(0f, 1f) <= 0.05f //5% chance to need tending
+
+                if(spot.plantProgress >= 1.2f)
+                    spot.readyToHarvest = true
+            }
         } }
-
-        if(timeToHarvest)
-            FarmUtil.harvestFarm(ent)
     }
 }

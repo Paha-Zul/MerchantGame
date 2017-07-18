@@ -171,6 +171,7 @@ object DefinitionManager {
     class GridDef{
         var onGrid = false
         var blockGridWhenPlaced = false
+        var gridSpotsToNotBlock = arrayOf<Array<Int>>()
     }
 
     class ProductionDef{
@@ -178,14 +179,11 @@ object DefinitionManager {
         var harvests:Array<String> = arrayOf()
     }
 
-    class BehaviourDef{
-    }
+    class BehaviourDef
 
-    class WorkerDef{
-    }
+    class WorkerDef
 
-    class BuyerDef{
-    }
+    class BuyerDef
 
     class TransformDef{
         var physicalDimensions = Vector2()

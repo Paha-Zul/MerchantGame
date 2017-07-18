@@ -3,16 +3,16 @@
   [defs.graphicDef]
     graphicName = "Tree"
     graphicAnchor = [0.5, 0.0]
-    graphicSize = [32, 64]
+    graphicSize = [25, 50]
     initialAnimation = false
   [defs.transformDef]
-    physicalDimensions = {x = 32, y = 32}
+    physicalDimensions = {x = 25, y = 25}
     [defs.transformDef.spots]
       harvest = [{x=0, y=-25}]
   [defs.physicsDef]
     bodyType = "static"
     bodyAnchor = {x = 0.0, y = 0.5}
-    bodyDimensions = {x = 32, y = 64}
+    bodyDimensions = {x = 25, y = 50}
   [defs.resourceDef]
     resourceType = "wood"
     resourceAmount = 100

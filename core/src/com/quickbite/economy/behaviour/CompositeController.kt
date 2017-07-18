@@ -1,7 +1,5 @@
 package com.quickbite.economy.behaviour
 
-import com.quickbite.economy.behaviour.Task
-import com.quickbite.economy.behaviour.TaskController
 import java.util.*
 
 class CompositeController(task: Task) : TaskController(task) {
@@ -14,9 +12,18 @@ class CompositeController(task: Task) : TaskController(task) {
         return task
     }
 
+    fun addTasks(vararg tasks:Task){
+        tasks.forEach { taskList.add(it) }
+    }
+
     override fun safeReset() {
         super.safeReset()
         this.currTask = null
         this.index = 0
+    }
+
+    override fun safeEnd() {
+        super.safeEnd()
+        taskList.forEach { it.controller.safeEnd() }
     }
 }

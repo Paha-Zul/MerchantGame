@@ -3,6 +3,7 @@ package com.quickbite.economy.behaviour
 import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.composite.Sequence
 import com.quickbite.economy.behaviour.decorator.AlwaysTrue
+import com.quickbite.economy.behaviour.decorator.RepeatTaskNumberOfTimes
 import com.quickbite.economy.behaviour.decorator.RepeatUntilFail
 import com.quickbite.economy.behaviour.decorator.SucceedOpposite
 import com.quickbite.economy.behaviour.leaf.*
@@ -22,6 +23,53 @@ object Tasks {
 
         seq.controller.addTask(getPath)
         seq.controller.addTask(moveTo)
+
+        return seq
+    }
+
+    fun tendToPlant(bb:BlackBoard) : Task{
+        val seq = Sequence(bb)
+
+        val setMyTarget = SetMyWorkBuildingAsTarget(bb)
+        val getPlant = GetPlant(bb, "tend")
+        val getPath = GetPath(bb)
+        val moveToPlant = MoveToPath(bb)
+        val tendToPlant = TendToPlant(bb)
+
+        seq.controller.addTasks(setMyTarget, getPlant, getPath, moveToPlant, tendToPlant)
+
+        return seq
+    }
+
+    fun harvestPlant(bb:BlackBoard) : Task{
+        val seq = Sequence(bb)
+
+        val setMyTarget = SetMyWorkBuildingAsTarget(bb)
+        val getPlant = GetPlant(bb, "harvest")
+        val getPath = GetPath(bb)
+        val moveToPlant = MoveToPath(bb)
+        val harvestPlant = HarvestPlant(bb)
+
+        seq.controller.addTasks(setMyTarget, getPlant, getPath, moveToPlant, harvestPlant)
+
+        return seq
+    }
+
+    fun farm(bb:BlackBoard):Task{
+        val seq = Sequence(bb)
+
+        val tendAndHarvest = Sequence(bb)
+
+        val unhide = ExitBuilding(bb)
+        val alwaysTrueTend = AlwaysTrue(bb, tendToPlant(bb))
+        val alwaysTrueHarvest = AlwaysTrue(bb, harvestPlant(bb))
+
+        tendAndHarvest.controller.addTasks(unhide, alwaysTrueTend, alwaysTrueHarvest)
+
+        val repeatTasks = RepeatTaskNumberOfTimes(bb, 10, tendAndHarvest)
+        val transferInventory = haulInventoryToMyWorkBuilding(bb)
+
+        seq.controller.addTasks(repeatTasks, transferInventory)
 
         return seq
     }
@@ -326,6 +374,26 @@ object Tasks {
 
         task.controller.addTask(alwaysTrueBranch) //Leave the map
         task.controller.addTask(leaveMap(bb)) //Leave the map
+
+        return task
+    }
+
+    fun haulInventoryToMyWorkBuilding(bb:BlackBoard):Task{
+        val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling to Stockpile")
+
+        //This is in case something happens to the building we are delivering to... we'll still leave the map if we can't finish it
+        val alwaysSucceedSeq = Sequence(bb)
+        val alwaysTrueBranch = AlwaysTrue(bb, alwaysSucceedSeq)
+
+        alwaysSucceedSeq.controller.addTask(SetMyWorkBuildingAsTarget(bb))
+        alwaysSucceedSeq.controller.addTask(GetEntranceOfBuilding(bb))
+        alwaysSucceedSeq.controller.addTask(GetPath(bb))
+        alwaysSucceedSeq.controller.addTask(MoveToPath(bb))
+        alwaysSucceedSeq.controller.addTask(EnterBuilding(bb))
+        alwaysSucceedSeq.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
+        alwaysSucceedSeq.controller.addTask(ExitBuilding(bb))
+
+        task.controller.addTask(alwaysTrueBranch) //Leave the map
 
         return task
     }

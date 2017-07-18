@@ -28,6 +28,19 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         forNodesInSquare(centerX, centerY, halfWidth + squareSize*0.49f, halfHeight + squareSize*0.49f, {node -> node.blocked = true})
     }
 
+    fun setBlocked(centerX:Float, centerY:Float, halfWidth:Float, halfHeight:Float, gridSquaresToExclude:Array<Array<Int>>){
+        val startNode = getNodeAtPosition(centerX, centerY)!!
+        val startIndex = getIndexOfGrid(startNode.xCenter - halfWidth.toInt(), startNode.yCenter - halfHeight.toInt())
+
+        forNodesInSquare(centerX, centerY, halfWidth + squareSize*0.49f, halfHeight + squareSize*0.49f,
+            {node ->
+                val adjustedXNode = node.x - startIndex.first
+                val adjustedYNode = node.y - startIndex.second
+                if(!gridSquaresToExclude.any { it[0] == adjustedXNode && it[1] == adjustedYNode })
+                    node.blocked = true
+            })
+    }
+
     fun setUnblocked(centerX:Float, centerY:Float, halfWidth:Float, halfHeight:Float){
         forNodesInSquare(centerX, centerY, halfWidth, halfHeight, {node -> node.blocked = false})
     }
@@ -173,6 +186,18 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
          */
         val xPos:Float
             get() = ((x - offX)*squareSize).toFloat()
+
+        /**
+         * The X position of this node (centered)
+         */
+        val xCenter:Float
+            get() = (x - offX)*squareSize + squareSize/2f
+
+        /**
+         * The Y position of this node (centered)
+         */
+        val yCenter:Float
+            get() = (y - offY)*squareSize + squareSize/2f
 
         /**
          * The Y position of this node (not centered)

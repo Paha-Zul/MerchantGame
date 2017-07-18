@@ -218,31 +218,35 @@
     [defs.graphicDef]
         graphicName = "farm"
         graphicAnchor = [0.5, 0.5]
-        graphicSize = [200, 200]
+        graphicSize = [225, 225]
         initialAnimation = true
     [defs.buildingDef]
         buildingType = "Workshop"
     [defs.transformDef]
-        physicalDimensions = {x = 200, y = 200}
+        physicalDimensions = {x = 225, y = 225}
         [defs.transformDef.spots]
             entrance = [{x=0, y=-50}]
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
     [defs.workforceDef]
-        workforceMax = 7
+        workforceMax = 2
         workerTasks = [
-            {taskName = "harvest", amount = "7"}
+            {taskName = "farm", amount = "2"}
         ]
-    [defs.productionDef]
-        harvests = ["Wood Log"]
     [defs.physicsDef]
         bodyType = "static"
     [defs.gridDef]
         onGrid = true
         blockGridWhenPlaced = true
+        gridSpotsToNotBlock = [
+            [3,0], [3,1], [3,2], [3,3], [3,4], [3,5], [3,6], 
+            [4,1], [4,2], [4,3], [4,4], [4,5], [4,6], 
+            [5,1], [5,2], [5,3], [5,4], [5,5], [5,6],
+            [6,1], [6,2], [6,3], [6,4], [6,5], [6,6],
+            [7,1], [7,2], [7,3], [7,4], [7,5], [7,6],
+            [0,8], [1,8], [2,8], [3,8], [4,8], [5,8], [6,8], [7,8], [8,8]]
     [defs.farmDef]
         xSpace = 10
-        ySpace = 10
+        ySpace = 5
         rows = 6
         cols = 4
-        offset = {x = -0.07, y = -0.37}
+        offset = {x = -0.07, y = -0.30}
