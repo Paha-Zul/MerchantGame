@@ -2,6 +2,7 @@ package com.quickbite.economy.behaviour.leaf
 
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.FarmUtil
 import com.quickbite.economy.util.Mappers
 
@@ -17,10 +18,11 @@ class HarvestPlant(bb:BlackBoard) : LeafTask(bb) {
         super.start()
         val ic = Mappers.inventory[bb.myself]
         val fc = Mappers.farm[bb.targetEntity]
+        val plantDef = DefinitionManager.plantDefMap[fc.itemToGrow]!!
 
         val spot = bb.targetPlantSpot!!
         FarmUtil.harvestPlant(spot)
-        ic.addItem(fc.itemToGrow)
+        ic.addItem(fc.itemToGrow, plantDef.harvestAmount)
 
         controller.finishWithSuccess()
     }

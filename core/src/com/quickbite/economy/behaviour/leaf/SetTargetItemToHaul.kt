@@ -48,7 +48,7 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             }
         }
 
-        bb.targetItem.itemName = least.itemName
+        bb.targetItem.itemName = least.itemName.toLowerCase()
         bb.targetItem.itemAmount = least.itemAmount
 
         //Increment the indexCounter
@@ -96,7 +96,7 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
                 else MathUtils.clamp(sellingItem.itemStockAmount - myBuildingInventory.getItemAmount(sellingItem.itemName), 0, Int.MAX_VALUE)
 
             //Set the target item.
-            bb.targetItem.itemName = sellingItem.itemName
+            bb.targetItem.itemName = sellingItem.itemName.toLowerCase()
             bb.targetItem.itemAmount = amountToGet
 
 //            sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index a final time

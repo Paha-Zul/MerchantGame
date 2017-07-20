@@ -17,7 +17,8 @@ class InventoryComponent : MyComponent {
     /** A list of listeners for inventory changes.*/
     private val inventoryChangeListeners:HashMap<String, Array<(itemName:String, amtChanged:Int, amtFinal:Int)->Unit>> = hashMapOf()
 
-    val isEmpty:Boolean = itemMap.isEmpty()
+    val isEmpty:Boolean
+        get() = itemMap.isEmpty()
 
     /**
      * @param itemName The itemName of the item to add.

@@ -18,6 +18,7 @@ object DefinitionManager {
     val itemDefMap: HashMap<String, ItemDef> = hashMapOf()
     val itemCategoryMap:HashMap<String, com.badlogic.gdx.utils.Array<ItemDef>> = hashMapOf()
     val productionMap: HashMap<String, Production> = hashMapOf()
+    val plantDefMap: HashMap<String, PlantDef> = hashMapOf()
 
     lateinit var names:Names
 
@@ -27,6 +28,7 @@ object DefinitionManager {
     private val itemsDefName = "data/itemDefs.toml"
     private val itemProdName = "data/productions.toml"
     private val namesDefName = "data/names.json"
+    private val plantDefName = "data/plantDefs.toml"
 
     init {
         json.setSerializer(ItemPriceLink::class.java, object: Json.Serializer<ItemPriceLink> {
@@ -107,12 +109,17 @@ object DefinitionManager {
 
         val itemDefList = Toml().read(Gdx.files.internal(itemsDefName).file()).to(ItemDefList::class.java)
         itemDefList.items.forEach { itemDef ->
-            DefinitionManager.itemDefMap.put(itemDef.itemName, itemDef)
+            DefinitionManager.itemDefMap.put(itemDef.itemName.toLowerCase(), itemDef)
             itemDef.categories.forEach { DefinitionManager.itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
         }
 
         val itemProdList = Toml().read(Gdx.files.internal(itemProdName).file()).to(DefinitionManager.ProductionList::class.java)
         itemProdList.productions.forEach { prod -> DefinitionManager.productionMap.put(prod.produceItemName, prod)}
+
+        val plantDefsList = Toml().read(Gdx.files.internal(plantDefName).file()).to(PlantDefList::class.java)
+        plantDefsList.defs.forEach { plantDef -> DefinitionManager.plantDefMap.put(plantDef.name, plantDef)}
+
+        //TODO THis needs to be a class with a list of PlantDef objects!!
 
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
 
@@ -141,6 +148,17 @@ object DefinitionManager {
 
     class ItemDefList{
         var items:Array<DefinitionManager.ItemDef> = arrayOf()
+    }
+
+    class PlantDefList{
+        lateinit var defs:Array<PlantDef>
+    }
+
+    class PlantDef{
+        var name = ""
+        var graphicName = ""
+        var timeToGrow = 0
+        var harvestAmount = 0
     }
 
     class Definition {

@@ -123,7 +123,7 @@ class GameScreen :Screen{
     }
 
     override fun pause() {
-
+//        TimeUtil.paused = !TimeUtil.paused
     }
 
     override fun resize(width: Int, height: Int) {
@@ -147,6 +147,7 @@ class GameScreen :Screen{
         batch.begin()
 
         drawTerrain(batch)
+
         MyGame.entityEngine.update(TimeUtil.scaledDeltaTime)
 
         batch.end()

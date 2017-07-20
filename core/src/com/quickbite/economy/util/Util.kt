@@ -202,6 +202,7 @@ object Util {
      * @param The source data (ie: where it came from, entity?)
      */
     fun addItemToEntityReselling(resellingEntity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
+        val itemName = itemName.toLowerCase()
         val selling = Mappers.selling[resellingEntity]
         selling.resellingItemsList
 

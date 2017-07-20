@@ -19,6 +19,6 @@ class RepeatUntilFail(bb:BlackBoard, taskToDecorate: Task) : Decorator(bb, taskT
 
         //Otherwise if we aren't running and we did fail, continue to fail
         }else if(!taskToDecorate.controller.running && taskToDecorate.controller.failed)
-            this.controller.finishWithFailure()
+            this.controller.finishWithSuccess()
     }
 }

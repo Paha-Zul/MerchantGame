@@ -129,6 +129,7 @@ object FindEntityUtil {
     fun getClosestBuildingWithOutputItemInInventory(position: Vector2, itemName:String, itemAmount:Int = 1, buildingsToExclude:HashSet<Entity>): Entity?{
         var closestDst = Float.MAX_VALUE
         var closest: Entity? = null
+        val itemName = itemName.toLowerCase()
 
         Families.buildings.forEach { ent ->
             if(!buildingsToExclude.contains(ent)) {

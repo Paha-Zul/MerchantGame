@@ -132,7 +132,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.F -> Spawner.spawnBuyer()
             Input.Keys.T -> GameScreenGUIManager.openTownWindow()
             Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; GameScreenGUIManager.closeAllWindows()}
-            Input.Keys.SPACE -> TimeUtil.pausedBonus = if(TimeUtil.pausedBonus > 0) 0 else 1
+            Input.Keys.SPACE -> TimeUtil.paused = !TimeUtil.paused
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
 
             Input.Keys.PLUS -> TimeUtil.deltaTimeScale = MathUtils.clamp(TimeUtil.deltaTimeScale + 1, 0, 4)

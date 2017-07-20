@@ -101,6 +101,7 @@ object Spawner {
 
             //Scan each item that we are buying and calculate necessity and luxury ratings
             buying.buyList.forEach { (itemName, itemAmount) ->
+                val itemName = itemName.toLowerCase()
                 val itemDef = DefinitionManager.itemDefMap[itemName]!!
                 buying.needsSatisfactionRating += -itemDef.need
                 buying.luxurySatisfactionRating += -itemDef.luxury

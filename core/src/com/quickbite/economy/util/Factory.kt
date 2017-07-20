@@ -81,6 +81,7 @@ object Factory {
             //Things like this have to be copied or else they are linked and can be modified!!!
             val sellingList = Array<SellingItemData>()
             definition.sellingItems!!.sellingList.forEach { (itemName) ->
+                val itemName = itemName.toLowerCase()
                 sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1, SellingItemData.ItemSource.None))
             }
 
@@ -174,12 +175,16 @@ object Factory {
             entity.add(bodyComp)
         }
 
+        //The production component
         if(definition.productionDef != null){
             val producesItems = ProduceItemComponent()
+
+            //Add each production from the definition file into the produces items component
             definition.productionDef!!.produces.forEach { itemName ->
                 producesItems.productionList.add(DefinitionManager.productionMap[itemName])
             }
 
+            //Add anything that's harvested
             producesItems.harvests = definition.productionDef!!.harvests.toList()
 
             entity.add(producesItems)
@@ -205,12 +210,14 @@ object Factory {
             }
         }
 
+        //The worker component
         if(definition.workerDef != null){
             val workerUnit = WorkerUnitComponent()
             workerUnit.dailyWage = MathUtils.random(10, 75)
             entity.add(workerUnit)
         }
 
+        //The buyer component
         if(definition.buyerDef != null){
             val buyerComponent = BuyerComponent()
 
@@ -222,6 +229,7 @@ object Factory {
             entity.add(buyerComponent)
         }
 
+        //The resource component
         if(definition.resourceDef != null){
             val resourceComp = ResourceComponent()
             val resourceDef = definition.resourceDef!!
@@ -242,6 +250,7 @@ object Factory {
             entity.add(resourceComp)
         }
 
+        //The farm definition
         if(definition.farmDef != null){
             val farmComp = FarmComponent()
             val farmDef = definition.farmDef!!
@@ -256,9 +265,16 @@ object Factory {
                 }
             })})
 
+            init.initFuncs.add {
+                val inventory = Mappers.inventory[entity]
+                //TODO In the future, we need to change the output items when the item to grow changes
+                inventory.outputItems.add(farmComp.itemToGrow) //Initially put this as one of our output items
+            }
+
             entity.add(farmComp)
         }
 
+        //Add any additional components that were sent in as parameters
         definition.compsToAdd.forEach { compDef ->
             val comp = Class.forName(compDef.compName).newInstance()
 

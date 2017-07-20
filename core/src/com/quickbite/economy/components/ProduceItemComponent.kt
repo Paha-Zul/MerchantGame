@@ -10,7 +10,6 @@ import com.quickbite.economy.managers.DefinitionManager
  * Gives an Entity the capability of producing items. Also used for harvesting specs
  */
 class ProduceItemComponent : MyComponent{
-
     var currProductionIndex = 0
     val productionList: Array<DefinitionManager.Production> = Array()
 

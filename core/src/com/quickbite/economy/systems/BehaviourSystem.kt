@@ -8,6 +8,7 @@ import com.badlogic.ashley.utils.ImmutableArray
 import com.quickbite.economy.components.BehaviourComponent
 import com.quickbite.economy.components.PreviewComponent
 import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.TimeUtil
 
 /**
  * Created by Paha on 1/16/2017.
@@ -24,6 +25,9 @@ class BehaviourSystem : EntitySystem() {
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
+
+        if(TimeUtil.paused)
+            return
 
         entities.forEach { ent ->
             val bm = Mappers.behaviour.get(ent)
