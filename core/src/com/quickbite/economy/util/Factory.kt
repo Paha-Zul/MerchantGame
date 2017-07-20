@@ -252,6 +252,7 @@ object Factory {
                 val texture:Texture = MyGame.manager["${farmComp.itemToGrow}_plant"]
                 FarmObject(Vector2(xPos, yPos), 0f, Sprite(texture)).apply {
                     sprite.setSize(0f, 0f)
+                    needsTending = true //A way of initially planting the seed
                 }
             })})
 

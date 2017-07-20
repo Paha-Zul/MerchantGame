@@ -385,6 +385,15 @@ object Tasks {
         val alwaysSucceedSeq = Sequence(bb)
         val alwaysTrueBranch = AlwaysTrue(bb, alwaysSucceedSeq)
 
+        alwaysSucceedSeq.controller.addTask(object:LeafTask(bb){
+            override fun start() {
+                super.start()
+                if(Mappers.inventory[bb.myself].isEmpty)
+                    controller.finishWithFailure()
+                else
+                    controller.finishWithSuccess()
+            }
+        })
         alwaysSucceedSeq.controller.addTask(SetMyWorkBuildingAsTarget(bb))
         alwaysSucceedSeq.controller.addTask(GetEntranceOfBuilding(bb))
         alwaysSucceedSeq.controller.addTask(GetPath(bb))

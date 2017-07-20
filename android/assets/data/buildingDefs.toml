@@ -225,7 +225,7 @@
     [defs.transformDef]
         physicalDimensions = {x = 225, y = 225}
         [defs.transformDef.spots]
-            entrance = [{x=0, y=-50}]
+            entrance = [{x=-70, y=-120}]
     [defs.inventoryDef]
     [defs.workforceDef]
         workforceMax = 2
