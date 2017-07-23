@@ -409,12 +409,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val contentsTable = Table()
         contentsTable.background = darkBackgroundDrawable
 
-        val inputs = mutableListOf<String>()
-        comp.productionList[0].requirements.forEach { inputs += it.itemName }
-
-        val output = comp.productionList[0].produceItemName
-
-        contentsTable.add(ProductionMap(inputs.toTypedArray(), output))
+        contentsTable.add(ProductionMap(comp))
 
         table.add(contentsTable)
         table.left()

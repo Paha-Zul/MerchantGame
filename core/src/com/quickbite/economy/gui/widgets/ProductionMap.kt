@@ -1,38 +1,54 @@
 package com.quickbite.economy.gui.widgets
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.components.ProduceItemComponent
 import com.quickbite.economy.managers.DefinitionManager
 
-class ProductionMap(val inputItems:Array<String>, val outputItem:String) : Actor() {
+class ProductionMap(val productionComp:ProduceItemComponent) : Actor() {
     private val dot = MyGame.manager["dot", Texture::class.java]
     private val arrow = MyGame.manager["arrow", Texture::class.java]
     private val wheat = MyGame.manager["wheat_icon", Texture::class.java]
-
-    val sizeOfDot = 8f
 
     private val dots:MutableList<Array<Dot>> = mutableListOf()
     private val inputs:Array<Icon>
     private val output:Icon
 
-    private val inputOutputIconSize = 32f
+    private val labels:MutableList<LabelPosition> = mutableListOf()
 
-    val xNodeSpace = 100f //Distance between each layer of nodes
-    val yNodeSpace = 50f
+    private val inputOutputIconSize = 50f
+    private val sizeOfDot = 8f
+
+    val xNodeSpace = 200f //Distance between each layer of nodes
+    val yNodeSpace = 64f
 
     init{
-        inputs = Array(inputItems.size, {i ->
-            val item = DefinitionManager.itemDefMap[inputItems[i]]!!
-            Icon(Vector2(0f, i*yNodeSpace), MyGame.manager[item.iconName, Texture::class.java])
+        inputs = Array(productionComp.productionList[0].requirements.size, {i ->
+            val productionReq = productionComp.productionList[0].requirements[i]
+            val item = DefinitionManager.itemDefMap[productionReq.itemName]!!
+            val iconPosition = Vector2(0f, i*yNodeSpace)
+
+            val label = Label("x${productionReq.itemAmount}", Label.LabelStyle(MyGame.defaultFont14, Color.WHITE))
+            label.setPosition(iconPosition.x + inputOutputIconSize, iconPosition.y)
+            labels += LabelPosition(label, Vector2(iconPosition.x + inputOutputIconSize, iconPosition.y))
+
+            Icon(iconPosition, MyGame.manager[item.iconName, Texture::class.java])
         })
 
         val middle = ((inputs.size-1)*yNodeSpace)/2f
         val outputPosition = Vector2(xNodeSpace, middle)
+        val outputItem = productionComp.productionList[0]
 
-        output = Icon(outputPosition, MyGame.manager[DefinitionManager.itemDefMap[outputItem]!!.iconName, Texture::class.java])
+        output = Icon(outputPosition, MyGame.manager[DefinitionManager.itemDefMap[outputItem.produceItemName]!!.iconName, Texture::class.java])
+
+        val label = Label("x${outputItem.produceAmount}", Label.LabelStyle(MyGame.defaultFont14, Color.WHITE))
+        label.setPosition(outputPosition.x + inputOutputIconSize, outputPosition.y)
+        labels += LabelPosition(label, Vector2(outputPosition.x + inputOutputIconSize, outputPosition.y))
 
         inputs.forEachIndexed { index, _ ->
             dots += calculateDots(Vector2(inputOutputIconSize, index*yNodeSpace + inputOutputIconSize/2f),
@@ -56,6 +72,14 @@ class ProductionMap(val inputItems:Array<String>, val outputItem:String) : Actor
             batch.draw(texture, x + spot.position.x, y + spot.position.y - sizeOfDot/2f, 0f, 0f, sizeOfDot, sizeOfDot, 1f, 1f,
                     spot.rotation, 0, 0, texture.width, texture.height, false, false)
         } }
+
+        labels.forEach { it.label.setPosition(x + it.position.x - it.label.width/2f, y + it.position.y - it.label.height/2f) }
+        labels.forEach { it.label.draw(batch, 1f) }
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+
     }
 
     private fun calculateDots(firstNodePos:Vector2, secondNodePos:Vector2) : Array<Dot>{
@@ -68,10 +92,13 @@ class ProductionMap(val inputItems:Array<String>, val outputItem:String) : Actor
         val dir = if(firstNodePos.y < secondNodePos.y) 1 else -1
 
         val dots = Array(numDots, { i ->
+            //We generate all X dots first here
             if(i<numDotsX){
-                val c = i/(numDotsX/2)
-                val offsetY = c*(numDotsY*sizeOfDot)*dir
-                Dot(Vector2(firstNodePos.x + i*sizeOfDot, firstNodePos.y + offsetY), 0f, i == numDotsX-1)
+                val c = if(i < numDotsX/2f) 0 else 1 //This is simpler than clamping it to 0 or 1. This is basically a flag
+                val offsetY = c*(numDotsY*sizeOfDot)*dir //Since we generate all X dots together, this is the offset if it should line up with the input or output icon
+                Dot(Vector2(firstNodePos.x + i*sizeOfDot, firstNodePos.y + offsetY), 0f, i == numDotsX-1 || i == 0)
+
+            //Then we generate the Y dots
             }else{
                 val i = i - numDotsX
                 Dot(Vector2(firstNodePos.x + (numDotsX*sizeOfDot)/2f, firstNodePos.y + i*sizeOfDot*dir), 0f)
@@ -83,4 +110,5 @@ class ProductionMap(val inputItems:Array<String>, val outputItem:String) : Actor
 
     private class Dot(val position:Vector2, val rotation:Float, val end:Boolean = false)
     private class Icon(val position:Vector2, val texture:Texture)
+    private class LabelPosition(val label:Label, val position:Vector2)
 }
