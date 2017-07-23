@@ -1,48 +1,48 @@
 [[items]]
-  itemName = "Gold"
+  itemName = "gold"
   baseMarketPrice = 0
   categories = ["Currency"]
   iconName = "gold_icon"
 [[items]]
-  itemName = "Wood Log"
+  itemName = "wood log"
   baseMarketPrice = 5
   categories = ["Ingredient"]
   iconName = "wood_log_icon"
 [[items]]
-  itemName = "Birch Wood Log"
+  itemName = "birch wood log"
   baseMarketPrice = 7
   categories = ["Ingredient"]
   iconName = "wood_log_icon"
   baseQuality = 2 # The base quality of an item. Default is 1 if not set
 [[items]]
-  itemName = "Wood Plank"
+  itemName = "wood plank"
   baseMarketPrice = 10
   categories = ["Ingredient"]
   iconName = "wood_plank_icon"
 [[items]]
-  itemName = "Wood Table"
+  itemName = "wood table"
   baseMarketPrice = 250
   categories = ["Furnishing"]
   iconName = "wood_table_icon"
   luxury = 2
 [[items]]
-  itemName = "Wheat"
+  itemName = "wheat"
   baseMarketPrice = 1
   categories = ["Ingredient"]
   iconName = "wheat_icon"
 [[items]]
-  itemName = "Flour"
+  itemName = "flour"
   baseMarketPrice = 5
   categories = ["Ingredient"]
   iconName = "flour_icon"
 [[items]]
-  itemName = "Bread"
+  itemName = "bread"
   baseMarketPrice = 25
   categories = ["Ingredient", "Food"]
   iconName = "bread_icon"
   need = 1
 [[items]]
-  itemName = "Milk"
+  itemName = "milk"
   baseMarketPrice = 2
   categories = ["Ingredient", "Food"]
   iconName = "milk_icon"

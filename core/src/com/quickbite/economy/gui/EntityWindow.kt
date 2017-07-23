@@ -22,6 +22,7 @@ import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
+import com.quickbite.economy.gui.widgets.ProductionMap
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
@@ -58,6 +59,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val ic = Mappers.inventory.get(entity)
         val buying = Mappers.buyer.get(entity)
         val resource = Mappers.resource.get(entity)
+        val production = Mappers.produces.get(entity)
 
         val buildingTab = TextButton("Building", defaultTextButtonStyle)
         buildingTab.label.setFontScale(1f)
@@ -82,6 +84,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
         val resourceTab = TextButton("Resource", defaultTextButtonStyle)
 
+        val productionTab = TextButton("Production", defaultTextButtonStyle)
+
         val deleteLabel = TextButton("Delete", defaultTextButtonStyle)
         deleteLabel.label.setFontScale(1f)
 
@@ -103,6 +107,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             tabTable.add(buyingLabel).spaceRight(5f)
         if(resource != null)
             tabTable.add(resourceTab).spaceRight(5f)
+        if(production != null)
+            tabTable.add(productionTab).spaceRight(5f)
 
         tabTable.add().width(0f).growX()
 
@@ -165,6 +171,13 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         })
 
+        productionTab.addListener(object: ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                loadTable(contentTable, production, 9)
+            }
+        })
+
         deleteLabel.addListener(object:ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 close()
@@ -216,9 +229,10 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 setupWorkforceTable(table, component as WorkForceComponent)
             }
             5 -> setupBehaviourTable(table, component as BehaviourComponent)
-            6-> setupInventoryTable(table, component as InventoryComponent)
+            6 -> setupInventoryTable(table, component as InventoryComponent)
             7 -> setupBuyingTable(table, component as BuyerComponent)
             8 -> setupResourceTable(table, component as ResourceComponent)
+            9 -> setupProductionTable(table, component as ProduceItemComponent)
         }
 
         currentlyDisplayingComponent = component
@@ -324,7 +338,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     }
 
     private fun setupInventoryTable(table: Table, comp: InventoryComponent){
-
         val contentsTable = Table()
         contentsTable.background = darkBackgroundDrawable
 
@@ -350,6 +363,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             println("populating")
 
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
+                val itemName = itemName.toLowerCase()
                 val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
                 val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
 
@@ -389,6 +403,21 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         changedTabsFunc = {
             comp.removeInventoryListener("all", listener)
         }
+    }
+
+    private fun setupProductionTable(table: Table, comp: ProduceItemComponent){
+        val contentsTable = Table()
+        contentsTable.background = darkBackgroundDrawable
+
+        val inputs = mutableListOf<String>()
+        comp.productionList[0].requirements.forEach { inputs += it.itemName }
+
+        val output = comp.productionList[0].produceItemName
+
+        contentsTable.add(ProductionMap(inputs.toTypedArray(), output))
+
+        table.add(contentsTable)
+        table.left()
     }
 
     private fun setupBuyingTable(table: Table, comp: BuyerComponent){

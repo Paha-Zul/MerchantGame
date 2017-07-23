@@ -37,8 +37,8 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
 
         //If this is true we transfer all gold that we have
         if(giveAllMoneyRegardless){
-            val money = fromInventory.removeItem("Gold", -1)
-            toInventory.addItem("Gold", money)
+            val money = fromInventory.removeItem("gold", -1)
+            toInventory.addItem("gold", money)
 
             controller.finishWithSuccess()
             return
@@ -53,7 +53,7 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
             if(itemFromSelling == null)
                 itemFromSelling = targetBuildingSelling.baseSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
 
-            val moneyInInventory = fromInventory.getItemAmount("Gold")
+            val moneyInInventory = fromInventory.getItemAmount("gold")
             val amountCanBuy = Math.min(moneyInInventory/itemFromSelling!!.itemPrice, bb.targetItem.itemAmount)
             val moneyNeeded = amountCanBuy*itemFromSelling.itemPrice
 
@@ -64,8 +64,8 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
             }
 
             //Take the money out and give it...
-            val moneyTaken = fromInventory.removeItem("Gold", moneyNeeded)
-            val moneyGiven = toInventory.addItem("Gold", moneyTaken)
+            val moneyTaken = fromInventory.removeItem("gold", moneyNeeded)
+            val moneyGiven = toInventory.addItem("gold", moneyTaken)
         }
 
         controller.finishWithSuccess()

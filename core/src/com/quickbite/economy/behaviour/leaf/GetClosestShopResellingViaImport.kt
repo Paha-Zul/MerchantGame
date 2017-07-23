@@ -21,7 +21,7 @@ class GetClosestShopResellingViaImport(bb:BlackBoard, var itemName:String = "") 
         super.start()
 
         if(itemName == "")
-            itemName = bb.targetItem.itemName
+            itemName = bb.targetItem.itemName.toLowerCase()
 
         val building = FindEntityUtil.getClosestBuildingType(Mappers.transform.get(bb.myself).position, BuildingComponent.BuildingType.Shop, {
             val selling = Mappers.selling[it]

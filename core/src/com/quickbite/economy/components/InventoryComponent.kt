@@ -26,6 +26,7 @@ class InventoryComponent : MyComponent {
      * @return The amount added.
      */
     fun addItem(itemName:String, amount:Int = 1):Int{
+        val itemName = itemName.toLowerCase() //Change this to lower case
         if(amount < 1)
             return 0
 
@@ -44,7 +45,8 @@ class InventoryComponent : MyComponent {
      * @return The amount that was removed
      */
     fun removeItem(name:String, amount:Int = 1):Int{
-        var amount = amount //This makes is mutable
+        val name = name.toLowerCase()
+        var amount = amount //This makes this mutable
         if(amount < 0)
             amount = getItemAmount(name)
 

@@ -114,7 +114,11 @@ object DefinitionManager {
         }
 
         val itemProdList = Toml().read(Gdx.files.internal(itemProdName).file()).to(DefinitionManager.ProductionList::class.java)
-        itemProdList.productions.forEach { prod -> DefinitionManager.productionMap.put(prod.produceItemName, prod)}
+        itemProdList.productions.forEach { prod ->
+            prod.produceItemName = prod.produceItemName.toLowerCase() //Make sure the produced item name is lower case
+            prod.requirements.forEach { it.itemName = it.itemName.toLowerCase() } //Make sure each requirement item name is lower case
+            DefinitionManager.productionMap.put(prod.produceItemName.toLowerCase(), prod) //Make sure we store it under the LOWER CASE name...
+        }
 
         val plantDefsList = Toml().read(Gdx.files.internal(plantDefName).file()).to(PlantDefList::class.java)
         plantDefsList.defs.forEach { plantDef -> DefinitionManager.plantDefMap.put(plantDef.name, plantDef)}

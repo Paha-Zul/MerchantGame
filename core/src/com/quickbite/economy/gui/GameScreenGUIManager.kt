@@ -47,8 +47,6 @@ object GameScreenGUIManager {
     private var showingTooltip = false
     private var tooltipLocation = TooltipLocation.Mouse
 
-    private var entityHoverWindow:EntityHoverWindow? = null
-
     //Gotta be lazy cause Import won't be available right away
     val myTown: Town by lazy {TownManager.getTown("Town")}
 
@@ -156,18 +154,6 @@ object GameScreenGUIManager {
 
     fun removeTownWindow(){
         guiStack.removeIf {it is TownWindow}
-    }
-
-    fun openHoverEntityWindow(entity:Entity){
-//        val window = guiStack.firstOrNull { it is EntityHoverWindow }
-//        if(window == null)
-//            guiStack.add(EntityHoverWindow(entity, this))
-
-        this.entityHoverWindow = EntityHoverWindow(entity)
-    }
-
-    fun closeEntityHoverWindow(){
-        this.entityHoverWindow = null
     }
 
     /**

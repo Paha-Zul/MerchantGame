@@ -49,7 +49,7 @@ object Spawner {
             //Get the closest building that is reselling our item via import
             val closest = FindEntityUtil.getClosestBuildingType(spawnPosition, BuildingComponent.BuildingType.Shop, {
                 val selling = Mappers.selling[it]
-                selling.resellingItemsList.any { it.itemName == randomItem.itemName && it.itemSourceType == SellingItemData.ItemSource.Import }
+                selling.resellingItemsList.any { it.itemName.toLowerCase() == randomItem.itemName.toLowerCase() && it.itemSourceType == SellingItemData.ItemSource.Import }
             })
 
             //If we did find a building...

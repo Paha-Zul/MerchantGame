@@ -104,12 +104,12 @@ object Factory {
                 //We specifically have this under the seller component area because we only want to keep track of what
                 //items are available for selling
                 inventory.addInventoryListener("all", { name, amtChanged, _ ->
-                    if(name != "Gold") //Make sure to exclude gold...
+                    if(name != "gold") //Make sure to exclude gold...
                         GameEventSystem.fire(ItemAmountChangeEvent(name, amtChanged)) //Fire this event globally
                 })
 
                 //A listener for when things are sold and gold changes. This is for the economy stats mainly
-                inventory.addInventoryListener("Gold", { _, amtChanged, _ ->
+                inventory.addInventoryListener("gold", { _, amtChanged, _ ->
                     selling.incomeDaily += amtChanged
                     selling.incomeTotal += amtChanged
                 })
@@ -181,7 +181,7 @@ object Factory {
 
             //Add each production from the definition file into the produces items component
             definition.productionDef!!.produces.forEach { itemName ->
-                producesItems.productionList.add(DefinitionManager.productionMap[itemName])
+                producesItems.productionList.add(DefinitionManager.productionMap[itemName.toLowerCase()])
             }
 
             //Add anything that's harvested
