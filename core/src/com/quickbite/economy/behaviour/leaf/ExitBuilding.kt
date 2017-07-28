@@ -36,13 +36,13 @@ class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
         super.start()
 
         //If the target's transform is null (meaning we don't have a target) or it doesn't have an entrance, skip the fancy crap and unhide
-        if(bb.targetEntity == null || bb.insideEntity == null){
+        if(bb.insideEntity == null){
             finish()
             return
         }
 
         //If the target's transform is null or doesn't have any entrance's, simply finish
-        targetTC = Mappers.transform[bb.targetEntity]
+        targetTC = Mappers.transform[bb.insideEntity]
         if(targetTC == null || targetTC!!.spotMap["entrance"] == null){
             finish()
             return

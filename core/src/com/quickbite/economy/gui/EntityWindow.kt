@@ -371,7 +371,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 itemAmountLabel.setFontScale(1f)
                 itemAmountLabel.setAlignment(Align.center)
 
-                println("icon images")
+//                println("icon images")
 
                 iconImage.addListener(object: ClickListener(){
                     override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
@@ -388,7 +388,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
                 contentsTable.add(iconImage).size(24f)
                 contentsTable.add(itemAmountLabel).width(100f)
-                contentsTable.row()
+                contentsTable.row().padTop(2f)
             }
         }
 
@@ -473,30 +473,30 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val sellHistoryTable = Table()
         sellHistoryTable.background = darkBackgroundDrawable
 
+        //Tax title
+        val taxLabel = Label("Tax", this.defaultTitleLabelStyle)
+        taxLabel.setAlignment(Align.center)
+
         //Set up the selling title
-        val sellLabel = Label("Selling", defaultLabelStyle)
+        val sellLabel = Label("Selling", this.defaultTitleLabelStyle)
         sellLabel.setAlignment(Align.center)
-        sellLabel.setFontScale(1.2f)
+
+        val historyTitleLabel = Label("History", defaultTitleLabelStyle)
+        historyTitleLabel.setAlignment(Align.center)
 
         //This will populate the table of items being sold
-        val populateItemsTable = {
+        val populateSellingItemsTable = {
             sellItemsMainTable.clear()
-
-            sellItemsMainTable.add(sellLabel)
-            sellItemsMainTable.row()
 
             val sellItemsListTable = Table()
 
             val itemNameColTitle = Label("Name", defaultLabelStyle)
-            itemNameColTitle.setFontScale(1f)
             itemNameColTitle.setAlignment(Align.center)
 
             val itemAmountColTitle = Label("Price", defaultLabelStyle)
-            itemAmountColTitle.setFontScale(1f)
             itemAmountColTitle.setAlignment(Align.center)
 
             val itemStockColTitle = Label("Stock", defaultLabelStyle)
-            itemStockColTitle.setFontScale(1f)
             itemStockColTitle.setAlignment(Align.center)
 
             //Add the three titles
@@ -583,7 +583,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             sellItemsMainTable.add(sellItemsListTable)
         }
 
-        populateItemsTable()
+        //Initially call this function to populate the items table
+        populateSellingItemsTable()
 
         //--- Tax rate section ---
 
@@ -606,9 +607,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             setupResellingStuff(table, comp)
 
         //--- The titles for all the columns ---
-        val title = Label("History:", defaultLabelStyle)
-        title.setFontScale(1f)
-        title.setAlignment(Align.center)
+
 
         val itemNameLabel = Label("Item", defaultLabelStyle)
         itemNameLabel.setFontScale(1f)
@@ -635,8 +634,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             sellHistoryTable.clear()
 
             //Add all the titles
-            sellHistoryTable.add(title).colspan(5).fillX().expandX()
-            sellHistoryTable.row()
             sellHistoryTable.add(itemNameLabel).fillX().expandX()
             sellHistoryTable.add(itemAmountLabel).fillX().expandX()
             sellHistoryTable.add(pricePerUnitLabel).fillX().expandX()
@@ -682,6 +679,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         }
 
+        //The listener for when we hit the less tax button
         lessTaxButton.addListener(object:ChangeListener(){
             override fun changed(event: ChangeEvent?, actor: Actor?) {
                 //The 0.5 amd 4.5 are because of rounding for bad floats
@@ -699,6 +697,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         })
 
+        //The callback for hitting the more tax button
         moreTaxButton.addListener(object:ChangeListener(){
             override fun changed(event: ChangeEvent?, actor: Actor?) {
                 //The 1.5 amd 5.5 are because of rounding for bad floats
@@ -722,17 +721,23 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         table.top()
 
         //Add all the stuff to the table
-        table.add(taxRateTable).expandX().fillX().padTop(20f) //The taxCollected rate
-        table.row().expandX().fillX().spaceTop(20f)
+        table.add(taxLabel).expandX().fillX().padTop(5f) //The taxCollected rate
+        table.row().expandX().fillX().spaceTop(0f)
+        table.add(taxRateTable).expandX().fillX().padTop(5f) //The taxCollected rate
+        table.row().expandX().fillX().spaceTop(5f)
+        table.add(sellLabel).expandX().fillX() //What we are selling
+        table.row().expandX().fillX().spaceTop(5f)
         table.add(sellItemsMainTable).expandX().fillX() //What we are selling
-        table.row().expandX().fillX().spaceTop(20f)
+        table.row().expandX().fillX().spaceTop(5f)
+        table.add(historyTitleLabel).expandX().fillX() //The history table
+        table.row().expand().fill().spaceTop(5f) //Push everything up!
         table.add(sellHistoryTable).expandX().fillX() //The history table
-        table.row().expand().fill().spaceTop(20f) //Push everything up!
+        table.row().expand().fill().spaceTop(5f) //Push everything up!
 
         //Put the history function into our update map
         updateMap.put("sellHistory", historyTableFunc)
 
-        updateFuncsList.add { populateItemsTable() }
+        updateFuncsList.add { populateSellingItemsTable() }
 
         //Put in the event system
         val entID = Mappers.identity[currentlySelectedEntity].uniqueID

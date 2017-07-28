@@ -250,14 +250,14 @@ object Tasks {
     }
 
     fun haulItemFromBuilding(bb: BlackBoard):Task {
-        val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
+        val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling Item")
 
         //TODO Need to make sure it knows its inside a building....
-        val leaveMyBuilding = ExitBuilding(bb)
         val setTargetItem:Task = SetTargetItemToHaul(bb)
         val getBuildingToHaulFrom:Task = GetBuildingToHaulFrom(bb)
         val setTargetAsBuilding = SetTargetEntityAsTargetPosition(bb)
         val getMoneyForHaul = TransferMoneyToInventoryForItemPurchase(bb)
+        val leaveMyBuilding = ExitBuilding(bb)
         val getTargetEntrance = GetEntranceOfBuilding(bb)
         val getPathToTarget = GetPath(bb)
         val moveToTarget = MoveToPath(bb)
@@ -275,11 +275,11 @@ object Tasks {
         val transferItemsToWorkshop = TransferFromInventoryToInventory(bb, true) //Transfer items from me to target
         val giveAllMoneyBackToWorkerBuilding = TransferMoneyToInventoryForItemPurchase(bb, false, true) //Give all the money back
 
-        task.controller.addTask(leaveMyBuilding)
         task.controller.addTask(setTargetItem)
         task.controller.addTask(getBuildingToHaulFrom)
         task.controller.addTask(setTargetAsBuilding)
         task.controller.addTask(getMoneyForHaul)
+        task.controller.addTask(leaveMyBuilding)
         task.controller.addTask(getTargetEntrance)
         task.controller.addTask(getPathToTarget)
         task.controller.addTask(moveToTarget)
@@ -313,7 +313,7 @@ object Tasks {
         task.controller.addTask(optionalBranch)
 
         //Optional branch. If we are not inside our target building already, move to it
-        optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb))) //If this succeeds (opposite), we are outside. Continue moving!
+        optionalBranchSequence.controller.addTask(SucceedOpposite(CheckInsideTargetEntity(bb))) //If this succeeds (opposite), we are outside. Continue moving!
         optionalBranchSequence.controller.addTask(SetTargetEntityAsInside(bb))
         optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
         optionalBranchSequence.controller.addTask(ChangeHidden(bb, false))
@@ -339,7 +339,7 @@ object Tasks {
         task.controller.addTask(optionalBranch)
 
         //Optional branch. If we are not inside our target building, then move to it!
-        optionalBranchSequence.controller.addTask(SucceedOpposite(bb, CheckInsideTargetEntity(bb)))
+        optionalBranchSequence.controller.addTask(SucceedOpposite(CheckInsideTargetEntity(bb)))
         optionalBranchSequence.controller.addTask(ChangeHidden(bb, false))
         optionalBranchSequence.controller.addTask(GetEntranceOfBuilding(bb))
         optionalBranchSequence.controller.addTask(GetPath(bb))
@@ -402,13 +402,14 @@ object Tasks {
     fun moveToMyBuilding(bb:BlackBoard) : Task{
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Moving")
 
+        val checkInsideMyBuilding = SucceedOpposite(CheckInsideMyWorkerBuilding(bb))
         val setMyBuildingAsTarget = SetMyWorkBuildingAsTarget(bb)
         val getEntranceOfBuilding = GetEntranceOfBuilding(bb)
         val getPathToBuilding = GetPath(bb)
         val moveToBuilding = MoveToPath(bb)
-        val enterMyBuildingAgain = EnterBuilding(bb)
+        val enterBuilding = EnterBuilding(bb)
 
-        task.controller.addTasks(setMyBuildingAsTarget, getEntranceOfBuilding, getPathToBuilding, moveToBuilding, enterMyBuildingAgain)
+        task.controller.addTasks(checkInsideMyBuilding, setMyBuildingAsTarget, getEntranceOfBuilding, getPathToBuilding, moveToBuilding, enterBuilding)
 
         return task
     }
@@ -416,7 +417,7 @@ object Tasks {
     fun haulWorkerTask(bb:BlackBoard) : Task{
         val task = com.quickbite.economy.behaviour.composite.Selector(bb, "Hauling Work")
 
-        task.controller.addTasks(haulItemFromBuilding(bb), moveToMyBuilding(bb))
+        task.controller.addTasks(haulItemFromBuilding(bb), moveToMyBuilding(bb), Wait(bb))
 
         return task
     }

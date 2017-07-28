@@ -12,6 +12,8 @@ import com.quickbite.economy.util.TimeOfDay
 
 /**
  * Created by Paha on 5/7/2017.
+ *
+ * A system that tracks gold for every entity that is selling items
  */
 class GoldTrackingSystem : EntitySystem(){
     lateinit var entities: ImmutableArray<Entity>
@@ -39,7 +41,7 @@ class GoldTrackingSystem : EntitySystem(){
                 val sc = Mappers.selling.get(ent)
                 val ic = Mappers.inventory[ent]
 
-                val goldAmt = ic.getItemAmount("Gold")
+                val goldAmt = ic.getItemAmount("gold")
                 sc.goldHistory.add(goldAmt)
 
                 //If we are clearing the daily gold....

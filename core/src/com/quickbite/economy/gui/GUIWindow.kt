@@ -33,6 +33,7 @@ open class GUIWindow {
     protected var changedTabsFunc:()->Unit = {}
 
     protected val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
+    protected val defaultTitleLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.WHITE)
     protected val defaultTextFieldStyle = TextField.TextFieldStyle()
 
     protected val defaultTextButtonStyle = TextButton.TextButtonStyle()
