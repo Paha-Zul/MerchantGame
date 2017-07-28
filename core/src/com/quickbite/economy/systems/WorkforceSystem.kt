@@ -80,7 +80,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
 
     private fun getTask(task:String, bb:BlackBoard):Task{
         when (task) {
-            "haul" -> return AlwaysTrue(bb, Tasks.haulItemFromBuilding(bb))
+            "haul" -> return AlwaysTrue(bb, Tasks.haulWorkerTask(bb))
             "produce" -> return AlwaysTrue(bb, Tasks.produceItem(bb))
             "sell" -> return AlwaysTrue(bb, Tasks.sellItem(bb))
             "harvest" -> return AlwaysTrue(bb, Tasks.harvestClosestResourceType(bb))

@@ -22,10 +22,11 @@ class ProductionMap(val productionComp:ProduceItemComponent) : Actor() {
     private val labels:MutableList<LabelPosition> = mutableListOf()
 
     private val inputOutputIconSize = 50f
-    private val sizeOfDot = 8f
+    private val dotSize = 4f
+    private val arrowSize = 8f
 
-    val xNodeSpace = 200f //Distance between each layer of nodes
-    val yNodeSpace = 64f
+    val xNodeSpace = 148f //Distance between each layer of nodes. Must be a multiple of dotSize
+    val yNodeSpace = 64f //Must be a multiple of dot size
 
     init{
         inputs = Array(productionComp.productionList[0].requirements.size, {i ->
@@ -69,7 +70,8 @@ class ProductionMap(val productionComp:ProduceItemComponent) : Actor() {
 
         dots.forEach { it.forEach { spot ->
             val texture = if(spot.end) arrow else dot
-            batch.draw(texture, x + spot.position.x, y + spot.position.y - sizeOfDot/2f, 0f, 0f, sizeOfDot, sizeOfDot, 1f, 1f,
+            val size = if(spot.end) arrowSize else dotSize
+            batch.draw(texture, x + spot.position.x, y + spot.position.y - size/2f, 0f, 0f, size, size, 1f, 1f,
                     spot.rotation, 0, 0, texture.width, texture.height, false, false)
         } }
 
@@ -85,8 +87,8 @@ class ProductionMap(val productionComp:ProduceItemComponent) : Actor() {
     private fun calculateDots(firstNodePos:Vector2, secondNodePos:Vector2) : Array<Dot>{
         val disToMidY = firstNodePos.y - secondNodePos.y
 
-        val numDotsX = ((secondNodePos.x - firstNodePos.x)/sizeOfDot).toInt()
-        val numDotsY = Math.abs(disToMidY/sizeOfDot)
+        val numDotsX = ((secondNodePos.x - firstNodePos.x)/ dotSize).toInt()
+        val numDotsY = Math.abs(disToMidY/ dotSize)
         val numDots = (numDotsX + numDotsY).toInt()
 
         val dir = if(firstNodePos.y < secondNodePos.y) 1 else -1
@@ -95,13 +97,13 @@ class ProductionMap(val productionComp:ProduceItemComponent) : Actor() {
             //We generate all X dots first here
             if(i<numDotsX){
                 val c = if(i < numDotsX/2f) 0 else 1 //This is simpler than clamping it to 0 or 1. This is basically a flag
-                val offsetY = c*(numDotsY*sizeOfDot)*dir //Since we generate all X dots together, this is the offset if it should line up with the input or output icon
-                Dot(Vector2(firstNodePos.x + i*sizeOfDot, firstNodePos.y + offsetY), 0f, i == numDotsX-1 || i == 0)
+                val offsetY = c*(numDotsY* dotSize)*dir //Since we generate all X dots together, this is the offset if it should line up with the input or output icon
+                Dot(Vector2(firstNodePos.x + i* dotSize, firstNodePos.y + offsetY), 0f, i == numDotsX-1 || i == 0)
 
             //Then we generate the Y dots
             }else{
                 val i = i - numDotsX
-                Dot(Vector2(firstNodePos.x + (numDotsX*sizeOfDot)/2f, firstNodePos.y + i*sizeOfDot*dir), 0f)
+                Dot(Vector2(firstNodePos.x + (numDotsX* dotSize)/2f, firstNodePos.y + i* dotSize *dir), 0f)
             }
         })
 

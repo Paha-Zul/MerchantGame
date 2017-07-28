@@ -253,12 +253,12 @@ object Tasks {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb)
 
         //TODO Need to make sure it knows its inside a building....
+        val leaveMyBuilding = ExitBuilding(bb)
         val setTargetItem:Task = SetTargetItemToHaul(bb)
         val getBuildingToHaulFrom:Task = GetBuildingToHaulFrom(bb)
         val setTargetAsBuilding = SetTargetEntityAsTargetPosition(bb)
         val getMoneyForHaul = TransferMoneyToInventoryForItemPurchase(bb)
         val getTargetEntrance = GetEntranceOfBuilding(bb)
-        val leaveMyBuilding = ExitBuilding(bb)
         val getPathToTarget = GetPath(bb)
         val moveToTarget = MoveToPath(bb)
         val enterHaulingBuilding = EnterBuilding(bb)
@@ -395,6 +395,28 @@ object Tasks {
         alwaysSucceedSeq.controller.addTask(ExitBuilding(bb))
 
         task.controller.addTask(alwaysTrueBranch) //Leave the map
+
+        return task
+    }
+
+    fun moveToMyBuilding(bb:BlackBoard) : Task{
+        val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Moving")
+
+        val setMyBuildingAsTarget = SetMyWorkBuildingAsTarget(bb)
+        val getEntranceOfBuilding = GetEntranceOfBuilding(bb)
+        val getPathToBuilding = GetPath(bb)
+        val moveToBuilding = MoveToPath(bb)
+        val enterMyBuildingAgain = EnterBuilding(bb)
+
+        task.controller.addTasks(setMyBuildingAsTarget, getEntranceOfBuilding, getPathToBuilding, moveToBuilding, enterMyBuildingAgain)
+
+        return task
+    }
+
+    fun haulWorkerTask(bb:BlackBoard) : Task{
+        val task = com.quickbite.economy.behaviour.composite.Selector(bb, "Hauling Work")
+
+        task.controller.addTasks(haulItemFromBuilding(bb), moveToMyBuilding(bb))
 
         return task
     }
