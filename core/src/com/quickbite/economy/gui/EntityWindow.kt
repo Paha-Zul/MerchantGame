@@ -485,113 +485,11 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         historyTitleLabel.setAlignment(Align.center)
 
         //This will populate the table of items being sold
-        val populateSellingItemsTable = {
-            sellItemsMainTable.clear()
-
-            val sellItemsListTable = Table()
-
-            val itemNameColTitle = Label("Name", defaultLabelStyle)
-            itemNameColTitle.setAlignment(Align.center)
-
-            val itemAmountColTitle = Label("Price", defaultLabelStyle)
-            itemAmountColTitle.setAlignment(Align.center)
-
-            val itemStockColTitle = Label("Stock", defaultLabelStyle)
-            itemStockColTitle.setAlignment(Align.center)
-
-            //Add the three titles
-            sellItemsListTable.add(itemNameColTitle).width(100f).uniformX()
-            sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
-            sellItemsListTable.add(itemAmountColTitle).width(100f).uniformX()
-            sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
-            sellItemsListTable.add(itemStockColTitle).width(100f).uniformX()
-            sellItemsListTable.add() //Empty spot for the X button
-            sellItemsListTable.row()
-
-            comp.currSellingItems.forEach { sellItemData ->
-                //The item name
-                val itemNameLabel = Label(sellItemData.itemName, defaultLabelStyle)
-                itemNameLabel.setFontScale(1f)
-                itemNameLabel.setAlignment(Align.center)
-
-                //The item amount
-                val itemAmountLabel = Label(sellItemData.itemPrice.toString(), defaultLabelStyle)
-                itemAmountLabel.setFontScale(1f)
-                itemAmountLabel.setAlignment(Align.center)
-
-                /** The item stock amount */
-                val itemStockTable = Table()
-
-                val lessStockButton = TextButton("-", defaultTextButtonStyle)
-                lessStockButton.label.setFontScale(1f)
-
-                val moreStockButton = TextButton("+", defaultTextButtonStyle)
-                moreStockButton.label.setFontScale(1f)
-
-                fun getItemStockText():String =
-                    if(sellItemData.itemStockAmount < 0) "max" else sellItemData.itemStockAmount.toString()
-
-                val itemStockLabel = Label(getItemStockText(), defaultLabelStyle)
-                itemStockLabel.setFontScale(1f)
-                itemStockLabel.setAlignment(Align.center)
-
-                itemStockTable.add(lessStockButton).size(16f)
-                itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f).width(25f)
-                itemStockTable.add(moreStockButton).size(16f)
-
-                lessStockButton.addListener(object:ClickListener(){
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        super.touchUp(event, x, y, pointer, button)
-                        sellItemData.itemStockAmount--
-                        if(sellItemData.itemStockAmount < 0) sellItemData.itemStockAmount = -1
-
-                        itemStockLabel.setText(getItemStockText())
-                    }
-                })
-
-                moreStockButton.addListener(object:ClickListener(){
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        super.touchUp(event, x, y, pointer, button)
-                        sellItemData.itemStockAmount++
-                        itemStockLabel.setText(getItemStockText())
-                    }
-                })
-
-
-                //TODO Need listeners for the more/less stock buttons and need to restrict amounts...
-
-                //The x Label if we want to delete the link from a store that is reselling
-                val xLabel = TextButton("X", defaultTextButtonStyle)
-                xLabel.label.setFontScale(1f)
-                xLabel.label.setAlignment(Align.center)
-
-                sellItemsListTable.add(itemNameLabel).width(100f)
-                sellItemsListTable.add() //Empty space for the divider in the titles
-                sellItemsListTable.add(itemAmountLabel).width(100f)
-                sellItemsListTable.add() //Empty space for the divider in the titles
-                sellItemsListTable.add(itemStockTable)
-                sellItemsListTable.add() //Empty space for the divider in the titles
-                if(comp.resellingItemsList.size > 0) sellItemsListTable.add(xLabel).size(16f).spaceLeft(10f).right() //Either add the x label
-                else sellItemsListTable.add() //Or add an empty column
-                sellItemsListTable.row()
-
-                xLabel.addListener(object:ClickListener(){
-                    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                        super.touchUp(event, x, y, pointer, button)
-                        if(comp.resellingItemsList.size <= 0)
-                            return
-                        Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceType, sellItemData.itemSourceData)
-                    }
-                })
-            }
-
-            sellItemsMainTable.add(sellItemsListTable)
-        }
 
         //Initially call this function to populate the items table
-        populateSellingItemsTable()
+        GUIUtil.populateItemsTable(comp, sellItemsMainTable, defaultLabelStyle, defaultTextButtonStyle)
 
-        //--- Tax rate section ---
+        /**--- Tax rate section --- **/
 
         val taxRateLabel = Label("${comp.taxRate}", defaultLabelStyle)
         taxRateLabel.setFontScale(1f)
@@ -612,81 +510,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             setupResellingStuff(table, comp)
 
         //--- The titles for all the columns ---
-
-
-        val itemNameLabel = Label("Item", defaultLabelStyle)
-        itemNameLabel.setAlignment(Align.center)
-
-        val itemAmountLabel = Label("Amt", defaultLabelStyle)
-        itemAmountLabel.setAlignment(Align.center)
-
-        val pricePerUnitLabel = Label("PPU", defaultLabelStyle)
-        pricePerUnitLabel.setAlignment(Align.center)
-
-        val timeStampLabel = Label("Time", defaultLabelStyle)
-        timeStampLabel.setAlignment(Align.center)
-
-        val buyerNameLabel = Label("Buyer", defaultLabelStyle)
-        buyerNameLabel.setAlignment(Align.center)
-
-        //The history table function. This will populate the table
-        val historyTableFunc = {
-            sellHistoryTable.clear()
-            sellHistoryTable.top()
-
-            //Add all the titles
-            sellHistoryTable.add(itemNameLabel).fillX().expandX()
-            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-            sellHistoryTable.add(itemAmountLabel).fillX().expandX()
-            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-            sellHistoryTable.add(pricePerUnitLabel).fillX().expandX()
-            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-            sellHistoryTable.add(timeStampLabel).fillX().expandX()
-            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-            sellHistoryTable.add(buyerNameLabel).fillX().expandX()
-            sellHistoryTable.row()
-
-            //TODO Don't use magic number to limit this size?
-            //The limit of the history
-            val limit = Math.max(0, comp.sellHistory.queue.size - 5)
-
-            //For each history, set up the labels
-            for (i in (comp.sellHistory.queue.size-1).downTo(limit)){
-                val sell = comp.sellHistory.queue[i]
-
-                val _item = Label(sell.itemName, defaultLabelStyle)
-                _item.setFontScale(1f)
-                _item.setAlignment(Align.center)
-
-                val _amount = Label(sell.itemAmount.toString(), defaultLabelStyle)
-                _amount.setFontScale(1f)
-                _amount.setAlignment(Align.center)
-
-                val _ppu = Label(sell.pricePerItem.toString(), defaultLabelStyle)
-                _ppu.setFontScale(1f)
-                _ppu.setAlignment(Align.center)
-
-                val _time = Label(sell.timeStamp.toString(), defaultLabelStyle)
-                _time.setFontScale(1f)
-                _time.setAlignment(Align.center)
-
-                val _buyer = Label(sell.buyerName, defaultLabelStyle)
-                _buyer.setFontScale(1f)
-                _buyer.setAlignment(Align.center)
-
-                //Add them all to the table and add a new row
-                sellHistoryTable.add(_item).fillX().expandX()
-                sellHistoryTable.add() //Empty space for divider in titles
-                sellHistoryTable.add(_amount).fillX().expandX()
-                sellHistoryTable.add() //Empty space for divider in titles
-                sellHistoryTable.add(_ppu).fillX().expandX()
-                sellHistoryTable.add() //Empty space for divider in titles
-                sellHistoryTable.add(_time).fillX().expandX()
-                sellHistoryTable.add() //Empty space for divider in titles
-                sellHistoryTable.add(_buyer).fillX().expandX()
-                sellHistoryTable.row()
-            }
-        }
 
         //The listener for when we hit the less tax button
         lessTaxButton.addListener(object:ChangeListener(){
@@ -725,7 +548,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         })
 
         //Call the history table function to populate the history
-        historyTableFunc()
+        GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle)
 
         table.top()
 
@@ -744,13 +567,13 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         table.row().expand().fill().spaceTop(5f) //Push everything up!
 
         //Put the history function into our update map
-        updateMap.put("sellHistory", historyTableFunc)
+        updateMap.put("sellHistory", {GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle)})
 
-        updateFuncsList.add { populateSellingItemsTable() }
+        updateFuncsList.add { GUIUtil.populateItemsTable(comp, sellItemsMainTable, defaultLabelStyle, defaultTextButtonStyle) }
 
         //Put in the event system
         val entID = Mappers.identity[currentlySelectedEntity].uniqueID
-        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({historyTableFunc()}, entID) //Subscribe to the entity selling an item
+        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle)}, entID) //Subscribe to the entity selling an item
 
         changedTabsFunc = {
             GameEventSystem.unsubscribe(entityEvent) //Unsubscribe when we leave this tab
@@ -865,7 +688,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         })
 
         importButton.addChangeListener { _, _ ->
-            println("Something")
             GameScreenGUIManager.openImportWindow(this.entity)
         }
     }

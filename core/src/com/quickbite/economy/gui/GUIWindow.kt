@@ -75,7 +75,7 @@ open class GUIWindow {
         this.mainTable.add(contentTableScrollPane).grow()
 
         //Make the window
-        val windowBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box", Texture::class.java], 50, 50, 50, 50))
+        val windowBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box", Texture::class.java], 7, 7, 7, 7))
         val windowSkin = Window.WindowStyle(MyGame.defaultFont20, Color.WHITE, windowBackground)
 
         val exitButton = TextButton("x", defaultTextButtonStyle)

@@ -2,6 +2,8 @@ package com.quickbite.economy.util
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -9,12 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
+import com.quickbite.economy.CapitalizeEachToken
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.addChangeListener
 import com.quickbite.economy.behaviour.Tasks
+import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.components.WorkForceComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ReloadGUIEvent
@@ -84,7 +89,7 @@ object GUIUtil {
             val workerTable = GUIUtil.makeWorkerTable(entity, workforceComp, labelStyle, textButtonStyle, {guiManager.openEntityWindow(it)})
 
             //Add the worker table
-            workerListTable.add(workerTable).growX()
+            workerListTable.add(workerTable).growX().spaceBottom(3f)
             workerListTable.add() //Empty space for divider in titles
             workerListTable.row().growX()
 
@@ -181,6 +186,7 @@ object GUIUtil {
         }
 
         val workerTable = Table()
+        workerTable.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
 
         workerTable.add(workerNameLabel).growX().uniformX()
         workerTable.add(workerTasksLabel).growX().uniformX()
@@ -285,6 +291,187 @@ object GUIUtil {
             resourceTable.add(production)
 
             table.add(resourceTable)
+        }
+    }
+
+    fun populateItemsTable(comp:SellingItemsComponent, sellItemsMainTable:Table, defaultLabelStyle: Label.LabelStyle, defaultTextButtonStyle:TextButton.TextButtonStyle){
+        sellItemsMainTable.clear()
+
+        val sellItemsListTable = Table()
+
+        val itemNameColTitle = Label("Name", defaultLabelStyle)
+        itemNameColTitle.setAlignment(Align.center)
+
+        val itemAmountColTitle = Label("Price", defaultLabelStyle)
+        itemAmountColTitle.setAlignment(Align.center)
+
+        val itemStockColTitle = Label("Stock", defaultLabelStyle)
+        itemStockColTitle.setAlignment(Align.center)
+
+        //Add the three titles
+        sellItemsListTable.add().growX()
+        sellItemsListTable.add(itemNameColTitle).width(100f)
+        sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
+        sellItemsListTable.add(itemAmountColTitle).width(100f)
+        sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
+        sellItemsListTable.add(itemStockColTitle).width(100f)
+        sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
+        sellItemsListTable.add().width(16f).spaceLeft(10f) //Empty spot for the X button
+        sellItemsListTable.add().growX()
+        sellItemsListTable.row()
+
+        comp.currSellingItems.forEach { sellItemData ->
+            //The item name
+            val itemNameLabel = Label(sellItemData.itemName.CapitalizeEachToken(), defaultLabelStyle)
+            itemNameLabel.setAlignment(Align.center)
+
+            //The item amount
+            val itemAmountLabel = Label(sellItemData.itemPrice.toString(), defaultLabelStyle)
+            itemAmountLabel.setAlignment(Align.center)
+
+            /** The item stock amount */
+            val itemStockTable = Table()
+
+            val lessStockButton = TextButton("-", defaultTextButtonStyle)
+
+            val moreStockButton = TextButton("+", defaultTextButtonStyle)
+
+            fun getItemStockText():String =
+                    if(sellItemData.itemStockAmount < 0) "max" else sellItemData.itemStockAmount.toString()
+
+            val itemStockLabel = Label(getItemStockText(), defaultLabelStyle)
+            itemStockLabel.setFontScale(1f)
+            itemStockLabel.setAlignment(Align.center)
+
+            itemStockTable.add(lessStockButton).size(16f)
+            itemStockTable.add(itemStockLabel).space(0f, 5f, 0f, 5f).width(25f)
+            itemStockTable.add(moreStockButton).size(16f)
+
+            lessStockButton.addListener(object:ClickListener(){
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    sellItemData.itemStockAmount--
+                    if(sellItemData.itemStockAmount < 0) sellItemData.itemStockAmount = -1
+
+                    itemStockLabel.setText(getItemStockText())
+                }
+            })
+
+            moreStockButton.addListener(object:ClickListener(){
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    sellItemData.itemStockAmount++
+                    itemStockLabel.setText(getItemStockText())
+                }
+            })
+            //TODO Need listeners for the more/less stock buttons and need to restrict amounts...
+
+            val itemTable = Table()
+            itemTable.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
+
+            //The x Label if we want to delete the link from a store that is reselling
+            val xLabel = TextButton("X", defaultTextButtonStyle)
+            xLabel.label.setAlignment(Align.center)
+
+            itemTable.add().growX()
+            itemTable.add(itemNameLabel).width(100f)
+            itemTable.add().width(2f) //Empty space for the divider in the titles
+            itemTable.add(itemAmountLabel).width(100f)
+            itemTable.add().width(2f) //Empty space for the divider in the titles
+            itemTable.add(itemStockTable).width(100f)
+            itemTable.add().width(2f) //Empty space for the divider in the titles
+            if(comp.resellingItemsList.size > 0) itemTable.add(xLabel).size(16f).spaceLeft(10f).right() //Either add the x label
+            else itemTable.add().width(16f) //Or add an empty column
+            itemTable.add().growX()
+
+            sellItemsListTable.add(itemTable).colspan(100).growX()
+            sellItemsListTable.row().spaceTop(5f)
+
+            //The listener for the X button
+            xLabel.addListener(object:ClickListener(){
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+                    if(comp.resellingItemsList.size <= 0)
+                        return
+                    Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceType, sellItemData.itemSourceData)
+                }
+            })
+        }
+
+//        sellItemsListTable.debugAll()
+        sellItemsMainTable.add(sellItemsListTable).growX()
+    }
+
+    fun populateHistoryTable(comp:SellingItemsComponent, sellHistoryTable:Table, defaultLabelStyle:Label.LabelStyle){
+        sellHistoryTable.clear()
+        sellHistoryTable.top()
+
+        val itemNameLabel = Label("Item", defaultLabelStyle)
+        itemNameLabel.setAlignment(Align.center)
+
+        val itemAmountLabel = Label("Amt", defaultLabelStyle)
+        itemAmountLabel.setAlignment(Align.center)
+
+        val pricePerUnitLabel = Label("PPU", defaultLabelStyle)
+        pricePerUnitLabel.setAlignment(Align.center)
+
+        val timeStampLabel = Label("Time", defaultLabelStyle)
+        timeStampLabel.setAlignment(Align.center)
+
+        val buyerNameLabel = Label("Buyer", defaultLabelStyle)
+        buyerNameLabel.setAlignment(Align.center)
+
+        //Add all the titles
+        sellHistoryTable.add(itemNameLabel).fillX().expandX()
+        sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        sellHistoryTable.add(itemAmountLabel).fillX().expandX()
+        sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        sellHistoryTable.add(pricePerUnitLabel).fillX().expandX()
+        sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        sellHistoryTable.add(timeStampLabel).fillX().expandX()
+        sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        sellHistoryTable.add(buyerNameLabel).fillX().expandX()
+        sellHistoryTable.row()
+
+        //TODO Don't use magic number to limit this size?
+        //The limit of the history
+        val limit = Math.max(0, comp.sellHistory.queue.size - 5)
+
+        //For each history, set up the labels
+        for (i in (comp.sellHistory.queue.size-1).downTo(limit)){
+            val sell = comp.sellHistory.queue[i]
+
+            val _item = Label(sell.itemName, defaultLabelStyle)
+            _item.setFontScale(1f)
+            _item.setAlignment(Align.center)
+
+            val _amount = Label(sell.itemAmount.toString(), defaultLabelStyle)
+            _amount.setFontScale(1f)
+            _amount.setAlignment(Align.center)
+
+            val _ppu = Label(sell.pricePerItem.toString(), defaultLabelStyle)
+            _ppu.setFontScale(1f)
+            _ppu.setAlignment(Align.center)
+
+            val _time = Label(sell.timeStamp.toString(), defaultLabelStyle)
+            _time.setFontScale(1f)
+            _time.setAlignment(Align.center)
+
+            val _buyer = Label(sell.buyerName, defaultLabelStyle)
+            _buyer.setFontScale(1f)
+            _buyer.setAlignment(Align.center)
+
+            //Add them all to the table and add a new row
+            sellHistoryTable.add(_item).fillX().expandX()
+            sellHistoryTable.add() //Empty space for divider in titles
+            sellHistoryTable.add(_amount).fillX().expandX()
+            sellHistoryTable.add() //Empty space for divider in titles
+            sellHistoryTable.add(_ppu).fillX().expandX()
+            sellHistoryTable.add() //Empty space for divider in titles
+            sellHistoryTable.add(_time).fillX().expandX()
+            sellHistoryTable.add() //Empty space for divider in titles
+            sellHistoryTable.add(_buyer).fillX().expandX()
+            sellHistoryTable.row()
         }
     }
 }

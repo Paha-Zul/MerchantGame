@@ -179,7 +179,7 @@ class TownWindow : GUIWindow() {
 
                     val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle, {GameScreenGUIManager.openEntityWindow(it)})
 
-                    workerListTable.add(workerTable).growX()
+                    workerListTable.add(workerTable).growX().spaceBottom(3f)
                     workerListTable.row().growX()
 
                     //Since this table gets updated on changes, make sure to keep the background if we reload this table
