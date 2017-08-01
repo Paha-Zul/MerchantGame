@@ -55,21 +55,24 @@ object Tasks {
         return seq
     }
 
+    /**
+     * The farming task. Will tend, harvest, and drop off inventory from the farm.
+     */
     fun farm(bb:BlackBoard):Task{
         val seq = Sequence(bb)
 
         val tendAndHarvest = Sequence(bb)
 
-        val unhide = ExitBuilding(bb)
-        val alwaysTrueTend = AlwaysTrue(bb, tendToPlant(bb))
-        val alwaysTrueHarvest = AlwaysTrue(bb, harvestPlant(bb))
+        val unhide = ExitBuilding(bb) //Exit the building
+        val alwaysTrueTend = AlwaysTrue(tendToPlant(bb)) //Tends to the plants
+        val alwaysTrueHarvest = AlwaysTrue(harvestPlant(bb)) //Harvests any plants
 
-        tendAndHarvest.controller.addTasks(unhide, alwaysTrueTend, alwaysTrueHarvest)
+        tendAndHarvest.controller.addTasks(unhide, alwaysTrueTend, alwaysTrueHarvest) //The tend and harvest sequence to add to
 
-        val repeatTasks = RepeatTaskNumberOfTimes(bb, 10, tendAndHarvest)
-        val transferInventory = haulInventoryToMyWorkBuilding(bb)
+        val repeatTasks = RepeatTaskNumberOfTimes(bb, 10, tendAndHarvest) //Tends and harvests 10 times before stopping
+        val transferInventory = AlwaysTrue(haulInventoryToMyWorkBuilding(bb)) //Optional transfer inventory to the work building
 
-        seq.controller.addTasks(repeatTasks, transferInventory)
+        seq.controller.addTasks(repeatTasks, transferInventory) //Tends and harvests 10 times, then checks if inventory is needed to be dropped off
 
         return seq
     }
@@ -203,7 +206,7 @@ object Tasks {
     fun buyItemDemandAndLeaveMap(bb:BlackBoard, itemName:String = "Wood Log"):Task{
         val seq = Sequence(bb, "Buying Item and Leaving")
 
-        val buyItem = AlwaysTrue(bb, RepeatUntilFail(bb, buyItemDemandFromBuilding(bb)))
+        val buyItem = AlwaysTrue(RepeatUntilFail(bb, buyItemDemandFromBuilding(bb)))
         val leaveMap = leaveMap(bb)
 
         seq.controller.addTask(buyItem)
@@ -305,7 +308,7 @@ object Tasks {
 
         val repeatUntilFail = RepeatUntilFail(bb, task)
         val optionalBranchSequence = Sequence(bb)
-        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
+        val optionalBranch = AlwaysTrue(optionalBranchSequence)
 
         //TODO Check if inside the building already?
 
@@ -333,7 +336,7 @@ object Tasks {
 
         //Check if inside the building already?
         val optionalBranchSequence = Sequence(bb)
-        val optionalBranch = AlwaysTrue(bb, optionalBranchSequence)
+        val optionalBranch = AlwaysTrue(optionalBranchSequence)
 
         task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
         task.controller.addTask(optionalBranch)
@@ -362,7 +365,7 @@ object Tasks {
 
         //This is in case something happens to the building we are delivering to... we'll still leave the map if we can't finish it
         val alwaysSucceedSeq = Sequence(bb)
-        val alwaysTrueBranch = AlwaysTrue(bb, alwaysSucceedSeq)
+        val alwaysTrueBranch = AlwaysTrue(alwaysSucceedSeq)
 
         alwaysSucceedSeq.controller.addTask(GetClosestShopResellingViaImport(bb))
         alwaysSucceedSeq.controller.addTask(GetEntranceOfBuilding(bb))
@@ -381,20 +384,14 @@ object Tasks {
     fun haulInventoryToMyWorkBuilding(bb:BlackBoard):Task{
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling to Stockpile")
 
-        //This is in case something happens to the building we are delivering to... we'll still leave the map if we can't finish it
-        val alwaysSucceedSeq = Sequence(bb)
-        val alwaysTrueBranch = AlwaysTrue(bb, alwaysSucceedSeq)
-
-        alwaysSucceedSeq.controller.addTask(CheckInventoryNotEmpty(bb))
-        alwaysSucceedSeq.controller.addTask(SetMyWorkBuildingAsTarget(bb))
-        alwaysSucceedSeq.controller.addTask(GetEntranceOfBuilding(bb))
-        alwaysSucceedSeq.controller.addTask(GetPath(bb))
-        alwaysSucceedSeq.controller.addTask(MoveToPath(bb))
-        alwaysSucceedSeq.controller.addTask(EnterBuilding(bb))
-        alwaysSucceedSeq.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
-        alwaysSucceedSeq.controller.addTask(ExitBuilding(bb))
-
-        task.controller.addTask(alwaysTrueBranch) //Leave the map
+        task.controller.addTask(CheckInventoryNotEmpty(bb))
+        task.controller.addTask(SetMyWorkBuildingAsTarget(bb))
+        task.controller.addTask(GetEntranceOfBuilding(bb))
+        task.controller.addTask(GetPath(bb))
+        task.controller.addTask(MoveToPath(bb))
+        task.controller.addTask(EnterBuilding(bb))
+        task.controller.addTask(TransferFromInventoryToInventory(bb, true, true))
+        task.controller.addTask(ExitBuilding(bb))
 
         return task
     }

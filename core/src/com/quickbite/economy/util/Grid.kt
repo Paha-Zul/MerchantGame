@@ -41,6 +41,22 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
             })
     }
 
+    fun setBlocked(centerX:Float, centerY:Float, dimensionsToBlock:Array<Array<Int>>, gridSquaresToExclude:Array<Array<Int>>){
+        val startNode = getNodeAtPosition(centerX, centerY)!!
+        val centerIndex = Pair (startNode.x, startNode.y) //Used for calculating the offset
+        val startIndex = Pair (startNode.x + dimensionsToBlock[0][0], startNode.y + dimensionsToBlock[0][1]) //This is where we begin (lower left)
+        val endIndex = Pair (startNode.x + dimensionsToBlock[1][0], startNode.y + dimensionsToBlock[1][1]) //This is where we end (top right)
+
+        forNodesInSquare(startIndex, endIndex,
+                {node ->
+                    //Here we take the current node X and Y and subtract it from the center. That gives us an 'adjusted' offset X and Y
+                    val adjustedXNode = node.x - centerIndex.first
+                    val adjustedYNode = node.y - centerIndex.second
+                    if(!gridSquaresToExclude.any { it[0] == adjustedXNode && it[1] == adjustedYNode })
+                        node.blocked = true
+                })
+    }
+
     fun setUnblocked(centerX:Float, centerY:Float, halfWidth:Float, halfHeight:Float){
         forNodesInSquare(centerX, centerY, halfWidth, halfHeight, {node -> node.blocked = false})
     }
@@ -152,6 +168,14 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
 
         for(x1 in lowerX..upperX){
             for(y1 in lowerY..upperY){
+                func(getNodeAtIndex(x1, y1)!!)
+            }
+        }
+    }
+
+    fun forNodesInSquare(startIndex:Pair<Int, Int>, endIndex:Pair<Int, Int>, func:(GridNode)->Unit){
+        for(x1 in startIndex.first..endIndex.first){
+            for(y1 in startIndex.second..endIndex.second){
                 func(getNodeAtIndex(x1, y1)!!)
             }
         }

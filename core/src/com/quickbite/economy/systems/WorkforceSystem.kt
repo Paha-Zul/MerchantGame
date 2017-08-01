@@ -24,12 +24,9 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
             val bc = Mappers.behaviour.get(workerEntity)
             val worker = Mappers.worker[workerEntity]
 
+            //If the worker is idle, we need to give it a task!
             if(bc.isIdle){
                 //TODO this is under construction
-
-                val tasks = worker.taskList.toList()
-                val task = assignTasks(tasks, bc)
-                bc.currTask = task
 
                 //TODO Deal with the time schedule
 
@@ -38,17 +35,19 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
                 val scaledWorkerTimeStart = (worker.timeRange.first + diff)%24 //This should always be 0 but we do this for consistency
                 val scaledWorkerTimeEnd = (worker.timeRange.second + diff)%24 //This will be the ending time, ie: 6 (after scaling)
 
+                val task:Task
+
                 //If we are withing the working hour range, assign our person the regular tasks
                 if(scaledTime in scaledWorkerTimeStart..scaledWorkerTimeEnd) {
                     val taskList = worker.taskList.toList()
-                    val task = assignTasks(taskList, bc)
-                    bc.currTask = task
+                    task = assignTasks(taskList, bc)
 
                 //Otherwise, assign us a leave the map task
                 }else{
-                    val task = Tasks.leaveMapAndHide(bc.blackBoard)
-                    bc.currTask = task
+                    task = Tasks.leaveMapAndHide(bc.blackBoard)
                 }
+
+                bc.currTask = task
             }
         }
 
@@ -80,11 +79,11 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
 
     private fun getTask(task:String, bb:BlackBoard):Task{
         when (task) {
-            "haul" -> return AlwaysTrue(bb, Tasks.haulWorkerTask(bb))
-            "produce" -> return AlwaysTrue(bb, Tasks.produceItem(bb))
-            "sell" -> return AlwaysTrue(bb, Tasks.sellItem(bb))
-            "harvest" -> return AlwaysTrue(bb, Tasks.harvestClosestResourceType(bb))
-            "farm" -> return AlwaysTrue(bb, Tasks.farm(bb))
+            "haul" -> return AlwaysTrue(Tasks.haulWorkerTask(bb))
+            "produce" -> return AlwaysTrue(Tasks.produceItem(bb))
+            "sell" -> return AlwaysTrue(Tasks.sellItem(bb))
+            "harvest" -> return AlwaysTrue(Tasks.harvestClosestResourceType(bb))
+            "farm" -> return AlwaysTrue(Tasks.farm(bb))
         }
 
         return com.quickbite.economy.behaviour.composite.Sequence(bb, "Empty Sequence")

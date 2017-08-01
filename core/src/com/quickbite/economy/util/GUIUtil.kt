@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
@@ -59,11 +60,17 @@ object GUIUtil {
 
         //Add all the titles....
         titleTable.add(nameTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
         titleTable.add(currTaskTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
         titleTable.add(startTimeTitleLAbel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
         titleTable.add(endTimeTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
         titleTable.add(salaryTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
         titleTable.add(infoTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
         titleTable.add(fireTitleLabel).growX().uniformX()
 
         //Add the title table and a row for the list of workers...
@@ -78,6 +85,7 @@ object GUIUtil {
 
             //Add the worker table
             workerListTable.add(workerTable).growX()
+            workerListTable.add() //Empty space for divider in titles
             workerListTable.row().growX()
 
             //Since this table gets updated on changes, make sure to keep the background if we reload this table
@@ -209,39 +217,6 @@ object GUIUtil {
                 workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
             }
         }
-
-//        for (workerTasksLimit in workforceComp.workerTasksLimits) {
-//            //The current amount out of the max amount, ie: 1/4
-//            val amountText = "${workforceComp.workerTaskMap[workerTasksLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == workerTasksLimit.taskName }!!.amount}"
-//
-//            val taskLabel = Label(workerTasksLimit.taskName, labelStyle)
-//            val amountLabel = Label(amountText, labelStyle)
-//
-//            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
-//            workerTasksAndAmountsTable.add(amountLabel).width(25f).spaceRight(5f)
-//
-//            if(i < workforceComp.workerTasksLimits.size - 1) {
-//                val dashLabel = Label(" - ", labelStyle)
-//                workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
-//            }
-//        }
-
-        //Loop over a copy so we can use another iterator....
-//        workforceComp.workerTasksLimits.toList().forEachIndexed { i, taskLimit ->
-//            //The current amount out of the max amount, ie: 1/4
-//            val amountText = "${workforceComp.workerTaskMap[taskLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == taskLimit.taskName }!!.amount}"
-//
-//            val taskLabel = Label(taskLimit.taskName, labelStyle)
-//            val amountLabel = Label(amountText, labelStyle)
-//
-//            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
-//            workerTasksAndAmountsTable.add(amountLabel).width(25f).spaceRight(5f)
-//
-//            if(i < workforceComp.workerTasksLimits.size - 1) {
-//                val dashLabel = Label(" - ", labelStyle)
-//                workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
-//            }
-//        }
 
         return workerTasksAndAmountsTable
     }

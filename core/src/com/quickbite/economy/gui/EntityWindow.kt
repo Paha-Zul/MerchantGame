@@ -501,7 +501,9 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
             //Add the three titles
             sellItemsListTable.add(itemNameColTitle).width(100f).uniformX()
+            sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
             sellItemsListTable.add(itemAmountColTitle).width(100f).uniformX()
+            sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
             sellItemsListTable.add(itemStockColTitle).width(100f).uniformX()
             sellItemsListTable.add() //Empty spot for the X button
             sellItemsListTable.row()
@@ -564,8 +566,11 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 xLabel.label.setAlignment(Align.center)
 
                 sellItemsListTable.add(itemNameLabel).width(100f)
+                sellItemsListTable.add() //Empty space for the divider in the titles
                 sellItemsListTable.add(itemAmountLabel).width(100f)
+                sellItemsListTable.add() //Empty space for the divider in the titles
                 sellItemsListTable.add(itemStockTable)
+                sellItemsListTable.add() //Empty space for the divider in the titles
                 if(comp.resellingItemsList.size > 0) sellItemsListTable.add(xLabel).size(16f).spaceLeft(10f).right() //Either add the x label
                 else sellItemsListTable.add() //Or add an empty column
                 sellItemsListTable.row()
@@ -610,34 +615,34 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
 
         val itemNameLabel = Label("Item", defaultLabelStyle)
-        itemNameLabel.setFontScale(1f)
         itemNameLabel.setAlignment(Align.center)
 
         val itemAmountLabel = Label("Amt", defaultLabelStyle)
-        itemAmountLabel.setFontScale(1f)
         itemAmountLabel.setAlignment(Align.center)
 
         val pricePerUnitLabel = Label("PPU", defaultLabelStyle)
-        pricePerUnitLabel.setFontScale(1f)
         pricePerUnitLabel.setAlignment(Align.center)
 
         val timeStampLabel = Label("Time", defaultLabelStyle)
-        timeStampLabel.setFontScale(1f)
         timeStampLabel.setAlignment(Align.center)
 
         val buyerNameLabel = Label("Buyer", defaultLabelStyle)
-        buyerNameLabel.setFontScale(1f)
         buyerNameLabel.setAlignment(Align.center)
 
         //The history table function. This will populate the table
         val historyTableFunc = {
             sellHistoryTable.clear()
+            sellHistoryTable.top()
 
             //Add all the titles
             sellHistoryTable.add(itemNameLabel).fillX().expandX()
+            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
             sellHistoryTable.add(itemAmountLabel).fillX().expandX()
+            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
             sellHistoryTable.add(pricePerUnitLabel).fillX().expandX()
+            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
             sellHistoryTable.add(timeStampLabel).fillX().expandX()
+            sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
             sellHistoryTable.add(buyerNameLabel).fillX().expandX()
             sellHistoryTable.row()
 
@@ -671,9 +676,13 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
                 //Add them all to the table and add a new row
                 sellHistoryTable.add(_item).fillX().expandX()
+                sellHistoryTable.add() //Empty space for divider in titles
                 sellHistoryTable.add(_amount).fillX().expandX()
+                sellHistoryTable.add() //Empty space for divider in titles
                 sellHistoryTable.add(_ppu).fillX().expandX()
+                sellHistoryTable.add() //Empty space for divider in titles
                 sellHistoryTable.add(_time).fillX().expandX()
+                sellHistoryTable.add() //Empty space for divider in titles
                 sellHistoryTable.add(_buyer).fillX().expandX()
                 sellHistoryTable.row()
             }

@@ -193,6 +193,7 @@ object DefinitionManager {
     class GridDef{
         var onGrid = false
         var blockGridWhenPlaced = false
+        var gridSpotsToBlock = arrayOf<Array<Int>>()
         var gridSpotsToNotBlock = arrayOf<Array<Int>>()
     }
 
