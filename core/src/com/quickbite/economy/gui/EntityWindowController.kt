@@ -3,10 +3,11 @@ package com.quickbite.economy.gui
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.quickbite.economy.MyGame
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.util.Util
 
@@ -43,14 +44,14 @@ object EntityWindowController {
 
         //If we're not holding shift, clear the list before starting again
         if(!holdingShift) {
-            selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
+            selectedWorkers.forEach { it.table.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3)) } //Clear the background of each thing
             selectedWorkers.clear() //Clear the list
 
-            //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
+        //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
         }else{
             existingWorker = selectedWorkers.firstOrNull { it.worker == entityBeingSelected }
             if(existingWorker != null) { //If not null, unselect it
-                existingWorker.table.background = null
+                existingWorker.table.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
                 selectedWorkers.removeValue(existingWorker, true)
 
                 //Otherwise, add the new one
@@ -60,7 +61,7 @@ object EntityWindowController {
         //If the existing worker is null, add the selected worker and table to the selectedWorkers list. And set the background!
         if(existingWorker == null) {
             selectedWorkers.add(SelectedWorkerAndTable(entityBeingSelected, workerTable))
-            workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+            workerTable.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin_selected", Texture::class.java], 3, 3, 3, 3)) //Set the background of the selected table
         }
     }
 }

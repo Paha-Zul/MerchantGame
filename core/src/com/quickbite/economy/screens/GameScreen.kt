@@ -111,6 +111,7 @@ class GameScreen :Screen{
         Level1.start()
 //        TutorialTest.test()
 
+        CheckHoverOverEntity.gameScreen = this
     }
 
     fun initTerrain(){

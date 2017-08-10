@@ -6,12 +6,14 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
@@ -547,44 +549,47 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         })
 
-        //Call the history table function to populate the history
-        GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle)
-
         table.top()
 
         //Add all the stuff to the table
-        table.add(taxLabel).expandX().fillX().padTop(5f) //The taxCollected rate
-        table.row().expandX().fillX().spaceTop(0f)
-        table.add(taxRateTable).expandX().fillX().padTop(5f) //The taxCollected rate
-        table.row().expandX().fillX().spaceTop(5f)
-        table.add(sellLabel).expandX().fillX() //What we are selling
-        table.row().expandX().fillX().spaceTop(5f)
-        table.add(sellItemsMainTable).expandX().fillX() //What we are selling
-        table.row().expandX().fillX().spaceTop(5f)
-        table.add(historyTitleLabel).expandX().fillX() //The history table
-        table.row().expand().fill().spaceTop(5f) //Push everything up!
-        table.add(sellHistoryTable).expandX().fillX() //The history table
-        table.row().expand().fill().spaceTop(5f) //Push everything up!
+        table.add(taxLabel).growX().padTop(5f) //The taxCollected rate
+        table.row().growX().spaceTop(0f)
+        table.add(taxRateTable).growX().padTop(5f) //The taxCollected rate
+        table.row().growX().spaceTop(5f)
+        table.add(sellLabel).growX() //What we are selling
+        table.row().growX().spaceTop(5f)
+        table.add(sellItemsMainTable).growX() //What we are selling
+        table.row().growX().spaceTop(5f)
+        table.add(historyTitleLabel).growX() //The history table
+        table.row().grow().spaceTop(5f) //Push everything up!
+        table.add(sellHistoryTable).growX() //The history table
+        table.row().grow().spaceTop(5f) //Push everything up!
+
+        table.invalidateHierarchy()
+        table.validate()
+        table.layout()
+        table.act(0.016f)
+
+        //Call the history table function to populate the history
+        GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)
 
         //Put the history function into our update map
-        updateMap.put("sellHistory", {GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle)})
+        updateMap.put("sellHistory", {GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)})
 
         updateFuncsList.add { GUIUtil.populateItemsTable(comp, sellItemsMainTable, defaultLabelStyle, defaultTextButtonStyle) }
 
         //Put in the event system
         val entID = Mappers.identity[currentlySelectedEntity].uniqueID
-        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle)}, entID) //Subscribe to the entity selling an item
+        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)}, entID) //Subscribe to the entity selling an item
 
         changedTabsFunc = {
             GameEventSystem.unsubscribe(entityEvent) //Unsubscribe when we leave this tab
         }
-
     }
 
     private fun setupEconomyTable(table: Table, comp: SellingItemsComponent){
-        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK, MyGame.defaultFont14)
-        graphStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY)))
-        graphStyle.graphBackground = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.ORANGE)))
+        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.WHITE, MyGame.defaultFont14)
+        graphStyle.graphBackground = NinePatchDrawable(NinePatch(MyGame.manager["graphBackground", Texture::class.java], 7, 7, 7, 7))
 
         val darkLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
         darkLabelStyle.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.DARK_GRAY)))

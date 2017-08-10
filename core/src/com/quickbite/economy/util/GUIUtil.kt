@@ -110,6 +110,83 @@ object GUIUtil {
         }
     }
 
+    fun populateWorkerTable(workers:List<WorkerCompLink>, selectedWorkers:Array<SelectedWorkerAndTable>, workerListTable:Table, labelStyle:Label.LabelStyle,
+                            textButtonStyle: TextButton.TextButtonStyle, guiManager:GameScreenGUIManager){
+
+        workerListTable.clear()
+
+        val nameTitleLabel = Label("Name", labelStyle)
+        nameTitleLabel.setAlignment(Align.center)
+        nameTitleLabel.setFontScale(1.2f)
+        val currTaskTitleLabel = Label("Tasks", labelStyle)
+        currTaskTitleLabel.setAlignment(Align.center)
+        currTaskTitleLabel.setFontScale(1.2f)
+        val startTimeTitleLAbel = Label("Start", labelStyle)
+        startTimeTitleLAbel.setAlignment(Align.center)
+        startTimeTitleLAbel.setFontScale(1.2f)
+        val endTimeTitleLabel = Label("End", labelStyle)
+        endTimeTitleLabel.setAlignment(Align.center)
+        endTimeTitleLabel.setFontScale(1.2f)
+        val salaryTitleLabel = Label("Salary", labelStyle)
+        salaryTitleLabel.setAlignment(Align.center)
+        salaryTitleLabel.setFontScale(1.2f)
+        val fireTitleLabel = Label("Fire", labelStyle)
+        fireTitleLabel.setAlignment(Align.center)
+        fireTitleLabel.setFontScale(1.2f)
+        val infoTitleLabel = Label("Info", labelStyle)
+        infoTitleLabel.setAlignment(Align.center)
+        infoTitleLabel.setFontScale(1.2f)
+
+        //Make the title table...
+        val titleTable = Table()
+
+        //Add all the titles....
+        titleTable.add(nameTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        titleTable.add(currTaskTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        titleTable.add(startTimeTitleLAbel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        titleTable.add(endTimeTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        titleTable.add(salaryTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        titleTable.add(infoTitleLabel).growX().uniformX()
+        titleTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
+        titleTable.add(fireTitleLabel).growX().uniformX()
+
+        //Add the title table and a row for the list of workers...
+        workerListTable.add(titleTable).growX()
+        workerListTable.row().growX()
+
+        //For each worker, lets get some info and make a table for it!
+        workers.forEach { (entity, comp) ->
+            if(!entity.isValid()) return@forEach //If it's not valid, continue...
+
+            val workerTable = GUIUtil.makeWorkerTable(entity, comp, labelStyle, textButtonStyle, {guiManager.openEntityWindow(it)})
+
+            //Add the worker table
+            workerListTable.add(workerTable).growX().spaceBottom(3f)
+            workerListTable.add() //Empty space for divider in titles
+            workerListTable.row().growX()
+
+            //Since this table gets updated on changes, make sure to keep the background if we reload this table
+            //Also, we check the entity because the tables are new and won't match. We need to set the table again
+            selectedWorkers.firstOrNull { it.worker == entity }?.run {
+                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                this.table = workerTable
+            }
+
+            workerTable.addListener(object:ClickListener(){
+                override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                    super.touchUp(event, x, y, pointer, button)
+
+                    EntityWindowController.changeWorkerSelectionInTable(selectedWorkers, entity, workerTable)
+                }
+            })
+        }
+    }
+
     fun makeWorkerTable(entity:Entity, workforceComp:WorkForceComponent, labelStyle:Label.LabelStyle, textButtonStyle:TextButton.TextButtonStyle, openEntityWindowFunc:(Entity)->Unit):Table{
         val worker = Mappers.worker[entity]
         val id = Mappers.identity[entity]
@@ -167,6 +244,7 @@ object GUIUtil {
         endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f).width(20f)
         endTimeTable.add(workHourEndMoreButton).size(16f)
 
+        //This is for removing the entity from the work building
         val removeWorkerButton = TextButton("x", textButtonStyle)
         removeWorkerButton.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -402,7 +480,7 @@ object GUIUtil {
         sellItemsMainTable.add(sellItemsListTable).growX()
     }
 
-    fun populateHistoryTable(comp:SellingItemsComponent, sellHistoryTable:Table, defaultLabelStyle:Label.LabelStyle){
+    fun populateHistoryTable(comp:SellingItemsComponent, sellHistoryTable:Table, defaultLabelStyle:Label.LabelStyle, maxWidth:Float){
         sellHistoryTable.clear()
         sellHistoryTable.top()
 
@@ -421,16 +499,18 @@ object GUIUtil {
         val buyerNameLabel = Label("Buyer", defaultLabelStyle)
         buyerNameLabel.setAlignment(Align.center)
 
+        val width = (maxWidth - maxWidth*0.05f - 4*2f)/5f //the 4*2f is for 4 line dividers at 2 pixels wide. The /5f is for 5 labels
+
         //Add all the titles
-        sellHistoryTable.add(itemNameLabel).fillX().expandX()
+        sellHistoryTable.add(itemNameLabel).width(width)
         sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-        sellHistoryTable.add(itemAmountLabel).fillX().expandX()
+        sellHistoryTable.add(itemAmountLabel).width(width)
         sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-        sellHistoryTable.add(pricePerUnitLabel).fillX().expandX()
+        sellHistoryTable.add(pricePerUnitLabel).width(width)
         sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-        sellHistoryTable.add(timeStampLabel).fillX().expandX()
+        sellHistoryTable.add(timeStampLabel).width(width)
         sellHistoryTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10)))).uniformY().width(2f)
-        sellHistoryTable.add(buyerNameLabel).fillX().expandX()
+        sellHistoryTable.add(buyerNameLabel).width(width)
         sellHistoryTable.row()
 
         //TODO Don't use magic number to limit this size?
@@ -440,38 +520,39 @@ object GUIUtil {
         //For each history, set up the labels
         for (i in (comp.sellHistory.queue.size-1).downTo(limit)){
             val sell = comp.sellHistory.queue[i]
+            val entryTable = Table()
+            entryTable.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
 
             val _item = Label(sell.itemName, defaultLabelStyle)
-            _item.setFontScale(1f)
             _item.setAlignment(Align.center)
 
             val _amount = Label(sell.itemAmount.toString(), defaultLabelStyle)
-            _amount.setFontScale(1f)
             _amount.setAlignment(Align.center)
 
             val _ppu = Label(sell.pricePerItem.toString(), defaultLabelStyle)
-            _ppu.setFontScale(1f)
             _ppu.setAlignment(Align.center)
 
             val _time = Label(sell.timeStamp.toString(), defaultLabelStyle)
-            _time.setFontScale(1f)
             _time.setAlignment(Align.center)
 
             val _buyer = Label(sell.buyerName, defaultLabelStyle)
-            _buyer.setFontScale(1f)
             _buyer.setAlignment(Align.center)
 
             //Add them all to the table and add a new row
-            sellHistoryTable.add(_item).fillX().expandX()
-            sellHistoryTable.add() //Empty space for divider in titles
-            sellHistoryTable.add(_amount).fillX().expandX()
-            sellHistoryTable.add() //Empty space for divider in titles
-            sellHistoryTable.add(_ppu).fillX().expandX()
-            sellHistoryTable.add() //Empty space for divider in titles
-            sellHistoryTable.add(_time).fillX().expandX()
-            sellHistoryTable.add() //Empty space for divider in titles
-            sellHistoryTable.add(_buyer).fillX().expandX()
+            entryTable.add(_item).width(width)
+            entryTable.add().width(2f) //Empty space for divider in titles
+            entryTable.add(_amount).width(width)
+            entryTable.add().width(2f) //Empty space for divider in titles
+            entryTable.add(_ppu).width(width)
+            entryTable.add().width(2f) //Empty space for divider in titles
+            entryTable.add(_time).width(width)
+            entryTable.add().width(2f) //Empty space for divider in titles
+            entryTable.add(_buyer).width(width)
+
+            sellHistoryTable.add(entryTable).colspan(100).spaceTop(3f)
             sellHistoryTable.row()
         }
+
+//        sellHistoryTable.debugAll()
     }
 }

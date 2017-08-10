@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.gui.GameScreenGUIManager
+import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.Constants
 import com.quickbite.economy.util.GUIUtil
 
@@ -12,6 +13,7 @@ import com.quickbite.economy.util.GUIUtil
  * Created by Paha on 6/12/2017.
  */
 object CheckHoverOverEntity {
+    lateinit var gameScreen:GameScreen
     var currentEntity: Entity? = null
     var newlySelectedEntity:Entity? = null
     var counter = 0f
@@ -30,20 +32,28 @@ object CheckHoverOverEntity {
 
         //If they are not the same, assign them
         if(newlySelectedEntity != currentEntity){
-            currentEntity = newlySelectedEntity
-            counter = 0f
-            showingHover = false
-            GameScreenGUIManager.stopShowingTooltip() //Stop showing the tooltip when we change entities
+            switchEntities()
 
         //Otherwise, as long as the current entity is not null, do stuff!
         }else if(currentEntity != null && !showingHover){
-            counter += delta
-            //TODO WHOA MAGIC NUMBER, FIX THIS!!!
-            if(counter >= 0.4f){
-                showingHover = true
-                GUIUtil.makeEntityTooltip(currentEntity!!)
-                GameScreenGUIManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
-            }
+            showTooltip(delta)
+        }
+    }
+
+    private fun switchEntities(){
+        currentEntity = newlySelectedEntity
+        counter = 0f
+        showingHover = false
+        GameScreenGUIManager.stopShowingTooltip() //Stop showing the tooltip when we change entities
+    }
+
+    private fun showTooltip(delta:Float){
+        counter += delta
+        //TODO WHOA MAGIC NUMBER, FIX THIS!!!
+        if(counter >= 0.4f && !gameScreen.inputHandler.insideUI){
+            showingHover = true
+            GUIUtil.makeEntityTooltip(currentEntity!!)
+            GameScreenGUIManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
         }
     }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -40,6 +41,8 @@ open class GUIWindow {
     protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
     protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
+    val barBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
+
     val defaultLightScrollPaneStyle = ScrollPane.ScrollPaneStyle()
     val defaultDarkScrollPaneStyle = ScrollPane.ScrollPaneStyle()
 
@@ -70,7 +73,7 @@ open class GUIWindow {
         contentTableScrollPane.setScrollingDisabled(true, false)
 
         //Add the stuff to the main table
-        this.mainTable.add(tabTable).expandX().fillX()
+        this.mainTable.add(tabTable).growX()
         this.mainTable.row()
         this.mainTable.add(contentTableScrollPane).grow()
 
@@ -84,6 +87,7 @@ open class GUIWindow {
         //Window
         window = Window("", windowSkin)
         window.isMovable = true
+        window.touchable = Touchable.enabled
         window.setSize(500f, 400f)
         window.setPosition(MathUtils.random(90, 130).toFloat(), MathUtils.random(70, 130).toFloat())
         window.pad(30f, 10f, 10f, 10f)

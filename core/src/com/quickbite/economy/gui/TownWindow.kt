@@ -1,8 +1,6 @@
 package com.quickbite.economy.gui
 
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -17,13 +15,9 @@ import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.PopulationChangeEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
-import com.quickbite.economy.isValid
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
-import com.quickbite.economy.util.Families
-import com.quickbite.economy.util.GUIUtil
-import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.*
 
 /**
  * Created by Paha on 4/9/2017.
@@ -171,54 +165,60 @@ class TownWindow : GUIWindow() {
             titleTable.add(fireTitleLabel).growX().uniformX()
             titleTable.add(salaryTitleLabel).growX().uniformX()
 
+            val workerCompList = mutableListOf<WorkerCompLink>()
+
             Families.workBuildings.forEach { workBuildingEnt ->
                 val workForceComp = Mappers.workforce[workBuildingEnt]
 
                 workForceComp.workersAvailable.forEach workers@{ entity ->
-                    if(!entity.isValid()) return@workers
-
-                    val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle, {GameScreenGUIManager.openEntityWindow(it)})
-
-                    workerListTable.add(workerTable).growX().spaceBottom(3f)
-                    workerListTable.row().growX()
-
-                    //Since this table gets updated on changes, make sure to keep the background if we reload this table
-                    //Also, we check the entity because the tables are new and won't match. We need to set the table again
-                    selectedWorkers.firstOrNull { it.worker == entity }?.run {
-                        workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-                        this.table = workerTable
-                    }
-
-                    workerTable.addListener(object : ClickListener() {
-                        override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                            super.touchUp(event, x, y, pointer, button)
-                            val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-                            var existingWorker: SelectedWorkerAndTable? = null
-
-                            //If we're not holding shift, clear the list before starting again
-                            if (!holdingShift) {
-                                selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
-                                selectedWorkers.clear() //Clear the list
-
-                                //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
-                            } else {
-                                existingWorker = selectedWorkers.firstOrNull { it.worker == entity }
-                                if (existingWorker != null) { //If not null, unselect it
-                                    existingWorker.table.background = null
-                                    selectedWorkers.removeValue(existingWorker, true)
-
-                                    //Otherwise, add the new one
-                                }
-                            }
-
-                            if (existingWorker == null) {
-                                selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
-                                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-                            }
-                        }
-                    })
+                    workerCompList += WorkerCompLink(entity, workForceComp)
+//                    if(!entity.isValid()) return@workers
+//
+//                    val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle, {GameScreenGUIManager.openEntityWindow(it)})
+//
+//                    workerListTable.add(workerTable).growX().spaceBottom(3f)
+//                    workerListTable.row().growX()
+//
+//                    //Since this table gets updated on changes, make sure to keep the background if we reload this table
+//                    //Also, we check the entity because the tables are new and won't match. We need to set the table again
+//                    selectedWorkers.firstOrNull { it.worker == entity }?.run {
+//                        workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+//                        this.table = workerTable
+//                    }
+//
+//                    workerTable.addListener(object : ClickListener() {
+//                        override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+//                            super.touchUp(event, x, y, pointer, button)
+//                            val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
+//                            var existingWorker: SelectedWorkerAndTable? = null
+//
+//                            //If we're not holding shift, clear the list before starting again
+//                            if (!holdingShift) {
+//                                selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
+//                                selectedWorkers.clear() //Clear the list
+//
+//                                //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
+//                            } else {
+//                                existingWorker = selectedWorkers.firstOrNull { it.worker == entity }
+//                                if (existingWorker != null) { //If not null, unselect it
+//                                    existingWorker.table.background = null
+//                                    selectedWorkers.removeValue(existingWorker, true)
+//
+//                                    //Otherwise, add the new one
+//                                }
+//                            }
+//
+//                            if (existingWorker == null) {
+//                                selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
+//                                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+//                            }
+//                        }
+//                    })
                 }
             }
+
+            val list = workerCompList.toList()
+            GUIUtil.populateWorkerTable(list, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
         }
 
         populateWorkerTable()
