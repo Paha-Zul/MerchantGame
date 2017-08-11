@@ -8,13 +8,15 @@ import java.util.*
  */
 object Pathfinder {
 
-    fun findPath(grid:Grid, start:Grid.GridNode, end:Grid.GridNode):List<Vector2> {
+    fun findPath(grid:Grid, start:Grid.GridNode, end:Vector2):List<Vector2> {
         val closedSet = hashSetOf<Grid.GridNode>()
         val cameFrom = hashMapOf<Grid.GridNode, Grid.GridNode>()
 
+        val endNode = grid.getNodeAtPosition(end.x, end.y)!!
+
         //First Int is GScore, second Int is FScore
         //GScore is distance to neighbor plus last gScore. FScore includes heuristic
-        val scores = hashMapOf(Pair(start, Score(0, getH(start, end))))
+        val scores = hashMapOf(Pair(start, Score(0, getH(start, endNode))))
 
         //The open set is the sorted priority queue. It's sorted based on FScore
         val openSet = PriorityQueue<Grid.GridNode>(10, Comparator<Grid.GridNode> { o1, o2 ->
@@ -38,7 +40,7 @@ object Pathfinder {
             current = openSet.poll() //Get the head
 
             //Break if we're at the end!
-            if(current == end){
+            if(current == endNode){
                 break
             }
 
@@ -67,15 +69,15 @@ object Pathfinder {
 
                 cameFrom[neighbor] = current //Assign the neighbors parent to the current node
                 neighborScore.GScore = tentativeGScore //Set the neighbors G score as the tentative GScore
-                neighborScore.FScore = neighborScore.GScore + getH(neighbor, end) //Set it's F Score as it's GScore + heuristic
+                neighborScore.FScore = neighborScore.GScore + getH(neighbor, endNode) //Set it's F Score as it's GScore + heuristic
 
                 if(flag)
                     openSet.add(neighbor) //The scores need to be set before adding to the set
             }
         }
 
-        current = end
-        val path = mutableListOf(Vector2(current.xPos, current.yPos))
+        val path = mutableListOf(Vector2(end.x, end.y))
+        current = endNode
         while(cameFrom.containsKey(current)){
             current = cameFrom[current]!!
             if(current == start) continue
@@ -86,7 +88,7 @@ object Pathfinder {
     }
 
     fun findPath(grid:Grid, start:Vector2, end:Vector2):List<Vector2> {
-        return findPath(grid, grid.getNodeAtPosition(start.x, start.y)!!, grid.getNodeAtPosition(end.x, end.y)!!)
+        return findPath(grid, grid.getNodeAtPosition(start.x, start.y)!!, Vector2(end))
     }
 
     private fun getH(currNode:Grid.GridNode, endNode:Grid.GridNode):Int{
