@@ -102,7 +102,6 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
                 if (!linkingAnotherEntity)
                     GameScreenGUIManager.openEntityWindow(selectedEntity!!)
             }
-
         }
 
         entityClickedOn = null //Reset this immediately
@@ -117,10 +116,11 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
         GameScreenGUIManager.guiStack.forEach {
             val mousePosition = it.window.stageToLocalCoordinates(coords)
 
+            //TODO Need to figure out how to stop showing tooltips when we move onto the UI
             //If we're inside the window, set the flag to true and stop showing the tooltip
             if(it.window.hit(mousePosition.x, mousePosition.y, false) != null) {
                 insideUI = true
-                GameScreenGUIManager.stopShowingTooltip()
+//                GameScreenGUIManager.stopShowingTooltip()
                 return@forEach
             }
         }

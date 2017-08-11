@@ -45,6 +45,7 @@ open class TaskController(task: Task) {
     fun finishWithFailure() {
         this.failed = true
         this.safeEnd()
+        System.out.println("[TaskController] Failed on $task (${task.failReason})")
     }
 
     /**

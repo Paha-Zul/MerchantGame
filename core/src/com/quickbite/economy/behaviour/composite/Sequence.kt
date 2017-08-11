@@ -20,7 +20,6 @@ class Sequence (blackboard: BlackBoard, taskName: String = "") : Composite(black
     override fun ChildFailed() {
         this.controller.finishWithFailure()
         this.controller.currTask?.controller?.safeEnd()
-        System.out.println("[Sequence] Failed on ${controller.currTask}")
     }
 
     override fun ChildSucceeded() {

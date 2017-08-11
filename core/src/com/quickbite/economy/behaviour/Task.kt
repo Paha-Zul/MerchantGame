@@ -1,6 +1,7 @@
 package com.quickbite.economy.behaviour
 
 abstract class Task(blackboard: BlackBoard, var taskName: String = ""){
+    var failReason:String = ""
 
     var bb: BlackBoard = blackboard
         get

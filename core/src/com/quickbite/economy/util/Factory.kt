@@ -186,7 +186,9 @@ object Factory {
             }
 
             //Add anything that's harvested
-            producesItems.harvests = definition.productionDef!!.harvests.toList()
+            val list = mutableListOf<String>()
+            definition.productionDef!!.harvests.forEach { list += it.toLowerCase() }
+            producesItems.harvests = list.toList()
 
             entity.add(producesItems)
 
@@ -207,6 +209,9 @@ object Factory {
                             inventory.inputItems += itemName
                         }
                     }
+
+                    //For each item this building harvests, add it to the output.
+                    producesItems.harvests.forEach { inventory.outputItems += it.toLowerCase() }
                 }
             }
         }
@@ -241,7 +246,7 @@ object Factory {
                 resourceAmount = resourceDef.resourceAmount
                 currResourceAmount = resourceDef.resourceAmount
                 resourceType = resourceDef.resourceType
-                harvestItemName = resourceDef.harvestedItemName
+                harvestItemName = resourceDef.harvestedItemName.toLowerCase()
                 baseHarvestTime = resourceDef.baseHarvestTime
                 canRegrow = resourceDef.canRegrow
                 baseRegrowTime = resourceDef.baseRegrowTimeRange
