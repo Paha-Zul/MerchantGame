@@ -58,6 +58,7 @@ class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
 
         gc.sprite.setAlpha(0f) //Initially set this to 0
 
+        counter = 0f //We need to make sure this cleared for resets
         moveTime = startPos.dst(destPos)/(vc.baseSpeed*Constants.BOX2D_SCALE)
         fadeTime = moveTime*0.3f
         fadeDelay = moveTime*0.7f
@@ -75,6 +76,8 @@ class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
         gc.sprite.setAlpha(fadeAlpha)
 
         if(counter >= moveTime){
+            gc.hide = false
+            gc.sprite.setAlpha(1f)
             //When we are done with the counter, finish!
             finish()
         }
