@@ -31,8 +31,12 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
     private val queryCallback = {fixture:Fixture ->
         val entity = fixture.userData as Entity
-        entityClickedOn = entity
-        false //Terminate
+        if(!Mappers.graphic[entity].hide) {
+            entityClickedOn = entity
+            false //Terminate
+        }
+        else
+            true //Keep going
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -59,7 +63,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
                     collidedWith = false
 
-                    //If the selected type is empty, the we need to see if we are clicking on something
+                //If the selected type is empty, the we need to see if we are clicking on something
                 }else{
                     selectEntity(box2DCoords)
                 }

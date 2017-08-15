@@ -296,7 +296,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                     val taskNameText = taskNameLabel.text.toString()
                     val workerTaskLimit = comp.workerTasksLimits.find { it.taskName == taskNameText}!!
 
-                    EntityWindowController.addTasksToWorkers(taskNameText, selectedWorkers, currentlySelectedEntity!!)
+                    EntityWindowController.addTaskToWorkers(taskNameText, selectedWorkers, currentlySelectedEntity!!)
 
                     GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
                 }
@@ -588,7 +588,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     }
 
     private fun setupEconomyTable(table: Table, comp: SellingItemsComponent){
-        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.WHITE, MyGame.defaultFont14)
+        val graphStyle = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE))), Color.WHITE, MyGame.defaultFont14)
         graphStyle.graphBackground = NinePatchDrawable(NinePatch(MyGame.manager["graphBackground", Texture::class.java], 7, 7, 7, 7))
 
         val darkLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)

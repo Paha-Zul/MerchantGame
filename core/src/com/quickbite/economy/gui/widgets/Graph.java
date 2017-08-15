@@ -80,6 +80,10 @@ public class Graph extends Actor {
 
         float midpoint = (highestPoint + lowestPoint)/2;
 
+        Color color = batch.getColor(); //Save the color
+        batch.setColor(style.lineColor); //Set the color
+
+        //Draw the lines
         for(int i=0; i < count; i++){
             int i1 = offset + i;
             int i2 = offset + i + 1;
@@ -106,6 +110,8 @@ public class Graph extends Actor {
                     style.pointDrawable.draw(batch, tmp2.x, tmp2.y, style.pointThickness, style.pointThickness);
             }
         }
+
+        batch.setColor(color); //Restore the color
     }
 
     private void drawLabels(float xpos, float yMin, float yMax, Batch batch){

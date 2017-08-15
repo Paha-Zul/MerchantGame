@@ -3,10 +3,13 @@ package com.quickbite.economy.gui
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.util.Util
@@ -21,14 +24,13 @@ object EntityWindowController {
      * Adds a certain task to all selected workers (selectedWorkers)
      * @param taskNameText The task name
      * @param selectedWorkers The workers that are currently selected
-     * @param workerTaskLimit The limit of the worker task
      */
-    fun addTasksToWorkers(taskNameText:String, selectedWorkers:com.badlogic.gdx.utils.Array<SelectedWorkerAndTable>,
-                          workforceEntity:Entity){
+    fun addTaskToWorkers(taskNameText:String, selectedWorkers:com.badlogic.gdx.utils.Array<SelectedWorkerAndTable>,
+                         workforceEntity:Entity){
 
         //For each of the currently selected workers...
         selectedWorkers.forEach { (entity, _) ->
-            Util.toggleTaskOnWorker(entity, workforceEntity, taskNameText)
+            Util.toggleTaskOnWorker(entity, workforceEntity, taskNameText) //Toggle it
         }
     }
 

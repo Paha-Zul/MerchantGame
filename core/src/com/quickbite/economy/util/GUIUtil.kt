@@ -96,7 +96,7 @@ object GUIUtil {
             //Since this table gets updated on changes, make sure to keep the background if we reload this table
             //Also, we check the entity because the tables are new and won't match. We need to set the table again
             selectedWorkers.firstOrNull { it.worker == entity }?.run {
-                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                workerTable.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin_selected", Texture::class.java], 3, 3, 3, 3)) //Set the background of the selected table
                 this.table = workerTable
             }
 
@@ -172,8 +172,9 @@ object GUIUtil {
 
             //Since this table gets updated on changes, make sure to keep the background if we reload this table
             //Also, we check the entity because the tables are new and won't match. We need to set the table again
+            //TLDR: Resets the background for the selected worker that *may* have been updated
             selectedWorkers.firstOrNull { it.worker == entity }?.run {
-                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
+                workerTable.background = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin_selected", Texture::class.java], 3, 3, 3, 3)) //Set the background of the selected table
                 this.table = workerTable
             }
 
@@ -187,7 +188,15 @@ object GUIUtil {
         }
     }
 
-    fun makeWorkerTable(entity:Entity, workforceComp:WorkForceComponent, labelStyle:Label.LabelStyle, textButtonStyle:TextButton.TextButtonStyle, openEntityWindowFunc:(Entity)->Unit):Table{
+    /**
+     * Creates the individual worker table to be used in another table
+     * @param entity The entity to use for information
+     * @param workforceComp The WorkForceComponent that the worker (entity) is tied to
+     * @param labelStyle The label style to use for the labels
+     * @param textButtonStyle The button style to use for buttons (fire button)
+     * @param entityInfoFunc The callback to execute when the information button is clicked
+     */
+    fun makeWorkerTable(entity:Entity, workforceComp:WorkForceComponent, labelStyle:Label.LabelStyle, textButtonStyle:TextButton.TextButtonStyle, entityInfoFunc:(Entity)->Unit):Table{
         val worker = Mappers.worker[entity]
         val id = Mappers.identity[entity]
 
@@ -260,7 +269,7 @@ object GUIUtil {
 
         val infoButton = TextButton("?", textButtonStyle)
         infoButton.addChangeListener { _, _ ->
-            openEntityWindowFunc(entity)
+            entityInfoFunc(entity)
         }
 
         val workerTable = Table()

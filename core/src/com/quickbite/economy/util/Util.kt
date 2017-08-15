@@ -173,6 +173,9 @@ object Util {
 
     /**
      * Adds or removes a task from a worker
+     * @param workerEntity The worker Entity to assign the task to
+     * @param workforceEntity The workforce the Entity is assigned to. This is needed to pull work limits from
+     * @param taskName The name of the task to add
      */
     fun toggleTaskOnWorker(workerEntity:Entity, workforceEntity : Entity, taskName:String){
         val worker = Mappers.worker[workerEntity]
