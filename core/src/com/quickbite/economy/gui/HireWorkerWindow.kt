@@ -21,7 +21,7 @@ class HireWorkerWindow(val workforceEntity: Entity) : GUIWindow() {
     val list = mutableListOf<String>()
 
     init{
-        window.setSize(200f, 400f)
+        window.setSize(150f, 400f)
         tabTable.remove() //We don't want the tab table!
 
         val firstNames = DefinitionManager.names.firstNames
@@ -39,7 +39,7 @@ class HireWorkerWindow(val workforceEntity: Entity) : GUIWindow() {
         list.forEach { name ->
             val workerButton = TextButton(name, defaultTextButtonStyle)
 
-            contentTable.add(workerButton).width(150f).spaceTop(20f)
+            contentTable.add(workerButton).growX().height(40f).spaceTop(10f)
             contentTable.row()
 
             workerButton.addListener(object: ChangeListener(){

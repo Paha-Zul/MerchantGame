@@ -1,6 +1,11 @@
 package com.quickbite.economy.behaviour
 
 abstract class Task(blackboard: BlackBoard, var taskName: String = ""){
+
+    companion object {
+        var DEBUG_BEHAVIOURS = false
+    }
+
     var failReason:String = ""
 
     var bb: BlackBoard = blackboard

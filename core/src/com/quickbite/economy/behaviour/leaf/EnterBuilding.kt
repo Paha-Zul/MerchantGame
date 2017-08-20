@@ -44,8 +44,6 @@ class EnterBuilding(bb: BlackBoard) : LeafTask(bb) {
         counter = 0f //This is for when we reset we need to make sure it's cleared
         moveTime = startPos.dst(destPos)/(vc.baseSpeed*Constants.BOX2D_SCALE)
         fadeTime = moveTime*0.3f
-
-        println("move time $moveTime")
     }
 
     override fun update(delta: Float) {

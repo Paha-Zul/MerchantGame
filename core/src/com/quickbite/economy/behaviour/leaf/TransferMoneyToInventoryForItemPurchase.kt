@@ -49,10 +49,12 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
         if(targetBuildingSelling != null){
             //Try to get from currSellingItems...
             var itemFromSelling = targetBuildingSelling.currSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
+
             //If the item is null, try to get from baseSellingItems...
             if(itemFromSelling == null)
                 itemFromSelling = targetBuildingSelling.baseSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
 
+            //TODO Problem here with itemFromSelling being null?
             val moneyInInventory = fromInventory.getItemAmount("gold")
             val amountCanBuy = Math.min(moneyInInventory/itemFromSelling!!.itemPrice, bb.targetItem.itemAmount)
             val moneyNeeded = amountCanBuy*itemFromSelling.itemPrice

@@ -14,7 +14,10 @@ import com.quickbite.economy.util.Util
 class SellingItemsComponent : MyComponent {
     var taxRate = 0.1f
 
+    /** The base items that are sold. This doesn't change **/
     var baseSellingItems = Array<SellingItemData>()
+
+    /** The current selling items. These are the items actively being sold.**/
     var currSellingItems = Array<SellingItemData>()
 
     /** The items sold recently of this entity*/

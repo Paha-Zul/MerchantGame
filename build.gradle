@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.2'
+    ext.kotlin_version = '1.1.4'
     repositories {
         mavenLocal()
         mavenCentral()
@@ -21,6 +21,7 @@ allprojects {
 
     version = '1.0'
     ext {
+        kotlin_version = '1.1.4'
         appName = "EconomyGame"
         gdxVersion = '1.9.5'
         roboVMVersion = '2.3.0'
@@ -124,6 +125,7 @@ project(":core") {
         compile "it.unimi.dsi:fastutil:$fastUtilVersion"
         compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
         compile fileTree(dir: '../libs', include: '*.jar')
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

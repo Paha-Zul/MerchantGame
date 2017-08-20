@@ -63,9 +63,10 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && sc != null){
 
                 sc.resellingItemsList.forEach { (_, _, _, _, entity) ->
+                    val entity = entity as? Entity
                     if(entity != null) {
                         val currPoint = tc.position
-                        val nextPoint = Mappers.transform.get(entity as Entity).position
+                        val nextPoint = Mappers.transform.get(entity).position
 
                         drawLineTo(currPoint, nextPoint)
                     }

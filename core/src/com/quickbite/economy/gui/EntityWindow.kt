@@ -52,6 +52,11 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     }
 
     private fun initEntityStuff(){
+        val buttonStyle = TextButton.TextButtonStyle()
+        buttonStyle.font = MyGame.defaultFont14
+        buttonStyle.fontColor = Color.WHITE
+        buttonStyle.checked = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.valueOf("565244ff"))))
+
         currentlySelectedEntity = entity
 
         val sc = Mappers.selling.get(entity)
@@ -63,58 +68,46 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val resource = Mappers.resource.get(entity)
         val production = Mappers.produces.get(entity)
 
-        val buildingTab = TextButton("Building", defaultTextButtonStyle)
-        buildingTab.label.setFontScale(1f)
+        val buildingTab = TextButton("Building", buttonStyle)
+        val sellTab = TextButton("Sell", buttonStyle)
 
-        val sellTab = TextButton("Sell", defaultTextButtonStyle)
-        sellTab.label.setFontScale(1f)
+        val economyTab = TextButton("Eco", buttonStyle)
+        val workTab = TextButton("Work", buttonStyle)
+        val behaviourTab = TextButton("Beh", buttonStyle)
+        val inventoryTab = TextButton("Inv", buttonStyle)
+        val buyingTab = TextButton("Buying", buttonStyle)
+        val resourceTab = TextButton("Resource", buttonStyle)
+        val productionTab = TextButton("Prod", buttonStyle)
+        val deleteButton = TextButton("Delete", buttonStyle)
 
-        val economyTab = TextButton("Eco", defaultTextButtonStyle)
-        economyTab.label.setFontScale(1f)
-
-        val workTab = TextButton("Work", defaultTextButtonStyle)
-        workTab.label.setFontScale(1f)
-
-        val behaviourTab = TextButton("Beh", defaultTextButtonStyle)
-        behaviourTab.label.setFontScale(1f)
-
-        val inventoryTab = TextButton("Inv", defaultTextButtonStyle)
-        inventoryTab.label.setFontScale(1f)
-
-        val buyingLabel = TextButton("Buying", defaultTextButtonStyle)
-        buyingLabel.label.setFontScale(1f)
-
-        val resourceTab = TextButton("Resource", defaultTextButtonStyle)
-
-        val productionTab = TextButton("Production", defaultTextButtonStyle)
-
-        val deleteLabel = TextButton("Delete", defaultTextButtonStyle)
-        deleteLabel.label.setFontScale(1f)
-
-        tabTable.defaults().width(60f).height(TAB_HEIGHT)
+        tabTable.defaults().minWidth(60f)
+        tabTable.background.topHeight = 0f
+        tabTable.background.bottomHeight = 0f
+        tabTable.background.leftWidth = 0f
+        tabTable.background.rightWidth = 0f
 
         if(bc != null)
-            tabTable.add(buildingTab).spaceRight(5f)
+            tabTable.add(buildingTab).spaceRight(5f).growY()
         if(sc != null) {
-            tabTable.add(sellTab).spaceRight(5f)
-            tabTable.add(economyTab).spaceRight(5f)
+            tabTable.add(sellTab).spaceRight(5f).growY()
+            tabTable.add(economyTab).spaceRight(5f).growY()
         }
         if(wc != null)
-            tabTable.add(workTab).spaceRight(5f)
+            tabTable.add(workTab).spaceRight(5f).growY()
         if(behComp != null)
-            tabTable.add(behaviourTab).spaceRight(5f)
+            tabTable.add(behaviourTab).spaceRight(5f).growY()
         if(ic != null)
-            tabTable.add(inventoryTab).spaceRight(5f)
+            tabTable.add(inventoryTab).spaceRight(5f).growY()
         if(buying != null)
-            tabTable.add(buyingLabel).spaceRight(5f)
+            tabTable.add(buyingTab).spaceRight(5f).growY()
         if(resource != null)
-            tabTable.add(resourceTab).spaceRight(5f)
-        if(production != null)
-            tabTable.add(productionTab).spaceRight(5f)
+            tabTable.add(resourceTab).spaceRight(5f).growY()
+        if(production != null && production.productionList.size != 0)
+            tabTable.add(productionTab).spaceRight(5f).growY()
 
         tabTable.add().width(0f).growX()
 
-        tabTable.add(deleteLabel).right()
+        tabTable.add(deleteButton).right()
 
         buildingTab.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
@@ -137,7 +130,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         })
 
-
         workTab.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
@@ -159,7 +151,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         })
 
-        buyingLabel.addListener(object: ClickListener(){
+        buyingTab.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
                 loadTable(contentTable, buying, 7)
@@ -180,7 +172,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
         })
 
-        deleteLabel.addListener(object:ClickListener(){
+        deleteButton.addListener(object:ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 close()
                 Factory.destroyEntity(entity)
@@ -190,6 +182,11 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         //When we select a new building, try to display whatever section we were displaying on the last one
         if(currentlyDisplayingComponent != null)
             loadTable(contentTable, currentlyDisplayingComponent!!, currentTabType)
+
+        val group = ButtonGroup<TextButton>(buildingTab, sellTab, economyTab, workTab, behaviourTab,
+                inventoryTab, buyingTab, resourceTab, productionTab, deleteButton)
+
+        group.setMaxCheckCount(1)
     }
 
     override fun update(delta:Float){
@@ -361,8 +358,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             //The contents table
             contentsTable.add(listLabel).colspan(2)
             contentsTable.row()
-
-            println("populating")
 
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
                 val itemName = itemName.toLowerCase()
@@ -673,12 +668,12 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                         val otherSelling = Mappers.selling[ent]
 
                         //If we aren't linking to a building, then don't do this...
-                        if(otherBuilding != null) {
+                        if(otherBuilding != null && otherSelling != null) {
                             //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
                             if (otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop) {
+
                                 //Make sure we actually have stuff to add
                                 if (otherSelling.currSellingItems.size > 0) {
-
                                     otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
                                         Util.addItemToEntityReselling(entity, itemName, SellingItemData.ItemSource.Workshop, ent)
                                     }

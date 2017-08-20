@@ -38,7 +38,8 @@ open class GUIWindow {
     protected val defaultTextFieldStyle = TextField.TextFieldStyle()
 
     protected val defaultTextButtonStyle = TextButton.TextButtonStyle()
-    protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 10, 10, 10, 10))
+    protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 4, 4, 10, 4))
+    protected val darkBackgroundDrawableForTabs = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 4, 4, 10, 4))
     protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
     val barBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
@@ -67,13 +68,13 @@ open class GUIWindow {
         defaultDarkScrollPaneStyle.hScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))
         defaultDarkScrollPaneStyle.hScrollKnob = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(Color.BLACK))))
 
-        tabTable.background = darkBackgroundDrawable
+        tabTable.background = darkBackgroundDrawableForTabs
 
         val contentTableScrollPane = ScrollPane(contentTable, defaultLightScrollPaneStyle)
         contentTableScrollPane.setScrollingDisabled(true, false)
 
         //Add the stuff to the main table
-        this.mainTable.add(tabTable).growX()
+        this.mainTable.add(tabTable).growX().height(30f)
         this.mainTable.row()
         this.mainTable.add(contentTableScrollPane).grow()
 
