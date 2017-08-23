@@ -27,10 +27,11 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
             BuildingComponent.BuildingType.Wall -> TODO()
             BuildingComponent.BuildingType.None -> TODO()
         }
-
-        this.controller.finishWithSuccess()
     }
 
+    /**
+     * We are a shop, so we need to find stuff from our linked workshops to sell.
+     */
     private fun shop(){
         val worker = Mappers.worker[bb.myself]
         val itemsReselling = Mappers.selling[worker.workerBuilding].resellingItemsList
@@ -38,7 +39,10 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
         val itemAmount = bb.targetItem.itemAmount
 
         //First, filter a list that has the item name, an Entity source, and the Entity source has the item in its inventory
-        val list = itemsReselling.filter { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop && Mappers.inventory[it.itemSourceData as Entity].hasItem(itemName) }
+        val list = itemsReselling.filter { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop &&
+                Mappers.inventory[it.itemSourceData as Entity].hasItem(itemName) }
+
+        //Then we will pull a random entity from that list. This helps randomize it a bit more...
         if(list.isNotEmpty()) {
             bb.targetEntity = list[MathUtils.random(list.size - 1)].itemSourceData as Entity //Get a random link and get the entity
             controller.finishWithSuccess()
