@@ -291,10 +291,9 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 override fun clicked(event: InputEvent?, x: Float, y: Float) {
                     super.clicked(event, x, y)
                     val taskNameText = taskNameLabel.text.toString()
-                    val workerTaskLimit = comp.workerTasksLimits.find { it.taskName == taskNameText}!!
 
                     EntityWindowController.addTaskToWorkers(taskNameText, selectedWorkers, currentlySelectedEntity!!)
-
+                    GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
                     GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
                 }
             })
@@ -312,7 +311,10 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         })
 
         //An event to listen for a worker to be hired
-        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> { GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager) }
+        val updateEvent = GameEventSystem.subscribe<ReloadGUIEvent> {
+            GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
+            GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
+        }
 
         //Remember to remove this from the event system
         changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
