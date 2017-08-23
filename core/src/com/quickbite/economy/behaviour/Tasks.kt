@@ -27,7 +27,7 @@ object Tasks {
         return seq
     }
 
-    fun tendToPlant(bb:BlackBoard) : Task{
+    private fun tendToPlant(bb:BlackBoard) : Task{
         val seq = Sequence(bb)
 
         val setMyTarget = SetMyWorkBuildingAsTarget(bb)
@@ -41,7 +41,7 @@ object Tasks {
         return seq
     }
 
-    fun harvestPlant(bb:BlackBoard) : Task{
+    private fun harvestPlant(bb:BlackBoard) : Task{
         val seq = Sequence(bb)
 
         val setMyTarget = SetMyWorkBuildingAsTarget(bb)
@@ -252,7 +252,7 @@ object Tasks {
         return seq
     }
 
-    fun haulItemFromBuilding(bb: BlackBoard):Task {
+    private fun haulItemFromBuilding(bb: BlackBoard):Task {
         val task = com.quickbite.economy.behaviour.composite.Sequence(bb, "Hauling Item")
 
         //TODO Need to make sure it knows its inside a building....

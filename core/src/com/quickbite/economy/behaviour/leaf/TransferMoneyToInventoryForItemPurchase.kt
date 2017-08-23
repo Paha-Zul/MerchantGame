@@ -17,7 +17,7 @@ import com.quickbite.economy.util.Mappers
  * to the target building.
  */
 class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolean = true, val giveAllMoneyRegardless:Boolean = false) : LeafTask(bb){
-    var myWorkerBuilding: Entity? = null
+    private var myWorkerBuilding: Entity? = null
 
     override fun check(): Boolean {
         myWorkerBuilding = Mappers.worker[bb.myself].workerBuilding
@@ -53,6 +53,10 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
             //If the item is null, try to get from baseSellingItems...
             if(itemFromSelling == null)
                 itemFromSelling = targetBuildingSelling.baseSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
+
+            if(itemFromSelling == null){
+                println("Error with: ${bb.targetItem}")
+            }
 
             //TODO Problem here with itemFromSelling being null?
             val moneyInInventory = fromInventory.getItemAmount("gold")

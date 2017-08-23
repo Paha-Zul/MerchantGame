@@ -30,7 +30,7 @@
         [defs.transformDef.spots]
             entrance = [{x = 0, y = -100}]
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+        debugItemList = [{itemName = "Gold", itemAmount = "5"}]
     [defs.sellingItems]
         isReselling = true
         taxRate = 0.1
@@ -239,6 +239,7 @@
         physicalDimensions = {x = 225, y = 225}
         [defs.transformDef.spots]
             entrance = [{x=-70, y=-120}]
+            inside = [{x=-70, y=0}]
     [defs.inventoryDef]
     [defs.workforceDef]
         workforceMax = 2

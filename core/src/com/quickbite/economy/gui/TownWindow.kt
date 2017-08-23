@@ -63,7 +63,7 @@ class TownWindow : GUIWindow() {
     }
 
     private fun setupPopTab(){
-        val style = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.BLACK))), Color.BLACK, MyGame.defaultFont14)
+        val style = Graph.GraphStyle(TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE))), Color.WHITE, MyGame.defaultFont14)
         style.graphBackground = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.DARK_GRAY)))
         style.lineThickness = 2f
 
@@ -77,7 +77,7 @@ class TownWindow : GUIWindow() {
         val luxuryTitleLabel = Label("Luxury:", defaultLabelStyle)
         val luxuryAmtLabel = Label("${town.luxuryRating}", defaultLabelStyle)
 
-        val graph = Graph(TownManager.getTown("Town").populationHistory.queue.toList(), 100, style)
+        val graph = Graph(TownManager.getTown("Town").populationHistory.queue.toList(), 50, style)
 
         updatePopGraphEvent = GameEventSystem.subscribe<PopulationChangeEvent> {
             graph.points = it.popHistory

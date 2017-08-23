@@ -29,8 +29,8 @@ class Town(val name:String) {
             field = MathUtils.clamp(value, 0, 1000)
         }
 
-    val accumulateItemsTimer:CustomTimer
-    val changePopulationTimer:CustomTimer
+    private val accumulateItemsTimer:CustomTimer
+    private val changePopulationTimer:CustomTimer
 
     init{
         //TODO Make sure this timer works
@@ -51,7 +51,7 @@ class Town(val name:String) {
             //If needs is below 500, remove from needs. Otherwise, add the luxury amount.
             val change:Float = if(needDiff > 0) Math.max(0f, luxuryChange) else needsChange
 
-            population += change //Add the change
+            population = Math.max(0f, population + change)
             populationHistory += population.toInt() //Add the most recent population to the history
             GameEventSystem.fire(PopulationChangeEvent(population.toInt(), populationHistory.queue.toList()))
         })
