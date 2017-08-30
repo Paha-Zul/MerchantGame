@@ -62,8 +62,8 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             //Draw the shop link if enabled and we have the reselling component
             if((dc.debugDrawShopLink || DebugDrawComponent.GLOBAL_DEBUG_SHOPLINK) && sc != null){
 
-                sc.resellingItemsList.forEach { (_, _, _, _, entity) ->
-                    val entity = entity as? Entity
+                sc.currSellingItems.forEach { (_, _, _, _, data) ->
+                    val entity = data as? Entity
                     if(entity != null) {
                         val currPoint = tc.position
                         val nextPoint = Mappers.transform.get(entity).position

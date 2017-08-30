@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.BuildingComponent
+import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.objects.ItemAmountLink
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
@@ -61,24 +62,17 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
         val worker = Mappers.worker[bb.myself]
         val sellingComp = Mappers.selling[worker.workerBuilding]
         val myBuildingInventory = Mappers.inventory[worker.workerBuilding]
-        val sellingItemsList = sellingComp.resellingItemsList
+        val sellingItemsList = sellingComp.currSellingItems
 
         //Gotta make sure we even have any items
         if(sellingItemsList.size > 0) {
             //First, get the selling item and the inventory of the entity source
-            var sellingItem:SellingItemData
             val initialIndex = sellingComp.indexCounter
-            var found:Boolean
+            val found:Boolean
 
-            //This simply validates the index counter in case a size changed. Causes a crash otherwise
-            sellingComp.indexCounter = sellingComp.indexCounter%sellingComp.resellingItemsList.size
-
-            //Here we loop through the reselling items list to find an item we are selling from a workshop.
-            do{
-                sellingItem = sellingComp!!.resellingItemsList[sellingComp.indexCounter] //Get the selling item
-                found = sellingItem.itemSourceType == SellingItemData.ItemSource.Workshop
-                sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index counter
-            }while(sellingComp.indexCounter != initialIndex && !found) //Loop until either our index counter matches the initial index or our flag is tripped
+            incrementIndexCounter(sellingComp)
+            val sellingItem = sellingItemsList[sellingComp.indexCounter]
+            found = sellingItem.itemSourceType == SellingItemData.ItemSource.Workshop
 
             //If we never found an item, fail and return
             if(!found){
@@ -99,10 +93,22 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             bb.targetItem.itemName = sellingItem.itemName.toLowerCase()
             bb.targetItem.itemAmount = amountToGet
 
-//            sellingComp.indexCounter = (sellingComp.indexCounter + 1)%sellingComp.resellingItemsList.size //Increment the index a final time
-
             this.controller.finishWithSuccess()
         }else
             controller.finishWithFailure()
+    }
+
+    private fun incrementIndexCounter(sellingComp:SellingItemsComponent){
+        //Increment the index counter for next time (so we rotate items evenly)
+        var currCounter = (sellingComp.indexCounter + 1)%sellingComp.currSellingItems.size //Get us ahead by 1 and make sure it's valid with %
+        while(currCounter != sellingComp.indexCounter){
+            //If our item source is from a workshop (that we are reselling from), break here
+            if(sellingComp.currSellingItems[currCounter].itemSourceType == SellingItemData.ItemSource.Workshop)
+                break
+            //Otherwise, increment and keep going
+            currCounter = (currCounter + 1)%sellingComp.currSellingItems.size
+        }
+        //Finally, set the index counter
+        sellingComp.indexCounter = currCounter
     }
 }

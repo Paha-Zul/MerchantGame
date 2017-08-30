@@ -11,7 +11,7 @@ import com.quickbite.economy.objects.ItemAmountLink
 class InventoryComponent : MyComponent {
     val itemMap = hashMapOf<String, ItemAmountLink>()
 
-    val outputItems = hashSetOf("All")
+    val outputItems = hashSetOf("all")
     val inputItems = hashSetOf<String>()
 
     /** A list of listeners for inventory changes.*/

@@ -134,7 +134,7 @@ object Util {
                 if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
                     otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
 
-                sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop
+                sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop
                     && it.itemSourceData as Entity == itemSourceData}
             }
 
@@ -142,11 +142,11 @@ object Util {
             SellingItemData.ItemSource.Import ->{
                 //TODO We need to figure out how to get the correct town here. This is just a prototyping quickie here
                 //Get the first item that matches the name AND the item source data passed in
-                val item = sellingComp.resellingItemsList.first{it.itemName == itemName && it.itemSourceData == itemSourceData}
+                val item = sellingComp.currSellingItems.first{it.itemName == itemName && it.itemSourceData == itemSourceData}
                 //Get the town using the item source data
                 TownManager.getTown(item.itemSourceData as String).itemImportMap[itemName]!!.linkedToEntity = null
                 //Remove the item from the selling comp
-                sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
+                sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
             }
             else -> {
 
@@ -212,18 +212,15 @@ object Util {
     fun addItemToEntityReselling(resellingEntity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
         val itemName = itemName.toLowerCase()
         val selling = Mappers.selling[resellingEntity]
-        selling.resellingItemsList
 
         val itemDef = DefinitionManager.itemDefMap[itemName]!!
-        val reselling = Mappers.selling[resellingEntity]
         val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice*1.5f).toInt(), -1, itemSource, sourceData)
 
         //If the reselling and currSelling lists don't already contain this...
-        if(!reselling.resellingItemsList.any { it.itemName == itemName && it.itemSourceData == sourceData} &&
-                !reselling.currSellingItems.any { it.itemName == itemName && it.itemSourceData == sourceData}) {
+        if(!selling.currSellingItems.any { it.itemName == itemName && it.itemSourceData == sourceData} &&
+                !selling.currSellingItems.any { it.itemName == itemName && it.itemSourceData == sourceData}) {
 
-            reselling.resellingItemsList.add(sellingData)
-            reselling.currSellingItems.add(sellingData)
+            selling.currSellingItems.add(sellingData)
         }
     }
 

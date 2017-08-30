@@ -119,7 +119,7 @@ object FindEntityUtil {
     }
 
     /**
-     * Attempts to find the nearest building that has an item in it's output and inventory
+     * Attempts to find the nearest building that has an item in it's output and inventory. Doesn't require the item to be selling.
      * @param position The position to search from
      * @param itemName The name of the item to get
      * @param itemAmount The amount of the item
@@ -136,7 +136,7 @@ object FindEntityUtil {
 
                 val bc = Mappers.building.get(ent)
                 val inv = Mappers.inventory.get(ent)
-                val hasOutput = inv.outputItems.contains("All") || inv.outputItems.contains(itemName)
+                val hasOutput = inv.outputItems.contains("all") || inv.outputItems.contains(itemName)
 
                 if (inv != null && hasOutput && inv.getItemAmount(itemName) >= itemAmount) {
                     val tm = Mappers.transform.get(ent)

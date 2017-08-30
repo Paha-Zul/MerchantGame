@@ -34,7 +34,7 @@ class GetBuildingToHaulFrom(bb:BlackBoard) : LeafTask(bb){
      */
     private fun shop(){
         val worker = Mappers.worker[bb.myself]
-        val itemsReselling = Mappers.selling[worker.workerBuilding].resellingItemsList
+        val itemsReselling = Mappers.selling[worker.workerBuilding].currSellingItems
         val itemName = bb.targetItem.itemName
         val itemAmount = bb.targetItem.itemAmount
 

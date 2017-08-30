@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.CapitalizeEachToken
@@ -27,6 +26,7 @@ import com.quickbite.economy.gui.EntityWindowController
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.isValid
 import com.quickbite.economy.objects.SelectedWorkerAndTable
+import com.quickbite.economy.objects.SellingItemData
 
 /**
  * Created by Paha on 5/20/2017.
@@ -467,8 +467,10 @@ object GUIUtil {
             itemTable.add().width(2f) //Empty space for the divider in the titles
             itemTable.add(itemStockTable).width(100f)
             itemTable.add().width(2f) //Empty space for the divider in the titles
-            if(comp.resellingItemsList.size > 0) itemTable.add(xLabel).size(16f).spaceLeft(10f).right() //Either add the x label
-            else itemTable.add().width(16f) //Or add an empty column
+            if(sellItemData.itemSourceType != SellingItemData.ItemSource.None)
+                itemTable.add(xLabel).size(16f).spaceLeft(10f).right() //Either add the x label
+            else
+                itemTable.add().width(16f) //Or add an empty column
             itemTable.add().growX()
 
             sellItemsListTable.add(itemTable).colspan(100).growX()
@@ -478,8 +480,6 @@ object GUIUtil {
             xLabel.addListener(object:ClickListener(){
                 override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                     super.touchUp(event, x, y, pointer, button)
-                    if(comp.resellingItemsList.size <= 0)
-                        return
                     Util.removeSellingItemFromReseller(comp, sellItemData.itemName, sellItemData.itemSourceType, sellItemData.itemSourceData)
                 }
             })

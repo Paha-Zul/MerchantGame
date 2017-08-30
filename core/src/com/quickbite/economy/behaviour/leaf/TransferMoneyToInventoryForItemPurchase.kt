@@ -3,6 +3,8 @@ package com.quickbite.economy.behaviour.leaf
 import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
+import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -53,6 +55,16 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
             //If the item is null, try to get from baseSellingItems...
             if(itemFromSelling == null)
                 itemFromSelling = targetBuildingSelling.baseSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
+
+            //As a last test if it's still null, check the output
+            if(itemFromSelling == null){
+                val item = DefinitionManager.itemDefMap[bb.targetItem.itemName]!!
+                val targetBuildingInv = Mappers.inventory[bb.targetEntity]
+                if(targetBuildingInv.outputItems.contains("all") || targetBuildingInv.outputItems.contains(bb.targetItem.itemName.toLowerCase()))
+                    //Make a temp SellingItemData object to use here. Only the first 2 paramaters should matter for its purpose
+                    //TODO Watch this. Maybe more sophisticated? Probably should be removed actually
+                    itemFromSelling = SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.None, null)
+            }
 
             if(itemFromSelling == null){
                 println("Error with: ${bb.targetItem}")

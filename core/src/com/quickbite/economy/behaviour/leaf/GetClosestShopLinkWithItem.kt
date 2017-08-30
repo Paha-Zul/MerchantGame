@@ -18,7 +18,7 @@ class GetClosestShopLinkWithItem(bb:BlackBoard, var itemName:String = "", var it
     override fun check(): Boolean {
         val worker = Mappers.worker[bb.myself]
         val sellingComp = Mappers.selling.get(worker.workerBuilding)
-        links = sellingComp.resellingItemsList
+        links = sellingComp.currSellingItems
 
         return sellingComp != null
     }

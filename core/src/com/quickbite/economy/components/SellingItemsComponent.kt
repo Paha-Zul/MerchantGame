@@ -37,10 +37,6 @@ class SellingItemsComponent : MyComponent {
     var taxCollectedTotal = 0
 
     var isReselling = false
-    /**
-     * A itemPriceLinkList of contracts basically
-     */
-    val resellingItemsList:Array<SellingItemData> = Array(5)
 
     //TODO Figure out how to better keep track of counters for the links
     var indexCounter = 0
@@ -50,7 +46,7 @@ class SellingItemsComponent : MyComponent {
     }
 
     override fun dispose(myself: Entity) {
-        resellingItemsList.toList().forEach { item ->
+        currSellingItems.toList().forEach { item ->
             Util.removeSellingItemFromReseller(this, item.itemName, item.itemSourceType, item.itemSourceData)
         }
     }
