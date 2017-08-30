@@ -27,7 +27,7 @@
     onGrid = true
     blockGridWhenPlaced = true
     gridSpotsToBlock = [[0, 0], [0, 0]]
-
+    
 [[defs]]
   name = "Iron Ore Vein"
   [defs.graphicDef]

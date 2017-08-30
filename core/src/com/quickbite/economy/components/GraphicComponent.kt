@@ -16,14 +16,29 @@ class GraphicComponent : MyComponent {
 
     }
 
-    lateinit var sprite : Sprite
+    lateinit var sprite: Sprite
     val anchor = Vector2(0.5f, 0.5f)
-    var hide = false
+    var hidden = false
+    val fullyShown: Boolean
+        get() = !hidden && sprite.color.a >= .95f
 
     var initialAnimation = false
     var animationCounter = 0f
 
     val moodIcons = Array<MutablePair<Sprite, Float>>(4)
+
+    fun hide(hide: Boolean = true) {
+        when (hide) {
+            true -> {
+                hidden = true
+                sprite.setAlpha(0f)
+            }
+            else -> {
+                hidden = false
+                sprite.setAlpha(1f)
+            }
+        }
+    }
 
     override fun dispose(myself: Entity) {
 

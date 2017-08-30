@@ -18,31 +18,31 @@ object Spawner {
 
     private val spawnPosition = Vector2(-500f, 0f)
 
-    private val spawnBuyerTimeRange = Vector2(5f, 10f)
-    private val spawnHaulerTimeRange = Vector2(5f, 20f)
+    private val spawnBuyerTimeRange = Pair(5f, 10f)
+    private val spawnHaulerTimeRange = Pair(5f, 20f)
 
     private const val populationMultiplierForBuyerThreshold = 200 //For every x amount of population, increase the multiplier by 1
     private val populationMultiplierForBuyer:Float
-        get() = Math.max(1f, town.population / populationMultiplierForBuyerThreshold.toFloat()) //We want this to be at least 1
+        get() = Math.max(0f, town.population / populationMultiplierForBuyerThreshold.toFloat()) //We want this to be at least 1
 
     private const val populationMultiplierForHaulerThreshold = 400 //For every x amount of population, increase the multiplier by 1
     private val populationMultiplierForHauler:Float
-        get() = Math.max(1f, town.population/ populationMultiplierForHaulerThreshold.toFloat()) //We want this to be at least 1
+        get() = Math.max(0f, town.population/ populationMultiplierForHaulerThreshold.toFloat()) //We want this to be at least 1
 
     private lateinit var spawnBuyerTimer:CustomTimer
     private lateinit var spawnHaulerTimer:CustomTimer
 
     init{
-        spawnBuyerTimer = CustomTimer(20f, MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y) / populationMultiplierForBuyer, true, {
+        spawnBuyerTimer = CustomTimer(20f, MathUtils.random(spawnBuyerTimeRange.first, spawnBuyerTimeRange.second) / populationMultiplierForBuyer, true, {
             //TODO Can this be abused by simply deleting all selling buildings? But then what's the fun of the game...
             spawnBuyer()
 
-            val random = MathUtils.random(spawnBuyerTimeRange.x, spawnBuyerTimeRange.y)
-            val time = random/populationMultiplierForBuyer
+            val random = MathUtils.random(spawnBuyerTimeRange.first, spawnBuyerTimeRange.second)
+            val time = random/populationMultiplierForBuyer //We divide to lessen the time. Higher population multiplier = lower time
             spawnBuyerTimer.restart(time)
         })
 
-        spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y), true, {
+        spawnHaulerTimer = CustomTimer(10f, MathUtils.random(spawnHaulerTimeRange.first, spawnHaulerTimeRange.second), true, {
             val list = town.itemImportMap.values.toList()
             val randomItem = list[MathUtils.random(list.size - 1)]
 
@@ -72,7 +72,7 @@ object Spawner {
                 beh.currTask = Tasks.haulInventoryToStockpile(beh.blackBoard)
             }
 
-            spawnHaulerTimer.restart(MathUtils.random(spawnHaulerTimeRange.x, spawnHaulerTimeRange.y))
+            spawnHaulerTimer.restart(MathUtils.random(spawnHaulerTimeRange.first, spawnHaulerTimeRange.second))
         })
     }
 

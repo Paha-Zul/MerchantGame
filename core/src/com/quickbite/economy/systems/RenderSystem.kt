@@ -60,7 +60,7 @@ class RenderSystem(val batch:SpriteBatch) : EntitySystem(){
                 runAnimation(deltaTime, gc, tc)
             }
 
-            if(!gc.hide)
+            if(!gc.hidden)
                 gc.sprite.draw(batch)
 
             if(fc != null){

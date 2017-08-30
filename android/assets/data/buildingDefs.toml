@@ -15,7 +15,7 @@
         onGrid = true
         blockGridWhenPlaced = true
         gridSpotsToBlock = [[-1, -1], [1, 1]]
-
+        
 [[defs]]
     name = "Shop"
     [defs.graphicDef]

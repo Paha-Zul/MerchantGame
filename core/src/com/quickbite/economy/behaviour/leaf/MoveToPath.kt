@@ -34,6 +34,7 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
         if(bb.path.isNotEmpty()){
             tmp.set(position) //Set the tmp vector. We don't want to directly change the position
 
+            //TODO Can we clamp this velocity towards the next step so we don't overshoot it?
             //Set the velocity
             velocity!!.velocity.set(tmp.moveTowards(bb.path[index], speed))
 

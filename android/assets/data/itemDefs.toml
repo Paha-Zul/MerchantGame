@@ -24,7 +24,7 @@
   baseMarketPrice = 250
   categories = ["Furnishing"]
   iconName = "wood_table_icon"
-  luxury = 2
+  luxury = 4
 [[items]]
   itemName = "wheat"
   baseMarketPrice = 1

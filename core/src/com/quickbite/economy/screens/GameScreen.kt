@@ -56,8 +56,6 @@ class GameScreen :Screen{
             gameScreeData.playerMoney += it.taxCollected
         }
 
-        GameScreenGUIManager.init(this)
-
         inputHandler = InputHandler(this)
         Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, inputHandler)
 
@@ -105,12 +103,9 @@ class GameScreen :Screen{
         })
 
         initTerrain()
-
-        TownManager.init()
-
         Level1.start()
+        GameScreenGUIManager.init(this)
 //        TutorialTest.test()
-
         CheckHoverOverEntity.gameScreen = this
     }
 

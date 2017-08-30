@@ -11,8 +11,7 @@ class ChangeHidden(bb:BlackBoard, val hide:Boolean = false) : LeafTask(bb){
 
     override fun start() {
         val gc = Mappers.graphic.get(bb.myself)
-        gc.hide = hide
-        gc.sprite.setAlpha(if(hide) 0f else 1f)
+        gc.hide(hide)
 
         this.controller.finishWithSuccess()
     }

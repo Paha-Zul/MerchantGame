@@ -122,7 +122,8 @@ object Util {
      * @param itemName The name of the item
      */
     fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceType:SellingItemData.ItemSource, itemSourceData:Any? = null){
-        sellingComp.currSellingItems.removeAll { it.itemName == itemName } //Remove all currently selling items with this name
+        sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop
+                && it.itemSourceData as Entity == itemSourceData } //Remove all currently selling items with this name
 
         //Deal with the source type
         when(itemSourceType){
@@ -133,7 +134,8 @@ object Util {
                 if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
                     otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
 
-                sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop }
+                sellingComp.resellingItemsList.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop
+                    && it.itemSourceData as Entity == itemSourceData}
             }
 
             //If it's an import from a town...
@@ -177,21 +179,24 @@ object Util {
      * @param workforceEntity The workforce the Entity is assigned to. This is needed to pull work limits from
      * @param taskName The name of the task to add
      */
-    fun toggleTaskOnWorker(workerEntity:Entity, workforceEntity : Entity, taskName:String){
+    fun toggleTaskOnWorker(workerEntity:Entity, workforceEntity : Entity, vararg taskNames:String){
         val worker = Mappers.worker[workerEntity]
         val workforce = Mappers.workforce[workforceEntity]
-        val workerTaskLimitLink = workforce.workerTasksLimits.find { it.taskName == taskName }!!
 
-        when(worker.taskList.contains(taskName)){
-            true -> { //If it does contain it, remove it!
-                worker.taskList.removeValue(taskName, false)
-                workforce.workerTaskMap[taskName]!!.removeValue(workerEntity, true)
-            }
-            else -> { //If it doesn't contain it, add it!
-                //Make sure we have enough room to add it
-                if(workforce.workerTaskMap[taskName]!!.size < workerTaskLimitLink.amount) {
-                    worker.taskList.add(taskName)
-                    workforce.workerTaskMap[taskName]!!.add(workerEntity)
+        taskNames.forEach { taskName ->
+            val workerTaskLimitLink = workforce.workerTasksLimits.find { it.taskName == taskName }!!
+
+            when (worker.taskList.contains(taskName)) {
+                true -> { //If it does contain it, remove it!
+                    worker.taskList.removeValue(taskName, false)
+                    workforce.workerTaskMap[taskName]!!.removeValue(workerEntity, true)
+                }
+                else -> { //If it doesn't contain it, add it!
+                    //Make sure we have enough room to add it
+                    if (workforce.workerTaskMap[taskName]!!.size < workerTaskLimitLink.amount) {
+                        worker.taskList.add(taskName)
+                        workforce.workerTaskMap[taskName]!!.add(workerEntity)
+                    }
                 }
             }
         }

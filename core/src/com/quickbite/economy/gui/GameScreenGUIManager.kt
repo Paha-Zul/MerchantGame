@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
@@ -37,6 +39,7 @@ object GameScreenGUIManager {
     val bottomTable = Table()
 
     val topTable = Table()
+    val itemTable = Table()
 
     lateinit var timeOfDayLabel:Label
     lateinit var populationLabel:Label
@@ -48,7 +51,7 @@ object GameScreenGUIManager {
     private var tooltipLocation = TooltipLocation.Mouse
 
     //Gotta be lazy cause Import won't be available right away
-    val myTown: Town by lazy {TownManager.getTown("Town")}
+    private val myTown: Town by lazy {TownManager.getTown("Town")}
 
     init{
         toolTipTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0.1f, 0.1f, 0.1f, 0.7f))))
@@ -84,11 +87,38 @@ object GameScreenGUIManager {
         }
 
         setupSpawnEntityTable()
+        setupItemTable()
 
         MyGame.stage.addActor(topTable)
         MyGame.stage.addActor(bottomTable)
 
         toolTipTable.touchable = Touchable.disabled
+    }
+
+    private fun setupItemTable(){
+        fun populateItemTable() {
+            itemTable.clear()
+            myTown.totalSellingItemMap.forEach { name, amount ->
+                val name = name.toLowerCase().replace(' ', '_')+"_icon"
+                val icon = Image(MyGame.manager[name, Texture::class.java])
+                val label = Label(amount.toString(), defaultLabelStyle)
+                label.setFontScale(1f)
+                label.setAlignment(Align.left)
+                itemTable.add(icon).size(20f).padRight(2f)
+                itemTable.add(label).width(25f)
+                itemTable.row()
+            }
+        }
+
+        populateItemTable()
+        itemTable.setFillParent(true)
+        itemTable.top().left()
+        MyGame.stage.addActor(itemTable)
+
+        //This is fired every time an item is added or removed from an inventory
+        GameEventSystem.subscribe<ItemAmountChangeEvent> { (_, _) ->
+            populateItemTable()
+        }
     }
 
     /**
@@ -212,7 +242,6 @@ object GameScreenGUIManager {
 
     /**
      * Triggers the tooltip to show
-     * @param message The text message to display
      * @param location The location for it to display like at the mouse or building hovered over
      */
     fun startShowingTooltip(location:TooltipLocation){

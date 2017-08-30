@@ -72,15 +72,13 @@ class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
         val fadeAlpha = MathUtils.clamp((counter - fadeDelay)/ fadeTime, 0f, 1f) //The alpha for fading
 
         if(fadeAlpha > 0f) //We need to make sure we are not hidden anymore when the fade alpha is not 0
-            gc.hide = false
+            gc.hidden = false
 
         //Move the body and set the alpha's sprite
         bc.body!!.setTransform(Vector2(MathUtils.lerp(startPos.x, destPos.x, moveAlpha), MathUtils.lerp(startPos.y, destPos.y, moveAlpha)), 0f)
         gc.sprite.setAlpha(fadeAlpha)
 
         if(counter >= moveTime){
-            gc.hide = false
-            gc.sprite.setAlpha(1f)
             //When we are done with the counter, finish!
             finish()
         }
@@ -88,8 +86,7 @@ class ExitBuilding(bb:BlackBoard) : LeafTask(bb){
 
     private fun finish(){
         //Set all the stuff to unhide bb.myself
-        gc.sprite.setAlpha(1f)
-        gc.hide = false
+        gc.hide(false)
         bb.insideEntity = null
         controller.finishWithSuccess()
     }

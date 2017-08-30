@@ -8,6 +8,7 @@ import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.Constants
 import com.quickbite.economy.util.GUIUtil
+import com.quickbite.economy.util.Mappers
 
 /**
  * Created by Paha on 6/12/2017.
@@ -20,8 +21,15 @@ object CheckHoverOverEntity {
     var showingHover = false
 
     val callback = { fixture:Fixture ->
-        newlySelectedEntity = fixture.userData as Entity
-        false
+        val entity = fixture.userData as Entity
+        val passed:Boolean
+        if(Mappers.graphic[entity].fullyShown) {
+            newlySelectedEntity = fixture.userData as Entity
+            passed = false
+        }else
+            passed = true
+
+        passed
     }
 
     fun update(delta:Float){

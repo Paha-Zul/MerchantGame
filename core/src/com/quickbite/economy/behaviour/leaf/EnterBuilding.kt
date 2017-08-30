@@ -56,8 +56,7 @@ class EnterBuilding(bb: BlackBoard) : LeafTask(bb) {
         bc.body!!.setTransform(Vector2(MathUtils.lerp(startPos.x, destPos.x, moveAlpha), MathUtils.lerp(startPos.y, destPos.y, moveAlpha)), 0f)
 
         if(counter >= moveTime){
-            gc.sprite.setAlpha(0f)
-            gc.hide = true
+            gc.hide()
             bb.insideEntity = bb.targetEntity
             this.controller.finishWithSuccess()
         }

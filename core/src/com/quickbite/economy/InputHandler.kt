@@ -31,7 +31,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
 
     private val queryCallback = {fixture:Fixture ->
         val entity = fixture.userData as Entity
-        if(!Mappers.graphic[entity].hide) {
+        if(Mappers.graphic[entity].fullyShown) {
             entityClickedOn = entity
             false //Terminate
         }
