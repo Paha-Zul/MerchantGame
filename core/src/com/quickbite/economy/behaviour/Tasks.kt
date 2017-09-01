@@ -323,7 +323,7 @@ object Tasks {
         optionalBranchSequence.controller.addTask(GetPath(bb))
         optionalBranchSequence.controller.addTask(MoveToPath(bb))
 
-        task.controller.addTask(ChangeHidden(bb, true))
+        task.controller.addTask(EnterBuilding(bb))
         task.controller.addTask(Wait(bb))
         task.controller.addTask(ProduceItem(bb))
 

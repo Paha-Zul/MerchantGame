@@ -21,7 +21,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        kotlin_version = '1.1.4-release-IJ2017.2-2'
+        kotlin_version = '1.1.4-3'
         appName = "EconomyGame"
         gdxVersion = '1.9.5'
         roboVMVersion = '2.3.0'

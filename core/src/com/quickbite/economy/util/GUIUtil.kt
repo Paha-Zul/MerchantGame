@@ -21,6 +21,7 @@ import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.components.WorkForceComponent
 import com.quickbite.economy.event.GameEventSystem
+import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.EntityWindowController
 import com.quickbite.economy.gui.GameScreenGUIManager
@@ -314,71 +315,85 @@ object GUIUtil {
         return workerTasksAndAmountsTable
     }
 
+    /**
+     * Makes a simple label tooltip for things like item names when hovering over icons
+     * @param message The message to put in the tooltip
+     */
     fun makeSimpleLabelTooltip(message:String){
         val table = GameScreenGUIManager.toolTipTable
         table.clear()
 
         val messageLabel = Label(message, Label.LabelStyle(MyGame.defaultFont14, Color.WHITE))
-        table.add(messageLabel)
+        table.add(messageLabel).pad(2f)
     }
 
+    /**
+     * Makes a more complicated tooltip for a quickview of an Entity's essentials
+     * @param entity The Entity to get info from
+     */
     fun makeEntityTooltip(entity:Entity){
         val table = GameScreenGUIManager.toolTipTable
-        table.clear()
+        GameScreenGUIManager.showingTooltip.entity = entity
 
         val ic = Mappers.identity[entity]
         val pc = Mappers.produces[entity]
         val inv = Mappers.inventory[entity]
         val rc = Mappers.resource[entity]
 
-        val titleMessage = Label(ic.name, Label.LabelStyle(MyGame.defaultFont20, Color.WHITE))
+        fun createTooltip(){
+            table.clear()
 
-        table.add(titleMessage).colspan(100).left() //Add the title
-        table.row() //Add a row, stuff goes under the title
+            val titleMessage = Label(ic.name, Label.LabelStyle(MyGame.defaultFont20, Color.WHITE))
 
-        //For each component we want a table to hold its stuff
+            table.add(titleMessage).colspan(100).left() //Add the title
+            table.row() //Add a row, stuff goes under the title
 
-        //For the production...
-        if(pc != null && pc.productionList.size > 0){
-            val productionTable = Table()
-            val producingTitleLabel = Label("Producing", GameScreenGUIManager.defaultLabelStyle)
-            productionTable.add(producingTitleLabel)
-            productionTable.row()
-            pc.productionList.forEach {
-                val production = Label(it.produceItemName, GameScreenGUIManager.defaultLabelStyle)
-                productionTable.add(production).padLeft(5f)
+            //For each component we want a table to hold its stuff
+
+            //For the production...
+            if (pc != null && pc.productionList.size > 0) {
+                val productionTable = Table()
+                val producingTitleLabel = Label("Producing", GameScreenGUIManager.defaultLabelStyle)
+                productionTable.add(producingTitleLabel)
                 productionTable.row()
+                pc.productionList.forEach {
+                    val production = Label(it.produceItemName, GameScreenGUIManager.defaultLabelStyle)
+                    productionTable.add(production).padLeft(5f)
+                    productionTable.row()
+                }
+
+                table.add(productionTable).spaceRight(5f).top()
             }
 
-            table.add(productionTable)
-        }
-
-        //For the inventory...
-        if(inv != null){
-            val invTable = Table()
-            val invTitleLabel = Label("Inventory", GameScreenGUIManager.defaultLabelStyle)
-            invTable.add(invTitleLabel)
-            invTable.row()
-            inv.itemMap.values.forEach {
-                val production = Label("${it.itemAmount} ${it.itemName}", GameScreenGUIManager.defaultLabelStyle)
-                invTable.add(production)
+            //For the inventory...
+            if (inv != null) {
+                val invTable = Table()
+                val invTitleLabel = Label("Inventory", GameScreenGUIManager.defaultLabelStyle)
+                invTable.add(invTitleLabel)
                 invTable.row()
+                inv.itemMap.values.forEach {
+                    val itemLabel = Label("${it.itemAmount} ${it.itemName}", GameScreenGUIManager.defaultLabelStyle)
+                    itemLabel.setAlignment(Align.left)
+                    invTable.add(itemLabel).fillX()
+                    invTable.row()
+                }
+                table.add(invTable).spaceRight(5f).top()
             }
 
-            table.add(invTable)
+            //For the resource...
+            if (rc != null) {
+                val resourceTable = Table()
+                val resourceTitleLabel = Label("Resources", GameScreenGUIManager.defaultLabelStyle)
+                resourceTable.add(resourceTitleLabel)
+                resourceTable.row()
+                val resource = Label("${rc.currResourceAmount} ${rc.harvestItemName}", GameScreenGUIManager.defaultLabelStyle)
+                resourceTable.add(resource)
+                table.add(resourceTable).top()
+            }
         }
 
-        //For the resource...
-        if(rc != null){
-            val resourceTable = Table()
-            val resourceTitleLabel = Label("Resources", GameScreenGUIManager.defaultLabelStyle)
-            resourceTable.add(resourceTitleLabel)
-            resourceTable.row()
-            val production = Label("${rc.currResourceAmount} ${rc.harvestItemName}", GameScreenGUIManager.defaultLabelStyle)
-            resourceTable.add(production)
-
-            table.add(resourceTable)
-        }
+        createTooltip()
+        GameScreenGUIManager.showingTooltip.event = GameEventSystem.subscribe<ItemAmountChangeEvent>({createTooltip()}, ic.uniqueID)
     }
 
     fun populateItemsTable(comp:SellingItemsComponent, sellItemsMainTable:Table, defaultLabelStyle: Label.LabelStyle, defaultTextButtonStyle:TextButton.TextButtonStyle){

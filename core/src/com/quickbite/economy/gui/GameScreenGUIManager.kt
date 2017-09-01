@@ -47,7 +47,7 @@ object GameScreenGUIManager {
 
     enum class TooltipLocation{Mouse, Building}
     val toolTipTable:Table = Table()
-    private var showingTooltip = false
+    var showingTooltip = Tooltip()
     private var tooltipLocation = TooltipLocation.Mouse
 
     //Gotta be lazy cause Import won't be available right away
@@ -224,16 +224,18 @@ object GameScreenGUIManager {
         displayTooltip()
     }
 
+    /**
+     * Displays the tooltip (if there is one currently open)
+     */
     private fun displayTooltip(){
-        if(!showingTooltip) return
+        if(!showingTooltip.showing) return
 
-        val position:Vector2
-        when(tooltipLocation){
+        val position = when(tooltipLocation){
             TooltipLocation.Mouse -> {
-                position = Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
+                Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, MyGame.camera.viewportHeight - Gdx.input.y.toFloat())
             }
             TooltipLocation.Building -> {
-                position = Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, Gdx.input.y.toFloat())
+                Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, Gdx.input.y.toFloat())
             }
         }
 
@@ -245,14 +247,25 @@ object GameScreenGUIManager {
      * @param location The location for it to display like at the mouse or building hovered over
      */
     fun startShowingTooltip(location:TooltipLocation){
-        showingTooltip = true
+        showingTooltip.showing = true
         tooltipLocation = location
         toolTipTable.pack()
         MyGame.stage.addActor(toolTipTable)
     }
 
+    /**
+     * Stops showing the tooltip
+     */
     fun stopShowingTooltip(){
-        showingTooltip = false
+        showingTooltip.showing = false
         toolTipTable.remove()
+        if(showingTooltip.entity != null){
+            GameEventSystem.unsubscribe(showingTooltip.event!!)
+        }
+
+        showingTooltip.entity = null
+        showingTooltip.event = null
     }
+
+    data class Tooltip(var showing:Boolean = false, var entity:Entity?=null, var event:GameEventSystem.GameEventRegistration? = null)
 }
