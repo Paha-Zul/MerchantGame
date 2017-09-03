@@ -592,10 +592,10 @@ object GUIUtil {
 //        val sellButton = TextButton("", GUIWindow.)
         val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
 
-        val sellingStateImage = when (sellingState) {
+        val sellingStateImage:Image? = when (sellingState) {
             SellingState.Selling -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
             SellingState.Available -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
-            else -> Image(TextureRegion(Util.createPixel(Color.BLACK), 16, 16))
+            else -> null
         }
 
         val itemAmountLabel = Label("$itemAmount", labelStyle)
@@ -617,7 +617,7 @@ object GUIUtil {
 
         var sellingState = sellingState //Let's shadow this to make it mutable in the listener
 
-        sellingStateImage.addListener(object:ClickListener(){
+        sellingStateImage?.addListener(object:ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 val item = DefinitionManager.itemDefMap[itemName]!!
 

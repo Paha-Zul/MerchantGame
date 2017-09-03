@@ -356,22 +356,18 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             contentsTable.add(listLabel).colspan(2)
             contentsTable.row()
 
-            //TODO If an item is in the 'outputItems' from production, we should always display it whether it's set to sell or not
-            //TODO If an item is in the 'baseSellingItems', we should always display it regardless of inventory amount (as selling)
-            //TODO If the 'outputItems' is set to 'all' (like in a shop), everything but gold should be set to 'available to sell'
-
-            //TODO If in 'outputItems' -> available
-            //TODO If in 'baseSellingItems' -> selling (curr selling is used for if it's actively selling from this building or somewhere else like a shop)
-            //TODO If 'outputItems' is 'all' -> available on everything but gold
-
+            //These will be the pinned items at the top of the inventory.
             val pinnedItemsSet = hashSetOf<String>()
+
+            //First we check through and pin the base selling items
             sellingComp?.baseSellingItems?.forEach {
-                pinnedItemsSet.add(it.itemName)
+                pinnedItemsSet.add(it.itemName) //Add it
                 //If the item is in the current selling items, it's selling. If not, then it's available
                 val sellState = if(sellingComp.currSellingItems.firstOrNull { item -> item.itemName == it.itemName} != null) SellingState.Selling else SellingState.Available
                 GUIUtil.makeInventoryItemTable(it.itemName, comp.getItemAmount(it.itemName), contentsTable, defaultLabelStyle, sellState, sellingComp.currSellingItems)
             }
 
+            //Then we check through the output items and pin them to the top
             comp.outputItems.forEach { name ->
                 if(name != "all" && !pinnedItemsSet.contains(name)) {
                     pinnedItemsSet.add(name)
@@ -386,15 +382,17 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             }
 
             //Since we handled both the base selling items and specific output items, here we either set the rest to available or unable
+            //This basically says if we output "all", set everything to available. Otherwise, set to unable
             val sellStateForRest = if(comp.outputItems.contains("all") && sellingComp != null) SellingState.Available else SellingState.Unable
 
             //Iterate over the rest that's not in the set and make their label
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
                 if(!pinnedItemsSet.contains(itemName)) {
                     val sellState = when {
+                        //If the item is in teh current selling items, set it to already selling
                         sellingComp?.currSellingItems?.firstOrNull { it.itemName == itemName } != null -> SellingState.Selling
-                        itemName == "gold" -> SellingState.Unable
-                        else -> sellStateForRest
+                        itemName == "gold" -> SellingState.Unable //Check for gold...
+                        else -> sellStateForRest //Use the predefined state
                     }
                     GUIUtil.makeInventoryItemTable(itemName, itemAmount, contentsTable, defaultLabelStyle, sellState, sellingComp?.currSellingItems)
                 }
