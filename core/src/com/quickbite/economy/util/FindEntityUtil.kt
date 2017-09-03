@@ -136,7 +136,9 @@ object FindEntityUtil {
 
                 val bc = Mappers.building.get(ent)
                 val inv = Mappers.inventory.get(ent)
-                val hasOutput = inv.outputItems.contains("all") || inv.outputItems.contains(itemName)
+                val outputItem = inv.outputItems[itemName]
+                //Either we're outputting 'all' or we output the item AND it is set to exportable
+                val hasOutput = inv.outputItems.contains("all") || (outputItem != null && outputItem.exportable)
 
                 if (inv != null && hasOutput && inv.getItemAmount(itemName) >= itemAmount) {
                     val tm = Mappers.transform.get(ent)

@@ -172,48 +172,6 @@ class TownWindow : GUIWindow() {
 
                 workForceComp.workersAvailable.forEach workers@{ entity ->
                     workerCompList += WorkerCompLink(entity, workForceComp)
-//                    if(!entity.isValid()) return@workers
-//
-//                    val workerTable = GUIUtil.makeWorkerTable(entity, workForceComp, defaultLabelStyle, defaultTextButtonStyle, {GameScreenGUIManager.openEntityWindow(it)})
-//
-//                    workerListTable.add(workerTable).growX().spaceBottom(3f)
-//                    workerListTable.row().growX()
-//
-//                    //Since this table gets updated on changes, make sure to keep the background if we reload this table
-//                    //Also, we check the entity because the tables are new and won't match. We need to set the table again
-//                    selectedWorkers.firstOrNull { it.worker == entity }?.run {
-//                        workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-//                        this.table = workerTable
-//                    }
-//
-//                    workerTable.addListener(object : ClickListener() {
-//                        override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-//                            super.touchUp(event, x, y, pointer, button)
-//                            val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-//                            var existingWorker: SelectedWorkerAndTable? = null
-//
-//                            //If we're not holding shift, clear the list before starting again
-//                            if (!holdingShift) {
-//                                selectedWorkers.forEach { it.table.background = null } //Clear the background of each thing
-//                                selectedWorkers.clear() //Clear the list
-//
-//                                //If we're holding shift, we need to check if the worker is already selected. If so, unselect it!
-//                            } else {
-//                                existingWorker = selectedWorkers.firstOrNull { it.worker == entity }
-//                                if (existingWorker != null) { //If not null, unselect it
-//                                    existingWorker.table.background = null
-//                                    selectedWorkers.removeValue(existingWorker, true)
-//
-//                                    //Otherwise, add the new one
-//                                }
-//                            }
-//
-//                            if (existingWorker == null) {
-//                                selectedWorkers.add(SelectedWorkerAndTable(entity, workerTable))
-//                                workerTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GRAY))) //Set the background of the selected table
-//                            }
-//                        }
-//                    })
                 }
             }
 
@@ -311,6 +269,10 @@ class TownWindow : GUIWindow() {
                     dailyTaxLabel.setText(sc.taxCollectedDaily.toString())
                     totalIncomeLabel.setText(sc.incomeTotal.toString())
                     totalTaxLabel.setText(sc.taxCollectedTotal.toString())
+                }
+
+                infoButton.addChangeListener { _, _ ->
+                    GameScreenGUIManager.openEntityWindow(entity)
                 }
             }
         }

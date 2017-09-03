@@ -29,6 +29,7 @@ import com.quickbite.economy.gui.EntityWindowController
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.isValid
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.objects.OutputData
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
 import com.quickbite.economy.objects.SellingState
@@ -585,17 +586,24 @@ object GUIUtil {
     }
 
     fun makeInventoryItemTable(itemName:String, itemAmount:Int, contentsTable:Table, labelStyle:Label.LabelStyle, sellingState:SellingState = SellingState.Unable,
-                               sellingItems:Array<SellingItemData>? = null){
+                               sellingItems:Array<SellingItemData>? = null, outputItems:HashMap<String, OutputData>? = null){
         val itemName = itemName.toLowerCase()
+        val outputItem = outputItems?.get(itemName)
 
         val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
 //        val sellButton = TextButton("", GUIWindow.)
         val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
 
         val sellingStateImage:Image? = when (sellingState) {
-            SellingState.Selling -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+            SellingState.Active -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
             SellingState.Available -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
             else -> null
+        }
+
+        val exportStateImage:Image? = when{
+            outputItem == null -> null
+            outputItem.exportable -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+            else -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
         }
 
         val itemAmountLabel = Label("$itemAmount", labelStyle)
@@ -625,9 +633,9 @@ object GUIUtil {
                 if(sellingState == SellingState.Available){
                     sellingItems?.add(SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.Myself, null))
                     sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
-                    sellingState = SellingState.Selling
+                    sellingState = SellingState.Active
                 //If already selling, change it to available and change the icon
-                }else if(sellingState == SellingState.Selling){
+                }else if(sellingState == SellingState.Active){
                     sellingItems?.removeAll {it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Myself}
                     sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
                     sellingState = SellingState.Available
@@ -636,9 +644,27 @@ object GUIUtil {
             }
         })
 
+        exportStateImage?.addListener(object:ClickListener(){
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                val item = DefinitionManager.itemDefMap[itemName]!!
+                if(outputItem == null)
+                    return
+
+                if(outputItem.exportable){
+                    outputItem.exportable = false
+                    exportStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+                }else{
+                    outputItem.exportable = true
+                    exportStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+                }
+                super.clicked(event, x, y)
+            }
+        })
+
         contentsTable.add(iconImage).size(24f)
         contentsTable.add(itemAmountLabel).width(100f)
-        contentsTable.add(sellingStateImage)
+        contentsTable.add(sellingStateImage).spaceRight(20f)
+        contentsTable.add(exportStateImage)
         contentsTable.row().padTop(2f)
     }
 }

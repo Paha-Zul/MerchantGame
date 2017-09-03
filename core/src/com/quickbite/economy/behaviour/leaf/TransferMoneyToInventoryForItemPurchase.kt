@@ -56,11 +56,13 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
             if(itemFromSelling == null)
                 itemFromSelling = targetBuildingSelling.baseSellingItems.firstOrNull { it.itemName == bb.targetItem.itemName }
 
-            //As a last test if it's still null, check the output
+            //As a last test if it's still null, check the output. We can grab from buildings that are exporting it
             if(itemFromSelling == null){
                 val item = DefinitionManager.itemDefMap[bb.targetItem.itemName]!!
                 val targetBuildingInv = Mappers.inventory[bb.targetEntity]
-                if(targetBuildingInv.outputItems.contains("all") || targetBuildingInv.outputItems.contains(bb.targetItem.itemName.toLowerCase()))
+                val outputItem = targetBuildingInv.outputItems[bb.targetItem.itemName.toLowerCase()]
+                //Check that the output is either 'all' or we have the output and are exporting it
+                if(targetBuildingInv.outputItems.contains("all") || (outputItem != null && outputItem.exportable))
                     //Make a temp SellingItemData object to use here. Only the first 2 paramaters should matter for its purpose
                     //TODO Watch this. Maybe more sophisticated? Probably should be removed actually
                     itemFromSelling = SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.Myself, null)

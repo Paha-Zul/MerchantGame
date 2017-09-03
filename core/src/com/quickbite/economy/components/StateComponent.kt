@@ -22,6 +22,6 @@ class StateComponent {
         currState = StateNode("Idle")
         val hauling = currState.addPath("Hauling")
         val producing = currState.addPath("Producing")
-        val selling = currState.addPath("Selling")
+        val selling = currState.addPath("Active")
     }
 }

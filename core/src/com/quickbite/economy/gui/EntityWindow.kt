@@ -363,21 +363,23 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             sellingComp?.baseSellingItems?.forEach {
                 pinnedItemsSet.add(it.itemName) //Add it
                 //If the item is in the current selling items, it's selling. If not, then it's available
-                val sellState = if(sellingComp.currSellingItems.firstOrNull { item -> item.itemName == it.itemName} != null) SellingState.Selling else SellingState.Available
-                GUIUtil.makeInventoryItemTable(it.itemName, comp.getItemAmount(it.itemName), contentsTable, defaultLabelStyle, sellState, sellingComp.currSellingItems)
+                val sellState = if(sellingComp.currSellingItems.firstOrNull { item -> item.itemName == it.itemName} != null) SellingState.Active else SellingState.Available
+                GUIUtil.makeInventoryItemTable(it.itemName, comp.getItemAmount(it.itemName), contentsTable, defaultLabelStyle,
+                        sellState, sellingComp.currSellingItems, comp.outputItems)
             }
 
             //Then we check through the output items and pin them to the top
-            comp.outputItems.forEach { name ->
-                if(name != "all" && !pinnedItemsSet.contains(name)) {
-                    pinnedItemsSet.add(name)
+            comp.outputItems.forEach { (key, _) ->
+                if(key != "all" && !pinnedItemsSet.contains(key)) {
+                    pinnedItemsSet.add(key)
                     //If the item is in the current selling items, it's selling. If not, then it's available
                     val sellState = when {
                         sellingComp == null -> SellingState.Unable
-                        sellingComp.currSellingItems.firstOrNull { it.itemName == name } != null -> SellingState.Selling
+                        sellingComp.currSellingItems.firstOrNull { it.itemName == key } != null -> SellingState.Active
                         else -> SellingState.Available
                     }
-                    GUIUtil.makeInventoryItemTable(name, comp.getItemAmount(name), contentsTable, defaultLabelStyle, sellState, sellingComp?.currSellingItems)
+                    GUIUtil.makeInventoryItemTable(key, comp.getItemAmount(key), contentsTable, defaultLabelStyle,
+                            sellState, sellingComp?.currSellingItems, comp.outputItems)
                 }
             }
 
@@ -390,11 +392,12 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 if(!pinnedItemsSet.contains(itemName)) {
                     val sellState = when {
                         //If the item is in teh current selling items, set it to already selling
-                        sellingComp?.currSellingItems?.firstOrNull { it.itemName == itemName } != null -> SellingState.Selling
+                        sellingComp?.currSellingItems?.firstOrNull { it.itemName == itemName } != null -> SellingState.Active
                         itemName == "gold" -> SellingState.Unable //Check for gold...
                         else -> sellStateForRest //Use the predefined state
                     }
-                    GUIUtil.makeInventoryItemTable(itemName, itemAmount, contentsTable, defaultLabelStyle, sellState, sellingComp?.currSellingItems)
+                    GUIUtil.makeInventoryItemTable(itemName, itemAmount, contentsTable, defaultLabelStyle,
+                            sellState, sellingComp?.currSellingItems, comp.outputItems)
                 }
             }
         }
@@ -485,7 +488,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         taxLabel.setAlignment(Align.center)
 
         //Set up the selling title
-        val sellLabel = Label("Selling", this.defaultTitleLabelStyle)
+        val sellLabel = Label("Active", this.defaultTitleLabelStyle)
         sellLabel.setAlignment(Align.center)
 
         val historyTitleLabel = Label("History", defaultTitleLabelStyle)

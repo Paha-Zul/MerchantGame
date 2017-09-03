@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.objects.ItemAmountLink
+import com.quickbite.economy.objects.OutputData
 
 /**
  * Created by Paha on 12/14/2016.
@@ -11,7 +12,7 @@ import com.quickbite.economy.objects.ItemAmountLink
 class InventoryComponent : MyComponent {
     val itemMap = hashMapOf<String, ItemAmountLink>()
 
-    val outputItems = hashSetOf("all")
+    val outputItems = hashMapOf(Pair("all", OutputData(true)))
     val inputItems = hashSetOf<String>()
 
     /** A list of listeners for inventory changes.*/

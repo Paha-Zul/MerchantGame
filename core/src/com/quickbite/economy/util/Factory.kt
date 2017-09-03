@@ -17,6 +17,7 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.FarmObject
+import com.quickbite.economy.objects.OutputData
 import com.quickbite.economy.objects.SellingItemData
 
 /**
@@ -202,14 +203,14 @@ object Factory {
 
                     //For each production, add the produced item to the output and all the requirements to the input
                     producesItems.productionList.forEach { production ->
-                        inventory.outputItems += production.produceItemName
+                        inventory.outputItems += Pair(production.produceItemName.toLowerCase(), OutputData())
                         production.requirements.forEach { (itemName) ->
                             inventory.inputItems += itemName
                         }
                     }
 
                     //For each item this building harvests, add it to the output.
-                    producesItems.harvests.forEach { inventory.outputItems += it.toLowerCase() }
+                    producesItems.harvests.forEach { inventory.outputItems += Pair(it.toLowerCase(), OutputData(true)) }
                 }
             }
         }
@@ -272,7 +273,7 @@ object Factory {
             init.initFuncs.add {
                 val inventory = Mappers.inventory[entity]
                 //TODO In the future, we need to change the output items when the item to grow changes
-                inventory.outputItems.add(farmComp.itemToGrow) //Initially put this as one of our output items
+                inventory.outputItems += Pair(farmComp.itemToGrow, OutputData()) //Initially put this as one of our output items
             }
 
             entity.add(farmComp)
