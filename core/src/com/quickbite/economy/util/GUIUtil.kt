@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.CapitalizeEachToken
@@ -26,8 +28,10 @@ import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.EntityWindowController
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.isValid
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.objects.SellingState
 
 /**
  * Created by Paha on 5/20/2017.
@@ -578,5 +582,63 @@ object GUIUtil {
         }
 
 //        sellHistoryTable.debugAll()
+    }
+
+    fun makeInventoryItemTable(itemName:String, itemAmount:Int, contentsTable:Table, labelStyle:Label.LabelStyle, sellingState:SellingState = SellingState.Unable,
+                               sellingItems:Array<SellingItemData>? = null){
+        val itemName = itemName.toLowerCase()
+
+        val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
+//        val sellButton = TextButton("", GUIWindow.)
+        val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
+
+        val sellingStateImage = when (sellingState) {
+            SellingState.Selling -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+            SellingState.Available -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+            else -> Image(TextureRegion(Util.createPixel(Color.BLACK), 16, 16))
+        }
+
+        val itemAmountLabel = Label("$itemAmount", labelStyle)
+        itemAmountLabel.setFontScale(1f)
+        itemAmountLabel.setAlignment(Align.center)
+
+        iconImage.addListener(object: ClickListener(){
+            override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
+                super.enter(event, x, y, pointer, fromActor)
+                GUIUtil.makeSimpleLabelTooltip(itemName)
+                GameScreenGUIManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
+            }
+
+            override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
+                super.exit(event, x, y, pointer, toActor)
+                GameScreenGUIManager.stopShowingTooltip()
+            }
+        })
+
+        var sellingState = sellingState //Let's shadow this to make it mutable in the listener
+
+        sellingStateImage.addListener(object:ClickListener(){
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                val item = DefinitionManager.itemDefMap[itemName]!!
+
+                //If available, add it to the selling list and change the icon
+                if(sellingState == SellingState.Available){
+                    sellingItems?.add(SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.Myself, null))
+                    sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+                    sellingState = SellingState.Selling
+                //If already selling, change it to available and change the icon
+                }else if(sellingState == SellingState.Selling){
+                    sellingItems?.removeAll {it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Myself}
+                    sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+                    sellingState = SellingState.Available
+                }
+                super.clicked(event, x, y)
+            }
+        })
+
+        contentsTable.add(iconImage).size(24f)
+        contentsTable.add(itemAmountLabel).width(100f)
+        contentsTable.add(sellingStateImage)
+        contentsTable.row().padTop(2f)
     }
 }

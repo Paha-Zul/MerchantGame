@@ -81,7 +81,7 @@ object Factory {
             val sellingList = Array<SellingItemData>()
             definition.sellingItems!!.sellingList.forEach { (itemName) ->
                 val itemName = itemName.toLowerCase()
-                sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1, SellingItemData.ItemSource.None))
+                sellingList.add(SellingItemData(itemName, DefinitionManager.itemDefMap[itemName]!!.baseMarketPrice, -1, SellingItemData.ItemSource.Myself))
             }
 
             selling.baseSellingItems = sellingList //Use the base array here

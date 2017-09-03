@@ -63,7 +63,7 @@ class TransferMoneyToInventoryForItemPurchase(bb:BlackBoard, val toMyself:Boolea
                 if(targetBuildingInv.outputItems.contains("all") || targetBuildingInv.outputItems.contains(bb.targetItem.itemName.toLowerCase()))
                     //Make a temp SellingItemData object to use here. Only the first 2 paramaters should matter for its purpose
                     //TODO Watch this. Maybe more sophisticated? Probably should be removed actually
-                    itemFromSelling = SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.None, null)
+                    itemFromSelling = SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.Myself, null)
             }
 
             if(itemFromSelling == null){

@@ -83,6 +83,13 @@ class SetTargetItemToHaul(bb:BlackBoard) : LeafTask(bb){
             //Get the inventory of the entity source
             val entityInventory = Mappers.inventory[sellingItem.itemSourceData as Entity]
 
+            //In rare cases, this may be null when removing buildings. Check for this...
+            if(entityInventory == null){
+                println("[SetTargetItemToHaul] Entity inventory is null")
+                this.controller.finishWithFailure()
+                return
+            }
+
             val workshopInvAmount = entityInventory.getItemAmount(sellingItem.itemName) //The amount the workshop has in it's inventory
 
             //If we want the max amount then we take all of the workshop's amount. Otherwise, we want to fulfill the stock, take the stock minus our inventory amount

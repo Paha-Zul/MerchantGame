@@ -122,12 +122,12 @@ object Util {
      * @param itemName The name of the item
      */
     fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceType:SellingItemData.ItemSource, itemSourceData:Any? = null){
-        sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop
-                && it.itemSourceData as Entity == itemSourceData } //Remove all currently selling items with this name
+//        sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceType == itemSourceType
+//                && it.itemSourceData == itemSourceData } //Remove all currently selling items with this name
 
         //Deal with the source type
         when(itemSourceType){
-            //If it's from a workshop....
+            //If the source is from a workshop, we need to remove it from us and give it back to the workshop
             SellingItemData.ItemSource.Workshop -> {
                 val otherSelling = Mappers.selling[itemSourceData as Entity] //Get the selling component of the linked Entity
                 val baseSellingItem = otherSelling.baseSellingItems.first { it.itemName == itemName } //Get the base selling item
@@ -146,6 +146,9 @@ object Util {
                 //Get the town using the item source data
                 TownManager.getTown(item.itemSourceData as String).itemImportMap[itemName]!!.linkedToEntity = null
                 //Remove the item from the selling comp
+                sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
+            }
+            SellingItemData.ItemSource.Myself ->{
                 sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceData == itemSourceData}
             }
             else -> {

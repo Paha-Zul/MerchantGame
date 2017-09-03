@@ -8,10 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
@@ -25,7 +22,7 @@ import com.quickbite.economy.objects.Town
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.TimeOfDay
 import com.quickbite.economy.util.Util
-import java.util.*
+import java.util.Stack
 
 /**
  * Created by Paha on 1/30/2017.
@@ -36,6 +33,7 @@ object GameScreenGUIManager {
 
     private val labelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.BLACK)
     val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
+
     val bottomTable = Table()
 
     val topTable = Table()

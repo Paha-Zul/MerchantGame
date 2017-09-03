@@ -25,9 +25,9 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.gui.widgets.ProductionMap
-import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.objects.SelectedWorkerAndTable
 import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.objects.SellingState
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.GUIUtil
 import com.quickbite.economy.util.Mappers
@@ -39,7 +39,6 @@ import com.quickbite.economy.util.Util
 class EntityWindow(val entity:Entity) : GUIWindow(){
 
     private var currentlyDisplayingComponent: Component? = null
-    private var currentlySelectedEntity: Entity? = null
     private var currentTabType: Int = 0
     private var selectedWorkers = Array<SelectedWorkerAndTable>()
 
@@ -56,8 +55,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         buttonStyle.font = MyGame.defaultFont14
         buttonStyle.fontColor = Color.WHITE
         buttonStyle.checked = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.valueOf("565244ff"))))
-
-        currentlySelectedEntity = entity
 
         val sc = Mappers.selling.get(entity)
         val wc = Mappers.workforce.get(entity)
@@ -197,22 +194,18 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         super.close()
 
         //Prevent this crash....
-        if(currentlySelectedEntity != null) {
-            val debug = Mappers.debugDraw[currentlySelectedEntity]
-            if(debug != null) {
-                debug.debugDrawWorkers = false
-                debug.debugDrawWorkplace = false
-            }
+        val debug = Mappers.debugDraw[entity]
+        if(debug != null) {
+            debug.debugDrawWorkers = false
+            debug.debugDrawWorkplace = false
         }
-
-        currentlySelectedEntity = null
     }
 
     private fun loadTable(table: Table, component: Component, tabType:Int){
         table.clear()
         updateFuncsList.clear()
 
-        val debug = Mappers.debugDraw[currentlySelectedEntity]
+        val debug = Mappers.debugDraw[entity]
         debug.debugDrawWorkers = false
         debug.debugDrawWorkplace = false
 
@@ -292,7 +285,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                     super.clicked(event, x, y)
                     val taskNameText = taskNameLabel.text.toString()
 
-                    EntityWindowController.addTaskToWorkers(taskNameText, selectedWorkers, currentlySelectedEntity!!)
+                    EntityWindowController.addTaskToWorkers(taskNameText, selectedWorkers, entity)
                     GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
                     GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
                 }
@@ -339,6 +332,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     }
 
     private fun setupInventoryTable(table: Table, comp: InventoryComponent){
+        val sellingComp = Mappers.selling[this.entity]
+
         val contentsTable = Table()
         contentsTable.background = darkBackgroundDrawable
 
@@ -361,33 +356,48 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             contentsTable.add(listLabel).colspan(2)
             contentsTable.row()
 
+            //TODO If an item is in the 'outputItems' from production, we should always display it whether it's set to sell or not
+            //TODO If an item is in the 'baseSellingItems', we should always display it regardless of inventory amount (as selling)
+            //TODO If the 'outputItems' is set to 'all' (like in a shop), everything but gold should be set to 'available to sell'
+
+            //TODO If in 'outputItems' -> available
+            //TODO If in 'baseSellingItems' -> selling (curr selling is used for if it's actively selling from this building or somewhere else like a shop)
+            //TODO If 'outputItems' is 'all' -> available on everything but gold
+
+            val pinnedItemsSet = hashSetOf<String>()
+            sellingComp?.baseSellingItems?.forEach {
+                pinnedItemsSet.add(it.itemName)
+                //If the item is in the current selling items, it's selling. If not, then it's available
+                val sellState = if(sellingComp.currSellingItems.firstOrNull { item -> item.itemName == it.itemName} != null) SellingState.Selling else SellingState.Available
+                GUIUtil.makeInventoryItemTable(it.itemName, comp.getItemAmount(it.itemName), contentsTable, defaultLabelStyle, sellState, sellingComp.currSellingItems)
+            }
+
+            comp.outputItems.forEach { name ->
+                if(name != "all" && !pinnedItemsSet.contains(name)) {
+                    pinnedItemsSet.add(name)
+                    //If the item is in the current selling items, it's selling. If not, then it's available
+                    val sellState = when {
+                        sellingComp == null -> SellingState.Unable
+                        sellingComp.currSellingItems.firstOrNull { it.itemName == name } != null -> SellingState.Selling
+                        else -> SellingState.Available
+                    }
+                    GUIUtil.makeInventoryItemTable(name, comp.getItemAmount(name), contentsTable, defaultLabelStyle, sellState, sellingComp?.currSellingItems)
+                }
+            }
+
+            //Since we handled both the base selling items and specific output items, here we either set the rest to available or unable
+            val sellStateForRest = if(comp.outputItems.contains("all") && sellingComp != null) SellingState.Available else SellingState.Unable
+
+            //Iterate over the rest that's not in the set and make their label
             comp.itemMap.values.forEach { (itemName, itemAmount) ->
-                val itemName = itemName.toLowerCase()
-                val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
-                val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
-
-                val itemAmountLabel = Label("$itemAmount", defaultLabelStyle)
-                itemAmountLabel.setFontScale(1f)
-                itemAmountLabel.setAlignment(Align.center)
-
-//                println("icon images")
-
-                iconImage.addListener(object: ClickListener(){
-                    override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                        super.enter(event, x, y, pointer, fromActor)
-                        GUIUtil.makeSimpleLabelTooltip(itemName)
-                        GameScreenGUIManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
+                if(!pinnedItemsSet.contains(itemName)) {
+                    val sellState = when {
+                        sellingComp?.currSellingItems?.firstOrNull { it.itemName == itemName } != null -> SellingState.Selling
+                        itemName == "gold" -> SellingState.Unable
+                        else -> sellStateForRest
                     }
-
-                    override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                        super.exit(event, x, y, pointer, toActor)
-                        GameScreenGUIManager.stopShowingTooltip()
-                    }
-                })
-
-                contentsTable.add(iconImage).size(24f)
-                contentsTable.add(itemAmountLabel).width(100f)
-                contentsTable.row().padTop(2f)
+                    GUIUtil.makeInventoryItemTable(itemName, itemAmount, contentsTable, defaultLabelStyle, sellState, sellingComp?.currSellingItems)
+                }
             }
         }
 
@@ -576,7 +586,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         updateFuncsList.add { GUIUtil.populateItemsTable(comp, sellItemsMainTable, defaultLabelStyle, defaultTextButtonStyle) }
 
         //Put in the event system
-        val entID = Mappers.identity[currentlySelectedEntity].uniqueID
+        val entID = Mappers.identity[entity].uniqueID
         val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)}, entID) //Subscribe to the entity selling an item
 
         changedTabsFunc = {
@@ -665,7 +675,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 //TODO Probably want to clean this up
                 GameScreenGUIManager.gameScreen.inputHandler.linkingAnotherEntity = true
                 GameScreenGUIManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
-                    if(ent != currentlySelectedEntity){
+                    if(ent != entity){
                         val otherBuilding = Mappers.building[ent]
                         val otherSelling = Mappers.selling[ent]
 
