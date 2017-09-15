@@ -3,15 +3,12 @@ package com.quickbite.economy.gui
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.NinePatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.quickbite.economy.MyGame
-import com.quickbite.economy.objects.SelectedWorkerAndTable
+import com.quickbite.economy.util.objects.SelectedWorkerAndTable
 import com.quickbite.economy.util.Util
 
 /**
@@ -42,7 +39,7 @@ object EntityWindowController {
      */
     fun changeWorkerSelectionInTable(selectedWorkers: com.badlogic.gdx.utils.Array<SelectedWorkerAndTable>, entityBeingSelected: Entity, workerTable:Table){
         val holdingShift = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-        var existingWorker:SelectedWorkerAndTable? = null
+        var existingWorker: SelectedWorkerAndTable? = null
 
         //If we're not holding shift, clear the list before starting again
         if(!holdingShift) {

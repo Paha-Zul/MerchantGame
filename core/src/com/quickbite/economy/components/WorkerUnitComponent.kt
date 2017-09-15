@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.objects.MutablePair
+import com.quickbite.economy.util.objects.MutablePair
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -15,7 +15,7 @@ class WorkerUnitComponent : MyComponent {
     var paid = false
     var dailyWage = 0
     var workerBuilding:Entity? = null
-    var timeRange:MutablePair<Int, Int> = MutablePair(2, 22)
+    var timeRange: MutablePair<Int, Int> = MutablePair(2, 22)
     var workDays:Array<String> = Array()
     /** The current tasks that this worker is to perform*/
     var taskList:Array<String> = Array()

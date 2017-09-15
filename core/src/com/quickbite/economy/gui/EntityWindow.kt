@@ -25,9 +25,9 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.gui.widgets.ProductionMap
-import com.quickbite.economy.objects.SelectedWorkerAndTable
-import com.quickbite.economy.objects.SellingItemData
-import com.quickbite.economy.objects.SellingState
+import com.quickbite.economy.util.objects.SelectedWorkerAndTable
+import com.quickbite.economy.util.objects.SellingItemData
+import com.quickbite.economy.util.objects.SellingState
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.GUIUtil
 import com.quickbite.economy.util.Mappers

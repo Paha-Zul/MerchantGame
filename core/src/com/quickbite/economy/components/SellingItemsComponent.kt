@@ -3,8 +3,8 @@ package com.quickbite.economy.components
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.objects.ItemSold
-import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.objects.ItemTransaction
+import com.quickbite.economy.util.objects.SellingItemData
 import com.quickbite.economy.util.CircularQueueWrapper
 import com.quickbite.economy.util.Util
 
@@ -21,7 +21,7 @@ class SellingItemsComponent : MyComponent {
     var currSellingItems = Array<SellingItemData>()
 
     /** The items sold recently of this entity*/
-    val sellHistory = CircularQueueWrapper<ItemSold>(10)
+    val sellHistory = CircularQueueWrapper<ItemTransaction>(10)
     /** The gold history of this selling entity */
     val goldHistory = CircularQueueWrapper<Int>(100)
     /** The daily income history of this selling entity*/

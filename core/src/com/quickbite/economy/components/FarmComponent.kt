@@ -2,7 +2,7 @@ package com.quickbite.economy.components
 
 import com.badlogic.ashley.core.Entity
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.objects.FarmObject
+import com.quickbite.economy.util.objects.FarmObject
 
 /**
  * Created by Paha on 7/14/2017.

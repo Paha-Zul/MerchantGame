@@ -16,7 +16,7 @@ import com.quickbite.economy.event.events.PopulationChangeEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.managers.TownManager
-import com.quickbite.economy.objects.SelectedWorkerAndTable
+import com.quickbite.economy.util.objects.SelectedWorkerAndTable
 import com.quickbite.economy.util.*
 
 /**

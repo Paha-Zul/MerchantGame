@@ -3,8 +3,8 @@ package com.quickbite.economy.components
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.objects.ItemAmountLink
-import com.quickbite.economy.objects.OutputData
+import com.quickbite.economy.util.objects.ItemAmountLink
+import com.quickbite.economy.util.objects.OutputData
 
 /**
  * Created by Paha on 12/14/2016.

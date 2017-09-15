@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.moandjiezana.toml.Toml
-import com.quickbite.economy.objects.ItemAmountLink
-import com.quickbite.economy.objects.ItemPriceLink
-import com.quickbite.economy.objects.WorkerTaskLimitLink
+import com.quickbite.economy.util.objects.ItemAmountLink
+import com.quickbite.economy.util.objects.ItemPriceLink
+import com.quickbite.economy.util.objects.WorkerTaskLimitLink
 
 /**
  * Created by Paha on 2/16/2017.

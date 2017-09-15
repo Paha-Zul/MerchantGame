@@ -3,9 +3,9 @@ package com.quickbite.economy.managers
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
-import com.quickbite.economy.objects.ItemPriceLink
-import com.quickbite.economy.objects.SellingItemData
-import com.quickbite.economy.objects.WorkerTaskLimitLink
+import com.quickbite.economy.util.objects.ItemPriceLink
+import com.quickbite.economy.util.objects.SellingItemData
+import com.quickbite.economy.util.objects.WorkerTaskLimitLink
 import java.util.*
 
 /**

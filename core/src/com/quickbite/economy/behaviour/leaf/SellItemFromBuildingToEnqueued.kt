@@ -6,9 +6,9 @@ import com.quickbite.economy.components.BuyerComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.CollectedTaxEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
-import com.quickbite.economy.objects.ItemAmountLink
-import com.quickbite.economy.objects.ItemSold
-import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.objects.ItemAmountLink
+import com.quickbite.economy.util.objects.ItemTransaction
+import com.quickbite.economy.util.objects.SellingItemData
 import com.quickbite.economy.util.Mappers
 
 /**
@@ -59,7 +59,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
 
                 //Add the sell history
                 val ic = Mappers.identity.get(unitInQueue)
-                sellComp.sellHistory.add(ItemSold(itemToBuy.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
+                sellComp.sellHistory.add(ItemTransaction(itemToBuy.itemName, itemAmtRemoved, itemBeingSold.itemPrice, 1f, ic.name))
 
                 GameEventSystem.fire(CollectedTaxEvent(tax)) //Fire an Event that we collected tax
                 GameEventSystem.fire(ItemSoldEvent(itemToBuy.itemName, remainingMoney, tax), Mappers.identity[bb.targetEntity].uniqueID) //Fire the event for only this entity
@@ -79,7 +79,7 @@ class SellItemFromBuildingToEnqueued(bb:BlackBoard) : LeafTask(bb){
         }
 
         val ic = Mappers.identity.get(unitInQueue)
-        sellComp.sellHistory.add(ItemSold("nothing", 0, 10, 1f, ic.name))
+        sellComp.sellHistory.add(ItemTransaction("nothing", 0, 10, 1f, ic.name))
         GameEventSystem.fire(ItemSoldEvent("", 0, 0), Mappers.identity[bb.targetEntity].uniqueID) //Fire the event for only this entity
 
         controller.finishWithFailure()

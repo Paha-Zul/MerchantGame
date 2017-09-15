@@ -2,7 +2,7 @@ package com.quickbite.economy.util
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
-import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.objects.SellingItemData
 
 /**
  * Created by Paha on 1/26/2017.

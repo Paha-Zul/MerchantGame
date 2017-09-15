@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.behaviour.Tasks
 import com.quickbite.economy.interfaces.MyComponent
-import com.quickbite.economy.objects.WorkerTaskLimitLink
+import com.quickbite.economy.util.objects.WorkerTaskLimitLink
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 

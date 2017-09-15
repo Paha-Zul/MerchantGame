@@ -29,10 +29,10 @@ import com.quickbite.economy.gui.EntityWindowController
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.isValid
 import com.quickbite.economy.managers.DefinitionManager
-import com.quickbite.economy.objects.OutputData
-import com.quickbite.economy.objects.SelectedWorkerAndTable
-import com.quickbite.economy.objects.SellingItemData
-import com.quickbite.economy.objects.SellingState
+import com.quickbite.economy.util.objects.OutputData
+import com.quickbite.economy.util.objects.SelectedWorkerAndTable
+import com.quickbite.economy.util.objects.SellingItemData
+import com.quickbite.economy.util.objects.SellingState
 
 /**
  * Created by Paha on 5/20/2017.
@@ -585,7 +585,7 @@ object GUIUtil {
 //        sellHistoryTable.debugAll()
     }
 
-    fun makeInventoryItemTable(itemName:String, itemAmount:Int, contentsTable:Table, labelStyle:Label.LabelStyle, sellingState:SellingState = SellingState.Unable,
+    fun makeInventoryItemTable(itemName:String, itemAmount:Int, contentsTable:Table, labelStyle:Label.LabelStyle, sellingState: SellingState = SellingState.Unable,
                                sellingItems:Array<SellingItemData>? = null, outputItems:HashMap<String, OutputData>? = null){
         val itemName = itemName.toLowerCase()
         val outputItem = outputItems?.get(itemName)

@@ -16,9 +16,9 @@ import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.interfaces.MyComponent
 import com.quickbite.economy.managers.DefinitionManager
-import com.quickbite.economy.objects.FarmObject
-import com.quickbite.economy.objects.OutputData
-import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.objects.FarmObject
+import com.quickbite.economy.util.objects.OutputData
+import com.quickbite.economy.util.objects.SellingItemData
 
 /**
  * Created by Paha on 12/13/2016.

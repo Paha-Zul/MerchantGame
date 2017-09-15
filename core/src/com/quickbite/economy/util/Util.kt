@@ -19,7 +19,7 @@ import com.quickbite.economy.components.ResourceComponent
 import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
-import com.quickbite.economy.objects.SellingItemData
+import com.quickbite.economy.util.objects.SellingItemData
 
 
 /**
@@ -121,7 +121,7 @@ object Util {
      * @param sellingComp The SellingItemsComponent to modify
      * @param itemName The name of the item
      */
-    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceType:SellingItemData.ItemSource, itemSourceData:Any? = null){
+    fun removeSellingItemFromReseller(sellingComp:SellingItemsComponent, itemName:String, itemSourceType: SellingItemData.ItemSource, itemSourceData:Any? = null){
 //        sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceType == itemSourceType
 //                && it.itemSourceData == itemSourceData } //Remove all currently selling items with this name
 
@@ -212,12 +212,12 @@ object Util {
      * @param itemSource The source of the item (import, town, etc)
      * @param The source data (ie: where it came from, entity?)
      */
-    fun addItemToEntityReselling(resellingEntity:Entity, itemName: String, itemSource:SellingItemData.ItemSource, sourceData:Any? = null){
+    fun addItemToEntityReselling(resellingEntity:Entity, itemName: String, itemSource: SellingItemData.ItemSource, sourceData:Any? = null){
         val itemName = itemName.toLowerCase()
         val selling = Mappers.selling[resellingEntity]
 
         val itemDef = DefinitionManager.itemDefMap[itemName]!!
-        val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice*1.5f).toInt(), -1, itemSource, sourceData)
+        val sellingData = SellingItemData(itemDef.itemName, (itemDef.baseMarketPrice * 1.5f).toInt(), -1, itemSource, sourceData)
 
         //If the reselling and currSelling lists don't already contain this...
         if(!selling.currSellingItems.any { it.itemName == itemName && it.itemSourceData == sourceData} &&
