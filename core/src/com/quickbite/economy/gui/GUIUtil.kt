@@ -1,4 +1,4 @@
-package com.quickbite.economy.util
+package com.quickbite.economy.gui
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
@@ -25,10 +25,11 @@ import com.quickbite.economy.components.WorkForceComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
-import com.quickbite.economy.gui.EntityWindowController
-import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.isValid
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.WorkerCompLink
 import com.quickbite.economy.util.objects.OutputData
 import com.quickbite.economy.util.objects.SelectedWorkerAndTable
 import com.quickbite.economy.util.objects.SellingItemData
@@ -92,7 +93,7 @@ object GUIUtil {
         workforceComp.workersAvailable.forEach { entity ->
             if(!entity.isValid()) return@forEach //If it's not valid, continue...
 
-            val workerTable = GUIUtil.makeWorkerTable(entity, workforceComp, labelStyle, textButtonStyle, {guiManager.openEntityWindow(it)})
+            val workerTable = makeWorkerTable(entity, workforceComp, labelStyle, textButtonStyle, { guiManager.openEntityWindow(it) })
 
             //Add the worker table
             workerListTable.add(workerTable).growX().spaceBottom(3f)
@@ -169,7 +170,7 @@ object GUIUtil {
         workers.forEach { (entity, comp) ->
             if(!entity.isValid()) return@forEach //If it's not valid, continue...
 
-            val workerTable = GUIUtil.makeWorkerTable(entity, comp, labelStyle, textButtonStyle, {guiManager.openEntityWindow(it)})
+            val workerTable = makeWorkerTable(entity, comp, labelStyle, textButtonStyle, { guiManager.openEntityWindow(it) })
 
             //Add the worker table
             workerListTable.add(workerTable).growX().spaceBottom(3f)
@@ -613,7 +614,7 @@ object GUIUtil {
         iconImage.addListener(object: ClickListener(){
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                 super.enter(event, x, y, pointer, fromActor)
-                GUIUtil.makeSimpleLabelTooltip(itemName)
+                makeSimpleLabelTooltip(itemName)
                 GameScreenGUIManager.startShowingTooltip(GameScreenGUIManager.TooltipLocation.Mouse)
             }
 
@@ -661,10 +662,10 @@ object GUIUtil {
             }
         })
 
-        contentsTable.add(iconImage).size(24f)
-        contentsTable.add(itemAmountLabel).width(100f)
-        contentsTable.add(sellingStateImage).spaceRight(20f)
-        contentsTable.add(exportStateImage)
+        contentsTable.add(iconImage).size(24f).growX()
+        contentsTable.add(itemAmountLabel).growX()
+        contentsTable.add(sellingStateImage).expandX() //We don't want to fill because the image will stretch
+        contentsTable.add(exportStateImage).expandX() //We don't want to fill because the image will stretch
         contentsTable.row().padTop(2f)
     }
 }

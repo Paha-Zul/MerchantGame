@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.Constants
-import com.quickbite.economy.util.GUIUtil
+import com.quickbite.economy.gui.GUIUtil
 import com.quickbite.economy.util.Mappers
 
 /**

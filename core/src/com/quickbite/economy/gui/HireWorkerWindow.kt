@@ -10,7 +10,6 @@ import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Factory
-import com.quickbite.economy.util.GUIUtil
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 

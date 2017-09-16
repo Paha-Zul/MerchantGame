@@ -25,13 +25,11 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.gui.widgets.ProductionMap
-import com.quickbite.economy.util.objects.SelectedWorkerAndTable
-import com.quickbite.economy.util.objects.SellingItemData
-import com.quickbite.economy.util.objects.SellingState
 import com.quickbite.economy.util.Factory
-import com.quickbite.economy.util.GUIUtil
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.objects.SelectedWorkerAndTable
+import com.quickbite.economy.util.objects.SellingItemData
 
 /**
  * Created by Paha on 3/9/2017.
@@ -340,66 +338,47 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val amountLabel = Label("Amount of items: ${comp.itemMap.size}", defaultLabelStyle)
         amountLabel.setFontScale(1f)
 
+        val titleTable = Table()
+
+        val itemNameTitle = Label("Name", defaultLabelStyle).apply { setAlignment(Align.center) }
+        val itemAmountTitle = Label("Amount", defaultLabelStyle).apply { setAlignment(Align.center) }
+        val itemSellingTitle = Label("Selling", defaultLabelStyle).apply { setAlignment(Align.center) }
+        val itemExportingTitle = Label("Exporting", defaultLabelStyle).apply { setAlignment(Align.center) }
+
+        titleTable.add(itemNameTitle).growX()
+        titleTable.add(itemAmountTitle).growX()
+        titleTable.add(itemSellingTitle).growX()
+        titleTable.add(itemExportingTitle).growX()
+
+        titleTable.debugAll()
+
         val listLabel = Label("Item List", defaultLabelStyle)
         listLabel.setFontScale(1f)
         listLabel.setAlignment(Align.center)
 
         //The main table...
-        table.add(amountLabel).expandX().fillX()
+        table.add(amountLabel).growX()
         table.row()
-        table.add(contentsTable).expandX().fillX()
+        table.add(contentsTable).growX()
         table.row()
 
         val populateItemTable = {
+            contentsTable.debugAll()
             contentsTable.clear()
-            //The contents table
-            contentsTable.add(listLabel).colspan(2)
+            contentsTable.add(titleTable).growX().colspan(100) //Just colspan a whole bunch here... doesn't really matter, at long as it's >5 or something
             contentsTable.row()
 
             //These will be the pinned items at the top of the inventory.
             val pinnedItemsSet = hashSetOf<String>()
 
             //First we check through and pin the base selling items
-            sellingComp?.baseSellingItems?.forEach {
-                pinnedItemsSet.add(it.itemName) //Add it
-                //If the item is in the current selling items, it's selling. If not, then it's available
-                val sellState = if(sellingComp.currSellingItems.firstOrNull { item -> item.itemName == it.itemName} != null) SellingState.Active else SellingState.Available
-                GUIUtil.makeInventoryItemTable(it.itemName, comp.getItemAmount(it.itemName), contentsTable, defaultLabelStyle,
-                        sellState, sellingComp.currSellingItems, comp.outputItems)
-            }
+            EntityWindowController.makeBaseSellingPinnedItemsList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle)
 
             //Then we check through the output items and pin them to the top
-            comp.outputItems.forEach { (key, _) ->
-                if(key != "all" && !pinnedItemsSet.contains(key)) {
-                    pinnedItemsSet.add(key)
-                    //If the item is in the current selling items, it's selling. If not, then it's available
-                    val sellState = when {
-                        sellingComp == null -> SellingState.Unable
-                        sellingComp.currSellingItems.firstOrNull { it.itemName == key } != null -> SellingState.Active
-                        else -> SellingState.Available
-                    }
-                    GUIUtil.makeInventoryItemTable(key, comp.getItemAmount(key), contentsTable, defaultLabelStyle,
-                            sellState, sellingComp?.currSellingItems, comp.outputItems)
-                }
-            }
+            EntityWindowController.makeOutputPinnedItemsList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle)
 
-            //Since we handled both the base selling items and specific output items, here we either set the rest to available or unable
-            //This basically says if we output "all", set everything to available. Otherwise, set to unable
-            val sellStateForRest = if(comp.outputItems.contains("all") && sellingComp != null) SellingState.Available else SellingState.Unable
-
-            //Iterate over the rest that's not in the set and make their label
-            comp.itemMap.values.forEach { (itemName, itemAmount) ->
-                if(!pinnedItemsSet.contains(itemName)) {
-                    val sellState = when {
-                        //If the item is in teh current selling items, set it to already selling
-                        sellingComp?.currSellingItems?.firstOrNull { it.itemName == itemName } != null -> SellingState.Active
-                        itemName == "gold" -> SellingState.Unable //Check for gold...
-                        else -> sellStateForRest //Use the predefined state
-                    }
-                    GUIUtil.makeInventoryItemTable(itemName, itemAmount, contentsTable, defaultLabelStyle,
-                            sellState, sellingComp?.currSellingItems, comp.outputItems)
-                }
-            }
+            //Finally, make the rest of the items
+            EntityWindowController.makeInventoryItemList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle)
         }
 
         populateItemTable()
@@ -582,13 +561,13 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)
 
         //Put the history function into our update map
-        updateMap.put("sellHistory", {GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)})
+        updateMap.put("sellHistory", { GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)})
 
         updateFuncsList.add { GUIUtil.populateItemsTable(comp, sellItemsMainTable, defaultLabelStyle, defaultTextButtonStyle) }
 
         //Put in the event system
         val entID = Mappers.identity[entity].uniqueID
-        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)}, entID) //Subscribe to the entity selling an item
+        val entityEvent = GameEventSystem.subscribe<ItemSoldEvent>({ GUIUtil.populateHistoryTable(comp, sellHistoryTable, defaultLabelStyle, table.width)}, entID) //Subscribe to the entity selling an item
 
         changedTabsFunc = {
             GameEventSystem.unsubscribe(entityEvent) //Unsubscribe when we leave this tab
