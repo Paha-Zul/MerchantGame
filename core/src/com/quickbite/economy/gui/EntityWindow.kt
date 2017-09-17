@@ -365,7 +365,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val populateItemTable = {
             contentsTable.debugAll()
             contentsTable.clear()
-            contentsTable.add(titleTable).growX().colspan(100) //Just colspan a whole bunch here... doesn't really matter, at long as it's >5 or something
+            contentsTable.add(titleTable).growX().colspan(4) //Just colspan a whole bunch here... doesn't really matter, at long as it's >5 or something
             contentsTable.row()
 
             //These will be the pinned items at the top of the inventory.

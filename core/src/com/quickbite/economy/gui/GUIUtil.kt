@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -608,7 +605,6 @@ object GUIUtil {
         }
 
         val itemAmountLabel = Label("$itemAmount", labelStyle)
-        itemAmountLabel.setFontScale(1f)
         itemAmountLabel.setAlignment(Align.center)
 
         iconImage.addListener(object: ClickListener(){
@@ -645,6 +641,9 @@ object GUIUtil {
             }
         })
 
+        sellingStateImage?.setSize(24f, 24f)
+        exportStateImage?.setSize(24f, 24f)
+
         exportStateImage?.addListener(object:ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 val item = DefinitionManager.itemDefMap[itemName]!!
@@ -662,10 +661,10 @@ object GUIUtil {
             }
         })
 
-        contentsTable.add(iconImage).size(24f).growX()
-        contentsTable.add(itemAmountLabel).growX()
-        contentsTable.add(sellingStateImage).expandX() //We don't want to fill because the image will stretch
-        contentsTable.add(exportStateImage).expandX() //We don't want to fill because the image will stretch
+        contentsTable.add(iconImage).size(24f).expandX()
+        contentsTable.add(itemAmountLabel).width(Value.percentWidth(0.25f, contentsTable))
+        contentsTable.add(sellingStateImage).width(Value.percentWidth(0.25f, contentsTable))//We don't want to fill because the image will stretch
+        contentsTable.add(exportStateImage).width(Value.percentWidth(0.25f, contentsTable)) //We don't want to fill because the image will stretch
         contentsTable.row().padTop(2f)
     }
 }
