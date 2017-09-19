@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -593,15 +596,15 @@ object GUIUtil {
         val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
 
         val sellingStateImage:Image? = when (sellingState) {
-            SellingState.Active -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
-            SellingState.Available -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+            SellingState.Active -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+            SellingState.Available -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
             else -> null
         }
 
         val exportStateImage:Image? = when{
             outputItem == null -> null
-            outputItem.exportable -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
-            else -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+            outputItem.exportable -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+            else -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
         }
 
         val itemAmountLabel = Label("$itemAmount", labelStyle)
@@ -629,20 +632,17 @@ object GUIUtil {
                 //If available, add it to the selling list and change the icon
                 if(sellingState == SellingState.Available){
                     sellingItems?.add(SellingItemData(item.itemName, item.baseMarketPrice, -1, SellingItemData.ItemSource.Myself, null))
-                    sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+                    sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
                     sellingState = SellingState.Active
                 //If already selling, change it to available and change the icon
                 }else if(sellingState == SellingState.Active){
                     sellingItems?.removeAll {it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Myself}
-                    sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+                    sellingStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
                     sellingState = SellingState.Available
                 }
                 super.clicked(event, x, y)
             }
         })
-
-        sellingStateImage?.setSize(24f, 24f)
-        exportStateImage?.setSize(24f, 24f)
 
         exportStateImage?.addListener(object:ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
@@ -652,19 +652,24 @@ object GUIUtil {
 
                 if(outputItem.exportable){
                     outputItem.exportable = false
-                    exportStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
+                    exportStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
                 }else{
                     outputItem.exportable = true
-                    exportStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.RED), 16, 16))
+                    exportStateImage.drawable = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
                 }
                 super.clicked(event, x, y)
             }
         })
 
-        contentsTable.add(iconImage).size(24f).expandX()
-        contentsTable.add(itemAmountLabel).width(Value.percentWidth(0.25f, contentsTable))
-        contentsTable.add(sellingStateImage).width(Value.percentWidth(0.25f, contentsTable))//We don't want to fill because the image will stretch
-        contentsTable.add(exportStateImage).width(Value.percentWidth(0.25f, contentsTable)) //We don't want to fill because the image will stretch
+        sellingStateImage?.setSize(24f, 24f)
+        exportStateImage?.setSize(24f, 24f)
+
+        contentsTable.add().growX()
+        contentsTable.add(iconImage).size(24f)
+        contentsTable.add(itemAmountLabel).fillX()
+        contentsTable.add(sellingStateImage)
+        contentsTable.add(exportStateImage)
+        contentsTable.add().growX()
         contentsTable.row().padTop(2f)
     }
 }

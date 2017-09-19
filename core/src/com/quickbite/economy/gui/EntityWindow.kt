@@ -345,12 +345,14 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val itemSellingTitle = Label("Selling", defaultLabelStyle).apply { setAlignment(Align.center) }
         val itemExportingTitle = Label("Exporting", defaultLabelStyle).apply { setAlignment(Align.center) }
 
-        titleTable.add(itemNameTitle).growX()
-        titleTable.add(itemAmountTitle).growX()
-        titleTable.add(itemSellingTitle).growX()
-        titleTable.add(itemExportingTitle).growX()
+        titleTable.defaults().maxWidth(Value.percentWidth(0.25f, titleTable)).growX()
 
-        titleTable.debugAll()
+        titleTable.add().growX() //This is to pad the left with empty space
+        titleTable.add(itemNameTitle).width(60f)
+        titleTable.add(itemAmountTitle).width(60f)
+        titleTable.add(itemSellingTitle).width(60f)
+        titleTable.add(itemExportingTitle).width(60f)
+        titleTable.add().growX() //Pads the right with empty space
 
         val listLabel = Label("Item List", defaultLabelStyle)
         listLabel.setFontScale(1f)
@@ -363,9 +365,17 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         table.row()
 
         val populateItemTable = {
-            contentsTable.debugAll()
             contentsTable.clear()
-            contentsTable.add(titleTable).growX().colspan(4) //Just colspan a whole bunch here... doesn't really matter, at long as it's >5 or something
+            //This is a trick to get the correct widths for actors after this. Add blank cells and size them correctly.
+            //This will cause the other rows to size the cell correctly without changing the actor
+            contentsTable.add().growX() //Pads the left with empty space
+            contentsTable.add().width(60f)
+            contentsTable.add().width(60f)
+            contentsTable.add().width(60f)
+            contentsTable.add().width(60f)
+            contentsTable.add().growX() //Pads the right with empty space
+            contentsTable.row()
+            contentsTable.add(titleTable).colspan(6) //Just colspan a whole bunch here... doesn't really matter, at long as it's >4 or something
             contentsTable.row()
 
             //These will be the pinned items at the top of the inventory.

@@ -10,6 +10,7 @@ import com.quickbite.economy.util.objects.ItemAmountLink
 class BlackBoard{
     lateinit var myself:Entity
     var path:List<Vector2> = listOf()
+    var currPathIndex:Int = 0
 
     var targetPosition = Vector2()
     var targetEntity:Entity? = null

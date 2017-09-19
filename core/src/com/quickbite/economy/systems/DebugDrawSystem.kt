@@ -47,14 +47,15 @@ class DebugDrawSystem(val batch:SpriteBatch) : EntitySystem(){
             if((dc.debugDrawPath || DebugDrawComponent.GLOBAL_DEBUG_PATH) && bm != null){
                 val path = bm.blackBoard.path
                 if(path.isNotEmpty()){
-                    for(i in 0..path.size-2){
+                    for(i in bm.blackBoard.currPathIndex..path.size-2){
                         val currPoint = path[i]
                         val nextPoint = path[i+1]
 
-                        val rotation = MathUtils.atan2(nextPoint.y - currPoint.y, nextPoint.x - currPoint.x)* MathUtils.radiansToDegrees
-                        val distance = currPoint.dst(nextPoint)
-                        this.pixel.setRegion(0f, 0f, distance/ size, 1f)
-                        batch.draw(pixel, currPoint.x, currPoint.y, 0f, 0f, distance, size, 1f, 1f, rotation)
+//                        val rotation = MathUtils.atan2(nextPoint.y - currPoint.y, nextPoint.x - currPoint.x)* MathUtils.radiansToDegrees
+//                        val distance = currPoint.dst(nextPoint)
+//                        this.pixel.setRegion(0f, 0f, distance/ size, 1f)
+//                        batch.draw(pixel, currPoint.x, currPoint.y, 0f, 0f, distance, size, 1f, 1f, rotation)
+                        drawLineTo(currPoint, nextPoint)
                     }
                 }
             }

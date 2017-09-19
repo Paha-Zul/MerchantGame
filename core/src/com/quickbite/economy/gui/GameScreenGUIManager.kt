@@ -5,10 +5,15 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
@@ -22,7 +27,7 @@ import com.quickbite.economy.objects.Town
 import com.quickbite.economy.screens.GameScreen
 import com.quickbite.economy.util.TimeOfDay
 import com.quickbite.economy.util.Util
-import java.util.Stack
+import java.util.*
 
 /**
  * Created by Paha on 1/30/2017.
@@ -97,14 +102,28 @@ object GameScreenGUIManager {
         fun populateItemTable() {
             itemTable.clear()
             myTown.totalSellingItemMap.forEach { name, amount ->
-                val name = name.toLowerCase().replace(' ', '_')+"_icon"
-                val icon = Image(MyGame.manager[name, Texture::class.java])
+                val iconName = name.toLowerCase().replace(' ', '_')+"_icon"
+                val icon = Image(MyGame.manager[iconName, Texture::class.java])
                 val label = Label(amount.toString(), defaultLabelStyle)
                 label.setFontScale(1f)
                 label.setAlignment(Align.left)
                 itemTable.add(icon).size(20f).padRight(2f)
                 itemTable.add(label).width(25f)
                 itemTable.row()
+
+                icon.addListener(object:ClickListener(){
+                    override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
+                        super.enter(event, x, y, pointer, fromActor)
+                        GUIUtil.makeSimpleLabelTooltip(name)
+                        GameScreenGUIManager.startShowingTooltip(TooltipLocation.Mouse)
+                    }
+
+                    override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
+                        super.exit(event, x, y, pointer, toActor)
+                        GameScreenGUIManager.stopShowingTooltip()
+                    }
+                })
+
             }
         }
 
@@ -236,6 +255,10 @@ object GameScreenGUIManager {
                 Vector2(Gdx.input.x.toFloat() - toolTipTable.width/2f, Gdx.input.y.toFloat())
             }
         }
+
+        //This clamps the position to on screen
+        position.set(MathUtils.clamp(position.x, 0f, MyGame.camera.viewportWidth), MathUtils.clamp(position.y, 0f, MyGame.camera.viewportHeight - toolTipTable.height))
+        position.set(MathUtils.clamp(position.x, 0f, MyGame.camera.viewportWidth - toolTipTable.width), MathUtils.clamp(position.y, 0f, MyGame.camera.viewportHeight - toolTipTable.height))
 
         toolTipTable.setPosition(position.x, position.y)
     }
