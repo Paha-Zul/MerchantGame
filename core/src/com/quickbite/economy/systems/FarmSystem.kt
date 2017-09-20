@@ -16,7 +16,6 @@ import com.quickbite.economy.util.Mappers
 class FarmSystem(interval:Float) : IntervalIteratingSystem(Family.all(FarmComponent::class.java).get(), interval) {
     val plantWidth = 16
     val plantHeight = 32
-    val tendingChance = 0.02f
 
     override fun processEntity(ent: Entity) {
         val fc = Mappers.farm[ent]
@@ -29,7 +28,7 @@ class FarmSystem(interval:Float) : IntervalIteratingSystem(Family.all(FarmCompon
                 val alpha = MathUtils.clamp(spot.plantProgress / 1f, 0f, 1f)
                 spot.sprite.setSize(alpha * plantWidth, alpha * plantHeight)
 
-                spot.needsTending = MathUtils.random(0f, 1f) <= tendingChance //5% chance to need tending
+                spot.needsTending = MathUtils.random(0f, 1f) <= plantDef.chanceForTend
 
                 if(spot.plantProgress >= 1.2f)
                     spot.readyToHarvest = true

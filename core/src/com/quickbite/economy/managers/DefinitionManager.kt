@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.moandjiezana.toml.Toml
+import com.quickbite.economy.util.TownItemIncome
 import com.quickbite.economy.util.objects.ItemAmountLink
 import com.quickbite.economy.util.objects.ItemPriceLink
 import com.quickbite.economy.util.objects.WorkerTaskLimitLink
@@ -19,6 +20,7 @@ object DefinitionManager {
     val itemCategoryMap:HashMap<String, com.badlogic.gdx.utils.Array<ItemDef>> = hashMapOf()
     val productionMap: HashMap<String, Production> = hashMapOf()
     val plantDefMap: HashMap<String, PlantDef> = hashMapOf()
+    val levelDefMap:HashMap<String, LevelDef> = hashMapOf()
 
     lateinit var names:Names
 
@@ -29,6 +31,7 @@ object DefinitionManager {
     private val itemProdName = "data/productions.toml"
     private val namesDefName = "data/names.json"
     private val plantDefName = "data/plantDefs.toml"
+    private val levelDefName = "data/levels.toml"
 
     init {
         json.setSerializer(ItemPriceLink::class.java, object: Json.Serializer<ItemPriceLink> {
@@ -60,8 +63,7 @@ object DefinitionManager {
         json.setSerializer(Vector2::class.java, object: Json.Serializer<Vector2> {
             override fun read(json: Json, jsonData: JsonValue, type: Class<*>): Vector2 {
                 val data = jsonData.child
-                val vector = Vector2(data.asFloat(), data.next.asFloat()) //Make the item link
-                return vector //Return in
+                return Vector2(data.asFloat(), data.next.asFloat()) //Return in
             }
 
             override fun write(json: Json, `object`: Vector2, knownType: Class<*>?) {
@@ -74,8 +76,7 @@ object DefinitionManager {
         json.setSerializer(ItemAmountLink::class.java, object: Json.Serializer<ItemAmountLink> {
             override fun read(json: Json, jsonData: JsonValue, type: Class<*>): ItemAmountLink {
                 val data = jsonData.child
-                val itemAmountLink = ItemAmountLink(data.asString(), data.next.asInt()) //Make the item link
-                return itemAmountLink //Return in
+                return ItemAmountLink(data.asString(), data.next.asInt()) //Return in
             }
 
             override fun write(json: Json, `object`: ItemAmountLink, knownType: Class<*>?) {
@@ -87,8 +88,7 @@ object DefinitionManager {
         json.setSerializer(WorkerTaskLimitLink::class.java, object: Json.Serializer<WorkerTaskLimitLink> {
             override fun read(json: Json, jsonData: JsonValue, type: Class<*>): WorkerTaskLimitLink {
                 val data = jsonData.child
-                val link = WorkerTaskLimitLink(data.asString(), data.next.asInt()) //Make the item link
-                return link //Return in
+                return WorkerTaskLimitLink(data.asString(), data.next.asInt()) //Return in
             }
 
             override fun write(json: Json, `object`: WorkerTaskLimitLink, knownType: Class<*>?) {
@@ -98,35 +98,58 @@ object DefinitionManager {
     }
 
     fun loadDefinitions(){
+        loadBuildingDefs()
+        loadUnitDefs()
+        loadResourceDefs()
+        loadItemDefs()
+        loadProductionDefs()
+        loadPlantDefs()
+        loadLevelDefs()
+        this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
+    }
+
+    private fun loadBuildingDefs(){
         val buildingDefs = Toml().read(Gdx.files.internal(buildingDefName).file()).to(DefinitionManager.DefList::class.java)
         buildingDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+    }
 
+    private fun loadUnitDefs(){
         val unitDefs = Toml().read(Gdx.files.internal(unitDefName).file()).to(DefinitionManager.DefList::class.java)
         unitDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+    }
 
+    private fun loadResourceDefs(){
         val resourceDefs = Toml().read(Gdx.files.internal(resourceDefName).file()).to(DefinitionManager.DefList::class.java)
         resourceDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+    }
 
+    private fun loadItemDefs(){
         val itemDefList = Toml().read(Gdx.files.internal(itemsDefName).file()).to(ItemDefList::class.java)
         itemDefList.items.forEach { itemDef ->
             DefinitionManager.itemDefMap.put(itemDef.itemName.toLowerCase(), itemDef)
             itemDef.categories.forEach { DefinitionManager.itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
         }
+    }
 
+    private fun loadProductionDefs(){
         val itemProdList = Toml().read(Gdx.files.internal(itemProdName).file()).to(DefinitionManager.ProductionList::class.java)
         itemProdList.productions.forEach { prod ->
             prod.produceItemName = prod.produceItemName.toLowerCase() //Make sure the produced item name is lower case
             prod.requirements.forEach { it.itemName = it.itemName.toLowerCase() } //Make sure each requirement item name is lower case
             DefinitionManager.productionMap.put(prod.produceItemName.toLowerCase(), prod) //Make sure we store it under the LOWER CASE name...
         }
+    }
 
+    private fun loadPlantDefs(){
         val plantDefsList = Toml().read(Gdx.files.internal(plantDefName).file()).to(PlantDefList::class.java)
         plantDefsList.defs.forEach { plantDef -> DefinitionManager.plantDefMap.put(plantDef.name, plantDef)}
 
         //TODO THis needs to be a class with a list of PlantDef objects!!
+    }
 
-        this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
-
+    private fun loadLevelDefs(){
+        val levelDefsList = Toml().read(Gdx.files.internal(levelDefName).file()).to(LevelDefList::class.java)
+        levelDefsList.levels.forEach { level -> levelDefMap.put(level.name, level) }
     }
 
     /**
@@ -158,11 +181,34 @@ object DefinitionManager {
         lateinit var defs:Array<PlantDef>
     }
 
+    class LevelDefList{
+        lateinit var levels:Array<LevelDef>
+    }
+
+    class LevelDef{
+        lateinit var name:String
+        var buildings:Array<LevelBuildingDef> = arrayOf()
+        lateinit var townDef:LevelTownDef
+    }
+
+    class LevelBuildingDef{
+        lateinit var buildingName:String
+        lateinit var position:Vector2
+        var workers:Array<Array<String>> = arrayOf()
+        var importing:Array<String> = arrayOf()
+    }
+
+    class LevelTownDef{
+        var startingPop = 200f
+        var imports = arrayOf<TownItemIncome>()
+    }
+
     class PlantDef{
         var name = ""
         var graphicName = ""
         var timeToGrow = 0
         var harvestAmount = 0
+        var chanceForTend = 0f
     }
 
     class Definition {

@@ -23,7 +23,7 @@ import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
-import com.quickbite.economy.levels.Level1
+import com.quickbite.economy.levels.LevelManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Terrain
 import com.quickbite.economy.systems.*
@@ -103,7 +103,7 @@ class GameScreen :Screen{
         })
 
         initTerrain()
-        Level1.start()
+        LevelManager.loadLevel("level 1")
         GameScreenGUIManager.init(this)
 //        TutorialTest.test()
         CheckHoverOverEntity.gameScreen = this
