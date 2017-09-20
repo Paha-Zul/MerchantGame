@@ -24,6 +24,7 @@ object LevelManager {
 
             //Add the workers
             buildingDef.workers.forEach { tasks ->
+                //TODO Need to check here first if the building has space for the worker before creating the worker.
                 val worker = Factory.createObjectFromJson("worker", Vector2(-1000f, 0f))!!
                 Util.assignWorkerToBuilding(worker, building)
                 Util.toggleTaskOnWorker(worker, building, *tasks)

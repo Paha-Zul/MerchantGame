@@ -166,14 +166,19 @@ object Util {
      * @param entityWorkForce The Entity that has a WorkForceComponent that will be managing the worker Entity.
      * @return True if a worker was able to be added, false otherwise
      */
-    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity){
+    fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity):Boolean{
         val worker = Mappers.worker[entityWorker]
         val workForce = Mappers.workforce[entityWorkForce]
+        if(workForce.workersAvailable.size >= workForce.numWorkerSpots) //If we're at our max, return false
+            return false
+
         workForce.workersAvailable.add(entityWorker)
         worker.workerBuilding = entityWorkForce
 
         if(workForce.workerTasksLimits.size == 1)
             toggleTaskOnWorker(entityWorker, entityWorkForce, workForce.workerTasksLimits[0].taskName)
+
+        return true
     }
 
     /**
