@@ -1,4 +1,4 @@
-package com.quickbite.economy.util
+package com.quickbite.economy.util.objects
 
 import com.badlogic.ashley.core.Entity
 

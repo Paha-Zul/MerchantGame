@@ -6,7 +6,7 @@ import com.quickbite.economy.event.events.PopulationChangeEvent
 import com.quickbite.economy.util.CircularQueueWrapper
 import com.quickbite.economy.util.CustomTimer
 import com.quickbite.economy.util.TimeOfDay
-import com.quickbite.economy.util.TownItemIncome
+import com.quickbite.economy.util.objects.TownItemIncome
 
 /**
  * Created by Paha on 3/18/2017.

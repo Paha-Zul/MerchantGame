@@ -20,6 +20,7 @@ import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.util.objects.SellingItemData
+import com.quickbite.economy.util.objects.TownItemIncome
 
 
 /**
@@ -232,7 +233,7 @@ object Util {
         }
     }
 
-    fun addImportItemToEntityReselling(itemIncome:TownItemIncome, resellingEntity:Entity, sourceData:Any? = null){
+    fun addImportItemToEntityReselling(itemIncome: TownItemIncome, resellingEntity:Entity, sourceData:Any? = null){
         itemIncome.linkedToEntity = resellingEntity
         addItemToEntityReselling(resellingEntity, itemIncome.itemName, SellingItemData.ItemSource.Import, sourceData)
     }

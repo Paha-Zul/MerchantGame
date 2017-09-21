@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.4'
+    ext.kotlin_version = '1.1.4-3'
     repositories {
         mavenLocal()
         mavenCentral()
@@ -8,7 +8,6 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -54,63 +53,6 @@ project(":desktop") {
     }
 }
 
-project(":android") {
-    apply plugin: "android"
-
-    configurations { natives }
-
-    dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-    }
-}
-
-project(":ios") {
-    apply plugin: "java"
-    apply plugin: "robovm"
-
-
-    dependencies {
-        compile project(":core")
-        compile "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
-        compile "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
-        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
-    }
-}
-
-project(":html") {
-    apply plugin: "gwt"
-    apply plugin: "war"
-
-
-    dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.3:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.3:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.3:sources"
-    }
-}
-
 project(":core") {
     apply plugin: "java"
 
@@ -124,7 +66,7 @@ project(":core") {
         compile "it.unimi.dsi:fastutil:$fastUtilVersion"
         compile "com.moandjiezana.toml:toml4j:$toml4jVersion"
         compile fileTree(dir: '../libs', include: '*.jar')
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//        compileClasspath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
