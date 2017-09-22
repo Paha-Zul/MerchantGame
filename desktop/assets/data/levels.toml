@@ -1,0 +1,74 @@
+[[levels]]
+    name = "level 1"
+    startingGold = 100
+    [levels.townDef]
+        startingPop = 200
+        imports = [
+            {itemName = "wheat", baseProductionAmtPerDay = 75},
+            {itemName = "milk", baseProductionAmtPerDay = 75},
+            {itemName = "wood log", baseProductionAmtPerDay = 20}
+            ]
+    [[levels.buildings]]
+        buildingName = "shop"
+        position = {x = 0, y = 0}
+        workers = [["sell"]]
+        importing = ["milk"]
+    [[levels.buildings]]
+        buildingName = "bakery"
+        position = {x = -200, y = -200}
+        workers = [["sell", "produce"], ["haul"], ["haul"]]
+    [[levels.buildings]]
+        buildingName = "lumberyard"
+        position = {x = 200, y = -200}
+        workers = [["sell", "produce"], ["haul"], ["haul"]]
+    [[levels.buildings]]
+        buildingName = "farm"
+        position = {x = -200, y = 0}
+        workers = [[]] # We leave this empty to give a worker with no job. Although if the building only has one job it will auto fill it
+    [[levels.buildings]]
+        buildingName = "flour mill"
+        position = {x = 0, y = -200}
+        workers = [["sell", "produce"], ["haul"], ["haul"]]
+    [[levels.buildings]]
+        buildingName = "bakery"
+        position = {x = -200, y = -200}
+        workers = [["sell", "produce"], ["haul"], ["haul"]]
+    [[levels.buildings]]
+        buildingName = "table shop"
+        position = {x = -250, y = 300}
+        workers = [["sell", "produce"], ["haul"], ["haul"]]
+    [[levels.buildings]]
+        buildingName = "table shop"
+        position = {x = 0, y = 300}
+        workers = [["sell", "produce"], ["haul"], ["haul"]]
+    [[levels.buildings]]
+        buildingName = "tree feller"
+        position = {x = 400, y = -100}
+        workers = [[], []] # We leave this empty to give a worker with no job. Although if the building only has one job it will auto fill it
+    [[levels.buildings]]
+        buildingName = "tree"
+        position = {x = 350, y = -25}
+    [[levels.buildings]]
+        buildingName = "tree"
+        position = {x = 375, y = -25}
+    [[levels.buildings]]
+        buildingName = "tree"
+        position = {x = 400, y = -25}
+    [[levels.buildings]]
+        buildingName = "tree"
+        position = {x = 425, y = -25}
+[[levels]]
+    name = "level 2"
+    startingGold = 100
+    [levels.townDef]
+        startingPop = 200
+        imports = [
+            {itemName = "wheat", baseProductionAmtPerDay = 75},
+            {itemName = "milk", baseProductionAmtPerDay = 75},
+            {itemName = "wood log", baseProductionAmtPerDay = 20}
+            ]
+    [[levels.buildings]]
+        buildingName = "shop"
+        position = {x = 0, y = 0}
+        workers = [["sell"]]
+        importing = ["milk"]

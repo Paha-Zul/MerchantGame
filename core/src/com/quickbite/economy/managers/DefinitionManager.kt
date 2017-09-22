@@ -21,6 +21,7 @@ object DefinitionManager {
     val productionMap: HashMap<String, Production> = hashMapOf()
     val plantDefMap: HashMap<String, PlantDef> = hashMapOf()
     val levelDefMap:HashMap<String, LevelDef> = hashMapOf()
+    val constructionDefMap:HashMap<String, ConstructionDef> = hashMapOf()
 
     lateinit var names:Names
 
@@ -105,6 +106,7 @@ object DefinitionManager {
         loadProductionDefs()
         loadPlantDefs()
         loadLevelDefs()
+        loadConstructionDefs()
         this.names = json.fromJson(Names::class.java, Gdx.files.internal(namesDefName))
     }
 
@@ -152,6 +154,11 @@ object DefinitionManager {
         levelDefsList.levels.forEach { level -> levelDefMap.put(level.name, level) }
     }
 
+    private fun loadConstructionDefs(){
+        val constructionDefList = Toml().read(Gdx.files.internal(levelDefName).file()).to(ConstructionDefList::class.java)
+        constructionDefList.defs.forEach { constr -> constructionDefMap.put(constr.name, constr) }
+    }
+
     /**
      * Clears all definitions and reloads them
      */
@@ -171,6 +178,10 @@ object DefinitionManager {
 
     class DefList {
         lateinit var defs:Array<Definition>
+    }
+
+    class ConstructionDefList{
+        var defs:Array<ConstructionDef> = arrayOf()
     }
 
     class ItemDefList{
@@ -342,7 +353,9 @@ object DefinitionManager {
     }
 
     class ConstructionDef{
+        lateinit var name:String
         var cost = 0
-        var buildingTimeGameMinutes = 60 //Default of 1 hour
+        var time = 60 //Default of 1 hour
+        var materials = arrayOf<String>() //List of item names
     }
 }

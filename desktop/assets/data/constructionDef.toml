@@ -1,0 +1,40 @@
+[[defs]]
+    name = "shop"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "lumberyard"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "table shop"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "tree feller"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "flour mill"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "bakery"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "farm"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "wall"
+    cost = 200
+    time = 10
+    materials = [] #Item names, like wood planks and stuff?
