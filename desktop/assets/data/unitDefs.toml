@@ -17,6 +17,7 @@
     [defs.velocityDef]
       baseSpeed = 50
     [defs.inventoryDef]
+      outputs = ["none"] # We don't want our unit to output anything from it's inventory
     [defs.gridDef]
       onGrid = true
     [defs.behaviourDef]
@@ -39,6 +40,7 @@
     [defs.gridDef]
       onGrid = true
     [defs.inventoryDef]
+      outputs = ["none"]
     [defs.behaviourDef]
     [defs.workerDef]
 
@@ -57,6 +59,7 @@
     [defs.velocityDef]
       baseSpeed = 50
     [defs.inventoryDef]
+      outputs = ["none"]
     [defs.gridDef]
       onGrid = true
        [defs.behaviourDef]

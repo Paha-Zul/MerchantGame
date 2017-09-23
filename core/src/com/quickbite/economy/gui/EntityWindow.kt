@@ -332,6 +332,9 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     private fun setupInventoryTable(table: Table, comp: InventoryComponent){
         val sellingComp = Mappers.selling[this.entity]
 
+        //If we don't sell anything AND we output nothing... We want a minimal setting
+        val minimal = sellingComp == null && comp.outputItems.containsKey("none")
+
         val contentsTable = Table()
         contentsTable.background = darkBackgroundDrawable
 
@@ -342,16 +345,18 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
         val itemNameTitle = Label("Name", defaultLabelStyle).apply { setAlignment(Align.center) }
         val itemAmountTitle = Label("Amount", defaultLabelStyle).apply { setAlignment(Align.center) }
-        val itemSellingTitle = Label("Selling", defaultLabelStyle).apply { setAlignment(Align.center) }
-        val itemExportingTitle = Label("Exporting", defaultLabelStyle).apply { setAlignment(Align.center) }
+        val itemSellingTitle = if(!minimal) Label("Selling", defaultLabelStyle).apply { setAlignment(Align.center) } else null
+        val itemExportingTitle = if(!minimal) Label("Exporting", defaultLabelStyle).apply { setAlignment(Align.center) } else null
 
         titleTable.defaults().maxWidth(Value.percentWidth(0.25f, titleTable)).growX()
 
         titleTable.add().growX() //This is to pad the left with empty space
         titleTable.add(itemNameTitle).width(60f)
         titleTable.add(itemAmountTitle).width(60f)
-        titleTable.add(itemSellingTitle).width(60f)
-        titleTable.add(itemExportingTitle).width(60f)
+        if(!minimal) { //We only want to add these if we need to
+            titleTable.add(itemSellingTitle).width(60f)
+            titleTable.add(itemExportingTitle).width(60f)
+        }
         titleTable.add().growX() //Pads the right with empty space
 
         val listLabel = Label("Item List", defaultLabelStyle)
@@ -371,8 +376,10 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             contentsTable.add().growX() //Pads the left with empty space
             contentsTable.add().width(60f)
             contentsTable.add().width(60f)
-            contentsTable.add().width(60f)
-            contentsTable.add().width(60f)
+            if(!minimal) {
+                contentsTable.add().width(60f)
+                contentsTable.add().width(60f)
+            }
             contentsTable.add().growX() //Pads the right with empty space
             contentsTable.row()
             contentsTable.add(titleTable).colspan(6) //Just colspan a whole bunch here... doesn't really matter, at long as it's >4 or something
@@ -382,13 +389,13 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             val pinnedItemsSet = hashSetOf<String>()
 
             //First we check through and pin the base selling items
-            EntityWindowController.makeBaseSellingPinnedItemsList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle)
+            EntityWindowController.makeBaseSellingPinnedItemsList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle, minimal)
 
             //Then we check through the output items and pin them to the top
-            EntityWindowController.makeOutputPinnedItemsList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle)
+            EntityWindowController.makeOutputPinnedItemsList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle, minimal)
 
             //Finally, make the rest of the items
-            EntityWindowController.makeInventoryItemList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle)
+            EntityWindowController.makeInventoryItemList(comp, sellingComp, contentsTable, pinnedItemsSet, defaultLabelStyle, minimal)
         }
 
         populateItemTable()

@@ -292,6 +292,7 @@ object DefinitionManager {
 
     class InventoryDef{
         var debugItemList:Array<ItemAmountLink> = arrayOf()
+        var outputs = arrayOf<String>()
     }
 
     class ComponentDef{

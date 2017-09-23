@@ -586,21 +586,34 @@ object GUIUtil {
 //        sellHistoryTable.debugAll()
     }
 
+    /**
+     * Creates a table for an inventory item (and its info) and adds it to the contents table passed in
+     * @param itemName The name of the item
+     * @param itemAmount The amount of the item
+     * @param contentsTable The table to add the finished inventory item table to
+     * @param labelStyle The style to use for all the labels
+     * @param sellingState The state of selling for the item. SellingState.Unable means that there is no possibility of ever selling the item
+     * @param sellingItems The items that are being sold from the inventory component that this item comes from. This is needed to add and remove
+     * items from when the selling state is toggled
+     * @param outputItems The items that are in the inventory's output. This is used to toggle output on an item when the output button is toggled
+     * @param minimal If the table is minimal or not. If true, the table will omit everything but the name and amount of the item.
+     */
     fun makeInventoryItemTable(itemName:String, itemAmount:Int, contentsTable:Table, labelStyle:Label.LabelStyle, sellingState: SellingState = SellingState.Unable,
-                               sellingItems:Array<SellingItemData>? = null, outputItems:HashMap<String, OutputData>? = null){
+                               sellingItems:Array<SellingItemData>? = null, outputItems:HashMap<String, OutputData>? = null, minimal:Boolean = false){
         val itemName = itemName.toLowerCase()
         val outputItem = outputItems?.get(itemName)
 
         val iconName = DefinitionManager.itemDefMap[itemName]?.iconName ?: ""
-//        val sellButton = TextButton("", GUIWindow.)
         val iconImage = Image(TextureRegion(MyGame.manager[iconName, Texture::class.java]))
 
+        //Makes the selling state image
         val sellingStateImage:Image? = when (sellingState) {
             SellingState.Active -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
             SellingState.Available -> Image(TextureRegion(Util.createPixel(Color.RED), 16, 16))
             else -> null
         }
 
+        //Makes the export image
         val exportStateImage:Image? = when{
             outputItem == null -> null
             outputItem.exportable -> Image(TextureRegion(Util.createPixel(Color.GREEN), 16, 16))
@@ -610,6 +623,7 @@ object GUIUtil {
         val itemAmountLabel = Label("$itemAmount", labelStyle)
         itemAmountLabel.setAlignment(Align.center)
 
+        //This is the listener for tooltips. Mouse over to see tooltips!
         iconImage.addListener(object: ClickListener(){
             override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                 super.enter(event, x, y, pointer, fromActor)
@@ -623,8 +637,9 @@ object GUIUtil {
             }
         })
 
-        var sellingState = sellingState //Let's shadow this to make it mutable in the listener
+        var sellingState = sellingState //Let's shadow this to make it mutable in the listeners
 
+        //The listener for the selling image
         sellingStateImage?.addListener(object:ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 val item = DefinitionManager.itemDefMap[itemName]!!
@@ -644,6 +659,7 @@ object GUIUtil {
             }
         })
 
+        //The listener for the export image
         exportStateImage?.addListener(object:ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 val item = DefinitionManager.itemDefMap[itemName]!!
@@ -667,8 +683,10 @@ object GUIUtil {
         contentsTable.add().growX()
         contentsTable.add(iconImage).size(24f)
         contentsTable.add(itemAmountLabel).fillX()
-        contentsTable.add(sellingStateImage)
-        contentsTable.add(exportStateImage)
+        if(!minimal) { //We only want to add these if we're not minimal
+            contentsTable.add(sellingStateImage)
+            contentsTable.add(exportStateImage)
+        }
         contentsTable.add().growX()
         contentsTable.row().padTop(2f)
     }

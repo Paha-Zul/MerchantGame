@@ -68,18 +68,21 @@ object EntityWindowController {
         }
     }
 
-    fun makeBaseSellingPinnedItemsList(invComp: InventoryComponent, sellingComp: SellingItemsComponent?, contentsTable:Table, pinnedItemsSet:HashSet<String>, labelStyle:Label.LabelStyle){
+    fun makeBaseSellingPinnedItemsList(invComp: InventoryComponent, sellingComp: SellingItemsComponent?, contentsTable:Table,
+                                       pinnedItemsSet:HashSet<String>, labelStyle:Label.LabelStyle, minimal:Boolean){
         //First we check through and pin the base selling items
         sellingComp?.baseSellingItems?.forEach {
             pinnedItemsSet.add(it.itemName) //Add it
             //If the item is in the current selling items, it's selling. If not, then it's available
             val sellState = if(sellingComp.currSellingItems.firstOrNull { item -> item.itemName == it.itemName} != null) SellingState.Active else SellingState.Available
             GUIUtil.makeInventoryItemTable(it.itemName, invComp.getItemAmount(it.itemName), contentsTable, labelStyle,
-                    sellState, sellingComp.currSellingItems, invComp.outputItems)
+                    sellState, sellingComp.currSellingItems, invComp.outputItems, minimal)
         }
     }
 
-    fun makeOutputPinnedItemsList(invComp: InventoryComponent, sellingComp: SellingItemsComponent?, contentsTable:Table, pinnedItemsSet:HashSet<String>, labelStyle:Label.LabelStyle){
+    fun makeOutputPinnedItemsList(invComp: InventoryComponent, sellingComp: SellingItemsComponent?, contentsTable:Table,
+                                  pinnedItemsSet:HashSet<String>, labelStyle:Label.LabelStyle, minimal:Boolean){
+        if(invComp.outputItems.containsKey("none")) return
         invComp.outputItems.forEach { (key, _) ->
             if(key != "all" && !pinnedItemsSet.contains(key)) {
                 pinnedItemsSet.add(key)
@@ -90,12 +93,13 @@ object EntityWindowController {
                     else -> SellingState.Available
                 }
                 GUIUtil.makeInventoryItemTable(key, invComp.getItemAmount(key), contentsTable, labelStyle,
-                        sellState, sellingComp?.currSellingItems, invComp.outputItems)
+                        sellState, sellingComp?.currSellingItems, invComp.outputItems, minimal)
             }
         }
     }
 
-    fun makeInventoryItemList(invComp: InventoryComponent, sellingComp: SellingItemsComponent?, contentsTable:Table, pinnedItemsSet:HashSet<String>, labelStyle:Label.LabelStyle){
+    fun makeInventoryItemList(invComp: InventoryComponent, sellingComp: SellingItemsComponent?, contentsTable:Table,
+                              pinnedItemsSet:HashSet<String>, labelStyle:Label.LabelStyle, minimal:Boolean){
         //Since we handled both the base selling items and specific output items, here we either set the rest to available or unable
         //This basically says if we output "all", set everything to available. Otherwise, set to unable
         val sellStateForRest = if(invComp.outputItems.contains("all") && sellingComp != null) SellingState.Available else SellingState.Unable
@@ -109,7 +113,7 @@ object EntityWindowController {
                     else -> sellStateForRest //Use the predefined state
                 }
                 GUIUtil.makeInventoryItemTable(itemName, itemAmount, contentsTable, labelStyle,
-                        sellState, sellingComp?.currSellingItems, invComp.outputItems)
+                        sellState, sellingComp?.currSellingItems, invComp.outputItems, minimal)
             }
         }
     }

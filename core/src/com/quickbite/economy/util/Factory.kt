@@ -120,11 +120,17 @@ object Factory {
 
         //These are the optional components that a building can have
         if(definition.inventoryDef != null){
+            val def = definition.inventoryDef!!
             val inv = InventoryComponent()
             //We have to add this into the init funcs because we want listeners above ^ to be triggered when adding items
             init.initFuncs.add {
-                definition.inventoryDef!!.debugItemList.forEach { (itemName, itemAmount) ->
+                def.debugItemList.forEach { (itemName, itemAmount) ->
                     inv.addItem(itemName, itemAmount)
+                }
+
+                if(def.outputs.isNotEmpty()){
+                    inv.outputItems.clear()
+                    def.outputs.forEach { inv.outputItems.put(it, OutputData(false)) }
                 }
             }
             entity.add(inv)
