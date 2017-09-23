@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.Screen
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -14,20 +15,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.quickbite.economy.CheckHoverOverEntity
-import com.quickbite.economy.InputHandler
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.components.InitializationComponent
 import com.quickbite.economy.components.PreviewComponent
-import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.gui.GameScreenGUIManager
+import com.quickbite.economy.input.InputHandler
 import com.quickbite.economy.levels.LevelManager
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Terrain
+import com.quickbite.economy.objects.Town
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
+import com.quickbite.economy.util.objects.ShadowObject
 
 
 /**
@@ -37,8 +40,8 @@ import com.quickbite.economy.util.*
  */
 class GameScreen :Screen{
     val gameScreeData = GameScreenData()
-    var shadowObject : Pair<Entity, TransformComponent>? = null
-    lateinit var inputHandler:InputHandler
+    val shadowObject:ShadowObject = ShadowObject()
+    lateinit var inputHandler: InputHandler
 
     var currentlySelectedType  = ""
         set(value) {
@@ -47,15 +50,9 @@ class GameScreen :Screen{
         }
 
     var showGrid = false
+    private val myTown: Town by lazy { TownManager.getTown("Town") }
 
     override fun show() {
-        gameScreeData.playerMoney = 1000
-
-        //Subscribe to the general item sold event
-        GameEventSystem.subscribe<ItemSoldEvent> {
-            gameScreeData.playerMoney += it.taxCollected
-        }
-
         inputHandler = InputHandler(this)
         Gdx.input.inputProcessor = InputMultiplexer(MyGame.stage, inputHandler)
 
@@ -107,6 +104,13 @@ class GameScreen :Screen{
         GameScreenGUIManager.init(this)
 //        TutorialTest.test()
         CheckHoverOverEntity.gameScreen = this
+
+        myTown.money = 100f
+
+        //Subscribe to the general item sold event
+        GameEventSystem.subscribe<ItemSoldEvent> {
+            myTown.money += it.taxCollected
+        }
     }
 
     fun initTerrain(){
@@ -218,6 +222,9 @@ class GameScreen :Screen{
     }
 
     private fun positionBuildingShadow(){
+        if(shadowObject.entity == null)
+            return
+
         val worldCoords = MyGame.camera.unproject(Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0f))
 
         val pos = Vector2(Util.roundDown(worldCoords.x + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat(),
@@ -225,14 +232,22 @@ class GameScreen :Screen{
 
 //        System.out.println("pos:$pos, pos2:$pos2")
 
-        shadowObject?.second?.position?.set(pos.x, pos.y )
+        //TODO Need more conditions here for if we can't build
+        shadowObject.canBuild = shadowObject.def!!.cost > myTown.money
+
+        if(shadowObject.canBuild)
+            shadowObject.graphicComp!!.sprite.color = Color.RED
+        else
+            shadowObject.graphicComp!!.sprite.color = Color.WHITE
+
+        shadowObject.transformComp?.position?.set(pos.x, pos.y )
     }
 
-    fun loadNewPreview(){
+    private fun loadNewPreview(){
         //Remove the last object
-        if(shadowObject != null){
-            Factory.destroyEntity(shadowObject!!.first)
-            shadowObject = null
+        if(shadowObject.entity != null){
+            Factory.destroyEntity(shadowObject.entity!!)
+            shadowObject.entity = null
         }
 
         //If the new selected type is empty, don't load a new preview
@@ -246,7 +261,10 @@ class GameScreen :Screen{
                 ((worldCoords.y)/MyGame.grid.squareSize).toInt()*MyGame.grid.squareSize.toFloat())
 
         val newEntity = Factory.createObjectFromJson(currentlySelectedType, Vector2(pos), listOf(PreviewComponent()))
-        shadowObject = Pair(newEntity!!, Mappers.transform.get(newEntity))
+        shadowObject.entity = newEntity!!
+        shadowObject.transformComp = Mappers.transform.get(newEntity)
+        shadowObject.graphicComp = Mappers.graphic[newEntity]
+        shadowObject.def = DefinitionManager.constructionDefMap[currentlySelectedType.toLowerCase()]
     }
 
     override fun resume() {

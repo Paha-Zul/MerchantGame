@@ -1,4 +1,4 @@
-package com.quickbite.economy
+package com.quickbite.economy.input
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Input
@@ -7,29 +7,33 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
+import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
-import com.quickbite.economy.util.*
+import com.quickbite.economy.util.Constants
+import com.quickbite.economy.util.Mappers
+import com.quickbite.economy.util.Spawner
+import com.quickbite.economy.util.TimeUtil
 
 /**
  * Created by Paha on 1/17/2017.
  */
 class InputHandler(val gameScreen: GameScreen) : InputProcessor{
-    var buttonDown = -1
-    var down = false
+    internal var buttonDown = -1
+    internal var down = false
 
-    var insideUI = false
+    internal var insideUI = false
 
-    var entityClickedOn:Entity? = null
-    var selectedEntity: Entity? = null
-    var collidedWith = false
+    internal var entityClickedOn:Entity? = null
+    internal var selectedEntity: Entity? = null
+    internal var collidedWith = false
 
-    var linkingAnotherEntity = false
-    var linkingEntityCallback:(Entity) -> Unit = {}
+    internal var linkingAnotherEntity = false
+    internal var linkingEntityCallback:(Entity) -> Unit = {}
 
-    private val queryCallback = {fixture:Fixture ->
+    internal val queryCallback = {fixture:Fixture ->
         val entity = fixture.userData as Entity
         if(Mappers.graphic[entity].fullyShown) {
             entityClickedOn = entity
@@ -49,23 +53,12 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Buttons.LEFT -> {
                 //If the currently selected type is not empty, lets do something
                 if(gameScreen.currentlySelectedType.isNotEmpty()){
-                    //Get the position of the closest square to the mouse. Snap to the grid!
-                    val pos = Vector2(Util.roundDown(worldCoords.x + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat(),
-                            Util.roundDown(worldCoords.y + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat())
-
-
-                    val entityDef = DefinitionManager.definitionMap[gameScreen.currentlySelectedType.toLowerCase()]!!
-                    val dimensions = entityDef.transformDef.physicalDimensions
-
-                    if(!MyGame.grid.isBlocked(pos.x, pos.y, dimensions.x/2, dimensions.y/2)){
-                        Factory.createObjectFromJson(gameScreen.currentlySelectedType, Vector2(pos))!!
-                    }
-
-                    collidedWith = false
+                    InputController.placeEntity(worldCoords, gameScreen.currentlySelectedType)
+                    collidedWith = false //Reset this flag
 
                 //If the selected type is empty, the we need to see if we are clicking on something
                 }else{
-                    selectEntity(box2DCoords)
+                    InputController.selectEntity(box2DCoords, this)
                 }
             }
 
@@ -79,37 +72,6 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
         down = false
         buttonDown = -1
         return false
-    }
-
-    private fun selectEntity(box2DCoords:Vector2){
-        //Only clear the selected Entity if we are not linking another Entity
-        if(!linkingAnotherEntity)
-            selectedEntity = null //Clear first
-
-        //Query. Make sure to use the box2DCoords for this!
-        MyGame.world.QueryAABB(queryCallback, box2DCoords.x, box2DCoords.y, box2DCoords.x, box2DCoords.y)
-
-        //Handle the outcome
-        if(entityClickedOn == null) { //If null, close the entity table (if it happens to be open)
-//                        gameScreen.gameScreenGUI.closeEntityTable()
-
-            //If not null, open the table for the Entity
-        }else{
-            if(!insideUI) {
-                //Call this callback (probably empty most of the moveTime
-                linkingEntityCallback(entityClickedOn!!)
-
-                //Save the selected entity
-                selectedEntity = entityClickedOn
-
-                //If we aren't linking another entity, open another entity window
-                if (!linkingAnotherEntity)
-                    GameScreenGUIManager.openEntityWindow(selectedEntity!!)
-            }
-        }
-
-        entityClickedOn = null //Reset this immediately
-        linkingAnotherEntity = false
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {

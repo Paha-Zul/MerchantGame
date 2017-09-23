@@ -33,6 +33,7 @@ object DefinitionManager {
     private val namesDefName = "data/names.json"
     private val plantDefName = "data/plantDefs.toml"
     private val levelDefName = "data/levels.toml"
+    private val constructionDefName = "data/constructionDef.toml"
 
     init {
         json.setSerializer(ItemPriceLink::class.java, object: Json.Serializer<ItemPriceLink> {
@@ -155,7 +156,7 @@ object DefinitionManager {
     }
 
     private fun loadConstructionDefs(){
-        val constructionDefList = Toml().read(Gdx.files.internal(levelDefName).file()).to(ConstructionDefList::class.java)
+        val constructionDefList = Toml().read(Gdx.files.internal(constructionDefName).file()).to(ConstructionDefList::class.java)
         constructionDefList.defs.forEach { constr -> constructionDefMap.put(constr.name, constr) }
     }
 
@@ -198,6 +199,7 @@ object DefinitionManager {
 
     class LevelDef{
         lateinit var name:String
+        var startingMoney:Float = 0f
         var buildings:Array<LevelBuildingDef> = arrayOf()
         lateinit var townDef:LevelTownDef
     }
@@ -357,6 +359,6 @@ object DefinitionManager {
         lateinit var name:String
         var cost = 0
         var time = 60 //Default of 1 hour
-        var materials = arrayOf<String>() //List of item names
+        var materials = arrayOf<ItemAmountLink>() //List of item names
     }
 }

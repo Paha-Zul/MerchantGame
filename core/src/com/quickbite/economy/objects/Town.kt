@@ -13,6 +13,7 @@ import com.quickbite.economy.util.objects.TownItemIncome
  */
 class Town(val name:String) {
     var population:Float = 0f
+    var money = 0f
 
     val populationHistory = CircularQueueWrapper<Int>(50)
     val itemImportMap = hashMapOf<String, TownItemIncome>()

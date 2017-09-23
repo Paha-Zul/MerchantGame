@@ -16,7 +16,8 @@ object LevelManager {
 
     fun loadLevel(level:DefinitionManager.LevelDef){
         //Initialize the town
-        initTown(level.townDef)
+        val town = initTown(level.townDef)
+        town.money = level.startingMoney
 
         level.buildings.forEach { buildingDef ->
             //Create the building
@@ -35,7 +36,7 @@ object LevelManager {
         }
     }
 
-    private fun initTown(townDef:DefinitionManager.LevelTownDef){
+    private fun initTown(townDef:DefinitionManager.LevelTownDef):Town{
         val town = Town("Town")
 
         town.population = townDef.startingPop
@@ -49,5 +50,6 @@ object LevelManager {
         }
 
         TownManager.addTown("Town", town)
+        return town
     }
 }

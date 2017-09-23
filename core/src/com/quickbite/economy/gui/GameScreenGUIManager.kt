@@ -63,7 +63,7 @@ object GameScreenGUIManager {
     fun init(gameScreen:GameScreen){
         this.gameScreen = gameScreen
 
-        val moneyLabel = Label("Gold: ${gameScreen.gameScreeData.playerMoney}", labelStyle)
+        val moneyLabel = Label("Gold: ${myTown.money}", labelStyle)
         moneyLabel.setAlignment(Align.center)
 
         timeOfDayLabel = Label(TimeOfDay.toString(), labelStyle)
@@ -86,7 +86,7 @@ object GameScreenGUIManager {
         topTable.setPosition(MyGame.camera.viewportWidth/2f, MyGame.camera.viewportHeight - 50f)
 
         GameEventSystem.subscribe<ItemSoldEvent> {
-            moneyLabel.setText("Gold: ${gameScreen.gameScreeData.playerMoney}")
+            moneyLabel.setText("Gold: ${myTown.money}")
         }
 
         setupSpawnEntityTable()
