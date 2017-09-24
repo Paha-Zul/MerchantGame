@@ -1,13 +1,18 @@
 package com.quickbite.economy.input
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.quickbite.economy.MyGame
+import com.quickbite.economy.components.BuildingComponent
+import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.util.Factory
+import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
+import com.quickbite.economy.util.objects.SellingItemData
 
 object InputController {
     internal fun placeEntity(worldCoords: Vector3, currentlySelectedType:String):Boolean{
@@ -66,5 +71,36 @@ object InputController {
 
         inputHandler.entityClickedOn = null //Reset this immediately
         inputHandler.linkingAnotherEntity = false
+    }
+
+    fun linkEntityForReselling(entityToLink: Entity, entToLinkTo:Entity){
+        if(entityToLink != entToLinkTo){
+            val otherBuilding = Mappers.building[entityToLink]
+            val otherSelling:SellingItemsComponent? = Mappers.selling[entityToLink]
+
+            //If we aren't linking to a building, then don't do this...
+            if(otherBuilding != null) {
+                //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
+                if (otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop) {
+
+                    //Try to add stuff from the selling list
+                    if(otherSelling != null){
+                        otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
+                            Util.addItemToEntityReselling(entToLinkTo, itemName, SellingItemData.ItemSource.Workshop, entityToLink)
+                        }
+
+                        otherSelling.currSellingItems.clear()
+                    //If we don't have a selling component, let's add from the output list (this is useful for stuff like farms
+                    //that don't sell their items)
+                    }else{
+                        val inv = Mappers.inventory[entityToLink]
+                        inv.outputItems.forEach {
+                            if(it.key != "none" && it.key != "all")
+                                Util.addItemToEntityReselling(entToLinkTo, it.key, SellingItemData.ItemSource.Workshop, entityToLink)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

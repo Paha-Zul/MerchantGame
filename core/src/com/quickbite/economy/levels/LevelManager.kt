@@ -7,6 +7,7 @@ import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
 import com.quickbite.economy.util.Factory
+import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 
 object LevelManager {
@@ -33,6 +34,9 @@ object LevelManager {
 
             //Add any imports we have from the town
             buildingDef.importing.forEach { Util.addImportItemToEntityReselling(TownManager.getTown("Town").itemImportMap[it]!!, building, "Town") }
+
+            val inv = Mappers.inventory[building]
+            buildingDef.items.forEach { inv.addItem(it.itemName, it.itemAmount) }
         }
     }
 

@@ -2,7 +2,7 @@
     name = "corn"
     displayName = "Corn Plant"
     graphicName = "corn_plant"
-    timeToGrow = 20 # This is seconds to grow
+    timeToGrow = 60 # This is seconds to grow
     chanceForTend = 0.05 #5 percent chance
     harvestAmount = 2 # The amount recieved when harvested
 
@@ -10,6 +10,6 @@
     name = "wheat"
     displayName = "Wheat Plant"
     graphicName = "corn_plant"
-    timeToGrow = 20 # This is seconds to grow
+    timeToGrow = 60 # This is seconds to grow
     chanceForTend = 0.05 #5 percent chance
     harvestAmount = 2 # The amount recieved when harvested

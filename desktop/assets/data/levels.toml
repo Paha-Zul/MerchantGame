@@ -72,3 +72,4 @@
         position = {x = 0, y = 0}
         workers = [["sell"]]
         importing = ["milk"]
+        items = [{itemName = "gold", itemAmount = 300}]

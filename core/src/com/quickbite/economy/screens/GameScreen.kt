@@ -100,12 +100,12 @@ class GameScreen :Screen{
         })
 
         initTerrain()
-        LevelManager.loadLevel("level 1")
+        LevelManager.loadLevel("level 2")
         GameScreenGUIManager.init(this)
 //        TutorialTest.test()
         CheckHoverOverEntity.gameScreen = this
 
-        myTown.money = 100f
+        myTown.money = 500f
 
         //Subscribe to the general item sold event
         GameEventSystem.subscribe<ItemSoldEvent> {

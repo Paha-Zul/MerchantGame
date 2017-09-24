@@ -209,6 +209,7 @@ object DefinitionManager {
         lateinit var position:Vector2
         var workers:Array<Array<String>> = arrayOf()
         var importing:Array<String> = arrayOf()
+        var items:Array<ItemAmountLink> = arrayOf()
     }
 
     class LevelTownDef{

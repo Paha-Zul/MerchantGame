@@ -25,11 +25,11 @@ import com.quickbite.economy.event.events.ItemSoldEvent
 import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.gui.widgets.ProductionMap
+import com.quickbite.economy.input.InputController
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
 import com.quickbite.economy.util.objects.SelectedWorkerAndTable
-import com.quickbite.economy.util.objects.SellingItemData
 
 /**
  * Created by Paha on 3/9/2017.
@@ -672,26 +672,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 //TODO Probably want to clean this up
                 GameScreenGUIManager.gameScreen.inputHandler.linkingAnotherEntity = true
                 GameScreenGUIManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
-                    if(ent != entity){
-                        val otherBuilding = Mappers.building[ent]
-                        val otherSelling = Mappers.selling[ent]
-
-                        //If we aren't linking to a building, then don't do this...
-                        if(otherBuilding != null && otherSelling != null) {
-                            //TODO this needs to be more sophisticated, maybe remove the selling potential of the workshop?
-                            if (otherBuilding.buildingType == BuildingComponent.BuildingType.Workshop) {
-
-                                //Make sure we actually have stuff to add
-                                if (otherSelling.currSellingItems.size > 0) {
-                                    otherSelling.currSellingItems.forEach { (itemName, itemPrice) ->
-                                        Util.addItemToEntityReselling(entity, itemName, SellingItemData.ItemSource.Workshop, ent)
-                                    }
-
-                                    otherSelling.currSellingItems.clear()
-                                }
-                            }
-                        }
-                    }
+                    InputController.linkEntityForReselling(ent, entity)
                 }
             }
         })
