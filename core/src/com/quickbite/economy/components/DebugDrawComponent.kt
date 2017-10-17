@@ -15,6 +15,7 @@ class DebugDrawComponent : MyComponent {
         var GLOBAL_DEBUG_BODY = false
         var GLOBAL_DEBUG_WORKERS = false
         var GLOBAL_DEBUG_WORKPLACE = false
+        var GLOBAL_DEBUG_PATHFINDING = false
     }
 
     var debugDrawPath = false

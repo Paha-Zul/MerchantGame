@@ -1,6 +1,7 @@
 package com.quickbite.economy.behaviour.leaf
 
 import com.badlogic.gdx.math.Vector2
+import com.quickbite.economy.MyGame
 import com.quickbite.economy.behaviour.BlackBoard
 import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.VelocityComponent
@@ -28,7 +29,9 @@ class MoveToPath(bb:BlackBoard) : LeafTask(bb) {
     override fun update(delta: Float) {
         super.update(delta)
 
-        val speed = velocity!!.baseSpeed*delta
+        val currTile = MyGame.grid.getNodeAtPosition(position)!!.terrain!!
+        val moveSpeedMultiplier = 1 + currTile.roadLevel
+        val speed = velocity!!.baseSpeed*delta*moveSpeedMultiplier
 
         //If the path is not empty, move!
         if(bb.path.isNotEmpty()){

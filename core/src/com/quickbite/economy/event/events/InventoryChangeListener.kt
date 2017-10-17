@@ -1,4 +1,4 @@
-package com.quickbite.economy.util
+package com.quickbite.economy.event.events
 
 /**
  * Created by Paha on 4/17/2017.

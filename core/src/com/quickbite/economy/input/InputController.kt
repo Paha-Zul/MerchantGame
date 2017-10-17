@@ -42,6 +42,11 @@ object InputController {
         return false
     }
 
+    /**
+     * Selects am Entity that is at the passed in box2DCoords
+     * @param box2DCoords These are coordinates that have been translated to Box2D world coords.
+     * @param inputHandler The input handler to use for variables and such
+     */
     internal fun selectEntity(box2DCoords:Vector2, inputHandler: InputHandler){
         //Only clear the selected Entity if we are not linking another Entity
         if(!inputHandler.linkingAnotherEntity)
@@ -52,10 +57,11 @@ object InputController {
 
         //Handle the outcome
         if(inputHandler.entityClickedOn == null) { //If null, close the entity table (if it happens to be open)
-//                        gameScreen.gameScreenGUI.closeEntityTable()
+            inputHandler.linkingAnotherEntity = false //Clear the linking flag
 
             //If not null, open the table for the Entity
         }else{
+            //If we're not inside a UI box, try to click on something!
             if(!inputHandler.insideUI) {
                 //Call this callback (probably empty most of the moveTime
                 inputHandler.linkingEntityCallback(inputHandler.entityClickedOn!!)
@@ -70,9 +76,13 @@ object InputController {
         }
 
         inputHandler.entityClickedOn = null //Reset this immediately
-        inputHandler.linkingAnotherEntity = false
     }
 
+    /**
+     * Links an Entity (its items) to another Entity that will resell the items (like from a workshop to a shop)
+     * @param entityToLink The Entity that will be linked to another
+     * @param entToLinkTo The Entity we are linking to
+     */
     fun linkEntityForReselling(entityToLink: Entity, entToLinkTo:Entity){
         if(entityToLink != entToLinkTo){
             val otherBuilding = Mappers.building[entityToLink]

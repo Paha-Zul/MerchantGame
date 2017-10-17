@@ -2,17 +2,22 @@ package com.quickbite.economy.util
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
+import com.quickbite.economy.MyGame
+import com.quickbite.economy.MyGame.renderer
 import com.quickbite.economy.objects.Terrain
+import com.quickbite.economy.util.objects.MutablePair
 
 /**
  * Created by Paha on 12/13/2016.
  */
 class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
     val grid:Array<Array<GridNode>>
-    val offsetX = gridWidth*0.5f
-    val offsetY = gridHeight*0.5f
+    private val offsetX = gridWidth*0.5f
+    private val offsetY = gridHeight*0.5f
 
     val offX = (offsetX/squareSize).toInt()
     val offY = (offsetY/squareSize).toInt()
@@ -97,6 +102,12 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         return getNodeAtPosition(position.x, position.y)
     }
 
+    /**
+     * Gets a node at the index passed in
+     * @param x The X index of the grid
+     * @param y The Y index of the grid
+     * @return A GridNode if the index was valid, otherwise null.
+     */
     fun getNodeAtIndex(x:Int, y:Int):GridNode?{
         if(x< 0 || x >= grid.size || y < 0 || y >= grid[x].size)
             return null
@@ -104,8 +115,14 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         return grid[x][y]
     }
 
+    /**
+     * Gets the index of the grid using an X and Y float position
+     * @param x The X world position
+     * @param y The Y world position
+     * @return A Pair that holds the X/Y index of the grid.
+     */
     fun getIndexOfGrid(x:Float, y:Float):Pair<Int,Int>{
-        return Pair(Util.roundDown(x, squareSize)/squareSize + offX, Util.roundDown(y, squareSize)/squareSize + offY)
+        return Pair(Util.roundDown(x + squareSize/2f, squareSize)/squareSize + offX, Util.roundDown(y + squareSize/2f, squareSize)/squareSize + offY)
     }
 
     /**
@@ -183,51 +200,75 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
 
     fun debugDrawGrid(renderer:ShapeRenderer){
         renderer.color = Color.BLACK
-        for(x in 0..grid.size-1){
-            for(y in 0..grid[x].size-1){
-                renderer.rect(grid[x][y].xPos - squareSize*0.5f, grid[x][y].yPos - squareSize*0.5f, squareSize.toFloat(), squareSize.toFloat())
+        for(x in 0 until grid.size){
+            for(y in 0 until grid[x].size){
+                renderer.rect(grid[x][y].xPos, grid[x][y].yPos, squareSize.toFloat(), squareSize.toFloat())
             }
         }
     }
 
     fun debugDrawObstacles(renderer:ShapeRenderer){
-        renderer.color = Color(0f, 0f, 0f, 0.4f)
-        for(x in 0..grid.size-1){
-            for(y in 0..grid[x].size-1){
-                if(grid[x][y].blocked)
-                    renderer.rect(grid[x][y].xPos - squareSize*0.5f, grid[x][y].yPos - squareSize*0.5f, squareSize.toFloat(), squareSize.toFloat())
+        val grayColor = Color(0f, 0f, 0f, 0.4f)
+
+        for(x in 0 until grid.size){
+            for(y in 0 until grid[x].size){
+                renderer.color = if(grid[x][y].blocked) grayColor
+                else grid[x][y].color
+
+                if(grid[x][y].blocked || grid[x][y].color != Color.WHITE)
+                    renderer.rect(grid[x][y].xPos, grid[x][y].yPos, squareSize.toFloat(), squareSize.toFloat())
             }
         }
     }
 
+    fun debugDrawGridScores(batch:SpriteBatch){
+        batch.projectionMatrix = MyGame.camera.combined
+        for(x in 0 until grid.size){
+            for(y in 0 until grid[x].size){
+                val node = grid[x][y]
+                val worldCoords = Vector2(node.xPos, node.yPos + MyGame.grid.squareSize)
+                MyGame.camera.viewportWidth
+                MyGame.defaultFont8.draw(batch, "G:${node.scores.first} \n F:${node.scores.second}", worldCoords.x, worldCoords.y)
+            }
+        }
+    }
+
+    /**
+     * A GridNode for a Grid
+     * @param x The X index of the grid node. This is not the actual world position
+     * @param y The Y index of the grid node. This is not the actual world position
+     */
     inner class GridNode(val x:Int, val y:Int){
         val entityList = com.badlogic.gdx.utils.Array<Entity>()
         var blocked = false
         var terrain: Terrain? = null
 
+        var color:Color = Color.WHITE
+        var scores:MutablePair<Int, Int> = MutablePair(0, 0)
+
         /**
          * The X position of this node (not centered)
          */
         val xPos:Float
-            get() = ((x - offX)*squareSize).toFloat()
+            get() = ((x - offX)*squareSize).toFloat() - squareSize/2f
 
         /**
          * The X position of this node (centered)
          */
         val xCenter:Float
-            get() = (x - offX)*squareSize + squareSize/2f
+            get() = (x - offX)*squareSize.toFloat()
 
         /**
          * The Y position of this node (centered)
          */
         val yCenter:Float
-            get() = (y - offY)*squareSize + squareSize/2f
+            get() = (y - offY)*squareSize.toFloat()
 
         /**
          * The Y position of this node (not centered)
          */
         val yPos:Float
-            get() = ((y - offY)*squareSize).toFloat()
+            get() = ((y - offY)*squareSize).toFloat() - squareSize/2f
 
         override fun toString(): String {
             return "[$x, $y]"

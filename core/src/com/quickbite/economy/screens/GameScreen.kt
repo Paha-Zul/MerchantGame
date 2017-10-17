@@ -31,6 +31,10 @@ import com.quickbite.economy.objects.Town
 import com.quickbite.economy.systems.*
 import com.quickbite.economy.util.*
 import com.quickbite.economy.util.objects.ShadowObject
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import java.util.concurrent.atomic.AtomicInteger
 
 
 /**
@@ -113,14 +117,14 @@ class GameScreen :Screen{
         }
     }
 
-    fun initTerrain(){
+    private fun initTerrain(){
         MyGame.grid.grid.forEach { it.forEach { gridNode ->
-//            gridNode.terrain = Terrain(TextureRegion(Util.createPixel(Color(216f/255f, 237f/255f, 85f/255f, 1f), MyGame.grid.squareSize, MyGame.grid.squareSize)),
-//                    gridNode.xPos, gridNode.yPos)
             gridNode.terrain = Terrain(TextureRegion(MyGame.manager["grass", Texture::class.java], MyGame.grid.squareSize, MyGame.grid.squareSize),
                     gridNode.xPos, gridNode.yPos)
         } }
     }
+
+
 
     override fun pause() {
 //        TimeUtil.paused = !TimeUtil.paused
@@ -162,6 +166,7 @@ class GameScreen :Screen{
         if(showGrid) {
             debugDrawLine(renderer)
             debugDrawFilled(renderer)
+            debugDrawPathfinding(batch)
         }
 
         //Draw the body of all the things. This is not entity specific so it's outside of the entity loop
@@ -180,6 +185,9 @@ class GameScreen :Screen{
         checkCameraMove()
     }
 
+    /**
+     * Controls the movement of the camera.
+     */
     private fun checkCameraMove(){
         if(Gdx.input.isKeyPressed(Input.Keys.W)) moveCameras(0f, Constants.CAMERA_MOVE_SPEED)
         else if(Gdx.input.isKeyPressed(Input.Keys.S)) moveCameras(0f, -Constants.CAMERA_MOVE_SPEED)
@@ -196,7 +204,11 @@ class GameScreen :Screen{
         MyGame.grid.grid.forEach { it.forEach { gridNode ->
             if(gridNode.terrain!=null){
                 val terrain = gridNode.terrain!!
+                val batchColor = batch.color
+                val newColor = Color(1f, 1f, 1f, 1f).lerp(Color.BLACK, terrain.roadLevel/6f)
+                batch.color = newColor
                 batch.draw(terrain.texture, terrain.x, terrain.y)
+                batch.color = batchColor
             }
         } }
     }
@@ -205,7 +217,7 @@ class GameScreen :Screen{
         TownManager.update(delta)
     }
 
-    fun debugDrawLine(renderer:ShapeRenderer){
+    private fun debugDrawLine(renderer:ShapeRenderer){
         renderer.begin(ShapeRenderer.ShapeType.Line)
 
         MyGame.grid.debugDrawGrid(renderer)
@@ -213,12 +225,20 @@ class GameScreen :Screen{
         renderer.end()
     }
 
-    fun debugDrawFilled(renderer:ShapeRenderer){
+    private fun debugDrawFilled(renderer:ShapeRenderer){
         renderer.begin(ShapeRenderer.ShapeType.Filled)
 
         MyGame.grid.debugDrawObstacles(renderer)
 
         renderer.end()
+    }
+
+    private fun debugDrawPathfinding(batch:SpriteBatch){
+        if(DebugDrawComponent.GLOBAL_DEBUG_PATHFINDING) {
+            MyGame.batch.begin()
+            MyGame.grid.debugDrawGridScores(batch)
+            MyGame.batch.end()
+        }
     }
 
     private fun positionBuildingShadow(){

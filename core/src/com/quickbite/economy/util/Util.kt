@@ -116,6 +116,10 @@ object Util {
         return value as T
     }
 
+    fun changeRoadOnTerrain(node:Grid.GridNode, roadLevel:Int){
+        node.terrain!!.roadLevel = roadLevel
+    }
+
     /**
      * Removes an item from the reselling list of the selling component. If there was an item to remove, the linked entity that
      * was selling the item is given back the selling capabilities
@@ -131,8 +135,9 @@ object Util {
             //If the source is from a workshop, we need to remove it from us and give it back to the workshop
             SellingItemData.ItemSource.Workshop -> {
                 val otherSelling = Mappers.selling[itemSourceData as Entity] //Get the selling component of the linked Entity
-                val baseSellingItem = otherSelling.baseSellingItems.first { it.itemName == itemName } //Get the base selling item
-                if (!otherSelling.currSellingItems.any { it.itemName == itemName }) //If the linked Entity is not already currently selling it
+                val baseSellingItem = otherSelling?.baseSellingItems?.firstOrNull { it.itemName == itemName } //Get the base selling item
+                //If the base selling item is not null AND the linked Entity is not already currently selling it
+                if (baseSellingItem != null && !otherSelling.currSellingItems.any { it.itemName == itemName })
                     otherSelling.currSellingItems.add(baseSellingItem.copy()) //Add it back into the current selling list
 
                 sellingComp.currSellingItems.removeAll { it.itemName == itemName && it.itemSourceType == SellingItemData.ItemSource.Workshop

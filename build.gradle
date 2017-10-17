@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.1.50'
+    ext.kotlin_version = '1.1.51'
     repositories {
         mavenLocal()
         mavenCentral()
@@ -12,7 +12,14 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
+
 apply plugin: 'kotlin'
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
 
 allprojects {
     apply plugin: "eclipse"
@@ -56,6 +63,7 @@ project(":core") {
     apply plugin: "java"
 
     dependencies {
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.1"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
@@ -73,6 +81,7 @@ tasks.eclipse.doLast {
 }
 repositories {
     mavenCentral()
+    jcenter()
 }
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

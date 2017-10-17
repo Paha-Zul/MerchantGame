@@ -12,10 +12,7 @@ import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
-import com.quickbite.economy.util.Constants
-import com.quickbite.economy.util.Mappers
-import com.quickbite.economy.util.Spawner
-import com.quickbite.economy.util.TimeUtil
+import com.quickbite.economy.util.*
 
 /**
  * Created by Paha on 1/17/2017.
@@ -120,11 +117,20 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Keys.F -> Spawner.spawnBuyer()
             Input.Keys.T -> GameScreenGUIManager.openTownWindow()
             Input.Keys.ESCAPE -> {gameScreen.currentlySelectedType = ""; GameScreenGUIManager.closeAllWindows()}
-            Input.Keys.SPACE -> TimeUtil.paused = !TimeUtil.paused
+            Input.Keys.SPACE -> {
+                TimeUtil.paused = !TimeUtil.paused
+//                Pathfinder.delayTime = if(TimeUtil.paused) 10000000L else 5L
+            }
             Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
 
-            Input.Keys.PLUS -> TimeUtil.deltaTimeScale = MathUtils.clamp(TimeUtil.deltaTimeScale + 1, 0, 4)
-            Input.Keys.MINUS -> TimeUtil.deltaTimeScale = MathUtils.clamp(TimeUtil.deltaTimeScale - 1, 0, 4)
+            Input.Keys.PLUS ->{
+                TimeUtil.timeScaleSpeedIndex = MathUtils.clamp(TimeUtil.timeScaleSpeedIndex+1, 0, TimeUtil.timeScaleSpeeds.size-1)
+                TimeUtil.deltaTimeScale = TimeUtil.timeScaleSpeeds[TimeUtil.timeScaleSpeedIndex]
+            }
+            Input.Keys.MINUS -> {
+                TimeUtil.timeScaleSpeedIndex = MathUtils.clamp(TimeUtil.timeScaleSpeedIndex-1, 0, TimeUtil.timeScaleSpeeds.size-1)
+                TimeUtil.deltaTimeScale = TimeUtil.timeScaleSpeeds[TimeUtil.timeScaleSpeedIndex]
+            }
         }
 
         return false

@@ -35,6 +35,7 @@ public class MyGame extends Game {
     public static Box2DDebugRenderer box2DDebugRenderer;
     public static Stage stage;
 
+    public static BitmapFont defaultFont8;
     public static BitmapFont defaultFont12;
     public static BitmapFont defaultFont14;
     public static BitmapFont defaultFont20;
@@ -78,6 +79,12 @@ public class MyGame extends Game {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/titillium/Titillium-Regular.otf"));
+        parameter.size = 8;
+        parameter.genMipMaps = true;
+        parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
+        parameter.magFilter = Texture.TextureFilter.Linear;
+        defaultFont8 = generator.generateFont(parameter); // font size 14 pixels
+
         parameter.size = 12;
         parameter.genMipMaps = true;
         parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
