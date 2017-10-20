@@ -189,7 +189,7 @@ object DefinitionManager {
         var items:Array<DefinitionManager.ItemDef> = arrayOf()
     }
 
-    class PlantDefList{
+    private class PlantDefList{
         lateinit var defs:Array<PlantDef>
     }
 
@@ -218,11 +218,16 @@ object DefinitionManager {
     }
 
     class PlantDef{
-        var name = ""
+        val name = ""
+        var displayName = ""
         var graphicName = ""
         var timeToGrow = 0
         var harvestAmount = 0
         var chanceForTend = 0f
+
+        override fun toString(): String {
+            return name
+        }
     }
 
     class Definition {

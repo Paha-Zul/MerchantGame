@@ -20,7 +20,6 @@ class ProduceItemComponent : MyComponent{
     }
 
     override fun dispose(myself: Entity) {
+
     }
-
-
 }

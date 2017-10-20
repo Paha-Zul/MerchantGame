@@ -11,10 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.scenes.scene2d.ui.List
+import com.badlogic.gdx.scenes.scene2d.utils.*
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.quickbite.economy.MyGame
@@ -26,6 +24,7 @@ import com.quickbite.economy.event.events.ReloadGUIEvent
 import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.gui.widgets.ProductionMap
 import com.quickbite.economy.input.InputController
+import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
@@ -35,9 +34,11 @@ import com.quickbite.economy.util.objects.SelectedWorkerAndTable
  * Created by Paha on 3/9/2017.
  */
 class EntityWindow(val entity:Entity) : GUIWindow(){
+    private enum class TabType{BuildingTab, SellTab, EconomyTab, WorkTab, BehaviourTab,
+        InventoryTab, FarmTab, BuyingTab, ResourceTab, ProductionTab, BuyerTab, DeleteTab}
 
     private var currentlyDisplayingComponent: Component? = null
-    private var currentTabType: Int = 0
+    private var currentTabType: TabType = TabType.BuildingTab
     private var selectedWorkers = Array<SelectedWorkerAndTable>()
 
     private var lastWorkerListCounter = 0
@@ -62,6 +63,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val buying = Mappers.buyer.get(entity)
         val resource = Mappers.resource.get(entity)
         val production = Mappers.produces.get(entity)
+        val fc = Mappers.farm.get(entity)
 
         val buildingTab = TextButton("Building", buttonStyle)
         val sellTab = TextButton("Sell", buttonStyle)
@@ -70,6 +72,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         val workTab = TextButton("Work", buttonStyle)
         val behaviourTab = TextButton("Beh", buttonStyle)
         val inventoryTab = TextButton("Inv", buttonStyle)
+        val farmTab = TextButton("Farm", buttonStyle)
         val buyingTab = TextButton("Buying", buttonStyle)
         val resourceTab = TextButton("Resource", buttonStyle)
         val productionTab = TextButton("Prod", buttonStyle)
@@ -82,93 +85,33 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         tabTable.background.rightWidth = 0f
 
         if(bc != null)
-            tabTable.add(buildingTab).spaceRight(5f).growY()
+            addTab(bc, buildingTab, tabTable, TabType.BuildingTab)
         if(sc != null) {
-            tabTable.add(sellTab).spaceRight(5f).growY()
-            tabTable.add(economyTab).spaceRight(5f).growY()
+            addTab(sc, sellTab, tabTable, TabType.SellTab)
+            addTab(sc, economyTab, tabTable, TabType.EconomyTab)
         }
         if(wc != null)
-            tabTable.add(workTab).spaceRight(5f).growY()
+            addTab(wc, workTab, tabTable, TabType.WorkTab)
         if(behComp != null)
-            tabTable.add(behaviourTab).spaceRight(5f).growY()
+            addTab(behComp, behaviourTab, tabTable, TabType.BehaviourTab)
         if(ic != null)
-            tabTable.add(inventoryTab).spaceRight(5f).growY()
+            addTab(ic, inventoryTab, tabTable, TabType.InventoryTab)
         if(buying != null)
-            tabTable.add(buyingTab).spaceRight(5f).growY()
+            addTab(buying, buyingTab, tabTable, TabType.BuyerTab)
         if(resource != null)
-            tabTable.add(resourceTab).spaceRight(5f).growY()
+            addTab(resource, resourceTab, tabTable, TabType.ResourceTab)
+        if(fc != null)
+            addTab(fc, farmTab, tabTable, TabType.FarmTab) //TODO Problem here?!
         if(production != null && production.productionList.size != 0)
-            tabTable.add(productionTab).spaceRight(5f).growY()
+            addTab(production, productionTab, tabTable, TabType.ProductionTab)
 
         tabTable.add().width(0f).growX()
 
         tabTable.add(deleteButton).right()
 
-        buildingTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, bc, 1)
-            }
-        })
-
-        sellTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, sc, 2)
-            }
-        })
-
-        economyTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, sc, 3)
-            }
-        })
-
-        workTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, wc, 4)
-            }
-        })
-
-        behaviourTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, behComp, 5)
-            }
-        })
-
-        inventoryTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, ic, 6)
-            }
-        })
-
-        buyingTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, buying, 7)
-            }
-        })
-
-        resourceTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, resource, 8)
-            }
-        })
-
-        productionTab.addListener(object: ClickListener(){
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                super.touchUp(event, x, y, pointer, button)
-                loadTable(contentTable, production, 9)
-            }
-        })
-
         deleteButton.addListener(object:ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
                 close()
                 Factory.destroyEntity(entity)
             }
@@ -179,9 +122,20 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
             loadTable(contentTable, currentlyDisplayingComponent!!, currentTabType)
 
         val group = ButtonGroup<TextButton>(buildingTab, sellTab, economyTab, workTab, behaviourTab,
-                inventoryTab, buyingTab, resourceTab, productionTab, deleteButton)
+                inventoryTab, buyingTab, resourceTab, productionTab, farmTab, deleteButton)
 
         group.setMaxCheckCount(1)
+    }
+
+    private fun <T> addTab(comp:T, tab:TextButton, tabTable:Table, tabType:TabType,
+                           func:()->Unit = {loadTable(contentTable, comp, tabType)}) where T:Component{
+        tabTable.add(tab).spaceRight(5f).growY()
+        tab.addListener(object:ClickListener(){
+            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+                super.touchUp(event, x, y, pointer, button)
+                func()
+            }
+        })
     }
 
     override fun update(delta:Float){
@@ -199,7 +153,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         }
     }
 
-    private fun loadTable(table: Table, component: Component, tabType:Int){
+    private fun <T> loadTable(table: Table, component: T, tabType:TabType) where T:Component{
         table.clear()
         updateFuncsList.clear()
 
@@ -211,18 +165,19 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         changedTabsFunc = {} //Clear the change tabs function
 
         when(tabType){
-            1 -> setupBuildingTable(table, component as BuildingComponent)
-            2 -> setupSellingTable(table, component as SellingItemsComponent)
-            3 -> setupEconomyTable(table, component as SellingItemsComponent)
-            4 -> {
+            TabType.BuildingTab -> setupBuildingTable(table, component as BuildingComponent)
+            TabType.SellTab -> setupSellingTable(table, component as SellingItemsComponent)
+            TabType.EconomyTab -> setupEconomyTable(table, component as SellingItemsComponent)
+            TabType.WorkTab -> {
                 debug.debugDrawWorkers = true
                 setupWorkforceTable(table, component as WorkForceComponent)
             }
-            5 -> setupBehaviourTable(table, component as BehaviourComponent)
-            6 -> setupInventoryTable(table, component as InventoryComponent)
-            7 -> setupBuyingTable(table, component as BuyerComponent)
-            8 -> setupResourceTable(table, component as ResourceComponent)
-            9 -> setupProductionTable(table, component as ProduceItemComponent)
+            TabType.BehaviourTab -> setupBehaviourTable(table, component as BehaviourComponent)
+            TabType.InventoryTab -> setupInventoryTable(table, component as InventoryComponent)
+            TabType.BuyerTab -> setupBuyingTable(table, component as BuyerComponent)
+            TabType.ResourceTab -> setupResourceTable(table, component as ResourceComponent)
+            TabType.ProductionTab -> setupProductionTable(table, component as ProduceItemComponent)
+            TabType.FarmTab -> setupFarmTable(table, component as FarmComponent)
         }
 
         currentlyDisplayingComponent = component
@@ -241,6 +196,33 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
         updateFuncsList.add({typeLabel.setText("Type: ${comp.buildingType}")})
         updateFuncsList.add({queueLabel.setText("Queue size: ${comp.unitQueue.size}")})
+    }
+
+    private fun setupFarmTable(table:Table, comp:FarmComponent){
+        val scrollStyle = ScrollPane.ScrollPaneStyle()
+
+        val listStyle = List.ListStyle(MyGame.defaultFont12, Color.WHITE, Color.WHITE,
+                TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0.3f, 0.3f, 0.3f, 0.3f)))))
+
+        val dropdownStyle = SelectBox.SelectBoxStyle(MyGame.defaultFont12, Color.WHITE,
+                TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0f, 0f, 0f, 0f)))), scrollStyle, listStyle)
+
+        val dropdown = SelectBox<DefinitionManager.PlantDef>(dropdownStyle)
+
+        val list = mutableListOf<DefinitionManager.PlantDef>()
+        DefinitionManager.plantDefMap.values.forEach {
+            list.add(it)
+        }
+        dropdown.items = Array(list.toTypedArray())
+        dropdown.selected = DefinitionManager.plantDefMap[comp.itemToGrow]
+
+        dropdown.addChangeListener { _, _ ->
+            comp.itemToGrow = dropdown.selected.toString()
+        }
+
+        table.add(dropdown).padTop(10f)
+
+        table.top()
     }
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){

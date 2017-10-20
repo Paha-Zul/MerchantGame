@@ -27,6 +27,20 @@ object Tasks {
         return seq
     }
 
+    private fun sowPlant(bb:BlackBoard):Task{
+        val seq = Sequence(bb)
+
+        val setMyTarget = SetMyWorkBuildingAsTarget(bb)
+        val getPlant = GetPlant(bb, "sow")
+        val getPath = GetPath(bb)
+        val moveToPlant = MoveToPath(bb)
+        val tendToPlant = SowPlant(bb)
+
+        seq.controller.addTasks(setMyTarget, getPlant, getPath, moveToPlant, tendToPlant)
+
+        return seq
+    }
+
     private fun tendToPlant(bb:BlackBoard) : Task{
         val seq = Sequence(bb)
 
@@ -64,10 +78,11 @@ object Tasks {
         val tendAndHarvest = Sequence(bb)
 
         val unhide = ExitBuilding(bb) //Exit the building
+        val alwaysTruePlant = AlwaysTrue(sowPlant(bb)) //Tends to the plants
         val alwaysTrueTend = AlwaysTrue(tendToPlant(bb)) //Tends to the plants
         val alwaysTrueHarvest = AlwaysTrue(harvestPlant(bb)) //Harvests any plants
 
-        tendAndHarvest.controller.addTasks(unhide, alwaysTrueTend, alwaysTrueHarvest) //The tend and harvest sequence to add to
+        tendAndHarvest.controller.addTasks(unhide, alwaysTruePlant, alwaysTrueTend, alwaysTrueHarvest) //The tend and harvest sequence to add to
 
         val repeatTasks = RepeatTaskNumberOfTimes(bb, 10, tendAndHarvest) //Tends and harvests 10 times before stopping
         val transferInventory = AlwaysTrue(haulInventoryToMyWorkBuilding(bb)) //Optional transfer inventory to the work building

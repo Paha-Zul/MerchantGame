@@ -41,8 +41,8 @@ class GridSystem : EntitySystem(){
                     lastGridSpot?.entityList?.removeValue(ent, true)
                     currGridSpot.entityList.add(ent)
                     gc.currNodeIndex.apply { first = currGridSpot.x; second = currGridSpot.y }
-                    if (MathUtils.random() < 1f)
-                        currGridSpot.terrain!!.roadLevel = 1
+//                    if (MathUtils.random() < 1f)
+//                        currGridSpot.terrain!!.roadLevel = 1
                 }
             }
         }

@@ -17,6 +17,8 @@ class GetPlant(bb:BlackBoard, val type:String = "tend") : LeafTask(bb) {
             bb.targetPlantSpot = Mappers.farm[bb.targetEntity].plantSpots.flatten().firstOrNull { it.needsTending && !it.reseved }
         else if(type == "harvest")
             bb.targetPlantSpot = Mappers.farm[bb.targetEntity].plantSpots.flatten().firstOrNull { it.readyToHarvest && !it.reseved}
+        else if(type == "sow")
+            bb.targetPlantSpot = Mappers.farm[bb.targetEntity].plantSpots.flatten().firstOrNull { it.plantName == ""}
 
         if(bb.targetPlantSpot == null){
             controller.finishWithFailure()

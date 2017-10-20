@@ -62,6 +62,13 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
                 })
     }
 
+    /**
+     * Sets an area to be unblocked on the grid
+     * @param centerX The center X position
+     * @param centerY The center Y position
+     * @param halfWidth The half width of the area
+     * @param halfHeight The half height of the area
+     */
     fun setUnblocked(centerX:Float, centerY:Float, halfWidth:Float, halfHeight:Float){
         forNodesInSquare(centerX, centerY, halfWidth, halfHeight, {node -> node.blocked = false})
     }
@@ -90,6 +97,12 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         node.entityList.removeValue(entity, true)
     }
 
+    /**
+     * Gets a GridNode at a real world position
+     * @param x The X world position
+     * @param y The Y world position
+     * @return A GridNode if the X,Y world position was valid, otherwise null
+     */
     fun getNodeAtPosition(x:Float, y:Float):GridNode?{
         val index = getIndexOfGrid(x, y)
         if(index.first < 0 || index.first >= grid.size || index.second < 0 || index.second >= grid[index.first].size)
@@ -98,6 +111,11 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         return grid[index.first][index.second]
     }
 
+    /**
+     * Gets a GridNode at a real world position
+     * @param position The real world position
+     * @return A GridNode if the X,Y world position was valid, otherwise null
+     */
     fun getNodeAtPosition(position: Vector2):GridNode?{
         return getNodeAtPosition(position.x, position.y)
     }
@@ -140,7 +158,13 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
         val index = getIndexOfGrid(x, y)
         return getNeighborsOf(index.first, index.second)
     }
-    
+
+    /**
+     * Gets the 8 surrounding neighbors of the node at the X and Y index passed in
+     * @param x The X index
+     * @param y The Y index
+     * @return A list of GridNode neighbors
+     */
     fun getNeighborsOf(x:Int, y:Int):List<GridNode>{
         val list = mutableListOf<GridNode>()
 

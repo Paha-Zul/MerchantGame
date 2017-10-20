@@ -1,7 +1,6 @@
 package com.quickbite.economy.util
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.quickbite.economy.components.DebugDrawComponent
 import kotlinx.coroutines.experimental.delay
@@ -13,6 +12,7 @@ import java.util.*
  */
 object Pathfinder {
     private val delayTime:Long = 5
+    private val heuristicWeight = 2
 
     private val green = Color(Color.GREEN).apply { a = 0.2f }
     private val blue = Color(Color.BLUE).apply { a = 0.2f }
@@ -129,8 +129,8 @@ object Pathfinder {
         val d1 = 10
         val d2 = 14
         //Make sure to remember to weigh these since we're using 10 and 14 instead of 1 and 1.4!!!!
-        val dx = Math.abs(currNode.x - endNode.x)*10
-        val dy = Math.abs(currNode.y - endNode.y)*10
+        val dx = Math.abs(currNode.x - endNode.x)*heuristicWeight
+        val dy = Math.abs(currNode.y - endNode.y)*heuristicWeight
         return d1 * (dx + dy) + (d2 - 2*d1) * Math.min(dx, dy)
     }
 

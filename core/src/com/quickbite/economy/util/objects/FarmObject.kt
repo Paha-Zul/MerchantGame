@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2
  * @param plantProgress The progress (from 0 to 1) of the growth of the plant
  * @param sprite The graphic of the plant
  */
-class FarmObject(val position:Vector2, var plantProgress:Float, var sprite: Sprite){
+class FarmObject(val position:Vector2, var plantProgress:Float, var sprite: Sprite, var plantName:String = ""){
     var needsTending = false
     var readyToHarvest = false
     var reseved = false

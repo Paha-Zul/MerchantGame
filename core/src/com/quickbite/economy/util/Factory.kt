@@ -269,7 +269,8 @@ object Factory {
             farmComp.plantSpots = kotlin.Array(definition.farmDef!!.cols, {x -> kotlin.Array(definition.farmDef!!.rows, {y ->
                 val xPos = x*(farmDef.xSpace + 16) + farmDef.offset.x*graphicComp.sprite.width + MathUtils.random(-2, 2)
                 val yPos = y*(farmDef.ySpace + 16) + farmDef.offset.y*graphicComp.sprite.height
-                val texture:Texture = MyGame.manager["${farmComp.itemToGrow}_plant"]
+                val farmPlantDef = DefinitionManager.plantDefMap[farmComp.itemToGrow]!!
+                val texture:Texture = MyGame.manager[farmPlantDef.graphicName]
                 FarmObject(Vector2(xPos, yPos), 0f, Sprite(texture)).apply {
                     sprite.setSize(0f, 0f)
                     needsTending = true //A way of initially planting the seed
