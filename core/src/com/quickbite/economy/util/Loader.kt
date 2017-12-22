@@ -1,4 +1,4 @@
-package com.quickbite.spaceslingshot.util
+package com.quickbite.economy.util
 
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader
 import com.badlogic.gdx.assets.loaders.TextureLoader
@@ -7,7 +7,6 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.quickbite.economy.util.EasyAssetManager
 
 /**
  * Created by Paha on 6/19/2016.

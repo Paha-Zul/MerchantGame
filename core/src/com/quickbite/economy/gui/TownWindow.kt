@@ -170,7 +170,7 @@ class TownWindow : GUIWindow() {
             Families.workBuildings.forEach { workBuildingEnt ->
                 val workForceComp = Mappers.workforce[workBuildingEnt]
 
-                workForceComp.workersAvailable.forEach workers@{ entity ->
+                workForceComp.workers.forEach workers@{ entity ->
                     workerCompList += WorkerCompLink(entity, workForceComp)
                 }
             }

@@ -194,7 +194,7 @@ object FindEntityUtil {
 
         Families.buildings.forEach { ent ->
             val wc = Mappers.workforce.get(ent)
-            if(wc != null && wc.workersAvailable.size < wc.numWorkerSpots) {
+            if(wc != null && wc.workers.size < wc.numWorkerSpots) {
                 val tm = Mappers.transform.get(ent)
                 val dst = tm.position.dst2(position)
 

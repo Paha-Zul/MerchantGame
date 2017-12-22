@@ -20,7 +20,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         val wc = Mappers.workforce.get(ent)
         val building = Mappers.building.get(ent)
 
-        wc.workersAvailable.forEachIndexed { _, workerEntity ->
+        wc.workers.forEachIndexed { _, workerEntity ->
             val bc = Mappers.behaviour.get(workerEntity)
             val worker = Mappers.worker[workerEntity]
 
@@ -54,7 +54,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
         //This pays the worker...
         if(TimeOfDay.hour <= 2 && !wc.workersPaidFlag){
             val workerBuildingInv = Mappers.inventory[ent]
-            wc.workersAvailable.forEach { entity ->
+            wc.workers.forEach { entity ->
                 val worker = Mappers.worker[entity]
 
                 val moneyPaid = workerBuildingInv.removeItem("Gold", worker.dailyWage)
@@ -84,6 +84,7 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
             "sell" -> return AlwaysTrue(Tasks.sellItem(bb))
             "harvest" -> return AlwaysTrue(Tasks.harvestClosestResourceType(bb))
             "farm" -> return AlwaysTrue(Tasks.farm(bb))
+            "manage" -> return AlwaysTrue(Tasks.manage(bb))
         }
 
         return com.quickbite.economy.behaviour.composite.Sequence(bb, "Empty Sequence")

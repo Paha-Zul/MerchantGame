@@ -89,8 +89,16 @@ object GUIUtil {
         workerListTable.add(titleTable).growX()
         workerListTable.row().growX()
 
+        /** We make the manager table here at the top IF we have a manager*/
+        if(workforceComp.manager != null) {
+            val managerTable = makeWorkerTable(workforceComp.manager!!, workforceComp, labelStyle, textButtonStyle, { guiManager.openEntityWindow(it) })
+            workerListTable.add(managerTable).growX().spaceBottom(3f)
+            workerListTable.add() //Empty space for divider in titles
+            workerListTable.row().growX()
+        }
+
         //For each worker, lets get some info and make a table for it!
-        workforceComp.workersAvailable.forEach { entity ->
+        workforceComp.workers.forEach { entity ->
             if(!entity.isValid()) return@forEach //If it's not valid, continue...
 
             val workerTable = makeWorkerTable(entity, workforceComp, labelStyle, textButtonStyle, { guiManager.openEntityWindow(it) })
@@ -207,6 +215,9 @@ object GUIUtil {
         val worker = Mappers.worker[entity]
         val id = Mappers.identity[entity]
 
+        //If we have a manager and we are not actually on the manager
+        val hasManager = workforceComp.manager != null && workforceComp.manager != entity
+
         var tasks = ""
         worker.taskList.forEachIndexed { index, task -> tasks += "${task[0].toUpperCase()}${if (index < worker.taskList.size - 1) "," else ""} " } //The complicated bit at the end controls the ending comma
 
@@ -229,21 +240,25 @@ object GUIUtil {
         val workHourEndLessButton = TextButton("-", textButtonStyle)
         val workHourEndMoreButton = TextButton("+", textButtonStyle)
 
+        //Decrease start work hour button
         workHourStartLessButton.addChangeListener { _, _ ->
             worker.timeRange.first = Math.floorMod(worker.timeRange.first - 1, 24)
             workHoursStartLabel.setText("${worker.timeRange.first}")
         }
 
+        //Increase start work hour button
         workHourStartMoreButton.addChangeListener { _, _ ->
             worker.timeRange.first = Math.floorMod(worker.timeRange.first + 1, 24)
             workHoursStartLabel.setText("${worker.timeRange.first}")
         }
 
+        //Decrease ending hour work button
         workHourEndLessButton.addChangeListener { _, _ ->
             worker.timeRange.second = Math.floorMod(worker.timeRange.second - 1, 24)
             workHoursEndLabel.setText("${worker.timeRange.second}")
         }
 
+        //Increase ending work hour button
         workHourEndMoreButton.addChangeListener { _, _ ->
             worker.timeRange.second = Math.floorMod(worker.timeRange.second + 1, 24)
             workHoursEndLabel.setText("${worker.timeRange.second}")
@@ -252,10 +267,12 @@ object GUIUtil {
         val salaryLabel = Label("${worker.dailyWage}", labelStyle)
         salaryLabel.setAlignment(Align.center)
 
+        //Starting decrease, actual, increase buttons
         startTimeTable.add(workHourStartLessButton).size(16f)
         startTimeTable.add(workHoursStartLabel).space(0f, 5f, 0f, 5f).width(20f)
         startTimeTable.add(workHourStartMoreButton).size(16f)
 
+        //Ending decrease, actual, increase buttons
         endTimeTable.add(workHourEndLessButton).size(16f)
         endTimeTable.add(workHoursEndLabel).space(0f, 5f, 0f, 5f).width(20f)
         endTimeTable.add(workHourEndMoreButton).size(16f)
@@ -265,7 +282,8 @@ object GUIUtil {
         removeWorkerButton.addListener(object: ClickListener(){
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 super.touchUp(event, x, y, pointer, button)
-                workforceComp.workersAvailable.removeValue(entity, true) //Remove the entity
+                worker.taskList.forEach {taskName -> workforceComp.workerTaskMap.computeIfPresent(taskName, {name, array -> array.removeValue(entity, true); array}) }
+                workforceComp.workers.removeValue(entity, true) //Remove the entity
                 if(entity.isValid()) {
                     val bc = Mappers.behaviour[entity]
                     bc.currTask = Tasks.leaveMap(bc.blackBoard) //Make the entity leave the map and be destroyed
@@ -288,35 +306,37 @@ object GUIUtil {
         workerTable.add(endTimeTable).growX().uniformX()
         workerTable.add(salaryLabel).growX().uniformX()
         workerTable.add(infoButton).growX().uniformX().size(16f)
-        workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
+        //We only want to add the remove worker button if we have full control and not a manager
+        if(!hasManager) workerTable.add(removeWorkerButton).growX().uniformX().size(16f)
+        else workerTable.add().growX().uniformX().size(16f)
 
         return workerTable
     }
 
     fun populateWorkerTasksAndAmountsTable(workforceComp:WorkForceComponent, workerTasksAndAmountsTable:Table, labelStyle: Label.LabelStyle):Table{
         workerTasksAndAmountsTable.clear()
-        val currWorkersAndTotalWorkers = Label("workers: ${workforceComp.workersAvailable.size}/${workforceComp.numWorkerSpots}", labelStyle)
+        workerTasksAndAmountsTable.top().left()
+
+        val currWorkersAndTotalWorkers = Label("workers: ${workforceComp.workers.size}/${workforceComp.numWorkerSpots}", labelStyle)
 
         workerTasksAndAmountsTable.add(currWorkersAndTotalWorkers).colspan(100)
         workerTasksAndAmountsTable.row()
 
         val size = workforceComp.workerTasksLimits.size
-        for(i in 0..size-1){
+        for(i in 0 until size){
             val workerTasksLimit = workforceComp.workerTasksLimits[i]
             //The current amount out of the max amount, ie: 1/4
             val amountText = "${workforceComp.workerTaskMap[workerTasksLimit.taskName]!!.size}/${workforceComp.workerTasksLimits.find { it.taskName == workerTasksLimit.taskName }!!.amount}"
 
-            val taskLabel = Label(workerTasksLimit.taskName, labelStyle)
+            val taskLabel = Label(" - ${workerTasksLimit.taskName}", labelStyle)
             val amountLabel = Label(amountText, labelStyle)
 
-            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f)
-            workerTasksAndAmountsTable.add(amountLabel).width(25f).spaceRight(5f)
-
-            if(i < workforceComp.workerTasksLimits.size - 1) {
-                val dashLabel = Label(" - ", labelStyle)
-                workerTasksAndAmountsTable.add(dashLabel).space(0f, 5f, 0f, 5f)
-            }
+            workerTasksAndAmountsTable.add(taskLabel).spaceRight(5f).fillX()
+            workerTasksAndAmountsTable.add(amountLabel).spaceRight(5f).fillX()
+            workerTasksAndAmountsTable.row()
         }
+
+//        workerTasksAndAmountsTable.debugAll()
 
         return workerTasksAndAmountsTable
     }

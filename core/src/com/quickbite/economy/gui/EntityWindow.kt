@@ -246,8 +246,11 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
 
         //The worker tasks and amounts table
         val workerTasksAndAmountsTables = Table()
+//        workerTasksAndAmountsTables.background = darkBackgroundDrawable
 
+        //Here we populate the worker tasks and amounts table
         GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
+        //This populates the actual worker list
         GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
 
         val workerTaskList = Table()
@@ -265,6 +268,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                     super.clicked(event, x, y)
                     val taskNameText = taskNameLabel.text.toString()
 
+                    //Any time this task is clicked, we want to repopulate the worker tasks and amount AND the actual worker list
                     EntityWindowController.addTaskToWorkers(taskNameText, selectedWorkers, entity)
                     GUIUtil.populateWorkerTasksAndAmountsTable(comp, workerTasksAndAmountsTables, defaultLabelStyle)
                     GUIUtil.populateWorkerTable(comp, selectedWorkers, workerListTable, defaultLabelStyle, defaultTextButtonStyle, GameScreenGUIManager)
@@ -293,7 +297,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         changedTabsFunc = { GameEventSystem.unsubscribe(updateEvent) }
 
         //Add our main scroll pane and the hiring button
-        table.add(workerTasksAndAmountsTables).colspan(2).spaceBottom(5f)
+        table.add(workerTasksAndAmountsTables).colspan(1).spaceBottom(5f).padTop(5f)
+        table.add().growX()
         table.row()
         table.add(workerListScrollPane).grow().top().colspan(2).height(225f)
         table.row()

@@ -12,8 +12,14 @@ import com.quickbite.economy.util.Util
  * Created by Paha on 1/22/2017.
  */
 class WorkForceComponent : MyComponent {
+    /** The manager for this building*/
+    var manager:Entity? = null
+
+    /** Total number of worker spots*/
     var numWorkerSpots:Int = 0
-    var workersAvailable:Array<Entity> = Array(10)
+
+    /** The list of workers currently working in this WorkForce*/
+    var workers:Array<Entity> = Array(10)
 
     /** The worker task names and their limits (how many jobs can be taken)*/
     var workerTasksLimits:Array<WorkerTaskLimitLink> = Array()
@@ -27,7 +33,7 @@ class WorkForceComponent : MyComponent {
     }
 
     override fun dispose(myself: Entity) {
-        workersAvailable.forEach {
+        workers.forEach {
             Util.removeWorkerFromBuilding(it, myself)
             val beh = Mappers.behaviour[it]
             beh.currTask = Tasks.leaveMap(beh.blackBoard)

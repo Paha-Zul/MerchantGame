@@ -45,7 +45,7 @@ class HireWorkerWindow(val workforceEntity: Entity) : GUIWindow() {
             workerButton.addListener(object: ChangeListener(){
                 override fun changed(event: ChangeEvent?, actor: Actor?) {
                     //Check to make sure we can add a worker
-                    if(workforce.workersAvailable.size < workforce.numWorkerSpots) {
+                    if(workforce.workers.size < workforce.numWorkerSpots) {
                         val entity = Factory.createObjectFromJson("worker", Vector2(-1000f, 0f))!! //Create the worker
                         Util.assignWorkerToBuilding(entity, workforceEntity) //Assign it to the building
                         GameEventSystem.fire(ReloadGUIEvent()) //Fire an event to reload the GUI

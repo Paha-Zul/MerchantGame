@@ -27,6 +27,17 @@ object Tasks {
         return seq
     }
 
+    fun manage(bb:BlackBoard):Task{
+        val seq = Sequence(bb, "Managing")
+
+        val hireWorkers = HireWorkers(bb)
+        val delay = Wait(bb, 5f, 5f)
+
+        seq.controller.addTasks(hireWorkers, delay)
+
+        return seq
+    }
+
     private fun sowPlant(bb:BlackBoard):Task{
         val seq = Sequence(bb)
 

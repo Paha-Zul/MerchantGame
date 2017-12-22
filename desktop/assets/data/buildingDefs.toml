@@ -146,11 +146,12 @@
         ]
         taxRate = 0.1
     [defs.workforceDef]
-        workforceMax = 5
+        workforceMax = 6
         workerTasks = [
             {taskName = "haul", amount = "3"},
             {taskName = "sell", amount = "1"},
-            {taskName = "produce", amount = "1"}
+            {taskName = "produce", amount = "1"},
+            {taskName = "manage", amount = "1"}
         ]
     [defs.physicsDef]
         bodyType = "static"
@@ -242,9 +243,10 @@
             inside = [{x=-70, y=0}]
     [defs.inventoryDef]
     [defs.workforceDef]
-        workforceMax = 2
+        workforceMax = 3
         workerTasks = [
-            {taskName = "farm", amount = "2"}
+            {taskName = "farm", amount = "2"},
+            {taskName = "manage", amount = "1"}
         ]
     [defs.physicsDef]
         bodyType = "static"

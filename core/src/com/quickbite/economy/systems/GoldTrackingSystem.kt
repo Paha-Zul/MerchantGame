@@ -46,8 +46,9 @@ class GoldTrackingSystem : EntitySystem(){
 
                 //If we are clearing the daily gold....
                 if(doDailyGoldClearFlag){
-                    sc.incomeDaily = 0
-                    sc.taxCollectedDaily = 0
+                    sc.incomePerDayHistory.add(sc.incomeDaily) //Record the daily income here
+                    sc.incomeDaily = 0 //Clear the daily income
+                    sc.taxCollectedDaily = 0 //Clear the tax collected daily
                 }
             }
 

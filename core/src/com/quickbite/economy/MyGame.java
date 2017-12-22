@@ -21,7 +21,7 @@ import com.quickbite.economy.screens.GameScreen;
 import com.quickbite.economy.util.Constants;
 import com.quickbite.economy.util.Grid;
 import com.quickbite.economy.util.TimeUtil;
-import com.quickbite.spaceslingshot.util.Loader;
+import com.quickbite.economy.util.Loader;
 
 public class MyGame extends Game {
     public static com.quickbite.economy.util.EasyAssetManager manager;
@@ -83,13 +83,13 @@ public class MyGame extends Game {
         parameter.genMipMaps = true;
         parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
         parameter.magFilter = Texture.TextureFilter.Linear;
-        defaultFont8 = generator.generateFont(parameter); // font size 14 pixels
+        defaultFont8 = generator.generateFont(parameter); // font size 8 pixels
 
         parameter.size = 12;
         parameter.genMipMaps = true;
         parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
         parameter.magFilter = Texture.TextureFilter.Linear;
-        defaultFont12 = generator.generateFont(parameter); // font size 14 pixels
+        defaultFont12 = generator.generateFont(parameter); // font size 12 pixels
 
         parameter.size = 14;
         parameter.genMipMaps = true;
@@ -101,7 +101,7 @@ public class MyGame extends Game {
         parameter.genMipMaps = true;
         parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
         parameter.magFilter = Texture.TextureFilter.Linear;
-        defaultFont20 = generator.generateFont(parameter); // font size 14 pixels
+        defaultFont20 = generator.generateFont(parameter); // font size 20 pixels
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
     }
 

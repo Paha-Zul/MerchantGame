@@ -175,16 +175,21 @@ object Util {
     fun assignWorkerToBuilding(entityWorker:Entity, entityWorkForce:Entity):Boolean{
         val worker = Mappers.worker[entityWorker]
         val workForce = Mappers.workforce[entityWorkForce]
-        if(workForce.workersAvailable.size >= workForce.numWorkerSpots) //If we're at our max, return false
+        if(workForce.workers.size >= workForce.numWorkerSpots) //If we're at our max, return false
             return false
 
-        workForce.workersAvailable.add(entityWorker)
+        workForce.workers.add(entityWorker)
         worker.workerBuilding = entityWorkForce
 
         if(workForce.workerTasksLimits.size == 1)
             toggleTaskOnWorker(entityWorker, entityWorkForce, workForce.workerTasksLimits[0].taskName)
 
         return true
+    }
+
+    fun createAndAssignWorkerToBuilding(entityWorkForce:Entity):Entity?{
+        val entity = Factory.createObjectFromJson("worker", Vector2(-1000f, 0f))!!
+        return if(assignWorkerToBuilding(entity, entityWorkForce)) entity else null
     }
 
     /**
