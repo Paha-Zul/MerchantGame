@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="512"
+   height="512"
+   viewBox="0 0 135.46666 135.46667"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.1 r15371"
+   sodipodi:docname="button.svg"
+   inkscape:export-filename="C:\Users\Paha\GoogleDrive\AllProjectFiles\Java\EconomyGame\android\data\ui\button.png"
+   inkscape:export-xdpi="5.9813075"
+   inkscape:export-ydpi="5.9813075">
+  <defs
+     id="defs2">
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter4564"
+       x="-0.038534418"
+       width="1.0770688"
+       y="-2.466203"
+       height="5.932406">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.4204433"
+         id="feGaussianBlur4566" />
+    </filter>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4570">
+      <rect
+         ry="4.5785728"
+         y="165.31401"
+         x="-0.10251656"
+         height="58.423233"
+         width="83.552307"
+         id="rect4572"
+         style="opacity:1;fill:#565244;fill-opacity:1;stroke:#000000;stroke-width:0.23812503;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath5132">
+      <rect
+         ry="2.1022465"
+         y="166.48314"
+         x="-0.10251656"
+         height="26.824959"
+         width="83.552307"
+         id="rect5134"
+         style="opacity:1;fill:#565244;fill-opacity:1;stroke:#000000;stroke-width:0.23812504;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.1894531"
+     inkscape:cx="217.50887"
+     inkscape:cy="293.17258"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1680"
+     inkscape:window-height="987"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="18.017733,10.454735"
+       orientation="0,1"
+       id="guide4502"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-161.53332)">
+    <g
+       id="g4500"
+       transform="translate(0.33073215,-0.33071679)"
+       inkscape:export-xdpi="12"
+       inkscape:export-ydpi="12">
+      <rect
+         rx="10.597733"
+         ry="10.597733"
+         y="162.73717"
+         x="0.11906026"
+         height="134.14375"
+         width="134.14375"
+         id="rect4485"
+         style="opacity:1;fill:#565244;fill-opacity:1;stroke:#000000;stroke-width:1.32291663;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:3.9000001;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         clip-path="url(#clipPath5132)"
+         transform="matrix(1.6184896,0,0,3.1005421,0.28498226,-354.53562)"
+         y="166.71698"
+         x="-0.46077091"
+         height="1.3823128"
+         width="88.468025"
+         id="rect4534"
+         style="opacity:0.5;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.59055281;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter4564)" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="128"
+   viewBox="0 0 64 128"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="tree_stump.svg"
+   inkscape:export-filename="C:\Users\Paha\GoogleDrive\AllProjectFiles\Java\EconomyGame\android\data\tree_stump.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="19.03125"
+     inkscape:cx="30.671107"
+     inkscape:cy="19.131965"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer2"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-924.36216)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2"
+     transform="translate(0,-128)">
+    <path
+       style="fill:#8d6e42;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.06907231px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 23.645975,250.99652 c -0.36621,-0.39465 1.069525,-2.06868 1.393695,-2.67125 0.241961,-2.07119 0.03263,-5.04178 0.725883,-6.21356 0.693252,-1.17179 2.017955,-1.55339 3.121297,-1.81471 1.103342,-0.26132 5.222596,-0.19411 6.576501,0.21776 1.353906,0.41188 2.309109,1.33013 2.67125,2.40994 0.36214,1.0798 0.493601,3.10677 0.493601,3.10677 0.04821,1.04528 0.250017,2.09055 0.725882,3.13582 0,0 0.98924,0.94895 1.058758,1.74564 0.03526,0.40404 -1.392081,-0.40563 -1.392081,-0.40563 -0.62355,-0.25471 -1.650554,0.5349 -2.195863,0.41755 -0.734354,-0.15803 -1.004874,-0.12174 -1.325362,0.0533 -0.236063,0.12892 -0.777209,-0.006 -1.24094,0.0426 -0.633365,0.0658 -1.373177,-0.1791 -1.52492,-0.20259 -0.132234,-0.0205 -0.580546,0.18266 -1.195671,0.30848 -0.677381,0.13855 -1.475212,-0.65679 -1.788282,-0.71449 -0.661158,-0.12185 -1.2115,0.11011 -1.791517,-0.0971 -0.487677,-0.1742 -0.897747,0.30939 -1.412391,0.33513 -0.613256,0.0307 -1.234717,0.002 -1.234717,0.002 -1.34324,0.0935 -1.019884,0.29468 -1.665123,0.34455 z"
+       id="path4138"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cczzzzccscssssssssccc" />
+    <path
+       style="opacity:1;fill:#e8dc90;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.06907231px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 25.73682,242.14542 c -0.176073,0.42519 -0.24452,1.32087 0.605276,1.59415 0.849796,0.27327 1.786138,0.40842 3.59629,0.57031 1.810151,0.1619 6.334208,-0.1621 6.857995,-0.34842 0.523787,-0.18633 1.526091,-0.63133 1.233287,-1.36007 -0.292804,-0.72874 -1.225922,-1.64607 -2.344683,-2.02806 -1.118761,-0.38199 -4.86169,-0.73132 -6.851215,-0.27137 -1.989524,0.45995 -2.795663,1.11589 -3.09695,1.84346 z"
+       id="path4141"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="szzzzzzs" />
+  </g>
+</svg>
