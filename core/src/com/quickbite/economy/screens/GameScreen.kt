@@ -147,13 +147,7 @@ class GameScreen :Screen{
         val batch =  MyGame.batch
         batch.projectionMatrix = MyGame.camera.combined
 
-        batch.begin()
-
-        drawTerrain(batch)
-
-        MyGame.entityEngine.update(TimeUtil.scaledDeltaTime)
-
-        batch.end()
+        drawGame(batch)
 
         val renderer = MyGame.renderer
 
@@ -182,6 +176,13 @@ class GameScreen :Screen{
         updateTown(delta)
 
         checkCameraMove()
+    }
+
+    private fun drawGame(batch:SpriteBatch){
+        batch.begin()
+        drawTerrain(batch)
+        MyGame.entityEngine.update(TimeUtil.scaledDeltaTime)
+        batch.end()
     }
 
     /**
@@ -249,7 +250,6 @@ class GameScreen :Screen{
         val pos = Vector2(Util.roundDown(worldCoords.x + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat(),
                 Util.roundDown(worldCoords.y + MyGame.grid.squareSize*0.5f, MyGame.grid.squareSize).toFloat())
 
-//        System.out.println("pos:$pos, pos2:$pos2")
 
         //TODO Need more conditions here for if we can't build
         shadowObject.canBuild = shadowObject.def!!.cost > myTown.money

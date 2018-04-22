@@ -38,13 +38,13 @@ class WorkforceSystem(interval:Float) : IntervalIteratingSystem(Family.all(WorkF
                 val task:Task
 
                 //If we are withing the working hour range, assign our person the regular tasks
-                if(scaledTime in scaledWorkerTimeStart..scaledWorkerTimeEnd) {
+                task = if(scaledTime in scaledWorkerTimeStart..scaledWorkerTimeEnd) {
                     val taskList = worker.taskList.toList()
-                    task = assignTasks(taskList, bc)
+                    assignTasks(taskList, bc)
 
-                //Otherwise, assign us a leave the map task
+                    //Otherwise, assign us a leave the map task
                 }else{
-                    task = Tasks.leaveMapAndHide(bc.blackBoard)
+                    Tasks.leaveMapAndHide(bc.blackBoard)
                 }
 
                 bc.currTask = task

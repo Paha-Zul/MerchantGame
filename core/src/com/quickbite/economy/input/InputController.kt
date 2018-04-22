@@ -9,6 +9,7 @@ import com.quickbite.economy.components.SellingItemsComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
+import com.quickbite.economy.systems.RenderSystem
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
@@ -16,7 +17,7 @@ import com.quickbite.economy.util.objects.SellingItemData
 
 object InputController {
     internal fun placeEntity(worldCoords: Vector3, currentlySelectedType:String):Boolean{
-        val def = DefinitionManager.constructionDefMap[currentlySelectedType]!!
+        val def = DefinitionManager.constructionDefMap[currentlySelectedType.toLowerCase()]!!
         val town = TownManager.getTown("Town")
 
         //TODO Add more restrictions here, like materials needed
@@ -59,12 +60,13 @@ object InputController {
         if(inputHandler.entityClickedOn == null) { //If null, close the entity table (if it happens to be open)
             inputHandler.linkingAnotherEntity = false //Clear the linking flag
 
-            //If not null, open the table for the Entity
+        //Otherwise, if we are already clicked on another entity
         }else{
             //If we're not inside a UI box, try to click on something!
             if(!inputHandler.insideUI) {
-                //Call this callback (probably empty most of the moveTime
+                //Call this callback (probably empty most of the time
                 inputHandler.linkingEntityCallback(inputHandler.entityClickedOn!!)
+                RenderSystem.linkToArrow.active = false
 
                 //Save the selected entity
                 inputHandler.selectedEntity = inputHandler.entityClickedOn
@@ -84,6 +86,7 @@ object InputController {
      * @param entToLinkTo The Entity we are linking to
      */
     fun linkEntityForReselling(entityToLink: Entity, entToLinkTo:Entity){
+        //Make sure we aren't linking to ourself
         if(entityToLink != entToLinkTo){
             val otherBuilding = Mappers.building[entityToLink]
             val otherSelling:SellingItemsComponent? = Mappers.selling[entityToLink]

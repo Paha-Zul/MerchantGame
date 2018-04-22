@@ -12,10 +12,13 @@ import com.quickbite.economy.components.DebugDrawComponent
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
+import com.quickbite.economy.systems.RenderSystem
 import com.quickbite.economy.util.*
 
 /**
  * Created by Paha on 1/17/2017.
+ * This contains data (a handler) for the InputController. Also contains larger functions
+ * that are too verbose fro the input controller to make it clearer
  */
 class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     internal var buttonDown = -1
@@ -62,13 +65,19 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             //if we are right clicking, clear out selection and UI
             Input.Buttons.RIGHT -> {
                 gameScreen.currentlySelectedType = ""
-                linkingEntityCallback = {} //Clear the entity callback
+                clearLinkingEntity()
             }
         }
 
         down = false
         buttonDown = -1
         return false
+    }
+
+    private fun clearLinkingEntity(){
+        linkingEntityCallback = {} //Clear the entity callback
+        linkingAnotherEntity = false
+        RenderSystem.linkToArrow.active = false
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {

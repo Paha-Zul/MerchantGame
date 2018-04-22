@@ -25,6 +25,7 @@ import com.quickbite.economy.gui.widgets.Graph
 import com.quickbite.economy.gui.widgets.ProductionMap
 import com.quickbite.economy.input.InputController
 import com.quickbite.economy.managers.DefinitionManager
+import com.quickbite.economy.systems.RenderSystem
 import com.quickbite.economy.util.Factory
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Util
@@ -661,6 +662,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
                 GameScreenGUIManager.gameScreen.inputHandler.linkingEntityCallback = {ent ->
                     InputController.linkEntityForReselling(ent, entity)
                 }
+                RenderSystem.linkToArrow.active = true
+                RenderSystem.linkToArrow.start.set(Mappers.transform[entity].position)
             }
         })
 

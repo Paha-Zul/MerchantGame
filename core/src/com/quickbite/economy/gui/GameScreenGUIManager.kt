@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.NinePatch
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
@@ -15,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.quickbite.economy.MyGame
@@ -53,11 +56,16 @@ object GameScreenGUIManager {
     var showingTooltip = Tooltip()
     private var tooltipLocation = TooltipLocation.Mouse
 
+    private val linkArrow:NinePatchDrawable
+
     //Gotta be lazy cause Import won't be available right away
     private val myTown: Town by lazy {TownManager.getTown("Town")}
 
     init{
         toolTipTable.background = TextureRegionDrawable(TextureRegion(Util.createPixel(Color(0.1f, 0.1f, 0.1f, 0.7f))))
+
+        val arrow = NinePatch(MyGame.manager["arrow", Texture::class.java], 20, 100, 75, 75)
+        linkArrow = NinePatchDrawable(arrow)
     }
 
     fun init(gameScreen:GameScreen){
@@ -241,6 +249,10 @@ object GameScreenGUIManager {
         displayTooltip()
     }
 
+    fun draw(batch:SpriteBatch){
+
+    }
+
     /**
      * Displays the tooltip (if there is one currently open)
      */
@@ -286,6 +298,16 @@ object GameScreenGUIManager {
 
         showingTooltip.entity = null
         showingTooltip.event = null
+    }
+
+    fun drawLinkArrow(){
+        drawLineTo(Vector2(), Vector2(100f, 100f), linkArrow)
+    }
+
+    private fun drawLineTo(start: Vector2, end:Vector2, texture: NinePatchDrawable){
+        val rotation = MathUtils.atan2(end.y - start.y, end.x - start.x)* MathUtils.radiansToDegrees
+        val distance = start.dst(end)
+        texture.draw(MyGame.UIBatch, start.x, start.y, 0f, 0f, distance, 32f, 1f, 1f, rotation)
     }
 
     data class Tooltip(var showing:Boolean = false, var entity:Entity?=null, var event:GameEventSystem.GameEventRegistration? = null)

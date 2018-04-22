@@ -38,3 +38,13 @@
     cost = 200
     time = 10
     materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "tree"
+    cost = 0
+    time = 0
+    materials = [] #Item names, like wood planks and stuff?
+[[defs]]
+    name = "lumberjack hut"
+    cost = 0
+    time = 0
+    materials = [] #Item names, like wood planks and stuff?

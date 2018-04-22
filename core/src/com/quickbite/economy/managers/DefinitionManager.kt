@@ -15,12 +15,19 @@ import com.quickbite.economy.util.objects.WorkerTaskLimitLink
  */
 object DefinitionManager {
     private val json = Json()
+    /** The definitions for all other definitions??? **/
     val definitionMap: HashMap<String, Definition> = hashMapOf()
+    /** A map of all items, uncategorized **/
     val itemDefMap: HashMap<String, ItemDef> = hashMapOf()
+    /** A map of the items broken down into category **/
     val itemCategoryMap:HashMap<String, com.badlogic.gdx.utils.Array<ItemDef>> = hashMapOf()
+    /** The definitions for all item production chains **/
     val productionMap: HashMap<String, Production> = hashMapOf()
+    /** The definitions for all plants **/
     val plantDefMap: HashMap<String, PlantDef> = hashMapOf()
+    /** The definitions for all levels **/
     val levelDefMap:HashMap<String, LevelDef> = hashMapOf()
+    /** The definitions for all constructions of buildings **/
     val constructionDefMap:HashMap<String, ConstructionDef> = hashMapOf()
 
     lateinit var names:Names
@@ -113,23 +120,23 @@ object DefinitionManager {
 
     private fun loadBuildingDefs(){
         val buildingDefs = Toml().read(Gdx.files.internal(buildingDefName).file()).to(DefinitionManager.DefList::class.java)
-        buildingDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+        buildingDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def }
     }
 
     private fun loadUnitDefs(){
         val unitDefs = Toml().read(Gdx.files.internal(unitDefName).file()).to(DefinitionManager.DefList::class.java)
-        unitDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+        unitDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def }
     }
 
     private fun loadResourceDefs(){
         val resourceDefs = Toml().read(Gdx.files.internal(resourceDefName).file()).to(DefinitionManager.DefList::class.java)
-        resourceDefs.defs.forEach { def -> DefinitionManager.definitionMap.put(def.name.toLowerCase(), def) }
+        resourceDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def }
     }
 
     private fun loadItemDefs(){
         val itemDefList = Toml().read(Gdx.files.internal(itemsDefName).file()).to(ItemDefList::class.java)
         itemDefList.items.forEach { itemDef ->
-            DefinitionManager.itemDefMap.put(itemDef.itemName.toLowerCase(), itemDef)
+            DefinitionManager.itemDefMap[itemDef.itemName.toLowerCase()] = itemDef
             itemDef.categories.forEach { DefinitionManager.itemCategoryMap.computeIfAbsent(it, {com.badlogic.gdx.utils.Array()}).add(itemDef) }
         }
     }
@@ -139,25 +146,25 @@ object DefinitionManager {
         itemProdList.productions.forEach { prod ->
             prod.produceItemName = prod.produceItemName.toLowerCase() //Make sure the produced item name is lower case
             prod.requirements.forEach { it.itemName = it.itemName.toLowerCase() } //Make sure each requirement item name is lower case
-            DefinitionManager.productionMap.put(prod.produceItemName.toLowerCase(), prod) //Make sure we store it under the LOWER CASE name...
+            DefinitionManager.productionMap[prod.produceItemName.toLowerCase()] = prod //Make sure we store it under the LOWER CASE name...
         }
     }
 
     private fun loadPlantDefs(){
         val plantDefsList = Toml().read(Gdx.files.internal(plantDefName).file()).to(PlantDefList::class.java)
-        plantDefsList.defs.forEach { plantDef -> DefinitionManager.plantDefMap.put(plantDef.name, plantDef)}
+        plantDefsList.defs.forEach { plantDef -> DefinitionManager.plantDefMap[plantDef.name] = plantDef }
 
         //TODO THis needs to be a class with a list of PlantDef objects!!
     }
 
     private fun loadLevelDefs(){
         val levelDefsList = Toml().read(Gdx.files.internal(levelDefName).file()).to(LevelDefList::class.java)
-        levelDefsList.levels.forEach { level -> levelDefMap.put(level.name, level) }
+        levelDefsList.levels.forEach { level -> levelDefMap[level.name] = level }
     }
 
     private fun loadConstructionDefs(){
         val constructionDefList = Toml().read(Gdx.files.internal(constructionDefName).file()).to(ConstructionDefList::class.java)
-        constructionDefList.defs.forEach { constr -> constructionDefMap.put(constr.name, constr) }
+        constructionDefList.defs.forEach { constr -> constructionDefMap[constr.name] = constr }
     }
 
     /**
