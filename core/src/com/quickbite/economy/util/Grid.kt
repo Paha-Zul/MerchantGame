@@ -46,6 +46,17 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
             })
     }
 
+    fun setBlocked(index:Pair<Int, Int>){
+        val node = getNodeAtIndex(index.first, index.second)!!
+        node.blocked = true
+    }
+
+    fun setBlocked(position:Vector2){
+        val index = getIndexOfGrid(position.x, position.y)
+        val node = getNodeAtIndex(index.first, index.second)!!
+        node.blocked = true
+    }
+
     fun setBlocked(centerX:Float, centerY:Float, dimensionsToBlock:Array<Array<Int>>, gridSquaresToExclude:Array<Array<Int>>){
         val startNode = getNodeAtPosition(centerX, centerY)!!
         val centerIndex = Pair (startNode.x, startNode.y) //Used for calculating the offset
@@ -71,6 +82,17 @@ class Grid(val squareSize:Int, val gridWidth:Int, val gridHeight:Int) {
      */
     fun setUnblocked(centerX:Float, centerY:Float, halfWidth:Float, halfHeight:Float){
         forNodesInSquare(centerX, centerY, halfWidth, halfHeight, {node -> node.blocked = false})
+    }
+
+    fun setUnblocked(position:Vector2){
+        val index = getIndexOfGrid(position.x, position.y)
+        val node = getNodeAtIndex(index.first, index.second)!!
+        node.blocked = false
+    }
+
+    fun setUnblocked(index:Pair<Int, Int>){
+        val node = getNodeAtIndex(index.first, index.second)!!
+        node.blocked = false
     }
 
     fun addEntity(x:Float, y:Float, entity: Entity, width:Int = 0, height:Int = 0){
