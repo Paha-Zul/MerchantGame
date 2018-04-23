@@ -1,271 +1,553 @@
 [[defs]]
-    name = "wall"
+  name = "shop"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
     [defs.graphicDef]
-        graphicName = "palisade_wall_horizontal"
-        graphicAnchor = [0.5, 0.0]
-        graphicSize = [75, 75]
-        initialAnimation = true
-    [defs.buildingDef]
-        buildingType = "Wall"
-    [defs.transformDef]
-        physicalDimensions = {x = 75, y = 20}
-    [defs.physicsDef]
-        bodyType = "static"
+      graphicName = "shop3"
+      graphicAnchor = [   0.5, 0.5   ]
+      graphicSize = [   500.0, 500.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 500.0
+          y = 500.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = 0.0
+              y = -125.00002
+
     [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-1, -1], [1, 1]]
-        
-[[defs]]
-    name = "shop"
-    [defs.graphicDef]
-        graphicName = "shop2"
-        graphicAnchor = [0.5, 0.5]
-        graphicSize = [175, 175]
-        initialAnimation = true
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -7, -8   ], [   7, 5   ]   ]
+      gridSpotsToNotBlock = [   [   4, -8   ], [   4, -7   ], [   3, -7   ], [   2, -7   ], [   1, -7   ], [   0, -7   ], [   -1, -7   ], [   -2, -7   ], [   -3, -7   ], [   -4, -7   ], [   -4, -8   ], [   -4, -6   ], [   -3, -6   ], [   -2, -6   ], [   -1, -6   ], [   0, -6   ], [   1, -6   ], [   2, -6   ], [   3, -6   ], [   4, -6   ], [   4, -5   ], [   3, -5   ], [   2, -5   ], [   1, -5   ], [   0, -5   ], [   -1, -5   ], [   -2, -5   ], [   -3, -5   ], [   -4, -5   ]   ]
+
     [defs.buildingDef]
-        buildingType = "Shop"
-    [defs.transformDef]
-        physicalDimensions = {x = 175, y = 175}
-        [defs.transformDef.spots]
-            entrance = [{x = 0, y = -100}]
+      isBuilding = false
+      buildingType = "Shop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "5"}]
+      outputs = [      ]
+
+        [[defs.inventoryDef.debugItemList]]
+          itemName = "Gold"
+          itemAmount = 5
+
     [defs.sellingItems]
-        isReselling = true
-        taxRate = 0.1
+      sellingList = [      ]
+      isReselling = true
+      taxRate = 0.1
+
     [defs.workforceDef]
-        workforceMax = 5
-        workerTasks = [
-            {taskName = "haul", amount = "5"},
-            {taskName = "sell", amount = "5"}
-        ]
-    [defs.physicsDef]
-        bodyType = "static"
-    [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-3, -3], [3, 3]]
+      workforceMax = 5
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "haul"
+          amount = 5
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "sell"
+          amount = 5
 
 [[defs]]
-    name = "lumberyard"
+  name = "lumberjack hut"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
     [defs.graphicDef]
-        graphicName = "lumberyard"
-        graphicAnchor = [0.5, 0.5]
-        graphicSize = [125, 125]
-        initialAnimation = true
+      graphicName = "lumberjack_hut"
+      graphicAnchor = [   0.5, 0.5   ]
+      graphicSize = [   200.0, 200.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 200.0
+          y = 200.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = 0.0
+              y = -50.0
+
+    [defs.gridDef]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -2, -3   ], [   2, 2   ]   ]
+      gridSpotsToNotBlock = [   [   0, -2   ], [   0, -3   ]   ]
+
     [defs.buildingDef]
-        buildingType = "Workshop"
-    [defs.transformDef]
-        physicalDimensions = {x = 125, y = 125}
-        [defs.transformDef.spots]
-            entrance = [{x=0, y=-75}]
+      isBuilding = false
+      buildingType = "Workshop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+      outputs = [      ]
+
+        [[defs.inventoryDef.debugItemList]]
+          itemName = "Gold"
+          itemAmount = 2000
+
+    [defs.productionDef]
+      produces = [      ]
+      harvests = [   "Wood Log"   ]
+
+    [defs.workforceDef]
+      workforceMax = 7
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "harvest"
+          amount = 7
+
+[[defs]]
+  name = "bakery"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
+    [defs.graphicDef]
+      graphicName = "bakery"
+      graphicAnchor = [   0.5, 0.5   ]
+      graphicSize = [   125.0, 125.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 125.0
+          y = 125.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = -10.0
+              y = -75.0
+
+    [defs.gridDef]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -2, -2   ], [   2, 1   ]   ]
+      gridSpotsToNotBlock = [      ]
+
+    [defs.buildingDef]
+      isBuilding = false
+      buildingType = "Workshop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
+    [defs.inventoryDef]
+      outputs = [      ]
+
+        [[defs.inventoryDef.debugItemList]]
+          itemName = "Gold"
+          itemAmount = 2000
+
+    [defs.productionDef]
+      produces = [   "Bread"   ]
+      harvests = [      ]
+
     [defs.sellingItems]
-        sellingList = [
-            {itemName = "Wood Plank", itemPrice = 10}
-        ]
-        taxRate = 0.1
+      isReselling = false
+      taxRate = 0.1
+
+        [[defs.sellingItems.sellingList]]
+          itemName = "Bread"
+          itemPrice = 10
+
     [defs.workforceDef]
-        workforceMax = 5
-        workerTasks = [
-            {taskName = "haul", amount = "3"},
-            {taskName = "sell", amount = "1"},
-            {taskName = "produce", amount = "1"}
-        ]
-    [defs.physicsDef]
-        bodyType = "static"
-    [defs.productionDef]
-        produces = ["Wood Plank"]
-    [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-2, -2], [2, 2]]
+      workforceMax = 5
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "haul"
+          amount = 3
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "sell"
+          amount = 1
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "produce"
+          amount = 1
 
 [[defs]]
-    name = "table shop"
+  name = "flour mill"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
     [defs.graphicDef]
-        graphicName = "workshop"
-        graphicAnchor = [0.5, 0.5]
-        graphicSize = [200, 200]
-        initialAnimation = true
+      graphicName = "windmill"
+      graphicAnchor = [   0.5, 0.3   ]
+      graphicSize = [   200.0, 200.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 125.0
+          y = 100.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = 0.0
+              y = -75.0
+
+    [defs.gridDef]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -2, -2   ], [   2, 1   ]   ]
+      gridSpotsToNotBlock = [      ]
+
     [defs.buildingDef]
-        buildingType = "Workshop"
-    [defs.transformDef]
-        physicalDimensions = {x = 200, y = 200}
-        [defs.transformDef.spots]
-            entrance = [{x=-55, y=-110}]
-            inside = [{x=-55, y=0}]
+      isBuilding = false
+      buildingType = "Workshop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+      outputs = [      ]
+
+        [[defs.inventoryDef.debugItemList]]
+          itemName = "Gold"
+          itemAmount = 2000
+
+    [defs.productionDef]
+      produces = [   "Flour"   ]
+      harvests = [      ]
+
     [defs.sellingItems]
-        sellingList = [
-            {itemName = "Wood Table", itemPrice = 30}
-        ]
-        taxRate = 0.1 
+      isReselling = false
+      taxRate = 0.1
+
+        [[defs.sellingItems.sellingList]]
+          itemName = "Flour"
+          itemPrice = 10
+
     [defs.workforceDef]
-        workforceMax = 5
-        workerTasks = [
-            {taskName = "haul", amount = "3"},
-            {taskName = "sell", amount = "1"},
-            {taskName = "produce", amount = "1"}
-        ]
-    [defs.physicsDef]
-        bodyType = "static"
-    [defs.productionDef]
-        produces = ["Wood Table"]
-    [defs.gridDef]
-    onGrid = true
-    blockGridWhenPlaced = true
-    gridSpotsToBlock = [[-4, -4], [4, 3]]
-    gridSpotsToNotBlock = [
-        [1, -2], [1, -3], [1, -4],
-        [2, -2], [2, -3], [2, -4],
-        [3, -2], [3, -3], [3, -4],
-        [4, -2], [4, -3], [4, -4]]
+      workforceMax = 6
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "haul"
+          amount = 3
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "sell"
+          amount = 1
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "produce"
+          amount = 1
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "manage"
+          amount = 1
 
 [[defs]]
-    name = "flour mill"
+  name = "table shop"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
     [defs.graphicDef]
-        graphicName = "windmill"
-        graphicAnchor = [0.5, 0.3]
-        graphicSize = [200, 200]
-        initialAnimation = true
+      graphicName = "workshop"
+      graphicAnchor = [   0.5, 0.5   ]
+      graphicSize = [   200.0, 200.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 200.0
+          y = 200.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = -55.0
+              y = -110.0
+
+            [[defs.transformDef.spots.inside]]
+              x = -55.0
+              y = 0.0
+
+    [defs.gridDef]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -4, -4   ], [   4, 3   ]   ]
+      gridSpotsToNotBlock = [   [   1, -2   ], [   1, -3   ], [   1, -4   ], [   2, -2   ], [   2, -3   ], [   2, -4   ], [   3, -2   ], [   3, -3   ], [   3, -4   ], [   4, -2   ], [   4, -3   ], [   4, -4   ]   ]
+
     [defs.buildingDef]
-        buildingType = "Workshop"
-    [defs.transformDef]
-        physicalDimensions = {x = 125, y = 100}
-        [defs.transformDef.spots]
-            entrance = [{x=0, y=-75}]
+      isBuilding = false
+      buildingType = "Workshop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+      outputs = [      ]
+
+        [[defs.inventoryDef.debugItemList]]
+          itemName = "Gold"
+          itemAmount = 2000
+
+    [defs.productionDef]
+      produces = [   "Wood Table"   ]
+      harvests = [      ]
+
     [defs.sellingItems]
-        sellingList = [
-            {itemName = "Flour", itemPrice = 10}
-        ]
-        taxRate = 0.1
+      isReselling = false
+      taxRate = 0.1
+
+        [[defs.sellingItems.sellingList]]
+          itemName = "Wood Table"
+          itemPrice = 30
+
     [defs.workforceDef]
-        workforceMax = 6
-        workerTasks = [
-            {taskName = "haul", amount = "3"},
-            {taskName = "sell", amount = "1"},
-            {taskName = "produce", amount = "1"},
-            {taskName = "manage", amount = "1"}
-        ]
-    [defs.physicsDef]
-        bodyType = "static"
-    [defs.productionDef]
-        produces = ["Flour"]
-    [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-2, -2], [2, 1]]
+      workforceMax = 5
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "haul"
+          amount = 3
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "sell"
+          amount = 1
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "produce"
+          amount = 1
 
 [[defs]]
-    name = "bakery"
+  name = "lumberyard"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
     [defs.graphicDef]
-        graphicName = "bakery"
-        graphicAnchor = [0.5, 0.5]
-        graphicSize = [125, 125]
-        initialAnimation = true
+      graphicName = "lumberyard"
+      graphicAnchor = [   0.5, 0.5   ]
+      graphicSize = [   125.0, 125.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 125.0
+          y = 125.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = 0.0
+              y = -75.0
+
+    [defs.gridDef]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -2, -2   ], [   2, 2   ]   ]
+      gridSpotsToNotBlock = [      ]
+
     [defs.buildingDef]
-        buildingType = "Workshop"
-    [defs.transformDef]
-        physicalDimensions = {x = 125, y = 125}
-        [defs.transformDef.spots]
-            entrance = [{x=-10, y=-75}]
+      isBuilding = false
+      buildingType = "Workshop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
     [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
+      outputs = [      ]
+
+        [[defs.inventoryDef.debugItemList]]
+          itemName = "Gold"
+          itemAmount = 2000
+
+    [defs.productionDef]
+      produces = [   "Wood Plank"   ]
+      harvests = [      ]
+
     [defs.sellingItems]
-        sellingList = [
-            {itemName = "Bread", itemPrice = 10}
-        ]
-        taxRate = 0.1
+      isReselling = false
+      taxRate = 0.1
+
+        [[defs.sellingItems.sellingList]]
+          itemName = "Wood Plank"
+          itemPrice = 10
+
     [defs.workforceDef]
-        workforceMax = 5
-        workerTasks = [
-            {taskName = "haul", amount = "3"},
-            {taskName = "sell", amount = "1"},
-            {taskName = "produce", amount = "1"}
-        ]
-    [defs.physicsDef]
-        bodyType = "static"
-    [defs.productionDef]
-        produces = ["Bread"]
-    [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-2, -2], [2, 1]]
+      workforceMax = 5
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "haul"
+          amount = 3
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "sell"
+          amount = 1
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "produce"
+          amount = 1
 
 [[defs]]
-    name = "lumberjack hut"
-    [defs.graphicDef]
-        graphicName = "lumberjack_hut"
-        graphicAnchor = [0.5, 0.5]
-        graphicSize = [200, 200]
-        initialAnimation = true
-    [defs.buildingDef]
-        buildingType = "Workshop"
-    [defs.transformDef]
-        physicalDimensions = {x = 200, y = 200}
-        [defs.transformDef.spots]
-            entrance = [{x=0, y=-50}]
-    [defs.inventoryDef]
-        debugItemList = [{itemName = "Gold", itemAmount = "2000"}]
-    [defs.workforceDef]
-        workforceMax = 7
-        workerTasks = [
-            {taskName = "harvest", amount = "7"}
-        ]
-    [defs.productionDef]
-        harvests = ["Wood Log"]
-    [defs.physicsDef]
-        bodyType = "static"
-    [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-2, -3], [2, 2]]
-        gridSpotsToNotBlock = [[0, -2], [0, -3]]
-        
+  name = "farm"
+  type = "building"
+  compsToAdd = [      ]
 
-[[defs]]
-    name = "farm"
+    [defs.identityDef]
+      useRandomName = false
+
     [defs.graphicDef]
-        graphicName = "farm"
-        graphicAnchor = [0.5, 0.5]
-        graphicSize = [225, 225]
-        initialAnimation = true
-    [defs.buildingDef]
-        buildingType = "Workshop"
-    [defs.transformDef]
-        physicalDimensions = {x = 225, y = 225}
-        [defs.transformDef.spots]
-            entrance = [{x=-70, y=-120}]
-            inside = [{x=-70, y=0}]
-    [defs.inventoryDef]
-    [defs.workforceDef]
-        workforceMax = 3
-        workerTasks = [
-            {taskName = "farm", amount = "2"},
-            {taskName = "manage", amount = "1"}
-        ]
-    [defs.physicsDef]
-        bodyType = "static"
+      graphicName = "farm"
+      graphicAnchor = [   0.5, 0.5   ]
+      graphicSize = [   225.0, 225.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 225.0
+          y = 225.0
+
+            [[defs.transformDef.spots.entrance]]
+              x = -70.0
+              y = -120.0
+
+            [[defs.transformDef.spots.inside]]
+              x = -70.0
+              y = 0.0
+
     [defs.gridDef]
-        onGrid = true
-        blockGridWhenPlaced = true
-        gridSpotsToBlock = [[-4, -4], [4, 4]]
-        gridSpotsToNotBlock = [
-            [-1,-4], [-1,-3], [-1,-2], [-1,-1], [-1,0], [-1,1], [-1,2],
-            [0,-3], [0,-2], [0,-1], [0,0], [0,1], [0,2],
-            [1,-3], [1,-2], [1,-1], [1,0], [1,1], [1,2],
-            [2,-3], [2,-2], [2,-1], [2,0], [2,1], [2,2],
-            [3,-3], [3,-2], [3,-1], [3,0], [3,1], [3,2],
-            ]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -4, -4   ], [   4, 4   ]   ]
+      gridSpotsToNotBlock = [   [   -1, -4   ], [   -1, -3   ], [   -1, -2   ], [   -1, -1   ], [   -1, 0   ], [   -1, 1   ], [   -1, 2   ], [   0, -3   ], [   0, -2   ], [   0, -1   ], [   0, 0   ], [   0, 1   ], [   0, 2   ], [   1, -3   ], [   1, -2   ], [   1, -1   ], [   1, 0   ], [   1, 1   ], [   1, 2   ], [   2, -3   ], [   2, -2   ], [   2, -1   ], [   2, 0   ], [   2, 1   ], [   2, 2   ], [   3, -3   ], [   3, -2   ], [   3, -1   ], [   3, 0   ], [   3, 1   ], [   3, 2   ]   ]
+
+    [defs.buildingDef]
+      isBuilding = false
+      buildingType = "Workshop"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0
+
+    [defs.inventoryDef]
+      debugItemList = [      ]
+      outputs = [      ]
+
+    [defs.workforceDef]
+      workforceMax = 3
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "farm"
+          amount = 2
+
+        [[defs.workforceDef.workerTasks]]
+          taskName = "manage"
+          amount = 1
+
     [defs.farmDef]
-        xSpace = 10
-        ySpace = 5
-        rows = 6
-        cols = 4
-        offset = {x = -0.07, y = -0.30}
+      xSpace = 10.0
+      ySpace = 5.0
+      rows = 6
+      cols = 4
+
+        [defs.farmDef.offset]
+          x = -0.07
+          y = -0.3
+
+[[defs]]
+  name = "wall"
+  type = "building"
+  compsToAdd = [      ]
+
+    [defs.identityDef]
+      useRandomName = false
+
+    [defs.graphicDef]
+      graphicName = "palisade_wall_horizontal"
+      graphicAnchor = [   0.5, 0.0   ]
+      graphicSize = [   75.0, 75.0   ]
+      initialAnimation = true
+
+        [defs.transformDef.physicalDimensions]
+          x = 75.0
+          y = 20.0
+
+    [defs.gridDef]
+      onGrid = true
+      blockGridWhenPlaced = true
+      gridSpotsToBlock = [   [   -1, -1   ], [   1, 1   ]   ]
+      gridSpotsToNotBlock = [      ]
+
+    [defs.buildingDef]
+      isBuilding = false
+      buildingType = "Wall"
+
+    [defs.physicsDef]
+      bodyType = "static"
+
+        [defs.physicsDef.bodyAnchor]
+          x = 0.0
+          y = 0.0
+
+        [defs.physicsDef.bodyDimensions]
+          x = 0.0
+          y = 0.0

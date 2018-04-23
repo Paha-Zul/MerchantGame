@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.moandjiezana.toml.Toml
+import com.moandjiezana.toml.TomlWriter
 import com.quickbite.economy.util.objects.ItemAmountLink
 import com.quickbite.economy.util.objects.ItemPriceLink
 import com.quickbite.economy.util.objects.TownItemIncome
@@ -120,17 +121,20 @@ object DefinitionManager {
 
     private fun loadBuildingDefs(){
         val buildingDefs = Toml().read(Gdx.files.internal(buildingDefName).file()).to(DefinitionManager.DefList::class.java)
-        buildingDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def }
+        buildingDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def
+            def.type = "building" }
     }
 
     private fun loadUnitDefs(){
         val unitDefs = Toml().read(Gdx.files.internal(unitDefName).file()).to(DefinitionManager.DefList::class.java)
-        unitDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def }
+        unitDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def
+            def.type = "unit"}
     }
 
     private fun loadResourceDefs(){
         val resourceDefs = Toml().read(Gdx.files.internal(resourceDefName).file()).to(DefinitionManager.DefList::class.java)
-        resourceDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def }
+        resourceDefs.defs.forEach { def -> DefinitionManager.definitionMap[def.name.toLowerCase()] = def
+            def.type = "resource"}
     }
 
     private fun loadItemDefs(){
@@ -177,6 +181,31 @@ object DefinitionManager {
         productionMap.clear()
 
         loadDefinitions()
+    }
+
+    fun resaveDefinitions(){
+        val buildingList = arrayListOf<Definition>()
+        val resourceList = arrayListOf<Definition>()
+        val unitList = arrayListOf<Definition>()
+
+        definitionMap.values.forEach {
+            when(it.type){
+                "resource" -> resourceList += it
+                "unit" -> unitList += it
+                "building" -> buildingList += it
+                else -> throw Exception("A defintion doesn't have a type. Fix me!")
+            }
+        }
+        val buildingDefs = DefList().apply { defs = buildingList.toTypedArray() }
+
+//        val writer = TomlWriter()
+
+        val writer = TomlWriter.Builder()
+                .indentValuesBy(2)
+                .indentTablesBy(4)
+                .build()
+
+        writer.write(buildingDefs, Gdx.files.internal(buildingDefName).file())
     }
 
     class Names{
@@ -239,6 +268,7 @@ object DefinitionManager {
 
     class Definition {
         var name = ""
+        var type = ""
         var identityDef = IdentityDef() //Must exist
         var graphicDef = GraphicDef() //Must exist
         var transformDef = TransformDef() //Must exist

@@ -43,6 +43,10 @@ import java.util.concurrent.atomic.AtomicInteger
  * The main game screen for a level.
  */
 class GameScreen :Screen{
+    companion object {
+        var showGrid = false
+    }
+
     val gameScreeData = GameScreenData()
     val shadowObject:ShadowObject = ShadowObject()
     lateinit var inputHandler: InputHandler
@@ -53,7 +57,6 @@ class GameScreen :Screen{
             loadNewPreview()
         }
 
-    var showGrid = false
     private val myTown: Town by lazy { TownManager.getTown("Town") }
 
     override fun show() {
@@ -80,6 +83,7 @@ class GameScreen :Screen{
         MyGame.entityEngine.addSystem(resourceSystem)
         MyGame.entityEngine.addSystem(farmSystem)
 
+        //This listens for when an entity is removed. This clears the blocked area of the entity
         MyGame.entityEngine.addEntityListener(object : EntityListener {
             override fun entityRemoved(ent: Entity?) {
                 val gc = Mappers.grid.get(ent) //The grid component

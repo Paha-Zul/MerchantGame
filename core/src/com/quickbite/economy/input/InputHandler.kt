@@ -3,12 +3,14 @@ package com.quickbite.economy.input
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Fixture
 import com.quickbite.economy.MyGame
 import com.quickbite.economy.components.DebugDrawComponent
+import com.quickbite.economy.gui.EditorGUI
 import com.quickbite.economy.gui.GameScreenGUIManager
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.screens.GameScreen
@@ -51,8 +53,11 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
         when(button){
             //If we are left clicking, we either want to place something or deselect
             Input.Buttons.LEFT -> {
+                if(selectedEntity != null && EditorGUI.editingState != EditorGUI.EDITING_STATE.None) {
+                    checkEditing(screenX, screenY)
+                }
                 //If the currently selected type is not empty, lets do something
-                if(gameScreen.currentlySelectedType.isNotEmpty()){
+                else if(gameScreen.currentlySelectedType.isNotEmpty()){
                     InputController.placeEntity(worldCoords, gameScreen.currentlySelectedType)
                     collidedWith = false //Reset this flag
 
@@ -66,12 +71,68 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
             Input.Buttons.RIGHT -> {
                 gameScreen.currentlySelectedType = ""
                 clearLinkingEntity()
+                EditorGUI.closeEditor()
             }
         }
 
         down = false
         buttonDown = -1
         return false
+    }
+
+    private fun checkEditing(screenX:Int, screenY:Int):Boolean{
+        val worldCoords = MyGame.camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 1f))
+        val def = DefinitionManager.definitionMap[Mappers.identity[selectedEntity]!!.name]!!
+        val transform = Mappers.transform[selectedEntity]
+
+        when(EditorGUI.editingState){
+            EditorGUI.EDITING_STATE.Entrance -> {
+                transform.spotMap["entrance"]?.get(0)?.set(worldCoords.x, worldCoords.y)
+            }
+            EditorGUI.EDITING_STATE.BlockGrid -> {
+                val grid = Mappers.grid[selectedEntity]
+
+                //First remove the entity from the grid
+                MyGame.grid.setUnblocked(transform.position.x, transform.position.y,
+                        transform.dimensions.x * 0.5f, transform.dimensions.y * 0.5f)
+
+                val index = MyGame.grid.getIndexOfGrid(worldCoords.x, worldCoords.y)
+                //Filter a new list excluding only the one we don't want
+                val newList = def.gridDef.gridSpotsToNotBlock.filter { index.first != it[0] && index.second != it[1] }
+
+                //Reassign it to the spots to not block
+                def.gridDef.gridSpotsToNotBlock = newList.toTypedArray()
+
+                MyGame.grid.setBlocked(transform.position.x, transform.position.y,
+                        def.gridDef.gridSpotsToBlock, def.gridDef.gridSpotsToNotBlock)
+            }
+
+            EditorGUI.EDITING_STATE.ClearGrid -> {
+                val grid = Mappers.grid[selectedEntity]
+                val index = MyGame.grid.getIndexOfGrid(worldCoords.x, worldCoords.y)
+                val indexOfEntity = MyGame.grid.getIndexOfGrid(transform.position.x, transform.position.y)
+                val relativeIndex = Pair(index.first - indexOfEntity.first, index.second - indexOfEntity.second)
+
+                //First remove the entity from the grid
+                MyGame.grid.setUnblocked(transform.position.x, transform.position.y,
+                        transform.dimensions.x * 0.5f, transform.dimensions.y * 0.5f)
+
+                //Figure out if it contains the spot already. If not, lets add it!
+                if(def.gridDef.gridSpotsToNotBlock.firstOrNull { it[0] == relativeIndex.first && it[1] == relativeIndex.second } == null){
+                    val list = arrayListOf<Array<Int>>() //Make a new list
+                    def.gridDef.gridSpotsToNotBlock.forEach { list.add(it) } //Add all existing spots
+                    list.add(arrayOf(relativeIndex.first, relativeIndex.second)) //Add the new spot
+                    def.gridDef.gridSpotsToNotBlock = list.toTypedArray() //Reassign it
+                }
+
+                MyGame.grid.setBlocked(transform.position.x, transform.position.y,
+                        def.gridDef.gridSpotsToBlock, def.gridDef.gridSpotsToNotBlock)
+
+            }
+            EditorGUI.EDITING_STATE.None -> return false
+        }
+
+        return true
     }
 
     private fun clearLinkingEntity(){
@@ -118,6 +179,8 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     override fun keyUp(keycode: Int): Boolean {
         when(keycode){
             Input.Keys.F5 -> DefinitionManager.clearAllDataAndReload()
+            Input.Keys.F1 -> if(selectedEntity != null) EditorGUI.openEditor()
+            Input.Keys.F2 -> DefinitionManager.resaveDefinitions()
             Input.Keys.C -> DebugDrawComponent.GLOBAL_DEBUG_CENTER = !DebugDrawComponent.GLOBAL_DEBUG_CENTER
             Input.Keys.P -> DebugDrawComponent.GLOBAL_DEBUG_PATH = !DebugDrawComponent.GLOBAL_DEBUG_PATH
             Input.Keys.E -> DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE = !DebugDrawComponent.GLOBAL_DEBUG_ENTRANCE
@@ -130,7 +193,7 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
                 TimeUtil.paused = !TimeUtil.paused
 //                Pathfinder.delayTime = if(TimeUtil.paused) 10000000L else 5L
             }
-            Input.Keys.G -> gameScreen.showGrid = !gameScreen.showGrid
+            Input.Keys.G -> GameScreen.showGrid = !GameScreen.showGrid
 
             Input.Keys.PLUS ->{
                 TimeUtil.timeScaleSpeedIndex = MathUtils.clamp(TimeUtil.timeScaleSpeedIndex+1, 0, TimeUtil.timeScaleSpeeds.size-1)
