@@ -83,50 +83,65 @@ class InputHandler(val gameScreen: GameScreen) : InputProcessor{
     private fun checkEditing(screenX:Int, screenY:Int):Boolean{
         val worldCoords = MyGame.camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 1f))
         val def = DefinitionManager.definitionMap[Mappers.identity[selectedEntity]!!.name]!!
+
         val transform = Mappers.transform[selectedEntity]
+        val myIndex = MyGame.grid.getIndexOfGrid(transform.position.x, transform.position.y)!!
+        val mouseIndex = MyGame.grid.getIndexOfGrid(worldCoords.x, worldCoords.y)
 
         when(EditorGUI.editingState){
             EditorGUI.EDITING_STATE.Entrance -> {
                 transform.spotMap["entrance"]?.get(0)?.set(worldCoords.x, worldCoords.y)
             }
+
+            //This is when we are adding grid spots to be blocked
             EditorGUI.EDITING_STATE.BlockGrid -> {
                 val grid = Mappers.grid[selectedEntity]
 
-                //First remove the entity from the grid
-                MyGame.grid.setUnblocked(transform.position.x, transform.position.y,
-                        transform.dimensions.x * 0.5f, transform.dimensions.y * 0.5f)
+                //Get my index
 
-                val index = MyGame.grid.getIndexOfGrid(worldCoords.x, worldCoords.y)
-                //Filter a new list excluding only the one we don't want
-                val newList = def.gridDef.gridSpotsToNotBlock.filter { index.first != it[0] && index.second != it[1] }
+                //Get the index of the world position of the mouse click
+                val relativeIndex = Pair(mouseIndex.first - myIndex.first, mouseIndex.second - myIndex.second)
 
-                //Reassign it to the spots to not block
-                def.gridDef.gridSpotsToNotBlock = newList.toTypedArray()
+                //If the grid spot we clicked doesn't exist in the array already...
+                if(!def.gridDef.gridSpotsToBlock.any { it[0] == relativeIndex.first && it[1] == relativeIndex.second }){
 
-                MyGame.grid.setBlocked(transform.position.x, transform.position.y,
-                        def.gridDef.gridSpotsToBlock, def.gridDef.gridSpotsToNotBlock)
+                    //Unblock all existing grid spots
+                    def.gridDef.gridSpotsToBlock.forEach {
+                        MyGame.grid.setUnblocked(Pair(myIndex.first + it[0], myIndex.second + it[1]))
+                    }
+
+                    val list = arrayListOf<Array<Int>>()
+                    def.gridDef.gridSpotsToBlock.forEach { list += it } //Add existing to the list
+                    list += arrayOf(relativeIndex.first, relativeIndex.second) //Add the new to the list
+
+                    def.gridDef.gridSpotsToBlock = list.toTypedArray() //Assign it back to the grid spots
+
+                    //Block again all grid spots
+                    def.gridDef.gridSpotsToBlock.forEach {
+                        MyGame.grid.setBlocked(Pair(myIndex.first + it[0], myIndex.second + it[1]))
+                    }
+                }
             }
 
             EditorGUI.EDITING_STATE.ClearGrid -> {
-                val grid = Mappers.grid[selectedEntity]
-                val index = MyGame.grid.getIndexOfGrid(worldCoords.x, worldCoords.y)
-                val indexOfEntity = MyGame.grid.getIndexOfGrid(transform.position.x, transform.position.y)
-                val relativeIndex = Pair(index.first - indexOfEntity.first, index.second - indexOfEntity.second)
+                val relativeIndex = Pair(mouseIndex.first - myIndex.first, mouseIndex.second - myIndex.second)
+
+                //Unblock all existing grid spots
+                def.gridDef.gridSpotsToBlock.forEach {
+                    MyGame.grid.setUnblocked(Pair(myIndex.first + it[0], myIndex.second + it[1]))
+                }
 
                 //First remove the entity from the grid
                 MyGame.grid.setUnblocked(transform.position.x, transform.position.y,
                         transform.dimensions.x * 0.5f, transform.dimensions.y * 0.5f)
 
-                //Figure out if it contains the spot already. If not, lets add it!
-                if(def.gridDef.gridSpotsToNotBlock.firstOrNull { it[0] == relativeIndex.first && it[1] == relativeIndex.second } == null){
-                    val list = arrayListOf<Array<Int>>() //Make a new list
-                    def.gridDef.gridSpotsToNotBlock.forEach { list.add(it) } //Add all existing spots
-                    list.add(arrayOf(relativeIndex.first, relativeIndex.second)) //Add the new spot
-                    def.gridDef.gridSpotsToNotBlock = list.toTypedArray() //Reassign it
-                }
+                val newList = def.gridDef.gridSpotsToBlock.filter { !(it[0] == relativeIndex.first && it[1] == relativeIndex.second) }
+                def.gridDef.gridSpotsToBlock = newList.toTypedArray() //Reassign it
 
-                MyGame.grid.setBlocked(transform.position.x, transform.position.y,
-                        def.gridDef.gridSpotsToBlock, def.gridDef.gridSpotsToNotBlock)
+                //Unblock all existing grid spots
+                def.gridDef.gridSpotsToBlock.forEach {
+                    MyGame.grid.setBlocked(Pair(myIndex.first + it[0], myIndex.second + it[1]))
+                }
 
             }
             EditorGUI.EDITING_STATE.None -> return false

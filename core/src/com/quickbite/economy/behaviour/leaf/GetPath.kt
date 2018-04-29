@@ -7,6 +7,7 @@ import com.quickbite.economy.behaviour.LeafTask
 import com.quickbite.economy.components.TransformComponent
 import com.quickbite.economy.util.Mappers
 import com.quickbite.economy.util.Pathfinder
+import com.quickbite.economy.util.Pathfinder2
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
@@ -19,13 +20,16 @@ class GetPath(bb:BlackBoard) : LeafTask(bb) {
     val transform:TransformComponent by lazy {  Mappers.transform.get(bb.myself) }
 
     override fun start() {
-        async(CommonPool) {
-            val deferred = async(CommonPool) {
-                Pathfinder.findPath(MyGame.grid, Vector2(transform.position), Vector2(bb.targetPosition))
-            }
+//        async(CommonPool) {
+//            val deferred = async(CommonPool) {
+//                Pathfinder.findPath(MyGame.grid, Vector2(transform.position), Vector2(bb.targetPosition))
+//            }
+//
+//            bb.path = deferred.await()
+//            controller.finishWithSuccess()
+//        }
 
-            bb.path = deferred.await()
-            controller.finishWithSuccess()
-        }
+        bb.path = Pathfinder2.findPath(MyGame.grid.getNodeAtPosition(transform.position)!!, MyGame.grid.getNodeAtPosition(bb.targetPosition)!!)
+        controller.finishWithSuccess()
     }
 }

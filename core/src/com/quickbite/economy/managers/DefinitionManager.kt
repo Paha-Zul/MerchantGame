@@ -296,7 +296,6 @@ object DefinitionManager {
         var onGrid = false
         var blockGridWhenPlaced = false
         var gridSpotsToBlock = arrayOf<Array<Int>>()
-        var gridSpotsToNotBlock = arrayOf<Array<Int>>()
     }
 
     class ProductionDef{

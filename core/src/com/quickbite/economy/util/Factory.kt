@@ -54,7 +54,11 @@ object Factory {
         grid.blockWhenPlaced = definition.gridDef.blockGridWhenPlaced
         if(grid.blockWhenPlaced){
             init.initFuncs.add {
-                MyGame.grid.setBlocked(transform.position.x, transform.position.y, definition.gridDef.gridSpotsToBlock, definition.gridDef.gridSpotsToNotBlock)
+                definition.gridDef.gridSpotsToBlock.forEach {
+                    val index = MyGame.grid.getIndexOfGrid(transform.position.x, transform.position.y)
+                    MyGame.grid.setBlocked(Pair(index.first + it[0], index.second + it[1]))
+                }
+//                MyGame.grid.setBlocked(transform.position.x, transform.position.y, definition.gridDef.gridSpotsToBlock, definition.gridDef.gridSpotsToNotBlock)
             }
         }
 
