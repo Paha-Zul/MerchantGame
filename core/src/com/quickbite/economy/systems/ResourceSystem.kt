@@ -12,7 +12,7 @@ import com.quickbite.economy.util.Mappers
 /**
  * Created by Paha on 6/11/2017.
  */
-class ResourceSystem(interval:Float): IntervalIteratingSystem(Family.all(ResourceComponent::class.java).get(), interval) {
+class ResourceSystem(val interval:Float): IntervalIteratingSystem(Family.all(ResourceComponent::class.java).get(), interval) {
     override fun processEntity(ent: Entity?) {
         val rc = Mappers.resource[ent]
         if(!rc.canRegrow || !rc.harvested) return //If it can't regrow or it's not harvested, don't bother...

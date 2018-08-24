@@ -13,7 +13,7 @@ import com.quickbite.economy.util.Mappers
  *
  * A System to manage entities with farm components
  */
-class FarmSystem(interval:Float) : IntervalIteratingSystem(Family.all(FarmComponent::class.java).get(), interval) {
+class FarmSystem(val interval:Float) : IntervalIteratingSystem(Family.all(FarmComponent::class.java).get(), interval) {
     val plantWidth = 16
     val plantHeight = 32
 
