@@ -1,0 +1,62 @@
+[[defs]]
+    #Try to keep single values up here...
+    name = "Buyer"
+    onGrid = true
+    gridBlockWhenPlaced = false
+    hasBehaviours = true
+    isBuyer = true
+    [defs.graphicDef]
+      graphicName = "buyer"
+      graphicAnchor = [0.5, 0.5]
+      graphicSize = [20, 20]
+      initialAnimation = false
+    [defs.transformDef]
+      physicalDimensions = {x = 20, y = 20}
+    [defs.physicsDef]
+      bodyType = "dynamic"
+    [defs.velocityDef]
+      baseSpeed = 50
+    [defs.inventoryDef]
+    [defs.gridDef]
+      onGrid = true
+    [defs.behaviourDef]
+    [defs.buyerDef]
+
+[[defs]]
+    #Try to keep single values up here...
+    name = "Worker"
+    [defs.graphicDef]
+      graphicName = "worker"
+      graphicAnchor = [0.5, 0.5]
+      graphicSize = [25, 25]
+      initialAnimation = false
+    [defs.transformDef]
+      physicalDimensions = {x = 25, y = 25}
+    [defs.physicsDef]
+      bodyType = "dynamic"
+    [defs.velocityDef]
+      baseSpeed = 50
+    [defs.gridDef]
+      onGrid = true
+    [defs.inventoryDef]
+    [defs.behaviourDef]
+    [defs.workerDef]
+
+[[defs]]
+    #Try to keep single values up here...
+    name = "Hauler"
+    [defs.graphicDef]
+      graphicName = "trader"
+      graphicAnchor = [0.5, 0.5]
+      graphicSize = [25, 25]
+      initialAnimation = false
+    [defs.transformDef]
+      physicalDimensions = {x = 25, y = 25}
+    [defs.physicsDef]
+      bodyType = "dynamic"
+    [defs.velocityDef]
+      baseSpeed = 50
+    [defs.inventoryDef]
+    [defs.gridDef]
+      onGrid = true
+       [defs.behaviourDef]

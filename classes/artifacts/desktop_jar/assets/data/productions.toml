@@ -1,0 +1,18 @@
+[[productions]]
+  produceItemName = "wood plank"
+  produceAmount = 10
+  requirements = [{itemName = "Wood Log", itemAmount = 1}]
+[[productions]]
+  produceItemName = "wood table"
+  produceAmount = 1
+  requirements = [{itemName = "Wood Plank", itemAmount = 10}]
+[[productions]]
+  produceItemName = "flour"
+  produceAmount = 10
+  requirements = [{itemName = "Wheat", itemAmount = 2}]
+[[productions]]
+  produceItemName = "bread"
+  produceAmount = 5
+  requirements = [
+  {itemName = "flour", itemAmount = 2},
+  {itemName = "milk", itemAmount = 2}]
