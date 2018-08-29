@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EconomyGame.iml" filepath="$PROJECT_DIR$/.idea/modules/EconomyGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EconomyGame_main.iml" filepath="$PROJECT_DIR$/.idea/modules/EconomyGame_main.iml" group="EconomyGame" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EconomyGame_test.iml" filepath="$PROJECT_DIR$/.idea/modules/EconomyGame_test.iml" group="EconomyGame" />
       <module fileurl="file://$PROJECT_DIR$/.idea/MerchantGame.iml" filepath="$PROJECT_DIR$/.idea/MerchantGame.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MerchantGame_main.iml" filepath="$PROJECT_DIR$/.idea/modules/MerchantGame_main.iml" group="MerchantGame" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MerchantGame_test.iml" filepath="$PROJECT_DIR$/.idea/modules/MerchantGame_test.iml" group="MerchantGame" />

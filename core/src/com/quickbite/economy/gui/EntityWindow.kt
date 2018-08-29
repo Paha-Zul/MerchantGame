@@ -227,6 +227,8 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     }
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){
+        ShiftPlanningWindow(comp).openTable()
+
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
         scrollPaneStyle.background = darkBackgroundDrawable
         scrollPaneStyle.vScroll = TextureRegionDrawable(TextureRegion(Util.createPixel(Color.WHITE)))

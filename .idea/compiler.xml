@@ -6,6 +6,8 @@
       <module name="core_test" target="1.8" />
       <module name="desktop_main" target="1.6" />
       <module name="desktop_test" target="1.6" />
+      <module name="EconomyGame_main" target="1.8" />
+      <module name="EconomyGame_test" target="1.8" />
       <module name="MerchantGame_main" target="1.8" />
       <module name="MerchantGame_test" target="1.8" />
     </bytecodeTargetLevel>
