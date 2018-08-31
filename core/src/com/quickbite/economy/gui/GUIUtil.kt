@@ -427,6 +427,9 @@ object GUIUtil {
 
         val sellItemsListTable = Table()
 
+        val itemSourceColTitle = Label("Source", defaultLabelStyle)
+        itemSourceColTitle.setAlignment(Align.center)
+
         val itemNameColTitle = Label("Name", defaultLabelStyle)
         itemNameColTitle.setAlignment(Align.center)
 
@@ -438,6 +441,8 @@ object GUIUtil {
 
         //Add the three titles
         sellItemsListTable.add().growX()
+        sellItemsListTable.add(itemSourceColTitle).width(100f)
+        sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
         sellItemsListTable.add(itemNameColTitle).width(100f)
         sellItemsListTable.add(Image(TextureRegion(Util.createPixel(Color(0.8f, 0.8f, 0.8f, 0.5f), 2, 10))))
         sellItemsListTable.add(itemAmountColTitle).width(100f)
@@ -449,6 +454,10 @@ object GUIUtil {
         sellItemsListTable.row()
 
         comp.currSellingItems.forEach { sellItemData ->
+            //Where it comes from (imported? Distributed?)
+            val sourceLabel = Label(sellItemData.itemSourceType.toString(), defaultLabelStyle)
+            sourceLabel.setAlignment(Align.center)
+
             //The item name
             val itemNameLabel = Label(sellItemData.itemName.CapitalizeEachToken(), defaultLabelStyle)
             itemNameLabel.setAlignment(Align.center)
@@ -502,6 +511,8 @@ object GUIUtil {
             xLabel.label.setAlignment(Align.center)
 
             itemTable.add().growX()
+            itemTable.add(sourceLabel).width(100f)
+            itemTable.add().width(2f) //Empty space for dividers in titles
             itemTable.add(itemNameLabel).width(100f)
             itemTable.add().width(2f) //Empty space for the divider in the titles
             itemTable.add(itemAmountLabel).width(100f)

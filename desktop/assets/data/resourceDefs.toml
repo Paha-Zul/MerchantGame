@@ -3,7 +3,7 @@
   [defs.graphicDef]
     graphicName = "Tree"
     graphicAnchor = [0.5, 0.0]
-    graphicSize = [25, 50]
+    graphicSize = [75, 150]
     initialAnimation = false
   [defs.transformDef]
     physicalDimensions = {x = 25, y = 25}

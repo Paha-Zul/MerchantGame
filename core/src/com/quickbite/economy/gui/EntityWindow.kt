@@ -227,7 +227,7 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
     }
 
     private fun setupWorkforceTable(table: Table, comp: WorkForceComponent){
-        ShiftPlanningWindow(comp).openTable()
+        //ShiftPlanningWindow(comp).openTable()
 
         val scrollPaneStyle = ScrollPane.ScrollPaneStyle()
         scrollPaneStyle.background = darkBackgroundDrawable
@@ -505,7 +505,6 @@ class EntityWindow(val entity:Entity) : GUIWindow(){
         if(comp.isReselling)
             setupResellingStuff(table, comp)
 
-        //--- The titles for all the columns ---
 
         //The listener for when we hit the less tax button
         lessTaxButton.addListener(object:ChangeListener(){

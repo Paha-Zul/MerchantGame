@@ -98,6 +98,7 @@ object Factory {
             GameEventSystem.subscribe<ItemSoldEvent>({
                 selling.taxCollectedDaily += it.taxCollected
                 selling.taxCollectedTotal += it.taxCollected
+//                selling.expensesMap.get
             }, identityComp.uniqueID)
 
             //Add this inventory listener in this init funcs so we can make sure the inventory component actually exists

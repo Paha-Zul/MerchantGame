@@ -36,6 +36,8 @@ class SellingItemsComponent : MyComponent {
     /** The total tax collected from this Entity. Doesn't reset! */
     var taxCollectedTotal = 0
 
+    var expensesMap:HashMap<String, Int> = hashMapOf()
+
     var isReselling = false
 
     //TODO Figure out how to better keep track of counters for the links
