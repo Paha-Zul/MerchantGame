@@ -29,18 +29,18 @@ open class GUIWindow {
     val contentTable = Table()
 
     /** A place to put actions to refresh GUI elements while a certain tab is open. Gets cleared on every window change.*/
-    protected val updateFuncsList: Array<() -> Unit> = Array(5)
-    protected val updateMap: HashMap<String, () -> Unit> = hashMapOf()
-    protected var changedTabsFunc:()->Unit = {}
+    val updateFuncsList: Array<() -> Unit> = Array(5)
+    val updateMap: HashMap<String, () -> Unit> = hashMapOf()
+    var changedTabsFunc:()->Unit = {}
 
-    protected val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
-    protected val defaultTitleLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.WHITE)
-    protected val defaultTextFieldStyle = TextField.TextFieldStyle()
+    public val defaultLabelStyle = Label.LabelStyle(MyGame.defaultFont14, Color.WHITE)
+    public val defaultTitleLabelStyle = Label.LabelStyle(MyGame.defaultFont20, Color.WHITE)
+    public val defaultTextFieldStyle = TextField.TextFieldStyle()
 
-    protected val defaultTextButtonStyle = TextButton.TextButtonStyle()
-    protected val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 4, 4, 10, 4))
-    protected val darkBackgroundDrawableForTabs = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 4, 4, 10, 4))
-    protected val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
+    public val defaultTextButtonStyle = TextButton.TextButtonStyle()
+    public val darkBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 4, 4, 10, 4))
+    public val darkBackgroundDrawableForTabs = NinePatchDrawable(NinePatch(MyGame.manager["dark_bar", Texture::class.java], 4, 4, 10, 4))
+    public val buttonBackgroundDrawable = NinePatchDrawable(NinePatch(MyGame.manager["button", Texture::class.java], 10, 10, 10, 10))
 
     val barBackground = NinePatchDrawable(NinePatch(MyGame.manager["dialog_box_thin", Texture::class.java], 3, 3, 3, 3))
 

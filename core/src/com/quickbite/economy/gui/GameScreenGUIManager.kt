@@ -24,6 +24,7 @@ import com.quickbite.economy.MyGame
 import com.quickbite.economy.event.GameEventSystem
 import com.quickbite.economy.event.events.ItemAmountChangeEvent
 import com.quickbite.economy.event.events.ItemSoldEvent
+import com.quickbite.economy.gui.entity.EntityWindow
 import com.quickbite.economy.managers.DefinitionManager
 import com.quickbite.economy.managers.TownManager
 import com.quickbite.economy.objects.Town
